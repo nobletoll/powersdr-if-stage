@@ -2108,11 +2108,6 @@ namespace PowerSDR
 				fixed(void *rptr = &new_display_data[0])
 					fixed(void *wptr = &current_display_data[0])
 						Win32.memcpy(wptr, rptr, BUFFER_SIZE*sizeof(float));
-						
-				// kb9yig sr mod starts 
-				if ( current_model == Model.SOFTROCK40 ) 
-					console.AdjustDisplayDataForBandEdge(ref current_display_data);
-				// end kb9yig sr mods 
 
 				data_ready = false;
 			}
@@ -2209,11 +2204,6 @@ namespace PowerSDR
 					fixed(void *rptr = &new_display_data[0])
 						fixed(void *wptr = &current_display_data[0])
 							Win32.memcpy(wptr, rptr, BUFFER_SIZE*sizeof(float));
-						
-					// kb9yig sr mod starts 
-					if ( current_model == Model.SOFTROCK40 ) 
-						console.AdjustDisplayDataForBandEdge(ref current_display_data);
-					// end kb9yig sr mods 
 				}
 
 				data_ready = false;
@@ -2326,11 +2316,6 @@ namespace PowerSDR
 					fixed(void *rptr = &new_display_data[0])
 						fixed(void *wptr = &current_display_data[0])
 							Win32.memcpy(wptr, rptr, BUFFER_SIZE*sizeof(float));
-						
-					// kb9yig sr mod starts 
-					if ( current_model == Model.SOFTROCK40 ) 
-						console.AdjustDisplayDataForBandEdge(ref current_display_data);
-					// end kb9yig sr mods 
 				}
 
 				data_ready = false;
@@ -2573,11 +2558,6 @@ namespace PowerSDR
 				fixed(void *rptr = &new_display_data[0])
 					fixed(void *wptr = &current_display_data[0])
 						Win32.memcpy(wptr, rptr, BUFFER_SIZE*sizeof(float));
-						
-				// kb9yig sr mod starts 
-				if ( current_model == Model.SOFTROCK40 ) 
-					console.AdjustDisplayDataForBandEdge(ref current_display_data);
-				// end kb9yig sr mods 
 
 				data_ready = false;
 			}

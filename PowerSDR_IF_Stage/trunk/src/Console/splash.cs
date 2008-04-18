@@ -121,6 +121,7 @@ namespace PowerSDR
 			// 
 			this.lblStatus.BackColor = System.Drawing.Color.Transparent;
 			this.lblStatus.ForeColor = System.Drawing.Color.White;
+			this.lblStatus.Image = null;
 			this.lblStatus.Location = new System.Drawing.Point(0, 230);
 			this.lblStatus.Name = "lblStatus";
 			this.lblStatus.Size = new System.Drawing.Size(400, 16);
@@ -132,6 +133,7 @@ namespace PowerSDR
 			// 
 			this.lblTimeRemaining.BackColor = System.Drawing.Color.Transparent;
 			this.lblTimeRemaining.ForeColor = System.Drawing.Color.White;
+			this.lblTimeRemaining.Image = null;
 			this.lblTimeRemaining.Location = new System.Drawing.Point(296, 232);
 			this.lblTimeRemaining.Name = "lblTimeRemaining";
 			this.lblTimeRemaining.Size = new System.Drawing.Size(100, 16);
@@ -166,6 +168,7 @@ namespace PowerSDR
 			this.Name = "Splash";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Splash";
+			this.Load += new System.EventHandler(this.Splash_Load);
 			this.ResumeLayout(false);
 
 		}
@@ -420,6 +423,11 @@ namespace PowerSDR
 		}
 
 		#endregion
+
+		private void Splash_Load(object sender, System.EventArgs e)
+		{
+		
+		}
 	}	
 
 	#region Registry Access Class
