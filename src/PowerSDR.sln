@@ -27,12 +27,14 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fftw_wisdom", "fftw_wisdom\
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Deployment", "Setup\PowerSDR Setup.vdproj", "{D9006EF8-9AFA-4C84-8740-A13E89988592}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
 		Release = Release
-	EndGlobalSection
-	GlobalSection(ProjectDependencies) = postSolution
 	EndGlobalSection
 	GlobalSection(ProjectConfiguration) = postSolution
 		{831AEB2F-CA78-4057-85D7-32B4816ED6AE}.Debug.ActiveCfg = Debug|.NET
@@ -59,6 +61,10 @@ Global
 		{967BEFDF-275D-4F09-B5CD-0B71F0C9D17A}.Debug.Build.0 = Debug|Win32
 		{967BEFDF-275D-4F09-B5CD-0B71F0C9D17A}.Release.ActiveCfg = Release|Win32
 		{967BEFDF-275D-4F09-B5CD-0B71F0C9D17A}.Release.Build.0 = Release|Win32
+		{D9006EF8-9AFA-4C84-8740-A13E89988592}.Debug.ActiveCfg = Debug
+		{D9006EF8-9AFA-4C84-8740-A13E89988592}.Debug.Build.0 = Debug
+		{D9006EF8-9AFA-4C84-8740-A13E89988592}.Release.ActiveCfg = Release
+		{D9006EF8-9AFA-4C84-8740-A13E89988592}.Release.Build.0 = Release
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection

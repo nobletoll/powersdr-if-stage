@@ -855,6 +855,34 @@ namespace PowerSDR
 		private System.Windows.Forms.NumericUpDownTS udPACalPower;
 		private System.Windows.Forms.CheckBoxTS chkZeroBeatRIT;
 		private System.Windows.Forms.CheckBoxTS chkAudioExpert;
+		private System.Windows.Forms.TabPage SoftRockIFStage;
+		private System.Windows.Forms.GroupBox groupBox1;
+		private System.Windows.Forms.GroupBox groupBox2;
+		private System.Windows.Forms.Label lblFMIF;
+		private System.Windows.Forms.Label lblAMIF;
+		private System.Windows.Forms.Label lblCWIF;
+		private System.Windows.Forms.Label lblUSBIF;
+		private System.Windows.Forms.Label lblLSBIF;
+		private System.Windows.Forms.Label lblFMOffset;
+		private System.Windows.Forms.Label lblAMOffset;
+		private System.Windows.Forms.Label lblCWOffset;
+		private System.Windows.Forms.Label lblUSBOffset;
+		private System.Windows.Forms.Label lblLSBOffset;
+		private System.Windows.Forms.NumericUpDownTS udIFFM;
+		private System.Windows.Forms.NumericUpDownTS udIFAM;
+		private System.Windows.Forms.NumericUpDownTS udIFCW;
+		private System.Windows.Forms.NumericUpDownTS udIFUSB;
+		private System.Windows.Forms.NumericUpDownTS udIFLSB;
+		private System.Windows.Forms.NumericUpDownTS udVFOOffsetLSB;
+		private System.Windows.Forms.NumericUpDownTS udVFOOffsetFM;
+		private System.Windows.Forms.NumericUpDownTS udVFOOffsetAM;
+		private System.Windows.Forms.NumericUpDownTS udVFOOffsetCW;
+		private System.Windows.Forms.NumericUpDownTS udVFOOffsetUSB;
+		private System.Windows.Forms.GroupBox groupBox3;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.NumericUpDownTS udMinFreq;
+		private System.Windows.Forms.NumericUpDownTS udMaxFreq;
 		private System.ComponentModel.IContainer components;
 
 		#endregion
@@ -863,8 +891,9 @@ namespace PowerSDR
 
 		public Setup(Console c)
 		{
-			InitializeComponent();
+			
 			console = c;
+			InitializeComponent();
 
 #if(!DEBUG)
 			comboGeneralProcessPriority.Items.Remove("Idle");
@@ -1018,6 +1047,21 @@ namespace PowerSDR
 			this.chkGeneralRFEPresent = new System.Windows.Forms.CheckBoxTS();
 			this.comboGeneralXVTR = new System.Windows.Forms.ComboBoxTS();
 			this.btnWizard = new System.Windows.Forms.ButtonTS();
+			this.tpGeneralCalibration = new System.Windows.Forms.TabPage();
+			this.grpGenCalRXImage = new System.Windows.Forms.GroupBoxTS();
+			this.udGeneralCalFreq3 = new System.Windows.Forms.NumericUpDownTS();
+			this.lblGenCalRXImageFreq = new System.Windows.Forms.LabelTS();
+			this.btnGeneralCalImageStart = new System.Windows.Forms.ButtonTS();
+			this.grpGenCalLevel = new System.Windows.Forms.GroupBoxTS();
+			this.udGeneralCalLevel = new System.Windows.Forms.NumericUpDownTS();
+			this.udGeneralCalFreq2 = new System.Windows.Forms.NumericUpDownTS();
+			this.lblGenCalLevelFreq = new System.Windows.Forms.LabelTS();
+			this.lblGeneralCalLevel = new System.Windows.Forms.LabelTS();
+			this.btnGeneralCalLevelStart = new System.Windows.Forms.ButtonTS();
+			this.grpGeneralCalibration = new System.Windows.Forms.GroupBoxTS();
+			this.btnGeneralCalFreqStart = new System.Windows.Forms.ButtonTS();
+			this.udGeneralCalFreq1 = new System.Windows.Forms.NumericUpDownTS();
+			this.lblGeneralCalFrequency = new System.Windows.Forms.LabelTS();
 			this.tpGeneralOptions = new System.Windows.Forms.TabPage();
 			this.grpOptMisc = new System.Windows.Forms.GroupBoxTS();
 			this.chkZeroBeatRIT = new System.Windows.Forms.CheckBoxTS();
@@ -1047,21 +1091,6 @@ namespace PowerSDR
 			this.grpGeneralUpdates = new System.Windows.Forms.GroupBoxTS();
 			this.chkGeneralUpdateBeta = new System.Windows.Forms.CheckBoxTS();
 			this.chkGeneralUpdateRelease = new System.Windows.Forms.CheckBoxTS();
-			this.tpGeneralCalibration = new System.Windows.Forms.TabPage();
-			this.grpGenCalRXImage = new System.Windows.Forms.GroupBoxTS();
-			this.udGeneralCalFreq3 = new System.Windows.Forms.NumericUpDownTS();
-			this.lblGenCalRXImageFreq = new System.Windows.Forms.LabelTS();
-			this.btnGeneralCalImageStart = new System.Windows.Forms.ButtonTS();
-			this.grpGenCalLevel = new System.Windows.Forms.GroupBoxTS();
-			this.udGeneralCalLevel = new System.Windows.Forms.NumericUpDownTS();
-			this.udGeneralCalFreq2 = new System.Windows.Forms.NumericUpDownTS();
-			this.lblGenCalLevelFreq = new System.Windows.Forms.LabelTS();
-			this.lblGeneralCalLevel = new System.Windows.Forms.LabelTS();
-			this.btnGeneralCalLevelStart = new System.Windows.Forms.ButtonTS();
-			this.grpGeneralCalibration = new System.Windows.Forms.GroupBoxTS();
-			this.btnGeneralCalFreqStart = new System.Windows.Forms.ButtonTS();
-			this.udGeneralCalFreq1 = new System.Windows.Forms.NumericUpDownTS();
-			this.lblGeneralCalFrequency = new System.Windows.Forms.LabelTS();
 			this.tpFilters = new System.Windows.Forms.TabPage();
 			this.grpOptFilterControls = new System.Windows.Forms.GroupBoxTS();
 			this.udFilterDefaultLowCut = new System.Windows.Forms.NumericUpDownTS();
@@ -1073,6 +1102,34 @@ namespace PowerSDR
 			this.udOptMaxFilterWidth = new System.Windows.Forms.NumericUpDownTS();
 			this.lblOptMaxFilter = new System.Windows.Forms.LabelTS();
 			this.chkOptFilterSaveChanges = new System.Windows.Forms.CheckBoxTS();
+			this.SoftRockIFStage = new System.Windows.Forms.TabPage();
+			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.udMaxFreq = new System.Windows.Forms.NumericUpDownTS();
+			this.udMinFreq = new System.Windows.Forms.NumericUpDownTS();
+			this.label3 = new System.Windows.Forms.Label();
+			this.label2 = new System.Windows.Forms.Label();
+			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.lblFMIF = new System.Windows.Forms.Label();
+			this.udIFFM = new System.Windows.Forms.NumericUpDownTS();
+			this.udIFAM = new System.Windows.Forms.NumericUpDownTS();
+			this.lblAMIF = new System.Windows.Forms.Label();
+			this.lblCWIF = new System.Windows.Forms.Label();
+			this.udIFCW = new System.Windows.Forms.NumericUpDownTS();
+			this.lblUSBIF = new System.Windows.Forms.Label();
+			this.udIFUSB = new System.Windows.Forms.NumericUpDownTS();
+			this.lblLSBIF = new System.Windows.Forms.Label();
+			this.udIFLSB = new System.Windows.Forms.NumericUpDownTS();
+			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.lblFMOffset = new System.Windows.Forms.Label();
+			this.udVFOOffsetFM = new System.Windows.Forms.NumericUpDownTS();
+			this.udVFOOffsetAM = new System.Windows.Forms.NumericUpDownTS();
+			this.lblAMOffset = new System.Windows.Forms.Label();
+			this.lblCWOffset = new System.Windows.Forms.Label();
+			this.udVFOOffsetCW = new System.Windows.Forms.NumericUpDownTS();
+			this.lblUSBOffset = new System.Windows.Forms.Label();
+			this.udVFOOffsetUSB = new System.Windows.Forms.NumericUpDownTS();
+			this.lblLSBOffset = new System.Windows.Forms.Label();
+			this.udVFOOffsetLSB = new System.Windows.Forms.NumericUpDownTS();
 			this.tpAudio = new System.Windows.Forms.TabPage();
 			this.tcAudio = new System.Windows.Forms.TabControl();
 			this.tpAudioCard1 = new System.Windows.Forms.TabPage();
@@ -1807,6 +1864,14 @@ namespace PowerSDR
 			this.grpGeneralModel.SuspendLayout();
 			this.grpGeneralHardwareSetup.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.udGeneralLPTDelay)).BeginInit();
+			this.tpGeneralCalibration.SuspendLayout();
+			this.grpGenCalRXImage.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.udGeneralCalFreq3)).BeginInit();
+			this.grpGenCalLevel.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.udGeneralCalLevel)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.udGeneralCalFreq2)).BeginInit();
+			this.grpGeneralCalibration.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.udGeneralCalFreq1)).BeginInit();
 			this.tpGeneralOptions.SuspendLayout();
 			this.grpOptMisc.SuspendLayout();
 			this.grpOptQuickQSY.SuspendLayout();
@@ -1818,19 +1883,27 @@ namespace PowerSDR
 			((System.ComponentModel.ISupportInitialize)(this.udGeneralX2Delay)).BeginInit();
 			this.grpGeneralProcessPriority.SuspendLayout();
 			this.grpGeneralUpdates.SuspendLayout();
-			this.tpGeneralCalibration.SuspendLayout();
-			this.grpGenCalRXImage.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.udGeneralCalFreq3)).BeginInit();
-			this.grpGenCalLevel.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.udGeneralCalLevel)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.udGeneralCalFreq2)).BeginInit();
-			this.grpGeneralCalibration.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.udGeneralCalFreq1)).BeginInit();
 			this.tpFilters.SuspendLayout();
 			this.grpOptFilterControls.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.udFilterDefaultLowCut)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.udOptMaxFilterShift)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.udOptMaxFilterWidth)).BeginInit();
+			this.SoftRockIFStage.SuspendLayout();
+			this.groupBox3.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.udMaxFreq)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.udMinFreq)).BeginInit();
+			this.groupBox1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.udIFFM)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.udIFAM)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.udIFCW)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.udIFUSB)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.udIFLSB)).BeginInit();
+			this.groupBox2.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.udVFOOffsetFM)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.udVFOOffsetAM)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.udVFOOffsetCW)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.udVFOOffsetUSB)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.udVFOOffsetLSB)).BeginInit();
 			this.tpAudio.SuspendLayout();
 			this.tcAudio.SuspendLayout();
 			this.tpAudioCard1.SuspendLayout();
@@ -2070,6 +2143,7 @@ namespace PowerSDR
 			this.tcGeneral.Controls.Add(this.tpGeneralOptions);
 			this.tcGeneral.Controls.Add(this.tpGeneralCalibration);
 			this.tcGeneral.Controls.Add(this.tpFilters);
+			this.tcGeneral.Controls.Add(this.SoftRockIFStage);
 			this.tcGeneral.Location = new System.Drawing.Point(0, 0);
 			this.tcGeneral.Name = "tcGeneral";
 			this.tcGeneral.SelectedIndex = 0;
@@ -2112,6 +2186,7 @@ namespace PowerSDR
 			// udSoftRockCenterFreq
 			// 
 			this.udSoftRockCenterFreq.DecimalPlaces = 6;
+			this.udSoftRockCenterFreq.Enabled = false;
 			this.udSoftRockCenterFreq.Increment = new System.Decimal(new int[] {
 																				   1,
 																				   0,
@@ -2301,10 +2376,10 @@ namespace PowerSDR
 			this.radGenModelSoftRock40.Image = null;
 			this.radGenModelSoftRock40.Location = new System.Drawing.Point(16, 48);
 			this.radGenModelSoftRock40.Name = "radGenModelSoftRock40";
-			this.radGenModelSoftRock40.Size = new System.Drawing.Size(88, 24);
+			this.radGenModelSoftRock40.Size = new System.Drawing.Size(120, 24);
 			this.radGenModelSoftRock40.TabIndex = 1;
-			this.radGenModelSoftRock40.Text = "Soft Rock 40";
-			this.toolTip1.SetToolTip(this.radGenModelSoftRock40, "Select if using the SoftRock 40");
+			this.radGenModelSoftRock40.Text = "SoftRock IF Stage";
+			this.toolTip1.SetToolTip(this.radGenModelSoftRock40, "Select if using the SoftRock for an IF Stage");
 			this.radGenModelSoftRock40.CheckedChanged += new System.EventHandler(this.radGenModelSoftRock40_CheckedChanged);
 			// 
 			// radGenModelSDR1000
@@ -2502,6 +2577,242 @@ namespace PowerSDR
 			this.btnWizard.Text = "Wizard...";
 			this.toolTip1.SetToolTip(this.btnWizard, "Run the Startup Wizard.");
 			this.btnWizard.Click += new System.EventHandler(this.btnWizard_Click);
+			// 
+			// tpGeneralCalibration
+			// 
+			this.tpGeneralCalibration.Controls.Add(this.grpGenCalRXImage);
+			this.tpGeneralCalibration.Controls.Add(this.grpGenCalLevel);
+			this.tpGeneralCalibration.Controls.Add(this.grpGeneralCalibration);
+			this.tpGeneralCalibration.Location = new System.Drawing.Point(4, 22);
+			this.tpGeneralCalibration.Name = "tpGeneralCalibration";
+			this.tpGeneralCalibration.Size = new System.Drawing.Size(592, 318);
+			this.tpGeneralCalibration.TabIndex = 2;
+			this.tpGeneralCalibration.Text = "Calibration";
+			// 
+			// grpGenCalRXImage
+			// 
+			this.grpGenCalRXImage.Controls.Add(this.udGeneralCalFreq3);
+			this.grpGenCalRXImage.Controls.Add(this.lblGenCalRXImageFreq);
+			this.grpGenCalRXImage.Controls.Add(this.btnGeneralCalImageStart);
+			this.grpGenCalRXImage.Location = new System.Drawing.Point(360, 8);
+			this.grpGenCalRXImage.Name = "grpGenCalRXImage";
+			this.grpGenCalRXImage.Size = new System.Drawing.Size(168, 112);
+			this.grpGenCalRXImage.TabIndex = 9;
+			this.grpGenCalRXImage.TabStop = false;
+			this.grpGenCalRXImage.Text = "RX Image Reject Cal";
+			// 
+			// udGeneralCalFreq3
+			// 
+			this.udGeneralCalFreq3.DecimalPlaces = 6;
+			this.udGeneralCalFreq3.Increment = new System.Decimal(new int[] {
+																				1,
+																				0,
+																				0,
+																				0});
+			this.udGeneralCalFreq3.Location = new System.Drawing.Point(80, 24);
+			this.udGeneralCalFreq3.Maximum = new System.Decimal(new int[] {
+																			  65,
+																			  0,
+																			  0,
+																			  0});
+			this.udGeneralCalFreq3.Minimum = new System.Decimal(new int[] {
+																			  0,
+																			  0,
+																			  0,
+																			  0});
+			this.udGeneralCalFreq3.Name = "udGeneralCalFreq3";
+			this.udGeneralCalFreq3.Size = new System.Drawing.Size(72, 20);
+			this.udGeneralCalFreq3.TabIndex = 1;
+			this.toolTip1.SetToolTip(this.udGeneralCalFreq3, "RX Image calibration reference frequency");
+			this.udGeneralCalFreq3.Value = new System.Decimal(new int[] {
+																			10,
+																			0,
+																			0,
+																			0});
+			this.udGeneralCalFreq3.LostFocus += new System.EventHandler(this.udGeneralCalFreq3_LostFocus);
+			// 
+			// lblGenCalRXImageFreq
+			// 
+			this.lblGenCalRXImageFreq.Image = null;
+			this.lblGenCalRXImageFreq.Location = new System.Drawing.Point(16, 24);
+			this.lblGenCalRXImageFreq.Name = "lblGenCalRXImageFreq";
+			this.lblGenCalRXImageFreq.Size = new System.Drawing.Size(64, 23);
+			this.lblGenCalRXImageFreq.TabIndex = 0;
+			this.lblGenCalRXImageFreq.Text = "Frequency:";
+			// 
+			// btnGeneralCalImageStart
+			// 
+			this.btnGeneralCalImageStart.Image = null;
+			this.btnGeneralCalImageStart.Location = new System.Drawing.Point(48, 80);
+			this.btnGeneralCalImageStart.Name = "btnGeneralCalImageStart";
+			this.btnGeneralCalImageStart.TabIndex = 7;
+			this.btnGeneralCalImageStart.Text = "Start";
+			this.toolTip1.SetToolTip(this.btnGeneralCalImageStart, "Click to start the RX Image rejection calibration using the above frequency refer" +
+				"ence.");
+			this.btnGeneralCalImageStart.Click += new System.EventHandler(this.btnGeneralCalImageStart_Click);
+			// 
+			// grpGenCalLevel
+			// 
+			this.grpGenCalLevel.Controls.Add(this.udGeneralCalLevel);
+			this.grpGenCalLevel.Controls.Add(this.udGeneralCalFreq2);
+			this.grpGenCalLevel.Controls.Add(this.lblGenCalLevelFreq);
+			this.grpGenCalLevel.Controls.Add(this.lblGeneralCalLevel);
+			this.grpGenCalLevel.Controls.Add(this.btnGeneralCalLevelStart);
+			this.grpGenCalLevel.Location = new System.Drawing.Point(184, 8);
+			this.grpGenCalLevel.Name = "grpGenCalLevel";
+			this.grpGenCalLevel.Size = new System.Drawing.Size(168, 112);
+			this.grpGenCalLevel.TabIndex = 8;
+			this.grpGenCalLevel.TabStop = false;
+			this.grpGenCalLevel.Text = "Level Cal";
+			// 
+			// udGeneralCalLevel
+			// 
+			this.udGeneralCalLevel.Increment = new System.Decimal(new int[] {
+																				10,
+																				0,
+																				0,
+																				0});
+			this.udGeneralCalLevel.Location = new System.Drawing.Point(80, 48);
+			this.udGeneralCalLevel.Maximum = new System.Decimal(new int[] {
+																			  0,
+																			  0,
+																			  0,
+																			  0});
+			this.udGeneralCalLevel.Minimum = new System.Decimal(new int[] {
+																			  150,
+																			  0,
+																			  0,
+																			  -2147483648});
+			this.udGeneralCalLevel.Name = "udGeneralCalLevel";
+			this.udGeneralCalLevel.Size = new System.Drawing.Size(72, 20);
+			this.udGeneralCalLevel.TabIndex = 3;
+			this.toolTip1.SetToolTip(this.udGeneralCalLevel, "Level calibration reference level");
+			this.udGeneralCalLevel.Value = new System.Decimal(new int[] {
+																			70,
+																			0,
+																			0,
+																			-2147483648});
+			this.udGeneralCalLevel.LostFocus += new System.EventHandler(this.udGeneralCalLevel_LostFocus);
+			// 
+			// udGeneralCalFreq2
+			// 
+			this.udGeneralCalFreq2.DecimalPlaces = 6;
+			this.udGeneralCalFreq2.Increment = new System.Decimal(new int[] {
+																				1,
+																				0,
+																				0,
+																				0});
+			this.udGeneralCalFreq2.Location = new System.Drawing.Point(80, 24);
+			this.udGeneralCalFreq2.Maximum = new System.Decimal(new int[] {
+																			  65,
+																			  0,
+																			  0,
+																			  0});
+			this.udGeneralCalFreq2.Minimum = new System.Decimal(new int[] {
+																			  0,
+																			  0,
+																			  0,
+																			  0});
+			this.udGeneralCalFreq2.Name = "udGeneralCalFreq2";
+			this.udGeneralCalFreq2.Size = new System.Drawing.Size(72, 20);
+			this.udGeneralCalFreq2.TabIndex = 1;
+			this.toolTip1.SetToolTip(this.udGeneralCalFreq2, "Level calibration reference frequency");
+			this.udGeneralCalFreq2.Value = new System.Decimal(new int[] {
+																			10,
+																			0,
+																			0,
+																			0});
+			this.udGeneralCalFreq2.LostFocus += new System.EventHandler(this.udGeneralCalFreq2_LostFocus);
+			// 
+			// lblGenCalLevelFreq
+			// 
+			this.lblGenCalLevelFreq.Image = null;
+			this.lblGenCalLevelFreq.Location = new System.Drawing.Point(16, 24);
+			this.lblGenCalLevelFreq.Name = "lblGenCalLevelFreq";
+			this.lblGenCalLevelFreq.Size = new System.Drawing.Size(64, 23);
+			this.lblGenCalLevelFreq.TabIndex = 0;
+			this.lblGenCalLevelFreq.Text = "Frequency:";
+			// 
+			// lblGeneralCalLevel
+			// 
+			this.lblGeneralCalLevel.Image = null;
+			this.lblGeneralCalLevel.Location = new System.Drawing.Point(16, 48);
+			this.lblGeneralCalLevel.Name = "lblGeneralCalLevel";
+			this.lblGeneralCalLevel.Size = new System.Drawing.Size(68, 23);
+			this.lblGeneralCalLevel.TabIndex = 2;
+			this.lblGeneralCalLevel.Text = "Level (dBm):";
+			// 
+			// btnGeneralCalLevelStart
+			// 
+			this.btnGeneralCalLevelStart.Image = null;
+			this.btnGeneralCalLevelStart.Location = new System.Drawing.Point(48, 80);
+			this.btnGeneralCalLevelStart.Name = "btnGeneralCalLevelStart";
+			this.btnGeneralCalLevelStart.TabIndex = 4;
+			this.btnGeneralCalLevelStart.Text = "Start";
+			this.toolTip1.SetToolTip(this.btnGeneralCalLevelStart, "Click to start the level calibration using the frequency and level references abo" +
+				"ve.");
+			this.btnGeneralCalLevelStart.Click += new System.EventHandler(this.btnGeneralCalLevelStart_Click);
+			// 
+			// grpGeneralCalibration
+			// 
+			this.grpGeneralCalibration.Controls.Add(this.btnGeneralCalFreqStart);
+			this.grpGeneralCalibration.Controls.Add(this.udGeneralCalFreq1);
+			this.grpGeneralCalibration.Controls.Add(this.lblGeneralCalFrequency);
+			this.grpGeneralCalibration.Location = new System.Drawing.Point(8, 8);
+			this.grpGeneralCalibration.Name = "grpGeneralCalibration";
+			this.grpGeneralCalibration.Size = new System.Drawing.Size(168, 112);
+			this.grpGeneralCalibration.TabIndex = 5;
+			this.grpGeneralCalibration.TabStop = false;
+			this.grpGeneralCalibration.Text = "Freq Cal";
+			// 
+			// btnGeneralCalFreqStart
+			// 
+			this.btnGeneralCalFreqStart.Image = null;
+			this.btnGeneralCalFreqStart.Location = new System.Drawing.Point(48, 80);
+			this.btnGeneralCalFreqStart.Name = "btnGeneralCalFreqStart";
+			this.btnGeneralCalFreqStart.TabIndex = 5;
+			this.btnGeneralCalFreqStart.Text = "Start";
+			this.toolTip1.SetToolTip(this.btnGeneralCalFreqStart, "Click to start the frequency calibration using the reference frequency above.");
+			this.btnGeneralCalFreqStart.Click += new System.EventHandler(this.btnGeneralCalFreqStart_Click);
+			// 
+			// udGeneralCalFreq1
+			// 
+			this.udGeneralCalFreq1.DecimalPlaces = 6;
+			this.udGeneralCalFreq1.Increment = new System.Decimal(new int[] {
+																				1,
+																				0,
+																				0,
+																				0});
+			this.udGeneralCalFreq1.Location = new System.Drawing.Point(80, 24);
+			this.udGeneralCalFreq1.Maximum = new System.Decimal(new int[] {
+																			  65,
+																			  0,
+																			  0,
+																			  0});
+			this.udGeneralCalFreq1.Minimum = new System.Decimal(new int[] {
+																			  0,
+																			  0,
+																			  0,
+																			  0});
+			this.udGeneralCalFreq1.Name = "udGeneralCalFreq1";
+			this.udGeneralCalFreq1.Size = new System.Drawing.Size(72, 20);
+			this.udGeneralCalFreq1.TabIndex = 1;
+			this.toolTip1.SetToolTip(this.udGeneralCalFreq1, "Frequency calibration reference frequency");
+			this.udGeneralCalFreq1.Value = new System.Decimal(new int[] {
+																			10,
+																			0,
+																			0,
+																			0});
+			this.udGeneralCalFreq1.LostFocus += new System.EventHandler(this.udGeneralCalFreq1_LostFocus);
+			// 
+			// lblGeneralCalFrequency
+			// 
+			this.lblGeneralCalFrequency.Image = null;
+			this.lblGeneralCalFrequency.Location = new System.Drawing.Point(16, 24);
+			this.lblGeneralCalFrequency.Name = "lblGeneralCalFrequency";
+			this.lblGeneralCalFrequency.Size = new System.Drawing.Size(64, 23);
+			this.lblGeneralCalFrequency.TabIndex = 0;
+			this.lblGeneralCalFrequency.Text = "Frequency:";
 			// 
 			// tpGeneralOptions
 			// 
@@ -2828,8 +3139,7 @@ namespace PowerSDR
 			// 
 			// chkGeneralSpurRed
 			// 
-			this.chkGeneralSpurRed.Checked = true;
-			this.chkGeneralSpurRed.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.chkGeneralSpurRed.Enabled = false;
 			this.chkGeneralSpurRed.Image = null;
 			this.chkGeneralSpurRed.Location = new System.Drawing.Point(16, 24);
 			this.chkGeneralSpurRed.Name = "chkGeneralSpurRed";
@@ -2879,8 +3189,7 @@ namespace PowerSDR
 			// 
 			// chkGeneralUpdateBeta
 			// 
-			this.chkGeneralUpdateBeta.Checked = true;
-			this.chkGeneralUpdateBeta.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.chkGeneralUpdateBeta.Enabled = false;
 			this.chkGeneralUpdateBeta.Image = null;
 			this.chkGeneralUpdateBeta.Location = new System.Drawing.Point(16, 48);
 			this.chkGeneralUpdateBeta.Name = "chkGeneralUpdateBeta";
@@ -2893,8 +3202,7 @@ namespace PowerSDR
 			// 
 			// chkGeneralUpdateRelease
 			// 
-			this.chkGeneralUpdateRelease.Checked = true;
-			this.chkGeneralUpdateRelease.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.chkGeneralUpdateRelease.Enabled = false;
 			this.chkGeneralUpdateRelease.Image = null;
 			this.chkGeneralUpdateRelease.Location = new System.Drawing.Point(16, 24);
 			this.chkGeneralUpdateRelease.Name = "chkGeneralUpdateRelease";
@@ -2904,242 +3212,6 @@ namespace PowerSDR
 			this.toolTip1.SetToolTip(this.chkGeneralUpdateRelease, "Check this box to enable the PowerSDR software to look at the FlexRadio website a" +
 				"nd see if there are any new Official Releases");
 			this.chkGeneralUpdateRelease.CheckedChanged += new System.EventHandler(this.chkGeneralUpdateRelease_CheckedChanged);
-			// 
-			// tpGeneralCalibration
-			// 
-			this.tpGeneralCalibration.Controls.Add(this.grpGenCalRXImage);
-			this.tpGeneralCalibration.Controls.Add(this.grpGenCalLevel);
-			this.tpGeneralCalibration.Controls.Add(this.grpGeneralCalibration);
-			this.tpGeneralCalibration.Location = new System.Drawing.Point(4, 22);
-			this.tpGeneralCalibration.Name = "tpGeneralCalibration";
-			this.tpGeneralCalibration.Size = new System.Drawing.Size(592, 318);
-			this.tpGeneralCalibration.TabIndex = 2;
-			this.tpGeneralCalibration.Text = "Calibration";
-			// 
-			// grpGenCalRXImage
-			// 
-			this.grpGenCalRXImage.Controls.Add(this.udGeneralCalFreq3);
-			this.grpGenCalRXImage.Controls.Add(this.lblGenCalRXImageFreq);
-			this.grpGenCalRXImage.Controls.Add(this.btnGeneralCalImageStart);
-			this.grpGenCalRXImage.Location = new System.Drawing.Point(360, 8);
-			this.grpGenCalRXImage.Name = "grpGenCalRXImage";
-			this.grpGenCalRXImage.Size = new System.Drawing.Size(168, 112);
-			this.grpGenCalRXImage.TabIndex = 9;
-			this.grpGenCalRXImage.TabStop = false;
-			this.grpGenCalRXImage.Text = "RX Image Reject Cal";
-			// 
-			// udGeneralCalFreq3
-			// 
-			this.udGeneralCalFreq3.DecimalPlaces = 6;
-			this.udGeneralCalFreq3.Increment = new System.Decimal(new int[] {
-																				1,
-																				0,
-																				0,
-																				0});
-			this.udGeneralCalFreq3.Location = new System.Drawing.Point(80, 24);
-			this.udGeneralCalFreq3.Maximum = new System.Decimal(new int[] {
-																			  65,
-																			  0,
-																			  0,
-																			  0});
-			this.udGeneralCalFreq3.Minimum = new System.Decimal(new int[] {
-																			  0,
-																			  0,
-																			  0,
-																			  0});
-			this.udGeneralCalFreq3.Name = "udGeneralCalFreq3";
-			this.udGeneralCalFreq3.Size = new System.Drawing.Size(72, 20);
-			this.udGeneralCalFreq3.TabIndex = 1;
-			this.toolTip1.SetToolTip(this.udGeneralCalFreq3, "RX Image calibration reference frequency");
-			this.udGeneralCalFreq3.Value = new System.Decimal(new int[] {
-																			10,
-																			0,
-																			0,
-																			0});
-			this.udGeneralCalFreq3.LostFocus += new System.EventHandler(this.udGeneralCalFreq3_LostFocus);
-			// 
-			// lblGenCalRXImageFreq
-			// 
-			this.lblGenCalRXImageFreq.Image = null;
-			this.lblGenCalRXImageFreq.Location = new System.Drawing.Point(16, 24);
-			this.lblGenCalRXImageFreq.Name = "lblGenCalRXImageFreq";
-			this.lblGenCalRXImageFreq.Size = new System.Drawing.Size(64, 23);
-			this.lblGenCalRXImageFreq.TabIndex = 0;
-			this.lblGenCalRXImageFreq.Text = "Frequency:";
-			// 
-			// btnGeneralCalImageStart
-			// 
-			this.btnGeneralCalImageStart.Image = null;
-			this.btnGeneralCalImageStart.Location = new System.Drawing.Point(48, 80);
-			this.btnGeneralCalImageStart.Name = "btnGeneralCalImageStart";
-			this.btnGeneralCalImageStart.TabIndex = 7;
-			this.btnGeneralCalImageStart.Text = "Start";
-			this.toolTip1.SetToolTip(this.btnGeneralCalImageStart, "Click to start the RX Image rejection calibration using the above frequency refer" +
-				"ence.");
-			this.btnGeneralCalImageStart.Click += new System.EventHandler(this.btnGeneralCalImageStart_Click);
-			// 
-			// grpGenCalLevel
-			// 
-			this.grpGenCalLevel.Controls.Add(this.udGeneralCalLevel);
-			this.grpGenCalLevel.Controls.Add(this.udGeneralCalFreq2);
-			this.grpGenCalLevel.Controls.Add(this.lblGenCalLevelFreq);
-			this.grpGenCalLevel.Controls.Add(this.lblGeneralCalLevel);
-			this.grpGenCalLevel.Controls.Add(this.btnGeneralCalLevelStart);
-			this.grpGenCalLevel.Location = new System.Drawing.Point(184, 8);
-			this.grpGenCalLevel.Name = "grpGenCalLevel";
-			this.grpGenCalLevel.Size = new System.Drawing.Size(168, 112);
-			this.grpGenCalLevel.TabIndex = 8;
-			this.grpGenCalLevel.TabStop = false;
-			this.grpGenCalLevel.Text = "Level Cal";
-			// 
-			// udGeneralCalLevel
-			// 
-			this.udGeneralCalLevel.Increment = new System.Decimal(new int[] {
-																				10,
-																				0,
-																				0,
-																				0});
-			this.udGeneralCalLevel.Location = new System.Drawing.Point(80, 48);
-			this.udGeneralCalLevel.Maximum = new System.Decimal(new int[] {
-																			  0,
-																			  0,
-																			  0,
-																			  0});
-			this.udGeneralCalLevel.Minimum = new System.Decimal(new int[] {
-																			  150,
-																			  0,
-																			  0,
-																			  -2147483648});
-			this.udGeneralCalLevel.Name = "udGeneralCalLevel";
-			this.udGeneralCalLevel.Size = new System.Drawing.Size(72, 20);
-			this.udGeneralCalLevel.TabIndex = 3;
-			this.toolTip1.SetToolTip(this.udGeneralCalLevel, "Level calibration reference level");
-			this.udGeneralCalLevel.Value = new System.Decimal(new int[] {
-																			70,
-																			0,
-																			0,
-																			-2147483648});
-			this.udGeneralCalLevel.LostFocus += new System.EventHandler(this.udGeneralCalLevel_LostFocus);
-			// 
-			// udGeneralCalFreq2
-			// 
-			this.udGeneralCalFreq2.DecimalPlaces = 6;
-			this.udGeneralCalFreq2.Increment = new System.Decimal(new int[] {
-																				1,
-																				0,
-																				0,
-																				0});
-			this.udGeneralCalFreq2.Location = new System.Drawing.Point(80, 24);
-			this.udGeneralCalFreq2.Maximum = new System.Decimal(new int[] {
-																			  65,
-																			  0,
-																			  0,
-																			  0});
-			this.udGeneralCalFreq2.Minimum = new System.Decimal(new int[] {
-																			  0,
-																			  0,
-																			  0,
-																			  0});
-			this.udGeneralCalFreq2.Name = "udGeneralCalFreq2";
-			this.udGeneralCalFreq2.Size = new System.Drawing.Size(72, 20);
-			this.udGeneralCalFreq2.TabIndex = 1;
-			this.toolTip1.SetToolTip(this.udGeneralCalFreq2, "Level calibration reference frequency");
-			this.udGeneralCalFreq2.Value = new System.Decimal(new int[] {
-																			10,
-																			0,
-																			0,
-																			0});
-			this.udGeneralCalFreq2.LostFocus += new System.EventHandler(this.udGeneralCalFreq2_LostFocus);
-			// 
-			// lblGenCalLevelFreq
-			// 
-			this.lblGenCalLevelFreq.Image = null;
-			this.lblGenCalLevelFreq.Location = new System.Drawing.Point(16, 24);
-			this.lblGenCalLevelFreq.Name = "lblGenCalLevelFreq";
-			this.lblGenCalLevelFreq.Size = new System.Drawing.Size(64, 23);
-			this.lblGenCalLevelFreq.TabIndex = 0;
-			this.lblGenCalLevelFreq.Text = "Frequency:";
-			// 
-			// lblGeneralCalLevel
-			// 
-			this.lblGeneralCalLevel.Image = null;
-			this.lblGeneralCalLevel.Location = new System.Drawing.Point(16, 48);
-			this.lblGeneralCalLevel.Name = "lblGeneralCalLevel";
-			this.lblGeneralCalLevel.Size = new System.Drawing.Size(68, 23);
-			this.lblGeneralCalLevel.TabIndex = 2;
-			this.lblGeneralCalLevel.Text = "Level (dBm):";
-			// 
-			// btnGeneralCalLevelStart
-			// 
-			this.btnGeneralCalLevelStart.Image = null;
-			this.btnGeneralCalLevelStart.Location = new System.Drawing.Point(48, 80);
-			this.btnGeneralCalLevelStart.Name = "btnGeneralCalLevelStart";
-			this.btnGeneralCalLevelStart.TabIndex = 4;
-			this.btnGeneralCalLevelStart.Text = "Start";
-			this.toolTip1.SetToolTip(this.btnGeneralCalLevelStart, "Click to start the level calibration using the frequency and level references abo" +
-				"ve.");
-			this.btnGeneralCalLevelStart.Click += new System.EventHandler(this.btnGeneralCalLevelStart_Click);
-			// 
-			// grpGeneralCalibration
-			// 
-			this.grpGeneralCalibration.Controls.Add(this.btnGeneralCalFreqStart);
-			this.grpGeneralCalibration.Controls.Add(this.udGeneralCalFreq1);
-			this.grpGeneralCalibration.Controls.Add(this.lblGeneralCalFrequency);
-			this.grpGeneralCalibration.Location = new System.Drawing.Point(8, 8);
-			this.grpGeneralCalibration.Name = "grpGeneralCalibration";
-			this.grpGeneralCalibration.Size = new System.Drawing.Size(168, 112);
-			this.grpGeneralCalibration.TabIndex = 5;
-			this.grpGeneralCalibration.TabStop = false;
-			this.grpGeneralCalibration.Text = "Freq Cal";
-			// 
-			// btnGeneralCalFreqStart
-			// 
-			this.btnGeneralCalFreqStart.Image = null;
-			this.btnGeneralCalFreqStart.Location = new System.Drawing.Point(48, 80);
-			this.btnGeneralCalFreqStart.Name = "btnGeneralCalFreqStart";
-			this.btnGeneralCalFreqStart.TabIndex = 5;
-			this.btnGeneralCalFreqStart.Text = "Start";
-			this.toolTip1.SetToolTip(this.btnGeneralCalFreqStart, "Click to start the frequency calibration using the reference frequency above.");
-			this.btnGeneralCalFreqStart.Click += new System.EventHandler(this.btnGeneralCalFreqStart_Click);
-			// 
-			// udGeneralCalFreq1
-			// 
-			this.udGeneralCalFreq1.DecimalPlaces = 6;
-			this.udGeneralCalFreq1.Increment = new System.Decimal(new int[] {
-																				1,
-																				0,
-																				0,
-																				0});
-			this.udGeneralCalFreq1.Location = new System.Drawing.Point(80, 24);
-			this.udGeneralCalFreq1.Maximum = new System.Decimal(new int[] {
-																			  65,
-																			  0,
-																			  0,
-																			  0});
-			this.udGeneralCalFreq1.Minimum = new System.Decimal(new int[] {
-																			  0,
-																			  0,
-																			  0,
-																			  0});
-			this.udGeneralCalFreq1.Name = "udGeneralCalFreq1";
-			this.udGeneralCalFreq1.Size = new System.Drawing.Size(72, 20);
-			this.udGeneralCalFreq1.TabIndex = 1;
-			this.toolTip1.SetToolTip(this.udGeneralCalFreq1, "Frequency calibration reference frequency");
-			this.udGeneralCalFreq1.Value = new System.Decimal(new int[] {
-																			10,
-																			0,
-																			0,
-																			0});
-			this.udGeneralCalFreq1.LostFocus += new System.EventHandler(this.udGeneralCalFreq1_LostFocus);
-			// 
-			// lblGeneralCalFrequency
-			// 
-			this.lblGeneralCalFrequency.Image = null;
-			this.lblGeneralCalFrequency.Location = new System.Drawing.Point(16, 24);
-			this.lblGeneralCalFrequency.Name = "lblGeneralCalFrequency";
-			this.lblGeneralCalFrequency.Size = new System.Drawing.Size(64, 23);
-			this.lblGeneralCalFrequency.TabIndex = 0;
-			this.lblGeneralCalFrequency.Text = "Frequency:";
 			// 
 			// tpFilters
 			// 
@@ -3321,6 +3393,525 @@ namespace PowerSDR
 			this.toolTip1.SetToolTip(this.chkOptFilterSaveChanges, "If checked, changes made to the filters via the display or sliders will be saved " +
 				"in the Variable filter.");
 			this.chkOptFilterSaveChanges.CheckedChanged += new System.EventHandler(this.chkOptFilterSaveChanges_CheckedChanged);
+			// 
+			// SoftRockIFStage
+			// 
+			this.SoftRockIFStage.Controls.Add(this.groupBox3);
+			this.SoftRockIFStage.Controls.Add(this.groupBox1);
+			this.SoftRockIFStage.Controls.Add(this.groupBox2);
+			this.SoftRockIFStage.Location = new System.Drawing.Point(4, 22);
+			this.SoftRockIFStage.Name = "SoftRockIFStage";
+			this.SoftRockIFStage.Size = new System.Drawing.Size(592, 318);
+			this.SoftRockIFStage.TabIndex = 4;
+			this.SoftRockIFStage.Text = "SoftRock IF Stage";
+			this.SoftRockIFStage.Click += new System.EventHandler(this.SoftRockIFStage_Click);
+			// 
+			// groupBox3
+			// 
+			this.groupBox3.Controls.Add(this.udMaxFreq);
+			this.groupBox3.Controls.Add(this.udMinFreq);
+			this.groupBox3.Controls.Add(this.label3);
+			this.groupBox3.Controls.Add(this.label2);
+			this.groupBox3.Location = new System.Drawing.Point(16, 168);
+			this.groupBox3.Name = "groupBox3";
+			this.groupBox3.Size = new System.Drawing.Size(144, 88);
+			this.groupBox3.TabIndex = 17;
+			this.groupBox3.TabStop = false;
+			this.groupBox3.Text = "Frequency Limits";
+			// 
+			// udMaxFreq
+			// 
+			this.udMaxFreq.DecimalPlaces = 6;
+			this.udMaxFreq.Increment = new System.Decimal(new int[] {
+																		1,
+																		0,
+																		0,
+																		0});
+			this.udMaxFreq.Location = new System.Drawing.Point(56, 56);
+			this.udMaxFreq.Maximum = new System.Decimal(new int[] {
+																	  3000,
+																	  0,
+																	  0,
+																	  0});
+			this.udMaxFreq.Minimum = new System.Decimal(new int[] {
+																	  0,
+																	  0,
+																	  0,
+																	  0});
+			this.udMaxFreq.Name = "udMaxFreq";
+			this.udMaxFreq.Size = new System.Drawing.Size(72, 20);
+			this.udMaxFreq.TabIndex = 19;
+			this.toolTip1.SetToolTip(this.udMaxFreq, "Frequency calibration reference frequency");
+			this.udMaxFreq.Value = new System.Decimal(new int[] {
+																	30,
+																	0,
+																	0,
+																	0});
+			this.udMaxFreq.ValueChanged += new System.EventHandler(this.udMaxFreq_ValueChanged);
+			// 
+			// udMinFreq
+			// 
+			this.udMinFreq.DecimalPlaces = 6;
+			this.udMinFreq.Increment = new System.Decimal(new int[] {
+																		1,
+																		0,
+																		0,
+																		0});
+			this.udMinFreq.Location = new System.Drawing.Point(56, 24);
+			this.udMinFreq.Maximum = new System.Decimal(new int[] {
+																	  3000,
+																	  0,
+																	  0,
+																	  0});
+			this.udMinFreq.Minimum = new System.Decimal(new int[] {
+																	  0,
+																	  0,
+																	  0,
+																	  0});
+			this.udMinFreq.Name = "udMinFreq";
+			this.udMinFreq.Size = new System.Drawing.Size(72, 20);
+			this.udMinFreq.TabIndex = 18;
+			this.toolTip1.SetToolTip(this.udMinFreq, "Frequency calibration reference frequency");
+			this.udMinFreq.Value = new System.Decimal(new int[] {
+																	1,
+																	0,
+																	0,
+																	0});
+			this.udMinFreq.LostFocus += new System.EventHandler(this.udMinFreq_LostFocus);
+			this.udMinFreq.ValueChanged += new System.EventHandler(this.udMinFreq_ValueChanged);
+			// 
+			// label3
+			// 
+			this.label3.Location = new System.Drawing.Point(8, 56);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(48, 16);
+			this.label3.TabIndex = 17;
+			this.label3.Text = "Max.";
+			// 
+			// label2
+			// 
+			this.label2.Location = new System.Drawing.Point(8, 24);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(48, 16);
+			this.label2.TabIndex = 16;
+			this.label2.Text = "Min.";
+			// 
+			// groupBox1
+			// 
+			this.groupBox1.Controls.Add(this.lblFMIF);
+			this.groupBox1.Controls.Add(this.udIFFM);
+			this.groupBox1.Controls.Add(this.udIFAM);
+			this.groupBox1.Controls.Add(this.lblAMIF);
+			this.groupBox1.Controls.Add(this.lblCWIF);
+			this.groupBox1.Controls.Add(this.udIFCW);
+			this.groupBox1.Controls.Add(this.lblUSBIF);
+			this.groupBox1.Controls.Add(this.udIFUSB);
+			this.groupBox1.Controls.Add(this.lblLSBIF);
+			this.groupBox1.Controls.Add(this.udIFLSB);
+			this.groupBox1.Location = new System.Drawing.Point(16, 16);
+			this.groupBox1.Name = "groupBox1";
+			this.groupBox1.Size = new System.Drawing.Size(144, 152);
+			this.groupBox1.TabIndex = 0;
+			this.groupBox1.TabStop = false;
+			this.groupBox1.Text = "IF Frequency (Hz)";
+			// 
+			// lblFMIF
+			// 
+			this.lblFMIF.Location = new System.Drawing.Point(16, 120);
+			this.lblFMIF.Name = "lblFMIF";
+			this.lblFMIF.Size = new System.Drawing.Size(48, 16);
+			this.lblFMIF.TabIndex = 15;
+			this.lblFMIF.Text = "FM";
+			// 
+			// udIFFM
+			// 
+			this.udIFFM.Increment = new System.Decimal(new int[] {
+																	 1,
+																	 0,
+																	 0,
+																	 0});
+			this.udIFFM.Location = new System.Drawing.Point(72, 120);
+			this.udIFFM.Maximum = new System.Decimal(new int[] {
+																   20000,
+																   0,
+																   0,
+																   0});
+			this.udIFFM.Minimum = new System.Decimal(new int[] {
+																   0,
+																   0,
+																   0,
+																   0});
+			this.udIFFM.Name = "udIFFM";
+			this.udIFFM.Size = new System.Drawing.Size(56, 20);
+			this.udIFFM.TabIndex = 14;
+			this.toolTip1.SetToolTip(this.udIFFM, "Intermediate Frequency");
+			this.udIFFM.Value = new System.Decimal(new int[] {
+																 11025,
+																 0,
+																 0,
+																 0});
+			this.udIFFM.LostFocus += new System.EventHandler(this.udIFFM_LostFocus);
+			this.udIFFM.ValueChanged += new System.EventHandler(this.udIFFM_ValueChanged);
+			// 
+			// udIFAM
+			// 
+			this.udIFAM.Increment = new System.Decimal(new int[] {
+																	 1,
+																	 0,
+																	 0,
+																	 0});
+			this.udIFAM.Location = new System.Drawing.Point(72, 96);
+			this.udIFAM.Maximum = new System.Decimal(new int[] {
+																   20000,
+																   0,
+																   0,
+																   0});
+			this.udIFAM.Minimum = new System.Decimal(new int[] {
+																   0,
+																   0,
+																   0,
+																   0});
+			this.udIFAM.Name = "udIFAM";
+			this.udIFAM.Size = new System.Drawing.Size(56, 20);
+			this.udIFAM.TabIndex = 13;
+			this.toolTip1.SetToolTip(this.udIFAM, "Intermediate Frequency");
+			this.udIFAM.Value = new System.Decimal(new int[] {
+																 11025,
+																 0,
+																 0,
+																 0});
+			this.udIFAM.LostFocus += new System.EventHandler(this.udIFAM_LostFocus);
+			this.udIFAM.ValueChanged += new System.EventHandler(this.udIFLSB_ValueChanged);
+			// 
+			// lblAMIF
+			// 
+			this.lblAMIF.Location = new System.Drawing.Point(16, 96);
+			this.lblAMIF.Name = "lblAMIF";
+			this.lblAMIF.Size = new System.Drawing.Size(48, 16);
+			this.lblAMIF.TabIndex = 12;
+			this.lblAMIF.Text = "AM";
+			// 
+			// lblCWIF
+			// 
+			this.lblCWIF.Location = new System.Drawing.Point(16, 72);
+			this.lblCWIF.Name = "lblCWIF";
+			this.lblCWIF.Size = new System.Drawing.Size(48, 16);
+			this.lblCWIF.TabIndex = 11;
+			this.lblCWIF.Text = "CW";
+			// 
+			// udIFCW
+			// 
+			this.udIFCW.Increment = new System.Decimal(new int[] {
+																	 1,
+																	 0,
+																	 0,
+																	 0});
+			this.udIFCW.Location = new System.Drawing.Point(72, 72);
+			this.udIFCW.Maximum = new System.Decimal(new int[] {
+																   20000,
+																   0,
+																   0,
+																   0});
+			this.udIFCW.Minimum = new System.Decimal(new int[] {
+																   0,
+																   0,
+																   0,
+																   0});
+			this.udIFCW.Name = "udIFCW";
+			this.udIFCW.Size = new System.Drawing.Size(56, 20);
+			this.udIFCW.TabIndex = 10;
+			this.toolTip1.SetToolTip(this.udIFCW, "Intermediate Frequency");
+			this.udIFCW.Value = new System.Decimal(new int[] {
+																 11025,
+																 0,
+																 0,
+																 0});
+			this.udIFCW.LostFocus += new System.EventHandler(this.udIFCW_LostFocus);
+			this.udIFCW.ValueChanged += new System.EventHandler(this.udIFCW_ValueChanged);
+			// 
+			// lblUSBIF
+			// 
+			this.lblUSBIF.Location = new System.Drawing.Point(16, 48);
+			this.lblUSBIF.Name = "lblUSBIF";
+			this.lblUSBIF.Size = new System.Drawing.Size(48, 16);
+			this.lblUSBIF.TabIndex = 9;
+			this.lblUSBIF.Text = "USB";
+			// 
+			// udIFUSB
+			// 
+			this.udIFUSB.Increment = new System.Decimal(new int[] {
+																	  1,
+																	  0,
+																	  0,
+																	  0});
+			this.udIFUSB.Location = new System.Drawing.Point(72, 48);
+			this.udIFUSB.Maximum = new System.Decimal(new int[] {
+																	20000,
+																	0,
+																	0,
+																	0});
+			this.udIFUSB.Minimum = new System.Decimal(new int[] {
+																	0,
+																	0,
+																	0,
+																	0});
+			this.udIFUSB.Name = "udIFUSB";
+			this.udIFUSB.Size = new System.Drawing.Size(56, 20);
+			this.udIFUSB.TabIndex = 8;
+			this.toolTip1.SetToolTip(this.udIFUSB, "Intermediate Frequency");
+			this.udIFUSB.Value = new System.Decimal(new int[] {
+																  11025,
+																  0,
+																  0,
+																  0});
+			this.udIFUSB.LostFocus += new System.EventHandler(this.udIFUSB_LostFocus);
+			this.udIFUSB.ValueChanged += new System.EventHandler(this.udIFUSB_ValueChanged);
+			// 
+			// lblLSBIF
+			// 
+			this.lblLSBIF.Location = new System.Drawing.Point(16, 24);
+			this.lblLSBIF.Name = "lblLSBIF";
+			this.lblLSBIF.Size = new System.Drawing.Size(48, 16);
+			this.lblLSBIF.TabIndex = 7;
+			this.lblLSBIF.Text = "LSB";
+			// 
+			// udIFLSB
+			// 
+			this.udIFLSB.Increment = new System.Decimal(new int[] {
+																	  1,
+																	  0,
+																	  0,
+																	  0});
+			this.udIFLSB.Location = new System.Drawing.Point(72, 24);
+			this.udIFLSB.Maximum = new System.Decimal(new int[] {
+																	20000,
+																	0,
+																	0,
+																	0});
+			this.udIFLSB.Minimum = new System.Decimal(new int[] {
+																	0,
+																	0,
+																	0,
+																	0});
+			this.udIFLSB.Name = "udIFLSB";
+			this.udIFLSB.Size = new System.Drawing.Size(56, 20);
+			this.udIFLSB.TabIndex = 6;
+			this.toolTip1.SetToolTip(this.udIFLSB, "Intermediate Frequency");
+			this.udIFLSB.Value = new System.Decimal(new int[] {
+																  11025,
+																  0,
+																  0,
+																  0});
+			this.udIFLSB.LostFocus += new System.EventHandler(this.udIFLSB_LostFocus);
+			this.udIFLSB.ValueChanged += new System.EventHandler(this.udIFLSB_ValueChanged);
+			// 
+			// groupBox2
+			// 
+			this.groupBox2.Controls.Add(this.lblFMOffset);
+			this.groupBox2.Controls.Add(this.udVFOOffsetFM);
+			this.groupBox2.Controls.Add(this.udVFOOffsetAM);
+			this.groupBox2.Controls.Add(this.lblAMOffset);
+			this.groupBox2.Controls.Add(this.lblCWOffset);
+			this.groupBox2.Controls.Add(this.udVFOOffsetCW);
+			this.groupBox2.Controls.Add(this.lblUSBOffset);
+			this.groupBox2.Controls.Add(this.udVFOOffsetUSB);
+			this.groupBox2.Controls.Add(this.lblLSBOffset);
+			this.groupBox2.Controls.Add(this.udVFOOffsetLSB);
+			this.groupBox2.Location = new System.Drawing.Point(176, 16);
+			this.groupBox2.Name = "groupBox2";
+			this.groupBox2.Size = new System.Drawing.Size(144, 152);
+			this.groupBox2.TabIndex = 16;
+			this.groupBox2.TabStop = false;
+			this.groupBox2.Text = "Radio Offset (Hz)";
+			// 
+			// lblFMOffset
+			// 
+			this.lblFMOffset.Location = new System.Drawing.Point(16, 120);
+			this.lblFMOffset.Name = "lblFMOffset";
+			this.lblFMOffset.Size = new System.Drawing.Size(48, 16);
+			this.lblFMOffset.TabIndex = 15;
+			this.lblFMOffset.Text = "FM";
+			// 
+			// udVFOOffsetFM
+			// 
+			this.udVFOOffsetFM.Increment = new System.Decimal(new int[] {
+																			1,
+																			0,
+																			0,
+																			0});
+			this.udVFOOffsetFM.Location = new System.Drawing.Point(72, 120);
+			this.udVFOOffsetFM.Maximum = new System.Decimal(new int[] {
+																		  20000,
+																		  0,
+																		  0,
+																		  0});
+			this.udVFOOffsetFM.Minimum = new System.Decimal(new int[] {
+																		  20000,
+																		  0,
+																		  0,
+																		  -2147483648});
+			this.udVFOOffsetFM.Name = "udVFOOffsetFM";
+			this.udVFOOffsetFM.Size = new System.Drawing.Size(56, 20);
+			this.udVFOOffsetFM.TabIndex = 14;
+			this.toolTip1.SetToolTip(this.udVFOOffsetFM, "Intermediate Frequency");
+			this.udVFOOffsetFM.Value = new System.Decimal(new int[] {
+																		0,
+																		0,
+																		0,
+																		0});
+			this.udVFOOffsetFM.ValueChanged += new System.EventHandler(this.udVFOOffsetFM_ValueChanged);
+			// 
+			// udVFOOffsetAM
+			// 
+			this.udVFOOffsetAM.Increment = new System.Decimal(new int[] {
+																			1,
+																			0,
+																			0,
+																			0});
+			this.udVFOOffsetAM.Location = new System.Drawing.Point(72, 96);
+			this.udVFOOffsetAM.Maximum = new System.Decimal(new int[] {
+																		  20000,
+																		  0,
+																		  0,
+																		  0});
+			this.udVFOOffsetAM.Minimum = new System.Decimal(new int[] {
+																		  20000,
+																		  0,
+																		  0,
+																		  -2147483648});
+			this.udVFOOffsetAM.Name = "udVFOOffsetAM";
+			this.udVFOOffsetAM.Size = new System.Drawing.Size(56, 20);
+			this.udVFOOffsetAM.TabIndex = 13;
+			this.toolTip1.SetToolTip(this.udVFOOffsetAM, "Intermediate Frequency");
+			this.udVFOOffsetAM.Value = new System.Decimal(new int[] {
+																		0,
+																		0,
+																		0,
+																		0});
+			this.udVFOOffsetAM.LostFocus += new System.EventHandler(this.udVFOOffsetAM_LostFocus);
+			this.udVFOOffsetAM.ValueChanged += new System.EventHandler(this.udVFOOffsetAM_ValueChanged);
+			// 
+			// lblAMOffset
+			// 
+			this.lblAMOffset.Location = new System.Drawing.Point(16, 96);
+			this.lblAMOffset.Name = "lblAMOffset";
+			this.lblAMOffset.Size = new System.Drawing.Size(48, 16);
+			this.lblAMOffset.TabIndex = 12;
+			this.lblAMOffset.Text = "AM";
+			// 
+			// lblCWOffset
+			// 
+			this.lblCWOffset.Location = new System.Drawing.Point(16, 72);
+			this.lblCWOffset.Name = "lblCWOffset";
+			this.lblCWOffset.Size = new System.Drawing.Size(48, 16);
+			this.lblCWOffset.TabIndex = 11;
+			this.lblCWOffset.Text = "CW";
+			// 
+			// udVFOOffsetCW
+			// 
+			this.udVFOOffsetCW.Increment = new System.Decimal(new int[] {
+																			1,
+																			0,
+																			0,
+																			0});
+			this.udVFOOffsetCW.Location = new System.Drawing.Point(72, 72);
+			this.udVFOOffsetCW.Maximum = new System.Decimal(new int[] {
+																		  20000,
+																		  0,
+																		  0,
+																		  0});
+			this.udVFOOffsetCW.Minimum = new System.Decimal(new int[] {
+																		  20000,
+																		  0,
+																		  0,
+																		  -2147483648});
+			this.udVFOOffsetCW.Name = "udVFOOffsetCW";
+			this.udVFOOffsetCW.Size = new System.Drawing.Size(56, 20);
+			this.udVFOOffsetCW.TabIndex = 10;
+			this.toolTip1.SetToolTip(this.udVFOOffsetCW, "Intermediate Frequency");
+			this.udVFOOffsetCW.Value = new System.Decimal(new int[] {
+																		0,
+																		0,
+																		0,
+																		0});
+			this.udVFOOffsetCW.LostFocus += new System.EventHandler(this.udVFOOffsetCW_LostFocus);
+			this.udVFOOffsetCW.ValueChanged += new System.EventHandler(this.udVFOOffsetCW_ValueChanged);
+			// 
+			// lblUSBOffset
+			// 
+			this.lblUSBOffset.Location = new System.Drawing.Point(16, 48);
+			this.lblUSBOffset.Name = "lblUSBOffset";
+			this.lblUSBOffset.Size = new System.Drawing.Size(48, 16);
+			this.lblUSBOffset.TabIndex = 9;
+			this.lblUSBOffset.Text = "USB";
+			// 
+			// udVFOOffsetUSB
+			// 
+			this.udVFOOffsetUSB.Increment = new System.Decimal(new int[] {
+																			 1,
+																			 0,
+																			 0,
+																			 0});
+			this.udVFOOffsetUSB.Location = new System.Drawing.Point(72, 48);
+			this.udVFOOffsetUSB.Maximum = new System.Decimal(new int[] {
+																		   20000,
+																		   0,
+																		   0,
+																		   0});
+			this.udVFOOffsetUSB.Minimum = new System.Decimal(new int[] {
+																		   20000,
+																		   0,
+																		   0,
+																		   -2147483648});
+			this.udVFOOffsetUSB.Name = "udVFOOffsetUSB";
+			this.udVFOOffsetUSB.Size = new System.Drawing.Size(56, 20);
+			this.udVFOOffsetUSB.TabIndex = 8;
+			this.toolTip1.SetToolTip(this.udVFOOffsetUSB, "Intermediate Frequency");
+			this.udVFOOffsetUSB.Value = new System.Decimal(new int[] {
+																		 0,
+																		 0,
+																		 0,
+																		 0});
+			this.udVFOOffsetUSB.LostFocus += new System.EventHandler(this.udVFOOffsetUSB_LostFocus);
+			this.udVFOOffsetUSB.ValueChanged += new System.EventHandler(this.udVFOOffsetUSB_ValueChanged);
+			// 
+			// lblLSBOffset
+			// 
+			this.lblLSBOffset.Location = new System.Drawing.Point(16, 24);
+			this.lblLSBOffset.Name = "lblLSBOffset";
+			this.lblLSBOffset.Size = new System.Drawing.Size(48, 16);
+			this.lblLSBOffset.TabIndex = 7;
+			this.lblLSBOffset.Text = "LSB";
+			// 
+			// udVFOOffsetLSB
+			// 
+			this.udVFOOffsetLSB.Increment = new System.Decimal(new int[] {
+																			 1,
+																			 0,
+																			 0,
+																			 0});
+			this.udVFOOffsetLSB.Location = new System.Drawing.Point(72, 24);
+			this.udVFOOffsetLSB.Maximum = new System.Decimal(new int[] {
+																		   20000,
+																		   0,
+																		   0,
+																		   0});
+			this.udVFOOffsetLSB.Minimum = new System.Decimal(new int[] {
+																		   20000,
+																		   0,
+																		   0,
+																		   -2147483648});
+			this.udVFOOffsetLSB.Name = "udVFOOffsetLSB";
+			this.udVFOOffsetLSB.Size = new System.Drawing.Size(56, 20);
+			this.udVFOOffsetLSB.TabIndex = 6;
+			this.toolTip1.SetToolTip(this.udVFOOffsetLSB, "Intermediate Frequency");
+			this.udVFOOffsetLSB.Value = new System.Decimal(new int[] {
+																		 0,
+																		 0,
+																		 0,
+																		 0});
+			this.udVFOOffsetLSB.LostFocus += new System.EventHandler(this.udVFOOffsetLSB_LostFocus);
+			this.udVFOOffsetLSB.ValueChanged += new System.EventHandler(this.udVFOOffsetLSB_ValueChanged);
 			// 
 			// tpAudio
 			// 
@@ -13180,6 +13771,14 @@ namespace PowerSDR
 			this.grpGeneralModel.ResumeLayout(false);
 			this.grpGeneralHardwareSetup.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.udGeneralLPTDelay)).EndInit();
+			this.tpGeneralCalibration.ResumeLayout(false);
+			this.grpGenCalRXImage.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.udGeneralCalFreq3)).EndInit();
+			this.grpGenCalLevel.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.udGeneralCalLevel)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.udGeneralCalFreq2)).EndInit();
+			this.grpGeneralCalibration.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.udGeneralCalFreq1)).EndInit();
 			this.tpGeneralOptions.ResumeLayout(false);
 			this.grpOptMisc.ResumeLayout(false);
 			this.grpOptQuickQSY.ResumeLayout(false);
@@ -13191,19 +13790,27 @@ namespace PowerSDR
 			((System.ComponentModel.ISupportInitialize)(this.udGeneralX2Delay)).EndInit();
 			this.grpGeneralProcessPriority.ResumeLayout(false);
 			this.grpGeneralUpdates.ResumeLayout(false);
-			this.tpGeneralCalibration.ResumeLayout(false);
-			this.grpGenCalRXImage.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.udGeneralCalFreq3)).EndInit();
-			this.grpGenCalLevel.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.udGeneralCalLevel)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.udGeneralCalFreq2)).EndInit();
-			this.grpGeneralCalibration.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.udGeneralCalFreq1)).EndInit();
 			this.tpFilters.ResumeLayout(false);
 			this.grpOptFilterControls.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.udFilterDefaultLowCut)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.udOptMaxFilterShift)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.udOptMaxFilterWidth)).EndInit();
+			this.SoftRockIFStage.ResumeLayout(false);
+			this.groupBox3.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.udMaxFreq)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.udMinFreq)).EndInit();
+			this.groupBox1.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.udIFFM)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.udIFAM)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.udIFCW)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.udIFUSB)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.udIFLSB)).EndInit();
+			this.groupBox2.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.udVFOOffsetFM)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.udVFOOffsetAM)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.udVFOOffsetCW)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.udVFOOffsetUSB)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.udVFOOffsetLSB)).EndInit();
 			this.tpAudio.ResumeLayout(false);
 			this.tcAudio.ResumeLayout(false);
 			this.tpAudioCard1.ResumeLayout(false);
@@ -13427,7 +14034,7 @@ namespace PowerSDR
 			chkGeneralPAPresent.Checked = console.PAPresent;
 			chkGeneralXVTRPresent.Checked = console.XVTRPresent;
 			comboGeneralXVTR.SelectedItem = (int)console.CurrentXVTRTRMode;
-			chkGeneralSpurRed.Checked = true;
+			chkGeneralSpurRed.Checked = false;
 			chkGeneralDisablePTT.Checked = console.DisablePTT;
 			chkGeneralSoftwareGainCorr.Checked = console.NoHardwareOffset;
 			chkGeneralEnableX2.Checked = console.X2Enabled;
@@ -15147,6 +15754,132 @@ namespace PowerSDR
 			console.SoftRockCenterFreq = (double)udSoftRockCenterFreq.Value;
 		}
 
+		// WU2X - Begin
+		private void udIFLSB_ValueChanged(object sender, System.EventArgs e)
+		{
+			console.IFLSB = (double)udIFLSB.Value;
+		}
+
+		private void udIFUSB_ValueChanged(object sender, System.EventArgs e)
+		{
+			console.IFUSB = (double)udIFUSB.Value;
+		}
+
+		private void udIFCW_ValueChanged(object sender, System.EventArgs e)
+		{
+			console.IFCW = (double)udIFCW.Value;
+		}
+
+		private void udIFAM_ValueChanged(object sender, System.EventArgs e)
+		{
+			console.IFAM = (double)udIFAM.Value;
+		}
+
+		private void udIFFM_ValueChanged(object sender, System.EventArgs e)
+		{
+			console.IFFM = (double)udIFFM.Value;
+		}
+
+		private void udMinFreq_ValueChanged(object sender, System.EventArgs e)
+		{
+			console.MinFreq = (double)udMinFreq.Value;
+		}
+
+		private void udMaxFreq_ValueChanged(object sender, System.EventArgs e)
+		{
+			console.MaxFreq = (double)udMaxFreq.Value;
+		}
+
+		// VFO Offset
+
+		private void udVFOOffsetLSB_ValueChanged(object sender, System.EventArgs e)
+		{
+			console.VFOOffsetLSB = (double)udVFOOffsetLSB.Value;
+		}
+
+		private void udVFOOffsetUSB_ValueChanged(object sender, System.EventArgs e)
+		{
+			console.VFOOffsetUSB = (double)udVFOOffsetUSB.Value;
+		}
+
+		private void udVFOOffsetCW_ValueChanged(object sender, System.EventArgs e)
+		{
+			console.VFOOffsetCW = (double)udVFOOffsetCW.Value;
+		}
+
+		private void udVFOOffsetAM_ValueChanged(object sender, System.EventArgs e)
+		{
+			console.VFOOffsetAM = (double)udVFOOffsetAM.Value;
+		}
+
+		private void udVFOOffsetFM_ValueChanged(object sender, System.EventArgs e)
+		{
+			console.VFOOffsetFM = (double)udVFOOffsetFM.Value;
+		}
+
+		private void udVFOOffsetLSB_LostFocus(object sender, EventArgs e)
+		{
+			udVFOOffsetLSB.Value = udVFOOffsetLSB.Value;
+		}
+
+		private void udVFOOffsetUSB_LostFocus(object sender, EventArgs e)
+		{
+			udVFOOffsetUSB.Value = udVFOOffsetUSB.Value;
+		}
+
+		private void udVFOOffsetCW_LostFocus(object sender, EventArgs e)
+		{
+			udVFOOffsetCW.Value = udVFOOffsetCW.Value;
+		}
+
+		private void udVFOOffsetAM_LostFocus(object sender, EventArgs e)
+		{
+			udVFOOffsetAM.Value = udVFOOffsetAM.Value;
+		}
+
+		private void udVFOOffsetFM_LostFocus(object sender, EventArgs e)
+		{
+			udVFOOffsetFM.Value = udVFOOffsetFM.Value;
+		}
+
+		private void udIFLSB_LostFocus(object sender, EventArgs e)
+		{
+			udIFLSB.Value = udIFLSB.Value;
+		}
+
+		private void udIFUSB_LostFocus(object sender, EventArgs e)
+		{
+			udIFUSB.Value = udIFUSB.Value;
+		}
+
+		private void udIFCW_LostFocus(object sender, EventArgs e)
+		{
+			udIFCW.Value = udIFCW.Value;
+		}
+
+		private void udIFAM_LostFocus(object sender, EventArgs e)
+		{
+			udIFAM.Value = udIFAM.Value;
+		}
+
+		private void udIFFM_LostFocus(object sender, EventArgs e)
+		{
+			udIFFM.Value = udIFFM.Value;
+		}
+
+		private void udMinFreq_LostFocus(object sender, EventArgs e)
+		{
+			udMinFreq.Value = udMinFreq.Value;
+		}
+
+		private void udMaxFreq_LostFocus(object sender, EventArgs e)
+		{
+			udMaxFreq.Value = udMaxFreq.Value;
+		}
+
+		// WU2X - End
+
+
 		private void comboGeneralLPTAddr_SelectedIndexChanged(object sender, System.EventArgs e)
 		{
 			if(comboGeneralLPTAddr.Text == "")
@@ -15303,7 +16036,7 @@ namespace PowerSDR
 
 		private void chkGeneralSpurRed_CheckedChanged(object sender, System.EventArgs e)
 		{
-			console.SpurReduction = chkGeneralSpurRed.Checked;
+			// ??? console.SpurReduction = chkGeneralSpurRed.Checked;
 		}
 
 		private void udDDSCorrection_ValueChanged(object sender, System.EventArgs e)
@@ -15487,12 +16220,12 @@ namespace PowerSDR
 
 		private void chkGeneralUpdateRelease_CheckedChanged(object sender, System.EventArgs e)
 		{
-			console.NotifyOnRelease = chkGeneralUpdateRelease.Checked;
+			// ??? console.NotifyOnRelease = chkGeneralUpdateRelease.Checked;
 		}
 
 		private void chkGeneralUpdateBeta_CheckedChanged(object sender, System.EventArgs e)
 		{
-			console.NotifyOnBeta = chkGeneralUpdateBeta.Checked;
+			// ??? console.NotifyOnBeta = chkGeneralUpdateBeta.Checked;
 		}
 
 		private void chkGenAutoMute_CheckedChanged(object sender, System.EventArgs e)
@@ -18907,7 +19640,7 @@ namespace PowerSDR
 			//chkGeneralXVTRPresent.Checked = false;
 			//chkGeneralPAPresent.Checked = false;
 			//chkGeneralATUPresent.Checked = false;
-			chkGeneralSpurRed.Checked = true;
+			chkGeneralSpurRed.Checked = false;
 			chkGeneralDisablePTT.Checked = false;
 			udDDSCorrection.Value = 0;
 			udDDSPLLMult.Value = 1;
@@ -18920,8 +19653,8 @@ namespace PowerSDR
 			chkGeneralEnableX2.Checked = false;
 			udGeneralX2Delay.Value = 500;
 			comboGeneralProcessPriority.Text = "Normal";
-			chkGeneralUpdateRelease.Checked = true;
-			chkGeneralUpdateBeta.Checked = true;
+			chkGeneralUpdateRelease.Checked = false;
+			chkGeneralUpdateBeta.Checked = false;
             
 			// audio tab
 			comboAudioSoundCard.SelectedIndex = 0;
@@ -19920,6 +20653,21 @@ namespace PowerSDR
 			bool b = chkAudioExpert.Checked;
 			grpAudioLatency1.Visible = b;
 			grpAudioVolts1.Visible = (b || (comboAudioSoundCard.Text == "Unsupported Card"));
+		}
+
+		private void numericUpDownTS10_ValueChanged(object sender, System.EventArgs e)
+		{
+		
+		}
+
+		private void numericUpDownTS9_ValueChanged(object sender, System.EventArgs e)
+		{
+		
+		}
+
+		private void SoftRockIFStage_Click(object sender, System.EventArgs e)
+		{
+		
 		}
 	}
 

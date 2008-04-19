@@ -1,7 +1,7 @@
 <VisualStudioProject>
     <CSHARP
         ProjectType = "Local"
-        ProductVersion = "7.10.6030"
+        ProductVersion = "7.10.3077"
         SchemaVersion = "2.0"
         ProjectGuid = "{831AEB2F-CA78-4057-85D7-32B4816ED6AE}"
     >
@@ -116,6 +116,16 @@
         <Files>
             <Include>
                 <File
+                    RelPath = "About.cs"
+                    SubType = "Form"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "About.resx"
+                    DependentUpon = "About.cs"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
                     RelPath = "ad9854.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -191,6 +201,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "DDEML.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "deltacp.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -237,6 +252,11 @@
                 />
                 <File
                     RelPath = "hiperftimer.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "HRDEventArgs.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

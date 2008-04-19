@@ -94,7 +94,7 @@ namespace PowerSDR
 			// 
 			// rtxtWarning
 			// 
-			this.rtxtWarning.BackColor = System.Drawing.SystemColors.ControlText;
+			this.rtxtWarning.BackColor = System.Drawing.Color.White;
 			this.rtxtWarning.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
 			this.rtxtWarning.ForeColor = System.Drawing.SystemColors.HighlightText;
 			this.rtxtWarning.Location = new System.Drawing.Point(248, 16);
@@ -102,11 +102,12 @@ namespace PowerSDR
 			this.rtxtWarning.ReadOnly = true;
 			this.rtxtWarning.Size = new System.Drawing.Size(384, 216);
 			this.rtxtWarning.TabIndex = 1;
-			this.rtxtWarning.Text = @"Warning: This is alpha software and may contain bugs.  Use at your own risk.  If you are uncomfortable with running software that may contain bugs and thus interrupt normal operation, please use our latest official release which may be found at http://www.flex-radio.com.  Bugs found in this software may be reported at http://support.flex-radio.com on the Bug Tracker.  Please do NOT post bugs on the email reflector or forums.";
+			this.rtxtWarning.Text = @"Warning: This is alpha software and may contain bugs.  Use at your own risk. DO NOT report bugs in this software to FlexRadio Systems (including email reflectors). This version of PowerSDR (1.9.0 SVN 1175) was modified by WU2X. All inquires regarding this software should be made to kc2pih@gmail.com. See the help menu for more information.";
 			this.rtxtWarning.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.rtxtWarning_LinkClicked);
 			// 
 			// chkShowThisOnStartup
 			// 
+			this.chkShowThisOnStartup.BackColor = System.Drawing.Color.White;
 			this.chkShowThisOnStartup.Checked = true;
 			this.chkShowThisOnStartup.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.chkShowThisOnStartup.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
