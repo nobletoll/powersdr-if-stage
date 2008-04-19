@@ -268,6 +268,15 @@ namespace PowerSDR
 			return SetOscDll(freq);
 		}
 
+		[DllImport("DttSP.dll", EntryPoint="SwapIQChannels")]
+		public static extern int SwapIQChannelsDll(double flag);
+		public static double swapIQChannels;
+		public static int SwapIQChannels(double flag)
+		{
+			swapIQChannels = flag;
+			return SwapIQChannelsDll(flag);
+		}
+
 		[DllImport("DttSP.dll", EntryPoint="SetTXOsc")]
 		public static extern int SetTXOsc(double freq);
 

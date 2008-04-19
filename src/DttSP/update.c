@@ -190,6 +190,11 @@ PRIVATE int
 setOsc (int n, char **p)
 {
 	double newfreq = (REAL) atof (p[0]);
+	// If the IQ is swapped reverse IF Frequency 
+	if (top.hold.buf.swap != 0)
+	{
+		newfreq = newfreq*-1;
+	}
 	if (fabs (newfreq) >= 0.5 * uni.samplerate)
 		return -1;
 	newfreq *= 2.0 * M_PI / uni.samplerate;
@@ -212,10 +217,12 @@ setOsc (int n, char **p)
 	return 0;
 }
 
+// WU2X 
 PRIVATE int
-setRXOutputGain(int n, char **p)
+swapIQChannels (int n, char **p)
 {
-	rx[RL].output_gain = (REAL)atof(p[0]);
+	double flag = (REAL) atof (p[0]);
+    top.hold.buf.swap = flag;
 	return 0;
 }
 
@@ -1547,6 +1554,8 @@ CTE update_cmds[] = {
   ,
   {"setOsc", setOsc}
   ,
+  {"swapIQChannels", swapIQChannels}
+  ,
   {"setRXAGC", setRXAGC}
   ,
   {"setRXAGCAttack", setRXAGCAttack}
@@ -1663,8 +1672,9 @@ CTE update_cmds[] = {
   ,
   {"setRXOff", setRXOff}
   ,
-  {"setRXOutputGain", setRXOutputGain}
-  ,
+  // WU2X - Temp. compile failure workaround! Mustfix. TODO.
+  //{"setRXOutputGain", setRXOutputGain}
+  //,
   {"setRXPan", setRXPan}
   ,
   {"setAuxMixSt", setAuxMixSt}
@@ -1836,7 +1846,15 @@ SetOsc (double newfreq)
   sendcommand (buffer);
   return 0;
 }
-
+// WU2X
+DttSP_EXP int
+SwapIQChannels (double flag)
+{
+  char buffer[64];
+  sprintf (buffer, "!swapIQChannels %lf 0\n", flag);
+  sendcommand (buffer);
+  return 0;
+}
 DttSP_EXP int
 SetTXOsc (double newfreq)
 {

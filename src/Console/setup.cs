@@ -883,6 +883,10 @@ namespace PowerSDR
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.NumericUpDownTS udMinFreq;
 		private System.Windows.Forms.NumericUpDownTS udMaxFreq;
+		private System.Windows.Forms.GroupBox udSwapGrpBox;
+		private System.Windows.Forms.Label label4;
+		private System.Windows.Forms.NumericUpDownTS udSwapIQFreq;
+		private System.Windows.Forms.CheckBoxTS chkSwapIQ;
 		private System.ComponentModel.IContainer components;
 
 		#endregion
@@ -994,6 +998,26 @@ namespace PowerSDR
 			udTXFilterLow_ValueChanged(this, e);
 			
 			openFileDialog1.Filter = "PowerSDR Database Files (*.mdb) | *.mdb";
+
+			// WU2X
+			this.console.IFLSB = (double)udIFLSB.Value;
+			this.console.IFUSB = (double)udIFUSB.Value;
+			this.console.IFCW = (double)udIFCW.Value;
+			this.console.IFAM = (double)udIFAM.Value;
+			this.console.IFFM = (double)udIFFM.Value;
+
+			this.console.VFOOffsetLSB = (double)udVFOOffsetLSB.Value;
+			this.console.VFOOffsetUSB = (double)udVFOOffsetUSB.Value;
+			this.console.VFOOffsetCW = (double)udVFOOffsetCW.Value;
+			this.console.VFOOffsetAM  = (double)udVFOOffsetAM.Value;
+			this.console.VFOOffsetFM = (double)udVFOOffsetFM.Value;
+
+			this.console.MinFreq = (double)udMinFreq.Value;
+			this.console.MaxFreq = (double)udMaxFreq.Value;
+
+			this.console.SwapIQ  = chkSwapIQ.Checked;
+			this.console.SwapIQFreq = (double)udSwapIQFreq.Value;    
+
 		}
 
 		protected override void Dispose( bool disposing )
@@ -1047,6 +1071,17 @@ namespace PowerSDR
 			this.chkGeneralRFEPresent = new System.Windows.Forms.CheckBoxTS();
 			this.comboGeneralXVTR = new System.Windows.Forms.ComboBoxTS();
 			this.btnWizard = new System.Windows.Forms.ButtonTS();
+			this.tpFilters = new System.Windows.Forms.TabPage();
+			this.grpOptFilterControls = new System.Windows.Forms.GroupBoxTS();
+			this.udFilterDefaultLowCut = new System.Windows.Forms.NumericUpDownTS();
+			this.lblDefaultLowCut = new System.Windows.Forms.LabelTS();
+			this.udOptMaxFilterShift = new System.Windows.Forms.NumericUpDownTS();
+			this.lblOptMaxFilterShift = new System.Windows.Forms.LabelTS();
+			this.comboOptFilterWidthMode = new System.Windows.Forms.ComboBoxTS();
+			this.lblOptWidthSliderMode = new System.Windows.Forms.LabelTS();
+			this.udOptMaxFilterWidth = new System.Windows.Forms.NumericUpDownTS();
+			this.lblOptMaxFilter = new System.Windows.Forms.LabelTS();
+			this.chkOptFilterSaveChanges = new System.Windows.Forms.CheckBoxTS();
 			this.tpGeneralCalibration = new System.Windows.Forms.TabPage();
 			this.grpGenCalRXImage = new System.Windows.Forms.GroupBoxTS();
 			this.udGeneralCalFreq3 = new System.Windows.Forms.NumericUpDownTS();
@@ -1091,17 +1126,6 @@ namespace PowerSDR
 			this.grpGeneralUpdates = new System.Windows.Forms.GroupBoxTS();
 			this.chkGeneralUpdateBeta = new System.Windows.Forms.CheckBoxTS();
 			this.chkGeneralUpdateRelease = new System.Windows.Forms.CheckBoxTS();
-			this.tpFilters = new System.Windows.Forms.TabPage();
-			this.grpOptFilterControls = new System.Windows.Forms.GroupBoxTS();
-			this.udFilterDefaultLowCut = new System.Windows.Forms.NumericUpDownTS();
-			this.lblDefaultLowCut = new System.Windows.Forms.LabelTS();
-			this.udOptMaxFilterShift = new System.Windows.Forms.NumericUpDownTS();
-			this.lblOptMaxFilterShift = new System.Windows.Forms.LabelTS();
-			this.comboOptFilterWidthMode = new System.Windows.Forms.ComboBoxTS();
-			this.lblOptWidthSliderMode = new System.Windows.Forms.LabelTS();
-			this.udOptMaxFilterWidth = new System.Windows.Forms.NumericUpDownTS();
-			this.lblOptMaxFilter = new System.Windows.Forms.LabelTS();
-			this.chkOptFilterSaveChanges = new System.Windows.Forms.CheckBoxTS();
 			this.SoftRockIFStage = new System.Windows.Forms.TabPage();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
 			this.udMaxFreq = new System.Windows.Forms.NumericUpDownTS();
@@ -1130,6 +1154,10 @@ namespace PowerSDR
 			this.udVFOOffsetUSB = new System.Windows.Forms.NumericUpDownTS();
 			this.lblLSBOffset = new System.Windows.Forms.Label();
 			this.udVFOOffsetLSB = new System.Windows.Forms.NumericUpDownTS();
+			this.udSwapGrpBox = new System.Windows.Forms.GroupBox();
+			this.chkSwapIQ = new System.Windows.Forms.CheckBoxTS();
+			this.udSwapIQFreq = new System.Windows.Forms.NumericUpDownTS();
+			this.label4 = new System.Windows.Forms.Label();
 			this.tpAudio = new System.Windows.Forms.TabPage();
 			this.tcAudio = new System.Windows.Forms.TabControl();
 			this.tpAudioCard1 = new System.Windows.Forms.TabPage();
@@ -1864,6 +1892,11 @@ namespace PowerSDR
 			this.grpGeneralModel.SuspendLayout();
 			this.grpGeneralHardwareSetup.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.udGeneralLPTDelay)).BeginInit();
+			this.tpFilters.SuspendLayout();
+			this.grpOptFilterControls.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.udFilterDefaultLowCut)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.udOptMaxFilterShift)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.udOptMaxFilterWidth)).BeginInit();
 			this.tpGeneralCalibration.SuspendLayout();
 			this.grpGenCalRXImage.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.udGeneralCalFreq3)).BeginInit();
@@ -1883,11 +1916,6 @@ namespace PowerSDR
 			((System.ComponentModel.ISupportInitialize)(this.udGeneralX2Delay)).BeginInit();
 			this.grpGeneralProcessPriority.SuspendLayout();
 			this.grpGeneralUpdates.SuspendLayout();
-			this.tpFilters.SuspendLayout();
-			this.grpOptFilterControls.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.udFilterDefaultLowCut)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.udOptMaxFilterShift)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.udOptMaxFilterWidth)).BeginInit();
 			this.SoftRockIFStage.SuspendLayout();
 			this.groupBox3.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.udMaxFreq)).BeginInit();
@@ -1904,6 +1932,8 @@ namespace PowerSDR
 			((System.ComponentModel.ISupportInitialize)(this.udVFOOffsetCW)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.udVFOOffsetUSB)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.udVFOOffsetLSB)).BeginInit();
+			this.udSwapGrpBox.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.udSwapIQFreq)).BeginInit();
 			this.tpAudio.SuspendLayout();
 			this.tcAudio.SuspendLayout();
 			this.tpAudioCard1.SuspendLayout();
@@ -2140,9 +2170,9 @@ namespace PowerSDR
 			// tcGeneral
 			// 
 			this.tcGeneral.Controls.Add(this.tpGeneralHardware);
-			this.tcGeneral.Controls.Add(this.tpGeneralOptions);
-			this.tcGeneral.Controls.Add(this.tpGeneralCalibration);
 			this.tcGeneral.Controls.Add(this.tpFilters);
+			this.tcGeneral.Controls.Add(this.tpGeneralCalibration);
+			this.tcGeneral.Controls.Add(this.tpGeneralOptions);
 			this.tcGeneral.Controls.Add(this.SoftRockIFStage);
 			this.tcGeneral.Location = new System.Drawing.Point(0, 0);
 			this.tcGeneral.Name = "tcGeneral";
@@ -2577,6 +2607,187 @@ namespace PowerSDR
 			this.btnWizard.Text = "Wizard...";
 			this.toolTip1.SetToolTip(this.btnWizard, "Run the Startup Wizard.");
 			this.btnWizard.Click += new System.EventHandler(this.btnWizard_Click);
+			// 
+			// tpFilters
+			// 
+			this.tpFilters.Controls.Add(this.grpOptFilterControls);
+			this.tpFilters.Location = new System.Drawing.Point(4, 22);
+			this.tpFilters.Name = "tpFilters";
+			this.tpFilters.Size = new System.Drawing.Size(592, 318);
+			this.tpFilters.TabIndex = 3;
+			this.tpFilters.Text = "Filters";
+			// 
+			// grpOptFilterControls
+			// 
+			this.grpOptFilterControls.Controls.Add(this.udFilterDefaultLowCut);
+			this.grpOptFilterControls.Controls.Add(this.lblDefaultLowCut);
+			this.grpOptFilterControls.Controls.Add(this.udOptMaxFilterShift);
+			this.grpOptFilterControls.Controls.Add(this.lblOptMaxFilterShift);
+			this.grpOptFilterControls.Controls.Add(this.comboOptFilterWidthMode);
+			this.grpOptFilterControls.Controls.Add(this.lblOptWidthSliderMode);
+			this.grpOptFilterControls.Controls.Add(this.udOptMaxFilterWidth);
+			this.grpOptFilterControls.Controls.Add(this.lblOptMaxFilter);
+			this.grpOptFilterControls.Controls.Add(this.chkOptFilterSaveChanges);
+			this.grpOptFilterControls.Location = new System.Drawing.Point(8, 8);
+			this.grpOptFilterControls.Name = "grpOptFilterControls";
+			this.grpOptFilterControls.Size = new System.Drawing.Size(200, 152);
+			this.grpOptFilterControls.TabIndex = 29;
+			this.grpOptFilterControls.TabStop = false;
+			this.grpOptFilterControls.Text = "Filter Controls";
+			// 
+			// udFilterDefaultLowCut
+			// 
+			this.udFilterDefaultLowCut.Increment = new System.Decimal(new int[] {
+																					1,
+																					0,
+																					0,
+																					0});
+			this.udFilterDefaultLowCut.Location = new System.Drawing.Point(128, 120);
+			this.udFilterDefaultLowCut.Maximum = new System.Decimal(new int[] {
+																				  500,
+																				  0,
+																				  0,
+																				  0});
+			this.udFilterDefaultLowCut.Minimum = new System.Decimal(new int[] {
+																				  0,
+																				  0,
+																				  0,
+																				  0});
+			this.udFilterDefaultLowCut.Name = "udFilterDefaultLowCut";
+			this.udFilterDefaultLowCut.Size = new System.Drawing.Size(48, 20);
+			this.udFilterDefaultLowCut.TabIndex = 17;
+			this.toolTip1.SetToolTip(this.udFilterDefaultLowCut, "Sets the default low cut filter for filter changes");
+			this.udFilterDefaultLowCut.Value = new System.Decimal(new int[] {
+																				150,
+																				0,
+																				0,
+																				0});
+			this.udFilterDefaultLowCut.LostFocus += new System.EventHandler(this.udFilterDefaultLowCut_LostFocus);
+			this.udFilterDefaultLowCut.ValueChanged += new System.EventHandler(this.udFilterDefaultLowCut_ValueChanged);
+			// 
+			// lblDefaultLowCut
+			// 
+			this.lblDefaultLowCut.Image = null;
+			this.lblDefaultLowCut.Location = new System.Drawing.Point(16, 120);
+			this.lblDefaultLowCut.Name = "lblDefaultLowCut";
+			this.lblDefaultLowCut.Size = new System.Drawing.Size(120, 23);
+			this.lblDefaultLowCut.TabIndex = 16;
+			this.lblDefaultLowCut.Text = "Default Low Cut (Hz):";
+			// 
+			// udOptMaxFilterShift
+			// 
+			this.udOptMaxFilterShift.Increment = new System.Decimal(new int[] {
+																				  1,
+																				  0,
+																				  0,
+																				  0});
+			this.udOptMaxFilterShift.Location = new System.Drawing.Point(128, 72);
+			this.udOptMaxFilterShift.Maximum = new System.Decimal(new int[] {
+																				9999,
+																				0,
+																				0,
+																				0});
+			this.udOptMaxFilterShift.Minimum = new System.Decimal(new int[] {
+																				0,
+																				0,
+																				0,
+																				0});
+			this.udOptMaxFilterShift.Name = "udOptMaxFilterShift";
+			this.udOptMaxFilterShift.Size = new System.Drawing.Size(48, 20);
+			this.udOptMaxFilterShift.TabIndex = 13;
+			this.toolTip1.SetToolTip(this.udOptMaxFilterShift, "Sets the maximum amount for the Shift control.  Set lower for finer resolution co" +
+				"ntrol");
+			this.udOptMaxFilterShift.Value = new System.Decimal(new int[] {
+																			  9999,
+																			  0,
+																			  0,
+																			  0});
+			this.udOptMaxFilterShift.LostFocus += new System.EventHandler(this.udOptMaxFilterShift_LostFocus);
+			this.udOptMaxFilterShift.ValueChanged += new System.EventHandler(this.udOptMaxFilterShift_ValueChanged);
+			// 
+			// lblOptMaxFilterShift
+			// 
+			this.lblOptMaxFilterShift.Image = null;
+			this.lblOptMaxFilterShift.Location = new System.Drawing.Point(16, 72);
+			this.lblOptMaxFilterShift.Name = "lblOptMaxFilterShift";
+			this.lblOptMaxFilterShift.Size = new System.Drawing.Size(120, 23);
+			this.lblOptMaxFilterShift.TabIndex = 14;
+			this.lblOptMaxFilterShift.Text = "Max Filter Shift (Hz):";
+			// 
+			// comboOptFilterWidthMode
+			// 
+			this.comboOptFilterWidthMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboOptFilterWidthMode.DropDownWidth = 112;
+			this.comboOptFilterWidthMode.Items.AddRange(new object[] {
+																		 "Linear",
+																		 "Log",
+																		 "Log10"});
+			this.comboOptFilterWidthMode.Location = new System.Drawing.Point(120, 48);
+			this.comboOptFilterWidthMode.Name = "comboOptFilterWidthMode";
+			this.comboOptFilterWidthMode.Size = new System.Drawing.Size(56, 21);
+			this.comboOptFilterWidthMode.TabIndex = 12;
+			this.toolTip1.SetToolTip(this.comboOptFilterWidthMode, "Sets the mapping for the filter width slider.");
+			this.comboOptFilterWidthMode.SelectedIndexChanged += new System.EventHandler(this.comboOptFilterWidthMode_SelectedIndexChanged);
+			// 
+			// lblOptWidthSliderMode
+			// 
+			this.lblOptWidthSliderMode.Image = null;
+			this.lblOptWidthSliderMode.Location = new System.Drawing.Point(16, 48);
+			this.lblOptWidthSliderMode.Name = "lblOptWidthSliderMode";
+			this.lblOptWidthSliderMode.Size = new System.Drawing.Size(104, 16);
+			this.lblOptWidthSliderMode.TabIndex = 11;
+			this.lblOptWidthSliderMode.Text = "Width Slider Mode:";
+			// 
+			// udOptMaxFilterWidth
+			// 
+			this.udOptMaxFilterWidth.Increment = new System.Decimal(new int[] {
+																				  1,
+																				  0,
+																				  0,
+																				  0});
+			this.udOptMaxFilterWidth.Location = new System.Drawing.Point(128, 24);
+			this.udOptMaxFilterWidth.Maximum = new System.Decimal(new int[] {
+																				9999,
+																				0,
+																				0,
+																				0});
+			this.udOptMaxFilterWidth.Minimum = new System.Decimal(new int[] {
+																				0,
+																				0,
+																				0,
+																				0});
+			this.udOptMaxFilterWidth.Name = "udOptMaxFilterWidth";
+			this.udOptMaxFilterWidth.Size = new System.Drawing.Size(48, 20);
+			this.udOptMaxFilterWidth.TabIndex = 0;
+			this.toolTip1.SetToolTip(this.udOptMaxFilterWidth, "Wets the maximum filter bandwidth");
+			this.udOptMaxFilterWidth.Value = new System.Decimal(new int[] {
+																			  9999,
+																			  0,
+																			  0,
+																			  0});
+			this.udOptMaxFilterWidth.LostFocus += new System.EventHandler(this.udOptMaxFilterWidth_LostFocus);
+			this.udOptMaxFilterWidth.ValueChanged += new System.EventHandler(this.udOptMaxFilterWidth_ValueChanged);
+			// 
+			// lblOptMaxFilter
+			// 
+			this.lblOptMaxFilter.Image = null;
+			this.lblOptMaxFilter.Location = new System.Drawing.Point(16, 24);
+			this.lblOptMaxFilter.Name = "lblOptMaxFilter";
+			this.lblOptMaxFilter.Size = new System.Drawing.Size(120, 23);
+			this.lblOptMaxFilter.TabIndex = 10;
+			this.lblOptMaxFilter.Text = "Max Filter Width (Hz):";
+			// 
+			// chkOptFilterSaveChanges
+			// 
+			this.chkOptFilterSaveChanges.Image = null;
+			this.chkOptFilterSaveChanges.Location = new System.Drawing.Point(16, 96);
+			this.chkOptFilterSaveChanges.Name = "chkOptFilterSaveChanges";
+			this.chkOptFilterSaveChanges.Size = new System.Drawing.Size(176, 16);
+			this.chkOptFilterSaveChanges.TabIndex = 15;
+			this.chkOptFilterSaveChanges.Text = "Save Slider/Display Changes";
+			this.toolTip1.SetToolTip(this.chkOptFilterSaveChanges, "If checked, changes made to the filters via the display or sliders will be saved " +
+				"in the Variable filter.");
+			this.chkOptFilterSaveChanges.CheckedChanged += new System.EventHandler(this.chkOptFilterSaveChanges_CheckedChanged);
 			// 
 			// tpGeneralCalibration
 			// 
@@ -3213,192 +3424,12 @@ namespace PowerSDR
 				"nd see if there are any new Official Releases");
 			this.chkGeneralUpdateRelease.CheckedChanged += new System.EventHandler(this.chkGeneralUpdateRelease_CheckedChanged);
 			// 
-			// tpFilters
-			// 
-			this.tpFilters.Controls.Add(this.grpOptFilterControls);
-			this.tpFilters.Location = new System.Drawing.Point(4, 22);
-			this.tpFilters.Name = "tpFilters";
-			this.tpFilters.Size = new System.Drawing.Size(592, 318);
-			this.tpFilters.TabIndex = 3;
-			this.tpFilters.Text = "Filters";
-			// 
-			// grpOptFilterControls
-			// 
-			this.grpOptFilterControls.Controls.Add(this.udFilterDefaultLowCut);
-			this.grpOptFilterControls.Controls.Add(this.lblDefaultLowCut);
-			this.grpOptFilterControls.Controls.Add(this.udOptMaxFilterShift);
-			this.grpOptFilterControls.Controls.Add(this.lblOptMaxFilterShift);
-			this.grpOptFilterControls.Controls.Add(this.comboOptFilterWidthMode);
-			this.grpOptFilterControls.Controls.Add(this.lblOptWidthSliderMode);
-			this.grpOptFilterControls.Controls.Add(this.udOptMaxFilterWidth);
-			this.grpOptFilterControls.Controls.Add(this.lblOptMaxFilter);
-			this.grpOptFilterControls.Controls.Add(this.chkOptFilterSaveChanges);
-			this.grpOptFilterControls.Location = new System.Drawing.Point(8, 8);
-			this.grpOptFilterControls.Name = "grpOptFilterControls";
-			this.grpOptFilterControls.Size = new System.Drawing.Size(200, 152);
-			this.grpOptFilterControls.TabIndex = 29;
-			this.grpOptFilterControls.TabStop = false;
-			this.grpOptFilterControls.Text = "Filter Controls";
-			// 
-			// udFilterDefaultLowCut
-			// 
-			this.udFilterDefaultLowCut.Increment = new System.Decimal(new int[] {
-																					1,
-																					0,
-																					0,
-																					0});
-			this.udFilterDefaultLowCut.Location = new System.Drawing.Point(128, 120);
-			this.udFilterDefaultLowCut.Maximum = new System.Decimal(new int[] {
-																				  500,
-																				  0,
-																				  0,
-																				  0});
-			this.udFilterDefaultLowCut.Minimum = new System.Decimal(new int[] {
-																				  0,
-																				  0,
-																				  0,
-																				  0});
-			this.udFilterDefaultLowCut.Name = "udFilterDefaultLowCut";
-			this.udFilterDefaultLowCut.Size = new System.Drawing.Size(48, 20);
-			this.udFilterDefaultLowCut.TabIndex = 17;
-			this.toolTip1.SetToolTip(this.udFilterDefaultLowCut, "Sets the default low cut filter for filter changes");
-			this.udFilterDefaultLowCut.Value = new System.Decimal(new int[] {
-																				150,
-																				0,
-																				0,
-																				0});
-			this.udFilterDefaultLowCut.LostFocus += new System.EventHandler(this.udFilterDefaultLowCut_LostFocus);
-			this.udFilterDefaultLowCut.ValueChanged += new System.EventHandler(this.udFilterDefaultLowCut_ValueChanged);
-			// 
-			// lblDefaultLowCut
-			// 
-			this.lblDefaultLowCut.Image = null;
-			this.lblDefaultLowCut.Location = new System.Drawing.Point(16, 120);
-			this.lblDefaultLowCut.Name = "lblDefaultLowCut";
-			this.lblDefaultLowCut.Size = new System.Drawing.Size(120, 23);
-			this.lblDefaultLowCut.TabIndex = 16;
-			this.lblDefaultLowCut.Text = "Default Low Cut (Hz):";
-			// 
-			// udOptMaxFilterShift
-			// 
-			this.udOptMaxFilterShift.Increment = new System.Decimal(new int[] {
-																				  1,
-																				  0,
-																				  0,
-																				  0});
-			this.udOptMaxFilterShift.Location = new System.Drawing.Point(128, 72);
-			this.udOptMaxFilterShift.Maximum = new System.Decimal(new int[] {
-																				9999,
-																				0,
-																				0,
-																				0});
-			this.udOptMaxFilterShift.Minimum = new System.Decimal(new int[] {
-																				0,
-																				0,
-																				0,
-																				0});
-			this.udOptMaxFilterShift.Name = "udOptMaxFilterShift";
-			this.udOptMaxFilterShift.Size = new System.Drawing.Size(48, 20);
-			this.udOptMaxFilterShift.TabIndex = 13;
-			this.toolTip1.SetToolTip(this.udOptMaxFilterShift, "Sets the maximum amount for the Shift control.  Set lower for finer resolution co" +
-				"ntrol");
-			this.udOptMaxFilterShift.Value = new System.Decimal(new int[] {
-																			  9999,
-																			  0,
-																			  0,
-																			  0});
-			this.udOptMaxFilterShift.LostFocus += new System.EventHandler(this.udOptMaxFilterShift_LostFocus);
-			this.udOptMaxFilterShift.ValueChanged += new System.EventHandler(this.udOptMaxFilterShift_ValueChanged);
-			// 
-			// lblOptMaxFilterShift
-			// 
-			this.lblOptMaxFilterShift.Image = null;
-			this.lblOptMaxFilterShift.Location = new System.Drawing.Point(16, 72);
-			this.lblOptMaxFilterShift.Name = "lblOptMaxFilterShift";
-			this.lblOptMaxFilterShift.Size = new System.Drawing.Size(120, 23);
-			this.lblOptMaxFilterShift.TabIndex = 14;
-			this.lblOptMaxFilterShift.Text = "Max Filter Shift (Hz):";
-			// 
-			// comboOptFilterWidthMode
-			// 
-			this.comboOptFilterWidthMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboOptFilterWidthMode.DropDownWidth = 112;
-			this.comboOptFilterWidthMode.Items.AddRange(new object[] {
-																		 "Linear",
-																		 "Log",
-																		 "Log10"});
-			this.comboOptFilterWidthMode.Location = new System.Drawing.Point(120, 48);
-			this.comboOptFilterWidthMode.Name = "comboOptFilterWidthMode";
-			this.comboOptFilterWidthMode.Size = new System.Drawing.Size(56, 21);
-			this.comboOptFilterWidthMode.TabIndex = 12;
-			this.toolTip1.SetToolTip(this.comboOptFilterWidthMode, "Sets the mapping for the filter width slider.");
-			this.comboOptFilterWidthMode.SelectedIndexChanged += new System.EventHandler(this.comboOptFilterWidthMode_SelectedIndexChanged);
-			// 
-			// lblOptWidthSliderMode
-			// 
-			this.lblOptWidthSliderMode.Image = null;
-			this.lblOptWidthSliderMode.Location = new System.Drawing.Point(16, 48);
-			this.lblOptWidthSliderMode.Name = "lblOptWidthSliderMode";
-			this.lblOptWidthSliderMode.Size = new System.Drawing.Size(104, 16);
-			this.lblOptWidthSliderMode.TabIndex = 11;
-			this.lblOptWidthSliderMode.Text = "Width Slider Mode:";
-			// 
-			// udOptMaxFilterWidth
-			// 
-			this.udOptMaxFilterWidth.Increment = new System.Decimal(new int[] {
-																				  1,
-																				  0,
-																				  0,
-																				  0});
-			this.udOptMaxFilterWidth.Location = new System.Drawing.Point(128, 24);
-			this.udOptMaxFilterWidth.Maximum = new System.Decimal(new int[] {
-																				9999,
-																				0,
-																				0,
-																				0});
-			this.udOptMaxFilterWidth.Minimum = new System.Decimal(new int[] {
-																				0,
-																				0,
-																				0,
-																				0});
-			this.udOptMaxFilterWidth.Name = "udOptMaxFilterWidth";
-			this.udOptMaxFilterWidth.Size = new System.Drawing.Size(48, 20);
-			this.udOptMaxFilterWidth.TabIndex = 0;
-			this.toolTip1.SetToolTip(this.udOptMaxFilterWidth, "Wets the maximum filter bandwidth");
-			this.udOptMaxFilterWidth.Value = new System.Decimal(new int[] {
-																			  9999,
-																			  0,
-																			  0,
-																			  0});
-			this.udOptMaxFilterWidth.LostFocus += new System.EventHandler(this.udOptMaxFilterWidth_LostFocus);
-			this.udOptMaxFilterWidth.ValueChanged += new System.EventHandler(this.udOptMaxFilterWidth_ValueChanged);
-			// 
-			// lblOptMaxFilter
-			// 
-			this.lblOptMaxFilter.Image = null;
-			this.lblOptMaxFilter.Location = new System.Drawing.Point(16, 24);
-			this.lblOptMaxFilter.Name = "lblOptMaxFilter";
-			this.lblOptMaxFilter.Size = new System.Drawing.Size(120, 23);
-			this.lblOptMaxFilter.TabIndex = 10;
-			this.lblOptMaxFilter.Text = "Max Filter Width (Hz):";
-			// 
-			// chkOptFilterSaveChanges
-			// 
-			this.chkOptFilterSaveChanges.Image = null;
-			this.chkOptFilterSaveChanges.Location = new System.Drawing.Point(16, 96);
-			this.chkOptFilterSaveChanges.Name = "chkOptFilterSaveChanges";
-			this.chkOptFilterSaveChanges.Size = new System.Drawing.Size(176, 16);
-			this.chkOptFilterSaveChanges.TabIndex = 15;
-			this.chkOptFilterSaveChanges.Text = "Save Slider/Display Changes";
-			this.toolTip1.SetToolTip(this.chkOptFilterSaveChanges, "If checked, changes made to the filters via the display or sliders will be saved " +
-				"in the Variable filter.");
-			this.chkOptFilterSaveChanges.CheckedChanged += new System.EventHandler(this.chkOptFilterSaveChanges_CheckedChanged);
-			// 
 			// SoftRockIFStage
 			// 
 			this.SoftRockIFStage.Controls.Add(this.groupBox3);
 			this.SoftRockIFStage.Controls.Add(this.groupBox1);
 			this.SoftRockIFStage.Controls.Add(this.groupBox2);
+			this.SoftRockIFStage.Controls.Add(this.udSwapGrpBox);
 			this.SoftRockIFStage.Location = new System.Drawing.Point(4, 22);
 			this.SoftRockIFStage.Name = "SoftRockIFStage";
 			this.SoftRockIFStage.Size = new System.Drawing.Size(592, 318);
@@ -3417,7 +3448,7 @@ namespace PowerSDR
 			this.groupBox3.Size = new System.Drawing.Size(144, 88);
 			this.groupBox3.TabIndex = 17;
 			this.groupBox3.TabStop = false;
-			this.groupBox3.Text = "Frequency Limits";
+			this.groupBox3.Text = "Frequency Limits (Mhz)";
 			// 
 			// udMaxFreq
 			// 
@@ -3447,6 +3478,7 @@ namespace PowerSDR
 																	0,
 																	0,
 																	0});
+			this.udMaxFreq.LostFocus += new System.EventHandler(this.udMaxFreq_LostFocus);
 			this.udMaxFreq.ValueChanged += new System.EventHandler(this.udMaxFreq_ValueChanged);
 			// 
 			// udMinFreq
@@ -3537,10 +3569,10 @@ namespace PowerSDR
 																   0,
 																   0});
 			this.udIFFM.Minimum = new System.Decimal(new int[] {
+																   20000,
 																   0,
 																   0,
-																   0,
-																   0});
+																   -2147483648});
 			this.udIFFM.Name = "udIFFM";
 			this.udIFFM.Size = new System.Drawing.Size(56, 20);
 			this.udIFFM.TabIndex = 14;
@@ -3567,10 +3599,10 @@ namespace PowerSDR
 																   0,
 																   0});
 			this.udIFAM.Minimum = new System.Decimal(new int[] {
+																   20000,
 																   0,
 																   0,
-																   0,
-																   0});
+																   -2147483648});
 			this.udIFAM.Name = "udIFAM";
 			this.udIFAM.Size = new System.Drawing.Size(56, 20);
 			this.udIFAM.TabIndex = 13;
@@ -3581,7 +3613,7 @@ namespace PowerSDR
 																 0,
 																 0});
 			this.udIFAM.LostFocus += new System.EventHandler(this.udIFAM_LostFocus);
-			this.udIFAM.ValueChanged += new System.EventHandler(this.udIFLSB_ValueChanged);
+			this.udIFAM.ValueChanged += new System.EventHandler(this.udIFAM_ValueChanged);
 			// 
 			// lblAMIF
 			// 
@@ -3613,10 +3645,10 @@ namespace PowerSDR
 																   0,
 																   0});
 			this.udIFCW.Minimum = new System.Decimal(new int[] {
+																   20000,
 																   0,
 																   0,
-																   0,
-																   0});
+																   -2147483648});
 			this.udIFCW.Name = "udIFCW";
 			this.udIFCW.Size = new System.Drawing.Size(56, 20);
 			this.udIFCW.TabIndex = 10;
@@ -3651,10 +3683,10 @@ namespace PowerSDR
 																	0,
 																	0});
 			this.udIFUSB.Minimum = new System.Decimal(new int[] {
+																	20000,
 																	0,
 																	0,
-																	0,
-																	0});
+																	-2147483648});
 			this.udIFUSB.Name = "udIFUSB";
 			this.udIFUSB.Size = new System.Drawing.Size(56, 20);
 			this.udIFUSB.TabIndex = 8;
@@ -3689,10 +3721,10 @@ namespace PowerSDR
 																	0,
 																	0});
 			this.udIFLSB.Minimum = new System.Decimal(new int[] {
+																	20000,
 																	0,
 																	0,
-																	0,
-																	0});
+																	-2147483648});
 			this.udIFLSB.Name = "udIFLSB";
 			this.udIFLSB.Size = new System.Drawing.Size(56, 20);
 			this.udIFLSB.TabIndex = 6;
@@ -3759,6 +3791,7 @@ namespace PowerSDR
 																		0,
 																		0,
 																		0});
+			this.udVFOOffsetFM.LostFocus += new System.EventHandler(this.udVFOOffsetFM_LostFocus);
 			this.udVFOOffsetFM.ValueChanged += new System.EventHandler(this.udVFOOffsetFM_ValueChanged);
 			// 
 			// udVFOOffsetAM
@@ -3912,6 +3945,70 @@ namespace PowerSDR
 																		 0});
 			this.udVFOOffsetLSB.LostFocus += new System.EventHandler(this.udVFOOffsetLSB_LostFocus);
 			this.udVFOOffsetLSB.ValueChanged += new System.EventHandler(this.udVFOOffsetLSB_ValueChanged);
+			// 
+			// udSwapGrpBox
+			// 
+			this.udSwapGrpBox.Controls.Add(this.chkSwapIQ);
+			this.udSwapGrpBox.Controls.Add(this.udSwapIQFreq);
+			this.udSwapGrpBox.Controls.Add(this.label4);
+			this.udSwapGrpBox.Location = new System.Drawing.Point(176, 168);
+			this.udSwapGrpBox.Name = "udSwapGrpBox";
+			this.udSwapGrpBox.Size = new System.Drawing.Size(144, 88);
+			this.udSwapGrpBox.TabIndex = 20;
+			this.udSwapGrpBox.TabStop = false;
+			this.udSwapGrpBox.Text = "Swap I/Q @ Freq.(Mhz)";
+			this.toolTip1.SetToolTip(this.udSwapGrpBox, "Frequency to swap the I/Q Channel on and above");
+			// 
+			// chkSwapIQ
+			// 
+			this.chkSwapIQ.Image = null;
+			this.chkSwapIQ.Location = new System.Drawing.Point(8, 32);
+			this.chkSwapIQ.Name = "chkSwapIQ";
+			this.chkSwapIQ.Size = new System.Drawing.Size(128, 16);
+			this.chkSwapIQ.TabIndex = 19;
+			this.chkSwapIQ.Text = "Swap I/Q Channels";
+			this.toolTip1.SetToolTip(this.chkSwapIQ, "Enable swap of I/Q Channels");
+			this.chkSwapIQ.LostFocus += new System.EventHandler(this.chkSwapIQ_LostFocus);
+			this.chkSwapIQ.CheckedChanged += new System.EventHandler(this.chkSwapIQ_CheckedChanged);
+			// 
+			// udSwapIQFreq
+			// 
+			this.udSwapIQFreq.DecimalPlaces = 6;
+			this.udSwapIQFreq.Increment = new System.Decimal(new int[] {
+																		   1,
+																		   0,
+																		   0,
+																		   0});
+			this.udSwapIQFreq.Location = new System.Drawing.Point(64, 56);
+			this.udSwapIQFreq.Maximum = new System.Decimal(new int[] {
+																		 5000,
+																		 0,
+																		 0,
+																		 0});
+			this.udSwapIQFreq.Minimum = new System.Decimal(new int[] {
+																		 0,
+																		 0,
+																		 0,
+																		 0});
+			this.udSwapIQFreq.Name = "udSwapIQFreq";
+			this.udSwapIQFreq.Size = new System.Drawing.Size(72, 20);
+			this.udSwapIQFreq.TabIndex = 18;
+			this.toolTip1.SetToolTip(this.udSwapIQFreq, "Frequency calibration reference frequency");
+			this.udSwapIQFreq.Value = new System.Decimal(new int[] {
+																	   0,
+																	   0,
+																	   0,
+																	   0});
+			this.udSwapIQFreq.LostFocus += new System.EventHandler(this.udSwapIQFreq_LostFocus);
+			this.udSwapIQFreq.ValueChanged += new System.EventHandler(this.udSwapIQFreq_ValueChanged);
+			// 
+			// label4
+			// 
+			this.label4.Location = new System.Drawing.Point(8, 56);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size(48, 32);
+			this.label4.TabIndex = 17;
+			this.label4.Text = "Freq.";
 			// 
 			// tpAudio
 			// 
@@ -6177,10 +6274,10 @@ namespace PowerSDR
 			// 
 			this.udDSPImageGainRX.DecimalPlaces = 2;
 			this.udDSPImageGainRX.Increment = new System.Decimal(new int[] {
-																			   1,
+																			   10,
 																			   0,
 																			   0,
-																			   131072});
+																			   65536});
 			this.udDSPImageGainRX.Location = new System.Drawing.Point(16, 88);
 			this.udDSPImageGainRX.Maximum = new System.Decimal(new int[] {
 																			 500,
@@ -6208,10 +6305,10 @@ namespace PowerSDR
 			// 
 			this.udDSPImagePhaseRX.DecimalPlaces = 2;
 			this.udDSPImagePhaseRX.Increment = new System.Decimal(new int[] {
-																				1,
+																				10,
 																				0,
 																				0,
-																				131072});
+																				65536});
 			this.udDSPImagePhaseRX.Location = new System.Drawing.Point(16, 40);
 			this.udDSPImagePhaseRX.Maximum = new System.Decimal(new int[] {
 																			  400,
@@ -13771,6 +13868,11 @@ namespace PowerSDR
 			this.grpGeneralModel.ResumeLayout(false);
 			this.grpGeneralHardwareSetup.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.udGeneralLPTDelay)).EndInit();
+			this.tpFilters.ResumeLayout(false);
+			this.grpOptFilterControls.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.udFilterDefaultLowCut)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.udOptMaxFilterShift)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.udOptMaxFilterWidth)).EndInit();
 			this.tpGeneralCalibration.ResumeLayout(false);
 			this.grpGenCalRXImage.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.udGeneralCalFreq3)).EndInit();
@@ -13790,11 +13892,6 @@ namespace PowerSDR
 			((System.ComponentModel.ISupportInitialize)(this.udGeneralX2Delay)).EndInit();
 			this.grpGeneralProcessPriority.ResumeLayout(false);
 			this.grpGeneralUpdates.ResumeLayout(false);
-			this.tpFilters.ResumeLayout(false);
-			this.grpOptFilterControls.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.udFilterDefaultLowCut)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.udOptMaxFilterShift)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.udOptMaxFilterWidth)).EndInit();
 			this.SoftRockIFStage.ResumeLayout(false);
 			this.groupBox3.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.udMaxFreq)).EndInit();
@@ -13811,6 +13908,8 @@ namespace PowerSDR
 			((System.ComponentModel.ISupportInitialize)(this.udVFOOffsetCW)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.udVFOOffsetUSB)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.udVFOOffsetLSB)).EndInit();
+			this.udSwapGrpBox.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.udSwapIQFreq)).EndInit();
 			this.tpAudio.ResumeLayout(false);
 			this.tcAudio.ResumeLayout(false);
 			this.tpAudioCard1.ResumeLayout(false);
@@ -15790,6 +15889,15 @@ namespace PowerSDR
 			console.MaxFreq = (double)udMaxFreq.Value;
 		}
 
+		private void chkSwapIQ_CheckedChanged(object sender, System.EventArgs e)
+		{
+			console.SwapIQ = chkSwapIQ.Checked;
+		}
+		private void udSwapIQFreq_ValueChanged(object sender, System.EventArgs e)
+		{
+			console.SwapIQFreq = (double)udSwapIQFreq.Value;
+		}
+
 		// VFO Offset
 
 		private void udVFOOffsetLSB_ValueChanged(object sender, System.EventArgs e)
@@ -15820,6 +15928,14 @@ namespace PowerSDR
 		private void udVFOOffsetLSB_LostFocus(object sender, EventArgs e)
 		{
 			udVFOOffsetLSB.Value = udVFOOffsetLSB.Value;
+		}
+		private void chkSwapIQ_LostFocus(object sender, EventArgs e)
+		{
+			chkSwapIQ.Checked = chkSwapIQ.Checked;
+		}
+		private void udSwapIQFreq_LostFocus(object sender, EventArgs e)
+		{
+			udSwapIQFreq.Value = udSwapIQFreq.Value;
 		}
 
 		private void udVFOOffsetUSB_LostFocus(object sender, EventArgs e)
