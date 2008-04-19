@@ -350,47 +350,24 @@ namespace PowerSDR
 
 	unsafe public class Console : System.Windows.Forms.Form
 	{
-  	    #region TODO's  - WU2X - PowerSDR SoftRock IF Stage Support - 8/26/2007
+  	    #region TODO's  - WU2X - PowerSDR SoftRock IF Stage Support - 7/13/2007
 
-		////////////
-        // Notes: //
-		////////////
+
+  
+
 		
-	    // 1. Would like to port current version to stable version of PowerSDR
-		// 2. Take smallest tuning rate into account - does PowerSDR need to adjust
-		//    IF Frequency when tuning digit less that radio can tune???
-		// 3. Unsupported code pages? Does PowerSDR handle properly?
+		// 6. Check that record and playback is not broke!
+        // - Its playing back, but you can't tune around - stuck - only with subrx
 
-		//////////////
-        // Features //
-		//////////////
-		///
-		// 1. Image Null for entire bandpass
-		// 2. Auto frequency calibration
-		// 3. GUI Improvments such as S-Meter
-		// 4. Inverted IF output support started
-		//   * It will invert the I/Q and change the sign on the IF Frequency. 
-		//   *
+		
 
-		////////// 
-		// Bugs //
-		//////////
-	
-        // 1. PowerSDR can send messages faster than HRD can handle...
-        //  esp. when priority of powersdr is jacked up.
-		// Probably NOT fixable with DDE. Investigate Telnet
-		// 2. Playback of wave file - tuning doesn't work
-		// 3. Need to handle modes gracefully that aren't support. I.E., what
-		// behavior should one expect if they switch to unsupported mode?
+		// Remove all System.console messages
+		// Convert back from console app to windows app
 
- 
-		///////////////////////////
-		// Always before release //
-		///////////////////////////
-
-		// 1. Remove all System.console messages
-		// 2. Convert back from console app to windows app
-
+		// After Release
+		//     // 10. Make auto image null work
+		// Might consider defaulting mode on rig to something other than what you tune up on the POwerSDR
+		//  on the 940, the AGC is active in AM mode and kills RX 
 
 
 
@@ -437,8 +414,6 @@ namespace PowerSDR
 		private bool lockoutExternalUpdates = false;	    // Locks out HRD updates while tuning PowerSDR VFO
 		private  System.Timers.Timer lockoutTimer  = new System.Timers.Timer(); // Timer for update lockout
 		private bool connectedToHRD = false;                // HRD Connection status
-		private bool SwapIQCache = false;                  // Bool for IQ Swap
-		private int swap = 1;                              // Used to toggle IF Frequency to negative if IQ is swapped
 
 		public WaveControl WaveForm;
 		public PAQualify PAQualForm;
@@ -9457,12 +9432,7 @@ namespace PowerSDR
 
 		private void SetBand(string mode, string filter, double freq)
 		{
-		    // Set mode, filter, and frequency according to passed parameters
-            // WU2X - Freq. must be set first
-			// This might matter to the SDR-1000/5000
-			// meaning the order might need to be based on hardware type!
-			VFOAFreq = freq; 
-
+			// Set mode, filter, and frequency according to passed parameters
 			CurrentDSPMode = (DSPMode)Enum.Parse(typeof(DSPMode), mode, true);
 
 			if(current_dsp_mode != DSPMode.DRM &&
@@ -9471,6 +9441,7 @@ namespace PowerSDR
 				CurrentFilter = (Filter)Enum.Parse(typeof(Filter), filter, true);
 			}
 
+			VFOAFreq = freq;
 		}
 
 		public void MemoryRecall(int mode, int filter, double freq, int step, int agc, int squelch)
@@ -10941,21 +10912,7 @@ namespace PowerSDR
 				return;
 
 			//double edge_alias = 7200.0;
-
-			// Calculations below worked with positive IF frequency even though
-			// the SDR1000 uses a negative value by default. So switch the
-			// sign on the IF frequency if its a softrock - oh and use its
-			// IF freqency so the display is panned to receivable signals
-			double if_freq;
-			switch(current_model)
-			{
-				case Model.SOFTROCK40:
-					if_freq = (IFFrequencyForIFStageSoftRock * -1);
-					break;
-				default :
-					if_freq = 11025.0;
-					break;
-			}
+			double if_freq = 11025.0;
 			double spur_tune_width = 200e6 / Math.Pow(2, 16);
 			double zoom_factor = (tbDisplayZoom.Maximum + tbDisplayZoom.Minimum - tbDisplayZoom.Value) * 0.01;
 			
@@ -12823,8 +12780,8 @@ namespace PowerSDR
 					
 					// MinFreq = soft_rock_center_freq - DttSP.SampleRate/2*1e-6;  // ??? Check, how is this used. 
 					// MaxFreq = soft_rock_center_freq + DttSP.SampleRate/2*1e-6;
-					// MinFreq = 0.03;  // WU2X - Kenwood 940 Min. Frequency
-					// MaxFreq = 30.0;  // WU2X - Kenwood 940 Max. Frequency
+					MinFreq = 0.03;  // WU2X - Kenwood 940 Min. Frequency
+					MaxFreq = 30.0;  // WU2X - Kenwood 940 Max. Frequency
 
 					if(SetupForm != null)
 						txtVFOAFreq_LostFocus(this, EventArgs.Empty);
@@ -13551,27 +13508,6 @@ namespace PowerSDR
 				if(SetupForm == null) return;
 				if(VFOAFreq > max_freq && current_xvtr_index < 0)
 					VFOAFreq = max_freq;
-			}
-		}
-		private bool swap_iq = false;
-		public bool SwapIQ
-		{
-			get { return swap_iq; }
-			set 
-			{ 
-				swap_iq = value; 
-				checkSwapIQ();
-			}
-		}
-
-		private double swap_iq_freq = 0.0;
-		public double SwapIQFreq
-		{
-			get { return swap_iq_freq; }
-			set 
-			{ 
-				swap_iq_freq = value;
-				checkSwapIQ();
 			}
 		}
 
@@ -17483,6 +17419,7 @@ namespace PowerSDR
 		// Softrock IF Stage Support
 		private void LockoutTimeExpiredEvent( object source, ElapsedEventArgs e )
 		{
+			System.Console.WriteLine("Expired - 1 second lockout. this = " + this.GetHashCode());
 			this.lockoutExternalUpdates = false;
 		}
 
@@ -20687,7 +20624,6 @@ namespace PowerSDR
 			}
 			
 			double freq = double.Parse(txtVFOAFreq.Text);
-
 			UpdateVFOAFreq(freq.ToString("f6"));
 			Display.VFOA = (long)(freq*1e6);
 
@@ -20844,9 +20780,6 @@ namespace PowerSDR
 						break;
 					case Model.SOFTROCK40:
 
-						// Since freq has changed - evalaute swap of I/Q
-						checkSwapIQ();
-
                         // The event args are used to communicate whether or not
 						// this VFO update is from the PowerSDR software or from
 						// a HRD callback on the radio VFO being tuned. At this
@@ -20860,9 +20793,11 @@ namespace PowerSDR
                         if ( !(e is PowerSDR.HRDEventArgs) )
 						{
 
+							System.Console.WriteLine("Tuning, offset for this mode: " + VFOOffset);
 
                             // External radio VFO can be offset from the powersdr vfo
 							// by mode, from the setup menu, under Softrock IF stage
+
 							// Internal Event
 							if (VFOOffset == 0)
 							{
@@ -20875,23 +20810,27 @@ namespace PowerSDR
 								setHRDFrequency(offset.ToString("f6")); 
 							}
 
+                            // Start or Restart lockout timer to ignore external VFO events
+							// for a second or two...
+							lockoutExternalUpdates = true;	
+							lockoutTimer.Stop();
+                            lockoutTimer.Start();
+							System.Console.WriteLine("Starting 2 second lockout."); 
 							
 						}
 						 
-						double drmOffset = 0; 
 						//!!!!drm patch // WU2X - Don't know if this still applies
+						
+						double osc_freq = soft_rock_center_freq*1e6 - freq*1e6;
 						if ( current_dsp_mode  == DSPMode.DRM ) // if we're in DRM mode we need to be offset 12khz
 						{
-							drmOffset = 12000; 
+							osc_freq = osc_freq + 12000; 
 							// System.Console.WriteLine("setting osc_freq: " + osc_freq); 
 						}
 
-						tuned_freq = freq;  
+						tuned_freq = freq;  // WU2X - Broke SubRX
 
-					    DttSP.SetOsc((IFFrequencyForIFStageSoftRock*swap)+drmOffset);
-                        // System.Console.WriteLine("IF Freq : " + (IFFrequencyForIFStageSoftRock*swap)); 
-						// System.Console.WriteLine("IFFrequencyForIFStageSoftRock : " + IFFrequencyForIFStageSoftRock); 
-						// System.Console.WriteLine("swap : " + swap); 
+                        DttSP.SetOsc(IFFrequencyForIFStageSoftRock);
 
 						if(!chkMOX.Checked || (chkMOX.Checked && !chkVFOSplit.Checked))
 						{
@@ -21354,13 +21293,13 @@ namespace PowerSDR
 		////////////////////////////////////////////////////////////
 		public IntPtr HRDDdeCallback(Int32 uType, Int32 uFmt, IntPtr hconv, IntPtr hsz1, IntPtr hsz2, IntPtr hdata, IntPtr dwData1, IntPtr dwData2) 
 		{
-			// CalibrateFreq(9.958015F);
 			switch (uType)
 			{
 				case DDEML.XTYP_ADVDATA:  // Advise Data
 
-					Int32 len = DDEML.DdeQueryString(pidInst,hsz1, null, 100, DDEML.CP_WINANSI) + 1;
-					Int32 len2 = DDEML.DdeQueryString(pidInst,hsz2, null, 100, DDEML.CP_WINANSI) + 1;
+					System.Console.WriteLine("In Callback - it was advise data!"); 
+					Int32 len = DDEML.DdeQueryString(pidInst,hsz1, null, 100, 1004) + 1;
+					Int32 len2 = DDEML.DdeQueryString(pidInst,hsz2, null, 100, 1004) + 1;
 					Int32 len3 = DDEML.DdeGetData(hdata, null, 0, 0) + 1;
 
 					byte[] data = new byte[len3];
@@ -21368,8 +21307,8 @@ namespace PowerSDR
 					StringBuilder topic = new StringBuilder(len);
 					StringBuilder item = new StringBuilder(len2);
 
-					DDEML.DdeQueryString(pidInst,hsz1, topic, len, DDEML.CP_WINANSI);
-					DDEML.DdeQueryString(pidInst,hsz2, item, len2, DDEML.CP_WINANSI);
+					DDEML.DdeQueryString(pidInst,hsz1, topic, len, 1004);
+					DDEML.DdeQueryString(pidInst,hsz2, item, len2, 1004);
 					DDEML.DdeGetData(hdata, data, len3, 0);
 				    
 					String dataString = System.Text.Encoding.Default.GetString(data);
@@ -21382,6 +21321,7 @@ namespace PowerSDR
 						// TX ON - MUTE
 						// Save mute state - on TX off revert to this state
 						//this.chkMUT.CheckedChanged += new System.EventHandler(this.chkMUT_CheckedChanged);
+						System.Console.WriteLine("TX_ON EVENT - MUTE");
 						muteCache = chkMUT.Checked;
 						// If the monitor isn't checked then mute 
 						if (!chkMON.Checked) 
@@ -21392,6 +21332,7 @@ namespace PowerSDR
 					else if (item.ToString().Equals("HRD_TX"))
 					{
 						// TX_OFF - UNMUTE - Unless mute was already on
+						System.Console.WriteLine("TX_OFF EVENT UNMUTE");
 						// Revert to previous state
 						chkMUT.Checked = muteCache;
 					}
@@ -21399,16 +21340,14 @@ namespace PowerSDR
 					///////////////////////
 					// HRD_MODE Handling //
 					///////////////////////
-					
-					if  ((item.ToString().Equals("HRD_MODE")) && !(lockoutExternalUpdates))
+					if (item.ToString().Equals("HRD_MODE")) 
 					{
-						// Don't force a mode state change unless we need to
-						if ((dataString.StartsWith("LSB")) && (!radModeLSB.Checked)) radModeLSB.Checked = true;
-						if ((dataString.StartsWith("USB")) && (!radModeUSB.Checked)) radModeUSB.Checked = true;
+						if (dataString.StartsWith("LSB")) radModeLSB.Checked = true;
+						if (dataString.StartsWith("USB")) radModeUSB.Checked = true;
 						// TODO: CW Might not want to be CWU all the time
-						if ((dataString.StartsWith("CW")) && (!radModeCWU.Checked))  radModeCWU.Checked = true;
-						if ((dataString.StartsWith("AM"))  && (!radModeAM.Checked))  radModeAM.Checked  = true;
-						if ((dataString.StartsWith("FM")) && (!radModeFMN.Checked))  radModeFMN.Checked = true;
+						if (dataString.StartsWith("CW"))  radModeCWU.Checked = true;
+						if (dataString.StartsWith("AM"))  radModeAM.Checked  = true;
+						if (dataString.StartsWith("FM"))  radModeFMN.Checked = true;
 					}
 
 					////////////////////////
@@ -21422,6 +21361,7 @@ namespace PowerSDR
 					// the ones we sent. So we just lockout getting updates from HRD
 					// for a second or two. If the VFO on the rig was actually tuned
 					// during this time the PowerSDR software will jump to the frequency
+					System.Console.WriteLine("Lockout Status: " + lockoutExternalUpdates); 
 					if (item.ToString().Equals("HRD_HERTZ") && !(lockoutExternalUpdates))
 					{
 						// If less than 1Mhz, fill in zeros
@@ -21429,6 +21369,7 @@ namespace PowerSDR
 
 						String freqMhz = dataString2.Substring(0,dataString2.Length - 6) + "." + dataString2.Substring(dataString2.Length - 6,6);
 
+						System.Console.WriteLine("From HRD-hertz - converted: " + freqMhz);
 						
 						// If the PowerSDR VFOA doesn't equal the VFO of the Rig, update it
 						if (!txtVFOAFreq.Text.Equals(freqMhz)) 
@@ -21506,7 +21447,8 @@ namespace PowerSDR
 			byte[] data1 = new byte[len31];		
 			DDEML.DdeGetData(Data5, data1, len31, 0);
 			String dataString1 = System.Text.Encoding.Default.GetString(data1);
-			this.Text = "WU2X PowerSDR/" + dataString1.Trim('\0') + " IF Stage  v0.91";
+			System.Console.WriteLine("HRD says radio is a ===" +  dataString1 + "===");
+			this.Text = "WU2X PowerSDR/" + dataString1.Trim('\0') + " IF Stage  v0.90";
 
 			// Free String Handles
 			DDEML.DdeFreeStringHandle(pidInst, topic2);
@@ -21541,24 +21483,11 @@ namespace PowerSDR
 			}
 
 			Int32  pwdResult = 0;
-     
-			String freq = frequency.Replace(".",""); // Remove the period from the string
-			// System.Console.WriteLine("Freq: " + freq + ", vfotext: " +txtVFOAFreq.Text);
 
+			String freq = frequency.Replace(".",""); // Remove the period from the string
 			byte[] data = Encoding.ASCII.GetBytes("freq " + freq + "\x00");
 			// Send frequency update to HRD over DDE Execute
 		    DDEML.DdeClientTransaction(data, (uint)data.Length, hConv, IntPtr.Zero, 0,DDEML.XTYP_EXECUTE, 60000, ref pwdResult);
-			Int32 result =  DDEML.DdeGetLastError(pidInst);
-			// System.Console.WriteLine("DDE Result: " + pwdResult);
-
-			// Start or Restart lockout timer to ignore external VFO events
-			// for a second or two...
-			lockoutExternalUpdates = true;	
-			lockoutTimer.Stop();
-			lockoutTimer.Start();
-
-
-
 		}
 
 		private void setHRDMode(String mode)
@@ -21572,59 +21501,9 @@ namespace PowerSDR
 			// We just take the mode in the string format - No Validation 
 			byte[] data = Encoding.ASCII.GetBytes("mode " + mode + "\x00");
 			Int32  pwdResult = 0;
-			// System.Console.WriteLine("Mode: " + mode);
 			DDEML.DdeClientTransaction(data, (uint)data.Length, hConv, IntPtr.Zero, 0, DDEML.XTYP_EXECUTE, 60000, ref pwdResult);
 
-			// Start or Restart lockout timer to ignore external VFO events
-			// for a second or two...
-			lockoutExternalUpdates = true;	
-			lockoutTimer.Stop();
-			lockoutTimer.Start();
-
 		}
-
-		private void checkSwapIQ()
-		{
-			switch(current_model)
-			{
-				case Model.SOFTROCK40:
-
-                    // Note to self - I hate event driven programming...
-
-					// If the swapiq is set to false in the setup menu and
-					// the state of the DttSP swap is true, then 
-					// turn the swap off..
-					if  ((!swap_iq) && (SwapIQCache)) 
-					{ 
-						DttSP.SwapIQChannels(0);
-						SwapIQCache = false;
-						swap = 1;
-					}
-
-
-					// If the VFO falls below the swap freq and the swap is
-					// currently true in the DttSP, then turn off the swap
-					if  ((this.VFOAFreq < this.SwapIQFreq) && (SwapIQCache))
-					{ 
-						DttSP.SwapIQChannels(0);
-						SwapIQCache = false;
-						swap = 1;
-					}
-
-                    // If the VFO frequency is >= to the swap iq freq from setup menu
-					// and the swap iq is true in setup menu and DttSP state for swap is
-					// false, then do the swap in DttSP
-					if (((this.VFOAFreq >= this.SwapIQFreq) &&  (swap_iq) && (!SwapIQCache))) 
-					{
-						DttSP.SwapIQChannels(1);
-						SwapIQCache = true;
-						swap = -1;  // Used to make IF freq negative.
-					}
-					break;
-			}
-		}
-
-	
 		#endregion
 
 		#region Display Events
@@ -22110,22 +21989,7 @@ namespace PowerSDR
 		private void btnDisplayPanCenter_Click(object sender, System.EventArgs e)
 		{
 			//double edge_alias = 7200.0;
-
-			// Calculations below worked with positive IF frequency even though
-			// the SDR1000 uses a negative value by default. So switch the
-			// sign on the IF frequency if its a softrock - oh and use its
-			// IF freqency so the display is panned to receivable signals
-			double if_freq;
-			switch(current_model)
-			{
-				case Model.SOFTROCK40:
-					if_freq = (IFFrequencyForIFStageSoftRock * -1);
-                    break;
-				default :
-					if_freq = 11025.0;
-					break;
-			}
-
+			double if_freq = 11025.0;
 			double spur_tune_width = 200e6 / Math.Pow(2, 16);
 			int width = DttSP.RXDisplayHigh - DttSP.RXDisplayLow;
 
@@ -23008,8 +22872,7 @@ namespace PowerSDR
 						setHRDMode("LSB");
 						IFFrequencyForIFStageSoftRock = if_lsb;
 						VFOOffset = VFOOffsetLSB;
-						// txtVFOAFreq_LostFocus(this, EventArgs.Empty);
-						DttSP.SetOsc(IFFrequencyForIFStageSoftRock*swap);
+						txtVFOAFreq_LostFocus(this, EventArgs.Empty);
 						break;
 				}
 			}
@@ -23026,9 +22889,7 @@ namespace PowerSDR
 						setHRDMode("USB");
 						IFFrequencyForIFStageSoftRock = if_usb;
 						VFOOffset = VFOOffsetUSB;
-						// txtVFOAFreq_LostFocus(this, EventArgs.Empty);
-						DttSP.SetOsc(IFFrequencyForIFStageSoftRock*swap);
-
+						txtVFOAFreq_LostFocus(this, EventArgs.Empty);
 						break;
 				}
 			}
@@ -23053,7 +22914,7 @@ namespace PowerSDR
 						setHRDMode("CW");
 						IFFrequencyForIFStageSoftRock = if_cw;
 						VFOOffset = VFOOffsetCW;
-						DttSP.SetOsc(IFFrequencyForIFStageSoftRock*swap);
+						txtVFOAFreq_LostFocus(this, EventArgs.Empty);
 						break;
 				}
 			}
@@ -23070,7 +22931,7 @@ namespace PowerSDR
 						setHRDMode("CW");
 						IFFrequencyForIFStageSoftRock = if_cw;
 						VFOOffset = VFOOffsetCW;
-						DttSP.SetOsc(IFFrequencyForIFStageSoftRock*swap);
+						txtVFOAFreq_LostFocus(this, EventArgs.Empty);
 						break;
 				}
 			}
@@ -23087,7 +22948,7 @@ namespace PowerSDR
 						setHRDMode("FM");
 						IFFrequencyForIFStageSoftRock = if_fm; 
 						VFOOffset = VFOOffsetFM;
-						DttSP.SetOsc(IFFrequencyForIFStageSoftRock*swap);
+						txtVFOAFreq_LostFocus(this, EventArgs.Empty);
 						break;
 				}
 
@@ -23105,7 +22966,7 @@ namespace PowerSDR
 						setHRDMode("AM");
 						IFFrequencyForIFStageSoftRock = if_am;
 						VFOOffset = VFOOffsetAM;
-						DttSP.SetOsc(IFFrequencyForIFStageSoftRock*swap);
+						txtVFOAFreq_LostFocus(this, EventArgs.Empty);
 						break;
 				}
 

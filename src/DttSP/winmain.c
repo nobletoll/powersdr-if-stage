@@ -420,22 +420,10 @@ Audio_Callback (float *input_l, float *input_r, float *output_l,
 	if ((ringb_float_write_space (top.jack.ring.i.l) >= nframes)
 		&& (ringb_float_write_space (top.jack.ring.i.r) >= nframes))
 	{
-        // Swap/Reverse the I/Q Channels if the flag is set
-        // WU2X - I really have no idea if this is the best place to do this
-		if (top.hold.buf.swap == 0) 
-		{   // Normal
-			ringb_float_write (top.jack.ring.i.l, (float *) input_l, nframes);
-			ringb_float_write (top.jack.ring.i.r, (float *) input_r, nframes);
-			ringb_float_write (top.jack.auxr.i.l, (float *) input_l, nframes);
-			ringb_float_write (top.jack.auxr.i.r, (float *) input_r, nframes);
-		} 
-		else 
-		{   // Swap/Reverse
-			ringb_float_write (top.jack.ring.i.l, (float *) input_r, nframes);
-			ringb_float_write (top.jack.ring.i.r, (float *) input_l, nframes);
-			ringb_float_write (top.jack.auxr.i.l, (float *) input_r, nframes);
-			ringb_float_write (top.jack.auxr.i.r, (float *) input_l, nframes);
-		}
+		ringb_float_write (top.jack.ring.i.l, (float *) input_l, nframes);
+		ringb_float_write (top.jack.ring.i.r, (float *) input_r, nframes);
+		ringb_float_write (top.jack.auxr.i.l, (float *) input_l, nframes);
+		ringb_float_write (top.jack.auxr.i.r, (float *) input_r, nframes);
     }
 	else
 	{	// rb pathology
