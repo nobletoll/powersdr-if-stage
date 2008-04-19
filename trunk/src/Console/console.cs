@@ -45,6 +45,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Text;
 using System.Windows.Forms;
+using System.Timers;
 using SDRSerialSupportII;
 
 namespace PowerSDR
@@ -349,6 +350,29 @@ namespace PowerSDR
 
 	unsafe public class Console : System.Windows.Forms.Form
 	{
+  	    #region TODO's  - WU2X - PowerSDR SoftRock IF Stage Support - 7/13/2007
+
+
+  
+
+		
+		// 6. Check that record and playback is not broke!
+        // - Its playing back, but you can't tune around - stuck - only with subrx
+
+		
+
+		// Remove all System.console messages
+		// Convert back from console app to windows app
+
+		// After Release
+		//     // 10. Make auto image null work
+		// Might consider defaulting mode on rig to something other than what you tune up on the POwerSDR
+		//  on the 940, the AGC is active in AM mode and kills RX 
+
+
+
+		#endregion
+
 		#region Variable Declarations
 		// ======================================================
 		// Variable Declarations
@@ -377,6 +401,19 @@ namespace PowerSDR
 
 		public Memory MemForm;
 		private HW hw;										// will eventually be an array of rigs to support multiple radios
+
+		//////////////////////////////////////////////////////////
+        // Global Variables to support SoftRock IF Stage - WU2X //
+		//////////////////////////////////////////////////////////
+        private IntPtr hConv;								// HRD DDE Conversation Handle.
+	    private	Int32 pidInst;								// DDE 
+		private	double IFFrequencyForIFStageSoftRock;	    // IF Frequency 
+		private double VFOOffset;                           // Offset for external rig VFO
+		private DDEML.DdeCallback dcb;                      // DDE callback method for HRD updates
+		private bool muteCache;				                // Mute button state cache
+		private bool lockoutExternalUpdates = false;	    // Locks out HRD updates while tuning PowerSDR VFO
+		private  System.Timers.Timer lockoutTimer  = new System.Timers.Timer(); // Timer for update lockout
+		private bool connectedToHRD = false;                // HRD Connection status
 
 		public WaveControl WaveForm;
 		public PAQualify PAQualForm;
@@ -760,6 +797,9 @@ namespace PowerSDR
 		private System.Windows.Forms.CheckBoxTS chkRXEQ;
 		private System.Windows.Forms.CheckBoxTS chkTXEQ;
 		private System.Windows.Forms.CheckBoxTS chkBCI;
+		private System.Windows.Forms.MenuItem menuItem1;
+		private System.Windows.Forms.MenuItem mnuHelpWebsite;
+		private System.Windows.Forms.MenuItem mnuHelpAbout;
 		private System.ComponentModel.IContainer components;
 
 		#endregion
@@ -850,16 +890,15 @@ namespace PowerSDR
 				}
 			}
 
-			if(this.Text.IndexOf("SVN") >= 0)
-			{
+	
 				if(show_alpha_warning)
 				{
 					AlphaWarnForm form = new AlphaWarnForm(this);
 					form.ShowDialog();				
 				}
 
-				mnuReportBug.Visible = true;
-			}
+				mnuReportBug.Visible = false;
+		
 
 			if(run_setup_wizard)
 			{
@@ -1032,6 +1071,9 @@ namespace PowerSDR
 			this.mnuCWX = new System.Windows.Forms.MenuItem();
 			this.mnuUCB = new System.Windows.Forms.MenuItem();
 			this.mnuReportBug = new System.Windows.Forms.MenuItem();
+			this.menuItem1 = new System.Windows.Forms.MenuItem();
+			this.mnuHelpWebsite = new System.Windows.Forms.MenuItem();
+			this.mnuHelpAbout = new System.Windows.Forms.MenuItem();
 			this.grpMode = new System.Windows.Forms.GroupBoxTS();
 			this.radModeAM = new System.Windows.Forms.RadioButtonTS();
 			this.radModeSAM = new System.Windows.Forms.RadioButtonTS();
@@ -2656,7 +2698,8 @@ namespace PowerSDR
 																					  this.mnuXVTR,
 																					  this.mnuCWX,
 																					  this.mnuUCB,
-																					  this.mnuReportBug});
+																					  this.mnuReportBug,
+																					  this.menuItem1});
 			this.mainMenu1.RightToLeft = ((System.Windows.Forms.RightToLeft)(resources.GetObject("mainMenu1.RightToLeft")));
 			// 
 			// mnuSetup
@@ -2760,6 +2803,38 @@ namespace PowerSDR
 			this.mnuReportBug.Text = resources.GetString("mnuReportBug.Text");
 			this.mnuReportBug.Visible = ((bool)(resources.GetObject("mnuReportBug.Visible")));
 			this.mnuReportBug.Click += new System.EventHandler(this.mnuReportBug_Click);
+			// 
+			// menuItem1
+			// 
+			this.menuItem1.Enabled = ((bool)(resources.GetObject("menuItem1.Enabled")));
+			this.menuItem1.Index = 8;
+			this.menuItem1.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+																					  this.mnuHelpWebsite,
+																					  this.mnuHelpAbout});
+			this.menuItem1.Shortcut = ((System.Windows.Forms.Shortcut)(resources.GetObject("menuItem1.Shortcut")));
+			this.menuItem1.ShowShortcut = ((bool)(resources.GetObject("menuItem1.ShowShortcut")));
+			this.menuItem1.Text = resources.GetString("menuItem1.Text");
+			this.menuItem1.Visible = ((bool)(resources.GetObject("menuItem1.Visible")));
+			// 
+			// mnuHelpWebsite
+			// 
+			this.mnuHelpWebsite.Enabled = ((bool)(resources.GetObject("mnuHelpWebsite.Enabled")));
+			this.mnuHelpWebsite.Index = 0;
+			this.mnuHelpWebsite.Shortcut = ((System.Windows.Forms.Shortcut)(resources.GetObject("mnuHelpWebsite.Shortcut")));
+			this.mnuHelpWebsite.ShowShortcut = ((bool)(resources.GetObject("mnuHelpWebsite.ShowShortcut")));
+			this.mnuHelpWebsite.Text = resources.GetString("mnuHelpWebsite.Text");
+			this.mnuHelpWebsite.Visible = ((bool)(resources.GetObject("mnuHelpWebsite.Visible")));
+			this.mnuHelpWebsite.Click += new System.EventHandler(this.mnuHelpWebsite_Click);
+			// 
+			// mnuHelpAbout
+			// 
+			this.mnuHelpAbout.Enabled = ((bool)(resources.GetObject("mnuHelpAbout.Enabled")));
+			this.mnuHelpAbout.Index = 1;
+			this.mnuHelpAbout.Shortcut = ((System.Windows.Forms.Shortcut)(resources.GetObject("mnuHelpAbout.Shortcut")));
+			this.mnuHelpAbout.ShowShortcut = ((bool)(resources.GetObject("mnuHelpAbout.ShowShortcut")));
+			this.mnuHelpAbout.Text = resources.GetString("mnuHelpAbout.Text");
+			this.mnuHelpAbout.Visible = ((bool)(resources.GetObject("mnuHelpAbout.Visible")));
+			this.mnuHelpAbout.Click += new System.EventHandler(this.mnuHelpAbout_Click);
 			// 
 			// grpMode
 			// 
@@ -4299,11 +4374,9 @@ namespace PowerSDR
 			this.chkSR.AccessibleName = resources.GetString("chkSR.AccessibleName");
 			this.chkSR.Anchor = ((System.Windows.Forms.AnchorStyles)(resources.GetObject("chkSR.Anchor")));
 			this.chkSR.Appearance = ((System.Windows.Forms.Appearance)(resources.GetObject("chkSR.Appearance")));
-			this.chkSR.BackColor = System.Drawing.Color.Yellow;
+			this.chkSR.BackColor = System.Drawing.SystemColors.Control;
 			this.chkSR.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("chkSR.BackgroundImage")));
 			this.chkSR.CheckAlign = ((System.Drawing.ContentAlignment)(resources.GetObject("chkSR.CheckAlign")));
-			this.chkSR.Checked = true;
-			this.chkSR.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.chkSR.Dock = ((System.Windows.Forms.DockStyle)(resources.GetObject("chkSR.Dock")));
 			this.chkSR.Enabled = ((bool)(resources.GetObject("chkSR.Enabled")));
 			this.chkSR.FlatStyle = ((System.Windows.Forms.FlatStyle)(resources.GetObject("chkSR.FlatStyle")));
@@ -8016,7 +8089,7 @@ namespace PowerSDR
 		{
 			try 
 			{
-				if(!File.Exists(Application.StartupPath+"\\wisdom"))
+				 if(!File.Exists(Application.StartupPath+"\\wisdom"))
 				{
 					Process p = Process.Start(Application.StartupPath+"\\fftw_wisdom.exe");
 					MessageBox.Show("Running one time optimization.  Please wait patiently for "+
@@ -8158,7 +8231,7 @@ namespace PowerSDR
 
 			Hdw.Init();							// Power down hardware
 			Hdw.StandBy();						// initialize hardware device
-
+   
 			EQForm.RestoreSettings();
 
 			XVTRForm = new XVTRForm(this);
@@ -10449,58 +10522,6 @@ namespace PowerSDR
 			}
 		}
 
-		// kb9yig sr40 mod 		
-		// check and see if the band data includes alias data -- if so 
-		// zero out (very negative) the portions of the data that are 
-		// aliased 
-		public void AdjustDisplayDataForBandEdge(ref float[] display_data) 
-		{
-			if ( current_model != Model.SOFTROCK40)  // -- no aliasing going on 
-				return;   
-
-			if ( current_dsp_mode == DSPMode.DRM )  // for now don't worry about aliasing in DRM land 
-			{
-				return; 
-			}
-
-			double hz_per_bin = DttSP.SampleRate/Display.BUFFER_SIZE; 
-			double data_center_freq = tuned_freq; 
-			if ( data_center_freq == 0 ) 
-			{ 
-				return; 
-			} 
-			double data_low_edge_hz = (1e6 * data_center_freq) - DttSP.SampleRate/2; 
-			double data_high_edge_hz = (1e6 * data_center_freq) + DttSP.SampleRate/2; 
-			double alias_free_low_edge_hz = (1e6 * soft_rock_center_freq) - DttSP.SampleRate/2; 
-			double alias_free_high_edge_hz = (1e6 * soft_rock_center_freq) + DttSP.SampleRate/2; 
-			if ( data_low_edge_hz < alias_free_low_edge_hz )   // data we have goes below alias free region -- zero it 
-			{				
-				double hz_this_bin = data_low_edge_hz; 
-				int bin_num = 0; 
-				while ( hz_this_bin < alias_free_low_edge_hz ) 
-				{
-					display_data[bin_num] = -200.0f; 
-					++bin_num; 
-					hz_this_bin += hz_per_bin; 
-				}
-				// Debug.WriteLine("data_low: " + bin_num); 
-			} 
-			else if ( data_high_edge_hz > alias_free_high_edge_hz ) 
-			{ 				
-				double hz_this_bin = data_high_edge_hz; 
-				int bin_num = Display.BUFFER_SIZE - 1; 
-				while ( hz_this_bin > alias_free_high_edge_hz ) 
-				{
-					display_data[bin_num] = -200.0f; 
-					--bin_num; 
-					hz_this_bin -= hz_per_bin; 
-				}					
-				// Debug.WriteLine("data_high: " + bin_num); 
-			}
-			return;		
-		}
-		// end kb9yig sr40 mod 
-
 		public void SelectVarFilter() 
 		{ 
 			if ( current_filter == Filter.VAR1 ) return; 
@@ -12059,24 +12080,24 @@ namespace PowerSDR
 				switch(current_meter_display_mode)
 				{
 					case MultiMeterDisplayMode.Edge:
-						switch(value)
-						{
-							case MultiMeterDisplayMode.Edge:
-								break;
-							default:
-								picMultiMeterDigital.Height -= lblMultiSMeter.ClientSize.Height;
-								picMultiMeterDigital.BackColor = meter_background_color;
-								break;
-						}
+					switch(value)
+					{
+						case MultiMeterDisplayMode.Edge:
+							break;
+						default:
+							picMultiMeterDigital.Height -= lblMultiSMeter.ClientSize.Height;
+							picMultiMeterDigital.BackColor = meter_background_color;
+							break;
+					}
 						break;
 					default:
-						switch(value)
-						{
-							case MultiMeterDisplayMode.Edge:
-								picMultiMeterDigital.Height += lblMultiSMeter.ClientSize.Height;
-								picMultiMeterDigital.BackColor = edge_meter_background_color;
-								break;
-						}
+					switch(value)
+					{
+						case MultiMeterDisplayMode.Edge:
+							picMultiMeterDigital.Height += lblMultiSMeter.ClientSize.Height;
+							picMultiMeterDigital.BackColor = edge_meter_background_color;
+							break;
+					}
 						break;
 				}
 				current_meter_display_mode = value;
@@ -12703,8 +12724,13 @@ namespace PowerSDR
 						else MaxFreq = 65.0;
 						break;
 					case Model.SOFTROCK40:
-						MinFreq = soft_rock_center_freq - DttSP.SampleRate/2*1e-6;
-						MaxFreq = soft_rock_center_freq + DttSP.SampleRate/2*1e-6;
+						if (!this.connectedToHRD) 
+						{
+							InitHRDDDE();
+                            InitSoftRockItems();
+						}
+						// MinFreq = 0.03;  // WU2X - Kenwood 940 Min. Frequency
+						// MaxFreq = 30.0;  // WU2X - Kenwood 940 Max. Frequency
 						break;
 					case Model.DEMO:
 						MinFreq = 0.011025;
@@ -12742,7 +12768,7 @@ namespace PowerSDR
 			}
 		}
 
-		private double soft_rock_center_freq = 7.056;
+		private double soft_rock_center_freq = 8.817; // WU2X
 		public double SoftRockCenterFreq
 		{
 			get { return soft_rock_center_freq; }
@@ -12751,13 +12777,131 @@ namespace PowerSDR
 				soft_rock_center_freq = value;
 				if(current_model == Model.SOFTROCK40)
 				{
-					MinFreq = soft_rock_center_freq - DttSP.SampleRate/2*1e-6;
-					MaxFreq = soft_rock_center_freq + DttSP.SampleRate/2*1e-6;
+					
+					// MinFreq = soft_rock_center_freq - DttSP.SampleRate/2*1e-6;  // ??? Check, how is this used. 
+					// MaxFreq = soft_rock_center_freq + DttSP.SampleRate/2*1e-6;
+					MinFreq = 0.03;  // WU2X - Kenwood 940 Min. Frequency
+					MaxFreq = 30.0;  // WU2X - Kenwood 940 Max. Frequency
+
 					if(SetupForm != null)
 						txtVFOAFreq_LostFocus(this, EventArgs.Empty);
 				}
 			}
 		}
+
+		//////////////////////////////////////////////////////
+        // Intermediate Frequency by mode - from setup menu //
+		//////////////////////////////////////////////////////
+		private double if_lsb = 0.0; 
+		public double IFLSB
+		{
+			get { return if_lsb; }
+			set
+			{
+				if_lsb = value;
+			    radModeLSB_CheckedChanged(this, EventArgs.Empty); // WU2X
+			}
+		}
+
+		private double if_usb = 0.0; 
+		public double IFUSB
+		{
+			get { return if_usb; }
+			set
+			{
+				if_usb = value;
+				radModeUSB_CheckedChanged(this, EventArgs.Empty); // WU2X
+			}
+		}
+
+		private double if_cw = 0.0; 
+		public double IFCW
+		{
+			get { return if_cw; }
+			set
+			{
+				if_cw = value;
+				radModeCWL_CheckedChanged(this, EventArgs.Empty); // WU2X
+			}
+		}
+
+		private double if_am = 0.0; 
+		public double IFAM
+		{
+			get { return if_am; }
+			set
+			{
+				if_am = value;
+				radModeAM_CheckedChanged(this, EventArgs.Empty); // WU2X
+			}
+		}
+		private double if_fm = 0.0; 
+		public double IFFM
+		{
+			get { return if_fm; }
+			set
+			{
+				if_fm = value;
+				radModeFMN_CheckedChanged(this, EventArgs.Empty); // WU2X
+			}
+		}
+
+		private double VFOOffset_LSB = 0.0; 
+		public double VFOOffsetLSB
+		{
+			get { return VFOOffset_LSB; }
+			set
+			{
+				VFOOffset_LSB = value;
+				radModeLSB_CheckedChanged(this, EventArgs.Empty); // WU2X
+			}
+		}
+
+		private double VFOOffset_USB = 0.0; 
+		public double VFOOffsetUSB
+		{
+			get { return VFOOffset_USB; }
+			set
+			{
+				VFOOffset_USB = value;
+				radModeUSB_CheckedChanged(this, EventArgs.Empty); // WU2X
+			}
+		}
+
+		private double VFOOffset_CW = 0.0; 
+		public double VFOOffsetCW
+		{
+			get { return VFOOffset_CW; }
+			set
+			{
+				VFOOffset_CW = value;
+				radModeCWU_CheckedChanged(this, EventArgs.Empty); // WU2X
+			}
+		}
+
+		private double VFOOffset_AM = 0.0; 
+		public double VFOOffsetAM
+		{
+			get { return VFOOffset_AM; }
+			set
+			{
+				VFOOffset_AM = value;
+				radModeAM_CheckedChanged(this, EventArgs.Empty); // WU2X
+			}
+		}
+
+		private double VFOOffset_FM = 0.0; 
+		public double VFOOffsetFM
+		{
+			get { return VFOOffset_FM; }
+			set
+			{
+				VFOOffset_FM = value;
+				radModeFMN_CheckedChanged(this, EventArgs.Empty); // WU2X
+			}
+		}
+       ////// - WU2X -End
+
 
 		private float saved_vfoa_freq = 7.0f;
 		/*		public float SavedVFOAFreq
@@ -13319,7 +13463,7 @@ namespace PowerSDR
 					tuning_word = sr_tuning_word;
 				}
 
-				DttSP.SetOsc(dsp_osc_freq);
+				// WU2X - killing my other setting of this ???? DttSP.SetOsc(dsp_osc_freq);
 				Hdw.DDSTuningWord = tuning_word;		
 				SetHWFilters(dds_freq);
 
@@ -13368,12 +13512,6 @@ namespace PowerSDR
 		}
 
 		private double vfo_offset = 0.0;
-		public double VFOOffset
-		{
-			get	{ return vfo_offset; }
-			set	{ vfo_offset = value; }
-		}
-
 		private double if_freq = 0.011025;
 		public double IFFreq
 		{
@@ -13842,14 +13980,14 @@ namespace PowerSDR
 	
 		#endregion
 
-		private bool notify_on_beta = true;
+		private bool notify_on_beta = false;
 		public bool NotifyOnBeta
 		{
 			get { return notify_on_beta; }
 			set { notify_on_beta = value; }
 		}
 
-		private bool notify_on_release = true;
+		private bool notify_on_release = false;
 		public bool NotifyOnRelease
 		{
 			get { return notify_on_release; }
@@ -15849,15 +15987,15 @@ namespace PowerSDR
 						meter_data_ready = false;  //We do NOT want to do this before we have consumed it!!!! so do it here.
 					}*/
 
-					switch((int)g.DpiX)
-					{
-						case 96:
-							if(pixel_x > 139) pixel_x = 139;
-							break;
-						case 120:
-							if(pixel_x > 167) pixel_x = 167;
-							break;
-					}
+				switch((int)g.DpiX)
+				{
+					case 96:
+						if(pixel_x > 139) pixel_x = 139;
+						break;
+					case 120:
+						if(pixel_x > 167) pixel_x = 167;
+						break;
+				}
 
 					if((!chkMOX.Checked && current_meter_rx_mode != MeterRXMode.OFF) ||
 						(chkMOX.Checked && current_meter_tx_mode != MeterTXMode.OFF))
@@ -16385,18 +16523,11 @@ namespace PowerSDR
 					avg_last_dttsp_osc != dttsp_osc))   // vfo has changed, need to shift things around 
 				{ 
 					//Debug.WriteLine("dttsp_osc: " + dttsp_osc); 
+
 					double delta_vfo; 
-					if ( current_model != Model.SOFTROCK40 ) 
-					{ 					
-						delta_vfo = DDSFreq - avg_last_ddsfreq;
-						delta_vfo *= 1e6; // vfo in mhz moron!
-					}
-					else 
-					{ 						
-						delta_vfo = dttsp_osc - avg_last_dttsp_osc; 
-						delta_vfo = -delta_vfo; 
-						//Debug.WriteLine("update from dttsp delta_vfo: " + delta_vfo); 
-					} 					
+					delta_vfo = DDSFreq - avg_last_ddsfreq;
+					delta_vfo *= 1e6; // vfo in mhz moron!
+					
 					double hz_per_bin = DttSP.SampleRate/Display.BUFFER_SIZE; 
 
 					int bucket_shift = (int)(delta_vfo/hz_per_bin); 
@@ -17266,8 +17397,8 @@ namespace PowerSDR
 			chkTUN.BackColor = button_selected_color;
 			return;
             
-		atu_error:
-			chkTUN.Checked = false;
+			atu_error:
+				chkTUN.Checked = false;
 			chkTUN.Enabled = true;
 			comboTuneMode.Enabled = true;
 			MessageBox.Show("Error communicating with the ATU",
@@ -17280,6 +17411,16 @@ namespace PowerSDR
 		{
 			Thread.Sleep((int)((double)block_size1/(double)sample_rate1*1000.0));
 			Display.ResetDisplayAverage();
+		}
+
+		///////////////////////////////////////////////
+		// Event to expire external VFO tune lockout //
+		///////////////////////////////////////////////
+		// Softrock IF Stage Support
+		private void LockoutTimeExpiredEvent( object source, ElapsedEventArgs e )
+		{
+			System.Console.WriteLine("Expired - 1 second lockout. this = " + this.GetHashCode());
+			this.lockoutExternalUpdates = false;
 		}
 
 		#endregion
@@ -17371,18 +17512,18 @@ namespace PowerSDR
 						btnMemoryQuickSave_Click(this, EventArgs.Empty);
 						break;
 					case Keys.D:
-						switch(Display.CurrentDisplayMode)
-						{
-							case DisplayMode.PANADAPTER:
-								comboDisplayMode.Text = "Spectrum";
-								break;
-							case DisplayMode.SPECTRUM:
-								comboDisplayMode.Text = "Panadapter";
-								break;
-							default:
-								comboDisplayMode.Text = "Panadapter";
-								break;
-						}
+					switch(Display.CurrentDisplayMode)
+					{
+						case DisplayMode.PANADAPTER:
+							comboDisplayMode.Text = "Spectrum";
+							break;
+						case DisplayMode.SPECTRUM:
+							comboDisplayMode.Text = "Panadapter";
+							break;
+						default:
+							comboDisplayMode.Text = "Panadapter";
+							break;
+					}
 						break;
 					case Keys.E:
 						if(udRF.Value != udRF.Minimum)
@@ -17452,25 +17593,25 @@ namespace PowerSDR
 					case Keys.F:
 						int low = (int)udFilterLow.Value;
 						int high = (int)udFilterHigh.Value;
-						switch(current_dsp_mode)
-						{
-							case DSPMode.AM:
-							case DSPMode.SAM:
-							case DSPMode.DSB:
-							case DSPMode.FMN:
-							case DSPMode.CWU:
-							case DSPMode.CWL:
-								UpdateFilters(low-5, high+5);
-								break;
-							case DSPMode.USB:
-							case DSPMode.DIGU:						
-								UpdateFilters(low, high+10);
-								break;
-							case DSPMode.LSB:
-							case DSPMode.DIGL:						
-								UpdateFilters(low-10, high);
-								break;
-						}
+					switch(current_dsp_mode)
+					{
+						case DSPMode.AM:
+						case DSPMode.SAM:
+						case DSPMode.DSB:
+						case DSPMode.FMN:
+						case DSPMode.CWU:
+						case DSPMode.CWL:
+							UpdateFilters(low-5, high+5);
+							break;
+						case DSPMode.USB:
+						case DSPMode.DIGU:						
+							UpdateFilters(low, high+10);
+							break;
+						case DSPMode.LSB:
+						case DSPMode.DIGL:						
+							UpdateFilters(low-10, high);
+							break;
+					}
 						break;
 					case Keys.G:
 						btnVFOAtoB_Click(this, EventArgs.Empty);
@@ -17528,18 +17669,18 @@ namespace PowerSDR
 						int low = (int)udFilterLow.Value;
 						int high = (int)udFilterHigh.Value;
 						int increment = 0;
-						switch(current_dsp_mode)
-						{
-							case DSPMode.CWL:
-							case DSPMode.CWU:
-							case DSPMode.DIGL:
-							case DSPMode.DIGU:
-								increment = 10;
-								break;
-							default:
-								increment = 50;
-								break;
-						}
+					switch(current_dsp_mode)
+					{
+						case DSPMode.CWL:
+						case DSPMode.CWU:
+						case DSPMode.DIGL:
+						case DSPMode.DIGU:
+							increment = 10;
+							break;
+						default:
+							increment = 50;
+							break;
+					}
 						UpdateFilters(low-increment, high-increment);
 						/*if(tbFilterShift.Value != tbFilterShift.Minimum)
 							tbFilterShift.Value--;
@@ -17549,18 +17690,18 @@ namespace PowerSDR
 						low = (int)udFilterLow.Value;
 						high = (int)udFilterHigh.Value;
 						increment = 0;
-						switch(current_dsp_mode)
-						{
-							case DSPMode.CWL:
-							case DSPMode.CWU:
-							case DSPMode.DIGL:
-							case DSPMode.DIGU:
-								increment = 10;
-								break;
-							default:
-								increment = 50;
-								break;
-						}
+					switch(current_dsp_mode)
+					{
+						case DSPMode.CWL:
+						case DSPMode.CWU:
+						case DSPMode.DIGL:
+						case DSPMode.DIGU:
+							increment = 10;
+							break;
+						default:
+							increment = 50;
+							break;
+					}
 						UpdateFilters(low+increment, high+increment);
 						/*if(tbFilterShift.Value != tbFilterShift.Maximum)
 							tbFilterShift.Value++;
@@ -18450,16 +18591,16 @@ namespace PowerSDR
 			{
 				case DisplayMode.PANADAPTER:
 				case DisplayMode.WATERFALL:
-					switch(Display.CurrentDisplayMode)
-					{
-						case DisplayMode.PANADAPTER:
-						case DisplayMode.WATERFALL:
-							break;
-						default:
-							CurrentFilter = current_filter; // reset filter display limits
-							DttSP.TXFilterLowCut = DttSP.TXFilterLowCut;
-							break;
-					}
+				switch(Display.CurrentDisplayMode)
+				{
+					case DisplayMode.PANADAPTER:
+					case DisplayMode.WATERFALL:
+						break;
+					default:
+						CurrentFilter = current_filter; // reset filter display limits
+						DttSP.TXFilterLowCut = DttSP.TXFilterLowCut;
+						break;
+				}
 					break;
 			}
 
@@ -19034,7 +19175,7 @@ namespace PowerSDR
 				if(num_channels == 2)
 					Mixer.SetMainMute(mixer_id1, false);
 
-					udAF.Value = rxaf;
+				udAF.Value = rxaf;
 			}
 
 			udPWR_ValueChanged(this, EventArgs.Empty);
@@ -19153,7 +19294,7 @@ namespace PowerSDR
 
 				CurrentPreampMode = current_preamp_mode;
 
-				spur_reduction = SetupForm.chkGeneralSpurRed.Checked;
+				// ??? spur_reduction = SetupForm.chkGeneralSpurRed.Checked;
 
 				if(current_dsp_mode != DSPMode.DRM &&
 					current_dsp_mode != DSPMode.SPEC)
@@ -20638,16 +20779,75 @@ namespace PowerSDR
 						}
 						break;
 					case Model.SOFTROCK40:
-						//!!!!drm patch
+
+                        // The event args are used to communicate whether or not
+						// this VFO update is from the PowerSDR software or from
+						// a HRD callback on the radio VFO being tuned. At this
+						// point there are only two source states - internal and 
+						// external. I don't bother to look into event args because
+						// if its an HRDEventArgs instance, I already know this
+						// event was fired off from an external source, from HRD.
+						// I wrote this because I'll never remember what or why
+						// I did this...
+
+                        if ( !(e is PowerSDR.HRDEventArgs) )
+						{
+
+							System.Console.WriteLine("Tuning, offset for this mode: " + VFOOffset);
+
+                            // External radio VFO can be offset from the powersdr vfo
+							// by mode, from the setup menu, under Softrock IF stage
+
+							// Internal Event
+							if (VFOOffset == 0)
+							{
+								setHRDFrequency(txtVFOAFreq.Text);
+							}
+							else
+							{
+								double offsetMhz = VFOOffset/1e6;
+								double offset = freq + offsetMhz;
+								setHRDFrequency(offset.ToString("f6")); 
+							}
+
+                            // Start or Restart lockout timer to ignore external VFO events
+							// for a second or two...
+							lockoutExternalUpdates = true;	
+							lockoutTimer.Stop();
+                            lockoutTimer.Start();
+							System.Console.WriteLine("Starting 2 second lockout."); 
+							
+						}
+						 
+						//!!!!drm patch // WU2X - Don't know if this still applies
+						
 						double osc_freq = soft_rock_center_freq*1e6 - freq*1e6;
 						if ( current_dsp_mode  == DSPMode.DRM ) // if we're in DRM mode we need to be offset 12khz
 						{
 							osc_freq = osc_freq + 12000; 
 							// System.Console.WriteLine("setting osc_freq: " + osc_freq); 
 						}
-						tuned_freq = freq;
-						//Debug.WriteLine("osc_freq: "+osc_freq.ToString("f6"));
-						DttSP.SetOsc(osc_freq);
+
+						tuned_freq = freq;  // WU2X - Broke SubRX
+
+                        DttSP.SetOsc(IFFrequencyForIFStageSoftRock);
+
+						if(!chkMOX.Checked || (chkMOX.Checked && !chkVFOSplit.Checked))
+						{
+							DDSFreq = freq;
+
+							int diff = (int)((VFOBFreq - VFOAFreq)*1e6);
+							int rx2_osc = (int)(DttSP.RXOsc - diff);
+							if(rx2_osc > -sample_rate1/2 && rx2_osc < sample_rate1/2)
+							{
+								DttSP.SetRXListen(1);
+								DttSP.SetOscDll(rx2_osc);
+								DttSP.SetRXListen(0);
+							}
+							else if(chkEnableSubRX.Checked)
+								chkEnableSubRX.Checked = false;
+						}
+
 						break;
 				}
 			}
@@ -20660,7 +20860,7 @@ namespace PowerSDR
 
 			if(Display.PeakOn) Display.ResetDisplayPeak();
 		}
-
+	
 		private static double tuned_freq;
 		private void txtVFOAFreq_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
 		{
@@ -20752,28 +20952,51 @@ namespace PowerSDR
 			}
 
 			double freq = double.Parse(txtVFOBFreq.Text);
+/*
+			int diff = (int)((VFOBFreq - VFOAFreq)*1e6);
+			double rx2_osc = DttSP.RXOsc - diff;
+			double lowerlim = (VFOAFreq)-(sample_rate1/2)*1e-6;;
+			double upperlim = (VFOAFreq)+(sample_rate1/2)*1e-6;;
+*/
 
 			int diff = (int)((VFOBFreq - VFOAFreq)*1e6);
 			double rx2_osc = DttSP.RXOsc - diff;
-			
+
+			// WU2X 
+			// Looks like if VFOB is out of passband when SubRX is ON then reset it be within passband and return
 			if(chkEnableSubRX.Checked)
 			{
-				if(rx2_osc < -sample_rate1/2)
-				{
+			   
+
+				if(rx2_osc < (-sample_rate1/2))
+               //if (VFOBFreq  > upperlim)
+			   {
 					VFOBFreq = VFOAFreq + (sample_rate1/2+DttSP.RXOsc-1)*1e-6;
+                    // VFOBFreq = VFOAFreq + (sample_rate1/2)*1e-6;
 					return;
 				}
 				else if(rx2_osc > sample_rate1/2)
+				// else if (VFOBFreq < lowerlim)
 				{
 					VFOBFreq = VFOAFreq + (-sample_rate1/2+DttSP.RXOsc+1)*1e-6;
+				   //VFOBFreq = VFOAFreq - (sample_rate1/2)*1e-6;
 					return;
 				}
+		
 			}
 
+			// WU2X 
+			// Looks like if VFOB is in passband  - Turn on SubRX
 			if(chkEnableSubRX.Checked &&
 				(rx2_osc > -sample_rate1/2 && rx2_osc < sample_rate1/2))
+			//if(chkEnableSubRX.Checked &&
+             //   VFOBFreq < upperlim && VFOBFreq > lowerlim)
+
 			{
 				DttSP.SetRXListen(1);
+
+				
+				//System.Console.WriteLine("osc_freq2-VFOB: "+rx2_osc.ToString());
 				DttSP.SetOscDll(rx2_osc);
 				DttSP.SetRXListen(0);
 			}
@@ -21062,6 +21285,227 @@ namespace PowerSDR
 
 		#endregion
 
+		#region DDE and HRD Routines - WU2X
+
+        ////////////////////////////////////////////////////////////
+        // This callback method is registered with HRD to receive // 
+		// updates (freq, mode, tx)                               //
+		////////////////////////////////////////////////////////////
+		public IntPtr HRDDdeCallback(Int32 uType, Int32 uFmt, IntPtr hconv, IntPtr hsz1, IntPtr hsz2, IntPtr hdata, IntPtr dwData1, IntPtr dwData2) 
+		{
+			switch (uType)
+			{
+				case DDEML.XTYP_ADVDATA:  // Advise Data
+
+					System.Console.WriteLine("In Callback - it was advise data!"); 
+					Int32 len = DDEML.DdeQueryString(pidInst,hsz1, null, 100, 1004) + 1;
+					Int32 len2 = DDEML.DdeQueryString(pidInst,hsz2, null, 100, 1004) + 1;
+					Int32 len3 = DDEML.DdeGetData(hdata, null, 0, 0) + 1;
+
+					byte[] data = new byte[len3];
+
+					StringBuilder topic = new StringBuilder(len);
+					StringBuilder item = new StringBuilder(len2);
+
+					DDEML.DdeQueryString(pidInst,hsz1, topic, len, 1004);
+					DDEML.DdeQueryString(pidInst,hsz2, item, len2, 1004);
+					DDEML.DdeGetData(hdata, data, len3, 0);
+				    
+					String dataString = System.Text.Encoding.Default.GetString(data);
+
+					/////////////////////
+					// HRD_TX Handling //
+					/////////////////////	
+					if (item.ToString().Equals("HRD_TX") && dataString.StartsWith("On")) 
+					{
+						// TX ON - MUTE
+						// Save mute state - on TX off revert to this state
+						//this.chkMUT.CheckedChanged += new System.EventHandler(this.chkMUT_CheckedChanged);
+						System.Console.WriteLine("TX_ON EVENT - MUTE");
+						muteCache = chkMUT.Checked;
+						// If the monitor isn't checked then mute 
+						if (!chkMON.Checked) 
+						{
+							chkMUT.Checked = true;
+						}
+					} 
+					else if (item.ToString().Equals("HRD_TX"))
+					{
+						// TX_OFF - UNMUTE - Unless mute was already on
+						System.Console.WriteLine("TX_OFF EVENT UNMUTE");
+						// Revert to previous state
+						chkMUT.Checked = muteCache;
+					}
+					                    
+					///////////////////////
+					// HRD_MODE Handling //
+					///////////////////////
+					if (item.ToString().Equals("HRD_MODE")) 
+					{
+						if (dataString.StartsWith("LSB")) radModeLSB.Checked = true;
+						if (dataString.StartsWith("USB")) radModeUSB.Checked = true;
+						// TODO: CW Might not want to be CWU all the time
+						if (dataString.StartsWith("CW"))  radModeCWU.Checked = true;
+						if (dataString.StartsWith("AM"))  radModeAM.Checked  = true;
+						if (dataString.StartsWith("FM"))  radModeFMN.Checked = true;
+					}
+
+					////////////////////////
+					// HRD_HERTZ Handling //
+					////////////////////////
+                    
+					// We ignore these messages if the PowerSDR software VFO has been
+					// tuned within the last second.
+					// HRD generates HRD_HERTZ in response to us sending updates
+					// but its not 1:1 and the frequencies sent back are not necessarily
+					// the ones we sent. So we just lockout getting updates from HRD
+					// for a second or two. If the VFO on the rig was actually tuned
+					// during this time the PowerSDR software will jump to the frequency
+					System.Console.WriteLine("Lockout Status: " + lockoutExternalUpdates); 
+					if (item.ToString().Equals("HRD_HERTZ") && !(lockoutExternalUpdates))
+					{
+						// If less than 1Mhz, fill in zeros
+                        String dataString2 = dataString.Trim('\0').PadLeft(7,'0');
+
+						String freqMhz = dataString2.Substring(0,dataString2.Length - 6) + "." + dataString2.Substring(dataString2.Length - 6,6);
+
+						System.Console.WriteLine("From HRD-hertz - converted: " + freqMhz);
+						
+						// If the PowerSDR VFOA doesn't equal the VFO of the Rig, update it
+						if (!txtVFOAFreq.Text.Equals(freqMhz)) 
+						{
+							txtVFOAFreq.Text = freqMhz;
+							// EventArgs signal this change comes from an external source
+							txtVFOAFreq_LostFocus(this, new HRDEventArgs(HRDEventArgs.Source.External));
+						}
+					}
+
+					return new IntPtr (DDEML.DDE_FACK); // - Means OK I processed it...
+
+
+
+			}
+
+			// Ignore any other transaction type
+			return IntPtr.Zero;
+
+		}
+
+
+		/////////////////////////////////////////////
+		//  Initialize the DDE connection with HRD //
+		/////////////////////////////////////////////
+		private bool InitHRDDDE()
+		{
+	
+			Int32 ulRef = 0;
+
+			// This instance is global as it needs to hang around for HRD to call
+			dcb = new DDEML.DdeCallback(HRDDdeCallback);
+			Int32 status = DDEML.DdeInitialize(ref pidInst, dcb,0, ulRef);
+            // Allocate String Handles
+			IntPtr service = DDEML.DdeCreateStringHandle(pidInst, Marshal.StringToBSTR("HRD_RADIO_000"), DDEML.CP_WINUNICODE);
+			IntPtr topic = DDEML.DdeCreateStringHandle(pidInst, Marshal.StringToBSTR("HRD_CAT"), DDEML.CP_WINUNICODE);
+
+			hConv =  DDEML.DdeConnect(pidInst, 
+				service, 
+				topic, 
+				(IntPtr) null);
+
+			Int32 result =  DDEML.DdeGetLastError(pidInst);
+			// Free String Handles
+            DDEML.DdeFreeStringHandle(pidInst, service);
+			DDEML.DdeFreeStringHandle(pidInst, topic);
+
+			// Check to see if our DDE Connection to HRD was successful
+			if (result != 0) 
+			{
+				MessageBox.Show("Unable to connect to Ham Radio Deluxe. Please make sure that Ham Radio Deluxe is running and properly controlling your radio. DDE Connection Error: " + result, "Error",
+					MessageBoxButtons.OK, MessageBoxIcon.Error);
+				// Will try to connect again next time we need to send something to HRD...
+				return false;
+
+			} 
+			else
+			{
+				this.connectedToHRD = true;
+			}
+	
+			// Setup hot advise loop on the items of interest - frequency, mode, and TX status
+			Int32  pwdResult = 0;			
+			IntPtr topic2 = DDEML.DdeCreateStringHandle(pidInst, Marshal.StringToBSTR("HRD_HERTZ"), DDEML.CP_WINUNICODE);
+			IntPtr topic3 = DDEML.DdeCreateStringHandle(pidInst, Marshal.StringToBSTR("HRD_MODE"), DDEML.CP_WINUNICODE);
+			IntPtr topic4 = DDEML.DdeCreateStringHandle(pidInst, Marshal.StringToBSTR("HRD_TX"), DDEML.CP_WINUNICODE);
+			IntPtr topic5 = DDEML.DdeCreateStringHandle(pidInst, Marshal.StringToBSTR("HRD_RADIO"), DDEML.CP_WINUNICODE);
+			IntPtr Data2 =   DDEML.DdeClientTransaction(null, 0, hConv, topic2, DDEML.CF_TEXT, DDEML.XTYP_ADVSTART, 1000, ref pwdResult);
+			IntPtr Data3 =   DDEML.DdeClientTransaction(null, 0, hConv, topic3, DDEML.CF_TEXT, DDEML.XTYP_ADVSTART, 1000, ref pwdResult);
+			IntPtr Data4 =   DDEML.DdeClientTransaction(null, 0, hConv, topic4, DDEML.CF_TEXT, DDEML.XTYP_ADVSTART, 1000, ref pwdResult);
+
+            // Request radio HRD is connected to and set the window title with it
+			IntPtr Data5 =   DDEML.DdeClientTransaction(null, 0, hConv, topic5, DDEML.CF_TEXT, DDEML.XTYP_REQUEST, 1000, ref pwdResult);
+			Int32 len31 = DDEML.DdeGetData(Data5, null, 0, 0) + 1;
+			byte[] data1 = new byte[len31];		
+			DDEML.DdeGetData(Data5, data1, len31, 0);
+			String dataString1 = System.Text.Encoding.Default.GetString(data1);
+			System.Console.WriteLine("HRD says radio is a ===" +  dataString1 + "===");
+			this.Text = "WU2X PowerSDR/" + dataString1.Trim('\0') + " IF Stage  v0.90";
+
+			// Free String Handles
+			DDEML.DdeFreeStringHandle(pidInst, topic2);
+			DDEML.DdeFreeStringHandle(pidInst, topic3);
+			DDEML.DdeFreeStringHandle(pidInst, topic4);
+			DDEML.DdeFreeStringHandle(pidInst, topic5);
+
+			return true; 
+
+		}
+
+
+		///////////////////////////////
+		//  Initialize general items //
+		///////////////////////////////
+		private void InitSoftRockItems() 
+		{
+			// Cache current mute status
+			muteCache = chkMON.Checked;
+            // Setup lockout timer
+			lockoutTimer.Elapsed += new ElapsedEventHandler(this.LockoutTimeExpiredEvent); //WU2X
+			lockoutTimer.Interval = 2000;  //  2 Second...seems to work well
+			lockoutTimer.AutoReset = false; 
+			lockoutTimer.Enabled = false;          
+		}
+		private void setHRDFrequency(String frequency) 
+		{
+			// Check to see that we are connected to HRD
+			if (!connectedToHRD) 
+			{   // Still can't connect to HRD, skip command
+				if (!InitHRDDDE()) return;
+			}
+
+			Int32  pwdResult = 0;
+
+			String freq = frequency.Replace(".",""); // Remove the period from the string
+			byte[] data = Encoding.ASCII.GetBytes("freq " + freq + "\x00");
+			// Send frequency update to HRD over DDE Execute
+		    DDEML.DdeClientTransaction(data, (uint)data.Length, hConv, IntPtr.Zero, 0,DDEML.XTYP_EXECUTE, 60000, ref pwdResult);
+		}
+
+		private void setHRDMode(String mode)
+		{
+			// Check to see that we are connected to HRD
+			if (!connectedToHRD) 
+			{   // Still can't connect to HRD, skip command
+				if (!InitHRDDDE()) return;
+			}
+           
+			// We just take the mode in the string format - No Validation 
+			byte[] data = Encoding.ASCII.GetBytes("mode " + mode + "\x00");
+			Int32  pwdResult = 0;
+			DDEML.DdeClientTransaction(data, (uint)data.Length, hConv, IntPtr.Zero, 0, DDEML.XTYP_EXECUTE, 60000, ref pwdResult);
+
+		}
+		#endregion
+
 		#region Display Events
 
 		private bool low_filter_drag = false;
@@ -21321,27 +21765,27 @@ namespace PowerSDR
 						case DisplayMode.PANADAPTER:
 							float x = PixelToHz(e.X);
 							double freq = double.Parse(txtVFOAFreq.Text) + (double)x*0.0000010;
-							switch(current_dsp_mode)
-							{
-								case DSPMode.CWL:
-									freq += (float)cw_pitch*0.0000010;
-									break;
-								case DSPMode.CWU:
-									freq -= (float)cw_pitch*0.0000010;
-									break;
-								case DSPMode.DIGL:
-									freq += (float)digl_click_tune_offset*0.0000010;
-									break;
-								case DSPMode.DIGU:
-									freq -= (float)digu_click_tune_offset*0.0000010;
-									break;
-							}
+						switch(current_dsp_mode)
+						{
+							case DSPMode.CWL:
+								freq += (float)cw_pitch*0.0000010;
+								break;
+							case DSPMode.CWU:
+								freq -= (float)cw_pitch*0.0000010;
+								break;
+							case DSPMode.DIGL:
+								freq += (float)digl_click_tune_offset*0.0000010;
+								break;
+							case DSPMode.DIGU:
+								freq -= (float)digu_click_tune_offset*0.0000010;
+								break;
+						}
 							if(snap_to_click_tuning && 
 								current_dsp_mode != DSPMode.CWL &&
 								current_dsp_mode != DSPMode.CWU &&
 								current_dsp_mode != DSPMode.DIGL &&
 								current_dsp_mode != DSPMode.DIGU &&
-                                Audio.wave_playback == false)
+								Audio.wave_playback == false)
 							{
 								// round freq to the nearest tuning step
 								long f = (long)(freq*1e6);
@@ -22237,17 +22681,17 @@ namespace PowerSDR
 					cw_key_mode = true;
 					DttSP.SetTXFilters(tx_filter_low, tx_filter_high);
 
-					switch(current_dsp_mode)
-					{
-						case DSPMode.USB:
-							freq += (cw_pitch*0.0000010);
-							break;
-						case DSPMode.CWU:
-							break;
-						default:
-							freq -= (cw_pitch*0.0000010);
-							break;
-					}
+				switch(current_dsp_mode)
+				{
+					case DSPMode.USB:
+						freq += (cw_pitch*0.0000010);
+						break;
+					case DSPMode.CWU:
+						break;
+					default:
+						freq -= (cw_pitch*0.0000010);
+						break;
+				}
 					txtVFOAFreq.Text = freq.ToString("f6");
 					grpModeSpecificCW.BringToFront();
 					break;
@@ -22266,17 +22710,17 @@ namespace PowerSDR
 					cw_key_mode = true;
 					DttSP.SetTXFilters(tx_filter_low, tx_filter_high);
 
-					switch(current_dsp_mode)
-					{
-						case DSPMode.LSB:
-							freq -= (cw_pitch*0.0000010);
-							break;
-						case DSPMode.CWL:
-							break;
-						default:
-							freq += (cw_pitch*0.0000010);
-							break;
-					}
+				switch(current_dsp_mode)
+				{
+					case DSPMode.LSB:
+						freq -= (cw_pitch*0.0000010);
+						break;
+					case DSPMode.CWL:
+						break;
+					default:
+						freq += (cw_pitch*0.0000010);
+						break;
+				}
 					txtVFOAFreq.Text = freq.ToString("f6");
 					grpModeSpecificCW.BringToFront();
 					break;
@@ -22420,6 +22864,17 @@ namespace PowerSDR
 			if(radModeLSB.Checked)
 			{
 				SetMode(DSPMode.LSB);
+
+				switch(current_model)
+				{
+					case Model.SOFTROCK40:
+
+						setHRDMode("LSB");
+						IFFrequencyForIFStageSoftRock = if_lsb;
+						VFOOffset = VFOOffsetLSB;
+						txtVFOAFreq_LostFocus(this, EventArgs.Empty);
+						break;
+				}
 			}
 		}
 
@@ -22428,6 +22883,15 @@ namespace PowerSDR
 			if(radModeUSB.Checked)
 			{
 				SetMode(DSPMode.USB);
+				switch(current_model)
+				{
+					case Model.SOFTROCK40:
+						setHRDMode("USB");
+						IFFrequencyForIFStageSoftRock = if_usb;
+						VFOOffset = VFOOffsetUSB;
+						txtVFOAFreq_LostFocus(this, EventArgs.Empty);
+						break;
+				}
 			}
 		}
 
@@ -22444,8 +22908,16 @@ namespace PowerSDR
 			if(radModeCWL.Checked)
 			{
 				SetMode(DSPMode.CWL);
+				switch(current_model)
+				{
+					case Model.SOFTROCK40:
+						setHRDMode("CW");
+						IFFrequencyForIFStageSoftRock = if_cw;
+						VFOOffset = VFOOffsetCW;
+						txtVFOAFreq_LostFocus(this, EventArgs.Empty);
+						break;
+				}
 			}
-
 		}
 
 		private void radModeCWU_CheckedChanged(object sender, System.EventArgs e)
@@ -22453,6 +22925,15 @@ namespace PowerSDR
 			if(radModeCWU.Checked)
 			{
 				SetMode(DSPMode.CWU);
+				switch(current_model)
+				{
+					case Model.SOFTROCK40:
+						setHRDMode("CW");
+						IFFrequencyForIFStageSoftRock = if_cw;
+						VFOOffset = VFOOffsetCW;
+						txtVFOAFreq_LostFocus(this, EventArgs.Empty);
+						break;
+				}
 			}
 		}
 
@@ -22461,6 +22942,16 @@ namespace PowerSDR
 			if(radModeFMN.Checked)
 			{
 				SetMode(DSPMode.FMN);
+				switch(current_model)
+				{
+					case Model.SOFTROCK40:
+						setHRDMode("FM");
+						IFFrequencyForIFStageSoftRock = if_fm; 
+						VFOOffset = VFOOffsetFM;
+						txtVFOAFreq_LostFocus(this, EventArgs.Empty);
+						break;
+				}
+
 			}
 		}
 
@@ -22469,6 +22960,16 @@ namespace PowerSDR
 			if(radModeAM.Checked)
 			{
 				SetMode(DSPMode.AM);
+				switch(current_model)
+				{
+					case Model.SOFTROCK40:
+						setHRDMode("AM");
+						IFFrequencyForIFStageSoftRock = if_am;
+						VFOOffset = VFOOffsetAM;
+						txtVFOAFreq_LostFocus(this, EventArgs.Empty);
+						break;
+				}
+
 			}
 		}
 
@@ -22578,16 +23079,16 @@ namespace PowerSDR
 			// kd5tfd added if clause below to get the zzsf cat command working again 
 			// which apparently was broken sometime after 1.6.1 
 			//
-//			if ( new_filter != Filter.VAR1 && new_filter != Filter.VAR2 ) 
-//			{
-				low = filter_presets[(int)current_dsp_mode].GetLow(new_filter);
-				high = filter_presets[(int)current_dsp_mode].GetHigh(new_filter);
-//			}
-//			else 
-//			{ 
-//				low = (int)udFilterLow.Value; 
-//				high = (int)udFilterHigh.Value; 
-//			} 
+			//			if ( new_filter != Filter.VAR1 && new_filter != Filter.VAR2 ) 
+			//			{
+			low = filter_presets[(int)current_dsp_mode].GetLow(new_filter);
+			high = filter_presets[(int)current_dsp_mode].GetHigh(new_filter);
+			//			}
+			//			else 
+			//			{ 
+			//				low = (int)udFilterLow.Value; 
+			//				high = (int)udFilterHigh.Value; 
+			//			} 
 			filter_presets[(int)current_dsp_mode].LastFilter = new_filter;
 
 			grpFilter.Text = "Filter - "+filter_presets[(int)current_dsp_mode].GetName(new_filter);
@@ -24217,8 +24718,22 @@ namespace PowerSDR
 
 		private void mnuReportBug_Click(object sender, System.EventArgs e)
 		{
-			Process.Start("http://support.flex-radio.com/BugList.aspx?it=b"); 
+			Process.Start("http://www.wu2x.com/sdr.html#bugreporting"); 
 		}
+
+		private void mnuHelpWebsite_Click(object sender, System.EventArgs e)
+		{
+			Process.Start("http://www.wu2x.com/sdr.html"); 
+		}
+
+		private void mnuHelpAbout_Click(object sender, System.EventArgs e)
+		{
+
+			About frmAbout = new About();
+			frmAbout.ShowDialog();
+
+		}
+
 
 		#endregion				
 
