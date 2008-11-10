@@ -361,6 +361,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "RigControl.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "ringbuffer.cs"
                     SubType = "Code"
                     BuildAction = "Compile"

@@ -432,13 +432,18 @@ namespace PowerSDR
 	    private	Int32 pidInst;								// DDE 
 		private	double IFFrequencyForIFStageSoftRock;	    // IF Frequency 
 		private double VFOOffset;                           // Offset for external rig VFO
+		private double IFOffset = 0 ;                       // IF Offset - LP Bridge for K3 
 		private DDEML.DdeCallback dcb;                      // DDE callback method for HRD updates
 		private bool muteCache;				                // Mute button state cache
 		private bool lockoutExternalUpdates = false;	    // Locks out HRD updates while tuning PowerSDR VFO
 		private  System.Timers.Timer lockoutTimer  = new System.Timers.Timer(); // Timer for update lockout
+		private  System.Timers.Timer lockoutConnectTimer  = new System.Timers.Timer(); // Timer for update lockout
+		private bool lockoutConnectionAttempt = false;	    
 		private bool connectedToHRD = false;                // HRD Connection status
 		private bool SwapIQCache = false;                  // Bool for IQ Swap
 		private int swap = 1;                              // Used to toggle IF Frequency to negative if IQ is swapped
+		private RigControl rigControl = new RigControl("Ham Radio Deluxe"); // Rig Control Program
+		private bool warningOpen = false;   // Flag to not stack up DDE connection attempt windows
 
 		public WaveControl WaveForm;
 		public PAQualify PAQualForm;
@@ -4706,7 +4711,9 @@ namespace PowerSDR
 			this.comboPreamp.ItemHeight = ((int)(resources.GetObject("comboPreamp.ItemHeight")));
 			this.comboPreamp.Items.AddRange(new object[] {
 															 resources.GetString("comboPreamp.Items"),
-															 resources.GetString("comboPreamp.Items1")});
+															 resources.GetString("comboPreamp.Items1"),
+															 resources.GetString("comboPreamp.Items2"),
+															 resources.GetString("comboPreamp.Items3")});
 			this.comboPreamp.Location = ((System.Drawing.Point)(resources.GetObject("comboPreamp.Location")));
 			this.comboPreamp.MaxDropDownItems = ((int)(resources.GetObject("comboPreamp.MaxDropDownItems")));
 			this.comboPreamp.MaxLength = ((int)(resources.GetObject("comboPreamp.MaxLength")));
@@ -10950,7 +10957,7 @@ namespace PowerSDR
 			switch(current_model)
 			{
 				case Model.SOFTROCK40:
-					if_freq = (IFFrequencyForIFStageSoftRock * -1);
+					if_freq = ((IFFrequencyForIFStageSoftRock + this.IFOffset + this.globalIFOffset) * -1);
 					break;
 				default :
 					if_freq = 11025.0;
@@ -12767,11 +12774,11 @@ namespace PowerSDR
 						else MaxFreq = 65.0;
 						break;
 					case Model.SOFTROCK40:
-						if (!this.connectedToHRD) 
-						{
-							InitHRDDDE();
+						//if (!this.connectedToHRD) 
+						//{
+							//InitHRDDDE();
                             InitSoftRockItems();
-						}
+						//}
 						// MinFreq = 0.03;  // WU2X - Kenwood 940 Min. Frequency
 						// MaxFreq = 30.0;  // WU2X - Kenwood 940 Max. Frequency
 						break;
@@ -12835,6 +12842,20 @@ namespace PowerSDR
 		//////////////////////////////////////////////////////
         // Intermediate Frequency by mode - from setup menu //
 		//////////////////////////////////////////////////////
+		
+		private double global_if_offset = 0.0; 
+		public double globalIFOffset 
+		{
+			get { return global_if_offset; }
+			set
+			{
+				global_if_offset = value;
+				DttSP.SetOsc((IFFrequencyForIFStageSoftRock + this.IFOffset + this.globalIFOffset)*swap);
+				// System.Console.WriteLine("Global IF offset adjusted..setting IF to : " + (IFFrequencyForIFStageSoftRock + this.IFOffset + this.globalIFOffset)*swap);
+
+			}
+		}
+
 		private double if_lsb = 0.0; 
 		public double IFLSB
 		{
@@ -12865,6 +12886,8 @@ namespace PowerSDR
 			{
 				if_cw = value;
 				radModeCWL_CheckedChanged(this, EventArgs.Empty); // WU2X
+				radModeCWU_CheckedChanged(this, EventArgs.Empty); // WU2X
+
 			}
 		}
 
@@ -13572,6 +13595,37 @@ namespace PowerSDR
 			{ 
 				swap_iq_freq = value;
 				checkSwapIQ();
+			}
+		}
+
+	    private string rig_control_program = "Ham Radio Deluxe";
+		public string RigControlProgram
+		{
+			get { return rig_control_program; }
+			set 
+			{ 
+				rig_control_program = value;
+				rigControl.setProgram(value);
+				this.connectedToHRD = false;
+				InitHRDDDE();
+			}
+		}
+		private string cw_mode = "CW-USB";
+		public string CWMode
+		{
+			get { return cw_mode; }
+			set 
+			{ 
+				this.cw_mode = value;
+			}
+		}
+		private string dig_mode = "DIG-USB";
+		public string DIGMode
+		{
+			get { return dig_mode; }
+			set 
+			{ 
+				this.dig_mode = value;
 			}
 		}
 
@@ -17477,13 +17531,27 @@ namespace PowerSDR
 			Display.ResetDisplayAverage();
 		}
 
-		///////////////////////////////////////////////
+ 		///////////////////////////////////////////////
 		// Event to expire external VFO tune lockout //
 		///////////////////////////////////////////////
 		// Softrock IF Stage Support
 		private void LockoutTimeExpiredEvent( object source, ElapsedEventArgs e )
 		{
 			this.lockoutExternalUpdates = false;
+
+			// TODO: 
+            // Now poll the rig and see if mode and frequency match
+			// They only valid, expected reason is that the rig
+			// was tuned while it external updates were locked out.
+
+		}
+
+		///////////////////////////////////////////////
+		// Event to expire DDE connect lockout       //
+		///////////////////////////////////////////////
+		private void LockoutConnectTimeExpiredEvent( object source, ElapsedEventArgs e )
+		{
+			this.lockoutConnectionAttempt = false;
 		}
 
 		#endregion
@@ -18393,8 +18461,18 @@ namespace PowerSDR
 		private void chkPower_CheckedChanged(object sender, System.EventArgs e)
 		{
 			DttSP.AudioReset();
+
 			if(chkPower.Checked)
 			{
+				// WU2X
+				switch(current_model)
+				{
+					case Model.SOFTROCK40:
+						this.connectedToHRD = false;
+						InitHRDDDE();
+						break;
+				}
+
 				chkPower.Text = "On";
 				chkPower.BackColor = button_selected_color;
 				txtVFOAFreq.ForeColor = vfo_text_light_color;
@@ -20888,10 +20966,14 @@ namespace PowerSDR
 
 						tuned_freq = freq;  
 
-					    DttSP.SetOsc((IFFrequencyForIFStageSoftRock*swap)+drmOffset);
-                        // System.Console.WriteLine("IF Freq : " + (IFFrequencyForIFStageSoftRock*swap)); 
-						// System.Console.WriteLine("IFFrequencyForIFStageSoftRock : " + IFFrequencyForIFStageSoftRock); 
-						// System.Console.WriteLine("swap : " + swap); 
+					    DttSP.SetOsc((IFFrequencyForIFStageSoftRock + drmOffset + this.IFOffset + this.globalIFOffset)*swap);
+                        //System.Console.WriteLine("txtVFOAFreq_LostFocus : IF Freq : " + (IFFrequencyForIFStageSoftRock*swap)); 
+						//System.Console.WriteLine("txtVFOAFreq_LostFocus : IF Freq  : " + (IFFrequencyForIFStageSoftRock + drmOffset+ this.IFOffset + this.globalIFOffset)*swap); 
+						//System.Console.WriteLine("swap : " + swap); 
+						//System.Console.WriteLine("this.IFOffset : " + this.IFOffset); 
+						//System.Console.WriteLine("this.globalIFOffset : " + this.globalIFOffset); 
+						//System.Console.WriteLine("IFFrequencyForIFStageSoftRock : " + IFFrequencyForIFStageSoftRock); 
+
 
 						if(!chkMOX.Checked || (chkMOX.Checked && !chkVFOSplit.Checked))
 						{
@@ -21377,7 +21459,7 @@ namespace PowerSDR
 					/////////////////////
 					// HRD_TX Handling //
 					/////////////////////	
-					if (item.ToString().Equals("HRD_TX") && dataString.StartsWith("On")) 
+					if (item.ToString().Equals(rigControl.getTX()) && dataString.StartsWith("On")) 
 					{
 						// TX ON - MUTE
 						// Save mute state - on TX off revert to this state
@@ -21389,7 +21471,7 @@ namespace PowerSDR
 							chkMUT.Checked = true;
 						}
 					} 
-					else if (item.ToString().Equals("HRD_TX"))
+					else if (item.ToString().Equals(rigControl.getTX()))
 					{
 						// TX_OFF - UNMUTE - Unless mute was already on
 						// Revert to previous state
@@ -21400,15 +21482,18 @@ namespace PowerSDR
 					// HRD_MODE Handling //
 					///////////////////////
 					
-					if  ((item.ToString().Equals("HRD_MODE")) && !(lockoutExternalUpdates))
+					if  ((item.ToString().Equals(rigControl.getMode())) && !(lockoutExternalUpdates))
 					{
-						// Don't force a mode state change unless we need to
-						if ((dataString.StartsWith("LSB")) && (!radModeLSB.Checked)) radModeLSB.Checked = true;
-						if ((dataString.StartsWith("USB")) && (!radModeUSB.Checked)) radModeUSB.Checked = true;
-						// TODO: CW Might not want to be CWU all the time
-						if ((dataString.StartsWith("CW")) && (!radModeCWU.Checked))  radModeCWU.Checked = true;
-						if ((dataString.StartsWith("AM"))  && (!radModeAM.Checked))  radModeAM.Checked  = true;
-						if ((dataString.StartsWith("FM")) && (!radModeFMN.Checked))  radModeFMN.Checked = true;
+
+						// System.Console.WriteLine("RECEIVED:  Mode: " + dataString);
+						processMode(dataString);
+					
+					} 
+					else if ((item.ToString().Equals(rigControl.getMode())))
+					{
+
+						// System.Console.WriteLine("RECEIVED:  Mode: " + dataString + " : IGNORING - IN LOCKOUT");
+
 					}
 
 					////////////////////////
@@ -21420,27 +21505,49 @@ namespace PowerSDR
 					// HRD generates HRD_HERTZ in response to us sending updates
 					// but its not 1:1 and the frequencies sent back are not necessarily
 					// the ones we sent. So we just lockout getting updates from HRD
-					// for a second or two. If the VFO on the rig was actually tuned
-					// during this time the PowerSDR software will jump to the frequency
-					if (item.ToString().Equals("HRD_HERTZ") && !(lockoutExternalUpdates))
+					// for a second or two. 
+					// TODO: When lockout timer expires poll the radio for freq and mode
+
+
+
+					if (item.ToString().Equals(rigControl.getHertz()) && !(lockoutExternalUpdates))
 					{
-						// If less than 1Mhz, fill in zeros
-                        String dataString2 = dataString.Trim('\0').PadLeft(7,'0');
+						// System.Console.WriteLine("RECEIVED:  frequency: " + dataString);
+						processFrequency(dataString);
 
-						String freqMhz = dataString2.Substring(0,dataString2.Length - 6) + "." + dataString2.Substring(dataString2.Length - 6,6);
+					} 
 
-						
-						// If the PowerSDR VFOA doesn't equal the VFO of the Rig, update it
-						if (!txtVFOAFreq.Text.Equals(freqMhz)) 
-						{
-							txtVFOAFreq.Text = freqMhz;
-							// EventArgs signal this change comes from an external source
-							txtVFOAFreq_LostFocus(this, new HRDEventArgs(HRDEventArgs.Source.External));
-						}
+
+					//////////////////////////
+					// HRD_HERTZ_B Handling //
+					//////////////////////////
+					/*
+					if (item.ToString().Equals(rigControl.getHertzB()))
+					{
+						System.Console.WriteLine("RECEIVED:  HERTZ_B frequency: " + dataString);
+						processFrequencyB(dataString);
+
+					} 
+					else if (item.ToString().Equals(rigControl.getHertzB())) 
+					{
+						System.Console.WriteLine("RECEIVED:  ERTZ_B frequency: " + dataString + " : IGNORING - IN LOCKOUT");
+					}
+					*/
+
+					/////////////////////
+					// Offset Handling //
+					/////////////////////
+                    // LP Bridge only currently supports this
+                    // This event should not be locked out because PowerSDR
+					// cannot be the source of these events. 
+					if (item.ToString().Equals(rigControl.getOffset()))
+					{
+						if (!(dataString.Equals("\0"))) this.IFOffset = System.Double.Parse(dataString);
+						DttSP.SetOsc((IFFrequencyForIFStageSoftRock + this.IFOffset + this.globalIFOffset)*swap);
+						// System.Console.WriteLine("RECEIVED:  LPB offset:" + this.IFOffset);
 					}
 
 					return new IntPtr (DDEML.DDE_FACK); // - Means OK I processed it...
-
 
 
 			}
@@ -21451,68 +21558,227 @@ namespace PowerSDR
 		}
 
 
+		private void processFrequency(String frequency) 
+		{
+
+			// If less than 1Mhz, fill in zeros
+			String frequency2 = frequency.Trim('\0').PadLeft(7,'0');
+			String freqMhz = frequency2.Substring(0,frequency2.Length - 6) + "." + frequency2.Substring(frequency2.Length - 6,6);
+
+			// If the PowerSDR VFOA doesn't equal the VFO of the Rig, update it
+			if (!txtVFOAFreq.Text.Equals(freqMhz)) 
+			{
+				txtVFOAFreq.Text = freqMhz;
+				// EventArgs signal this change comes from an external source
+				txtVFOAFreq_LostFocus(this, new HRDEventArgs(HRDEventArgs.Source.External));
+			}
+		}
+
+		private void processFrequencyB(String frequency) 
+		{
+
+			// If less than 1Mhz, fill in zeros
+			String frequency2 = frequency.Trim('\0').PadLeft(7,'0');
+			String freqMhz = frequency2.Substring(0,frequency2.Length - 6) + "." + frequency2.Substring(frequency2.Length - 6,6);
+
+			// If the PowerSDR VFOA doesn't equal the VFO of the Rig, update it
+			if (!txtVFOBFreq.Text.Equals(freqMhz)) 
+			{
+				txtVFOBFreq.Text = freqMhz;
+				// EventArgs signal this change comes from an external source
+				txtVFOBFreq_LostFocus(this, new HRDEventArgs(HRDEventArgs.Source.External));
+			}
+		}
+
+		private void processMode(String mode) 
+		{
+
+			// Don't force a mode state change unless we need to
+			if ((mode.StartsWith("LSB")) && (!radModeLSB.Checked)) radModeLSB.Checked = true;
+			if ((mode.StartsWith("USB")) && (!radModeUSB.Checked)) radModeUSB.Checked = true;	
+			if ((mode.StartsWith("AM"))  && (!radModeAM.Checked))  radModeAM.Checked  = true;
+			if ((mode.StartsWith("FM")) && (!radModeFMN.Checked))  radModeFMN.Checked = true;
+
+			// Modes with IF Frequency not in the setup menu
+			// LP Bridge will support these
+			// TODO: Add IF Frequencies for these modes in setup menu
+			// TODO: Mode names are not standard between radios. 
+
+			if ((this.DIGMode.Equals("DIG-USB") && ((mode.StartsWith("FSK\0") || mode.StartsWith("DATA\0")) && (!radModeDIGU.Checked)))) radModeDIGU.Checked = true;
+			if ((this.DIGMode.Equals("DIG-LSB") && ((mode.StartsWith("FSK\0") || mode.StartsWith("DATA\0")) && (!radModeDIGL.Checked)))) radModeDIGL.Checked = true;
+			// Does the opposite mode of FSK
+
+			if ((mode.StartsWith("FSK-R")) || (mode.StartsWith("DATA-R")))
+			{
+				if ((this.DIGMode.Equals("DIG-USB") && (!radModeDIGL.Checked))) radModeDIGL.Checked = true;
+				if ((this.DIGMode.Equals("DIG-LSB") && (!radModeDIGU.Checked))) radModeDIGU.Checked = true;
+			} 
+
+            // CW
+			if ((this.CWMode.Equals("CW-USB") && mode.StartsWith("CW\0") && (!radModeCWU.Checked))) radModeCWU.Checked = true;
+			if ((this.CWMode.Equals("CW-LSB") && mode.StartsWith("CW\0") && (!radModeCWL.Checked))) radModeCWL.Checked = true;
+			// Does the opposite mode of CW
+			if ((mode.StartsWith("CW-R"))) 
+			{   // Do reverse of default mode
+				if ((this.CWMode.Equals("CW-LSB") && (!radModeCWU.Checked))) radModeCWU.Checked = true;
+				if ((this.CWMode.Equals("CW-USB") && (!radModeCWL.Checked))) radModeCWL.Checked = true;
+			} 
+
+
+		}
+
 		/////////////////////////////////////////////
 		//  Initialize the DDE connection with HRD //
 		/////////////////////////////////////////////
 		private bool InitHRDDDE()
 		{
+
+			// There is a timer that waits 5 seconds before allowing a connection reattempt. 
+			// If the power isn't turned on, do not attempt to connect. This is done only for the
+			// reason that the console isn't totally initialized when its coming up and a connection
+			// attempt it made (set mode). This method relies on the console class being fully 
+			// initialized (specifically VFO lost focus is called). 
+            if ((this.lockoutConnectionAttempt == true) || (chkPower.Checked == false )) return false;
+
+			if (!this.connectedToHRD) 
+			{
+                this.IFOffset = 0; // Clear last offset
+				Int32 ulRef = 0;
+
+				// This instance is global as it needs to hang around for HRD to call
+                Boolean status1;
+				if (pidInst != 0) 
+				{	
+					status1 = DDEML.DdeUninitialize(pidInst);
+					pidInst = 0;
+				}
+
+				dcb = new DDEML.DdeCallback(HRDDdeCallback);
+				Int32 status2 = DDEML.DdeInitialize(ref pidInst, dcb,0, ulRef);
+				// Allocate String Handles
+				IntPtr service = DDEML.DdeCreateStringHandle(pidInst, Marshal.StringToBSTR(rigControl.getService()), DDEML.CP_WINUNICODE);
+				IntPtr topic = DDEML.DdeCreateStringHandle(pidInst, Marshal.StringToBSTR(rigControl.getTopic()), DDEML.CP_WINUNICODE);
+
+				hConv =  DDEML.DdeConnect(pidInst, 
+					service, 
+					topic, 
+					(IntPtr) null);
+
+				Int32 result =  DDEML.DdeGetLastError(pidInst);
+				// Free String Handles
+				DDEML.DdeFreeStringHandle(pidInst, service);
+				DDEML.DdeFreeStringHandle(pidInst, topic);
+
+				// Check to see if our DDE Connection to HRD was successful
+				if (result != 0) 
+				{
+					if (!this.warningOpen) 
+					{  
+						this.warningOpen = true;
+						MessageBox.Show("Unable to connect to " + rigControl.getProgramName() + ". Please make sure that " + rigControl.getProgramName() + " is running and properly controlling your radio. DDE Connection Error: " + result, "Error",
+							MessageBoxButtons.OK, MessageBoxIcon.Error);
+						this.warningOpen = false;
+						// Will try to connect again next time we need to send something to HRD...
+						this.lockoutConnectionAttempt = true;
+						// Start or Restart lockout to not try to reconnect for 5 seconds. 
+						this.lockoutExternalUpdates = true;	
+						this.lockoutConnectTimer.Stop();
+						this.lockoutConnectTimer.Start();
+						this.connectedToHRD = false;
+					}
+					return false;
+
+				} 
+				else
+				{
+					this.connectedToHRD = true;
+				}
 	
-			Int32 ulRef = 0;
 
-			// This instance is global as it needs to hang around for HRD to call
-			dcb = new DDEML.DdeCallback(HRDDdeCallback);
-			Int32 status = DDEML.DdeInitialize(ref pidInst, dcb,0, ulRef);
-            // Allocate String Handles
-			IntPtr service = DDEML.DdeCreateStringHandle(pidInst, Marshal.StringToBSTR("HRD_RADIO_000"), DDEML.CP_WINUNICODE);
-			IntPtr topic = DDEML.DdeCreateStringHandle(pidInst, Marshal.StringToBSTR("HRD_CAT"), DDEML.CP_WINUNICODE);
 
-			hConv =  DDEML.DdeConnect(pidInst, 
-				service, 
-				topic, 
-				(IntPtr) null);
+				// Setup hot advise loop on the items of interest - frequency, mode, and TX status
+				Int32  pwdResult = 0;			
+				IntPtr topic2 = DDEML.DdeCreateStringHandle(pidInst, Marshal.StringToBSTR(rigControl.getHertz()), DDEML.CP_WINUNICODE);
+				IntPtr topic3 = DDEML.DdeCreateStringHandle(pidInst, Marshal.StringToBSTR(rigControl.getMode()), DDEML.CP_WINUNICODE);
+				IntPtr topic4 = DDEML.DdeCreateStringHandle(pidInst, Marshal.StringToBSTR(rigControl.getTX()), DDEML.CP_WINUNICODE);
+				IntPtr topic5 = DDEML.DdeCreateStringHandle(pidInst, Marshal.StringToBSTR(rigControl.getRadio()), DDEML.CP_WINUNICODE);
 
-			Int32 result =  DDEML.DdeGetLastError(pidInst);
-			// Free String Handles
-            DDEML.DdeFreeStringHandle(pidInst, service);
-			DDEML.DdeFreeStringHandle(pidInst, topic);
+				IntPtr Data2 =   DDEML.DdeClientTransaction(null, 0, hConv, topic2, DDEML.CF_TEXT, DDEML.XTYP_ADVSTART, 1000, ref pwdResult);
+				IntPtr Data3 =   DDEML.DdeClientTransaction(null, 0, hConv, topic3, DDEML.CF_TEXT, DDEML.XTYP_ADVSTART, 1000, ref pwdResult);
+				IntPtr Data4 =   DDEML.DdeClientTransaction(null, 0, hConv, topic4, DDEML.CF_TEXT, DDEML.XTYP_ADVSTART, 1000, ref pwdResult);
 
-			// Check to see if our DDE Connection to HRD was successful
-			if (result != 0) 
-			{
-				MessageBox.Show("Unable to connect to Ham Radio Deluxe. Please make sure that Ham Radio Deluxe is running and properly controlling your radio. DDE Connection Error: " + result, "Error",
-					MessageBoxButtons.OK, MessageBoxIcon.Error);
-				// Will try to connect again next time we need to send something to HRD...
-				return false;
+				// Request radio HRD is connected to and set the window title with it
+				IntPtr Data5 =   DDEML.DdeClientTransaction(null, 0, hConv, topic5, DDEML.CF_TEXT, DDEML.XTYP_REQUEST, 1000, ref pwdResult);
+				Int32 len31 = DDEML.DdeGetData(Data5, null, 0, 0) + 1;
+				byte[] data1 = new byte[len31];		
+				DDEML.DdeGetData(Data5, data1, len31, 0);
+				String dataString1 = System.Text.Encoding.Default.GetString(data1);
+				this.Text = "WU2X PowerSDR/" + dataString1.Trim('\0') + " IF Stage  v0.92";
 
-			} 
-			else
-			{
-				this.connectedToHRD = true;
+                // Grab frequency and mode from rig and sync PowerSDR
+				// The external radio is the master and powersdr is the the slave
+				// TODO: Turn code to poll DDE connection on a topic into a method
+
+				// Frequency 
+				topic5 = DDEML.DdeCreateStringHandle(pidInst, Marshal.StringToBSTR(rigControl.getHertz()), DDEML.CP_WINUNICODE);
+				Data5 =   DDEML.DdeClientTransaction(null, 0, hConv, topic5, DDEML.CF_TEXT, DDEML.XTYP_REQUEST, 1000, ref pwdResult);
+				len31 = DDEML.DdeGetData(Data5, null, 0, 0) + 1;
+				data1 = new byte[len31];		
+				DDEML.DdeGetData(Data5, data1, len31, 0);
+				dataString1 = System.Text.Encoding.Default.GetString(data1);
+                processFrequency(dataString1);
+
+				// Mode 
+				topic5 = DDEML.DdeCreateStringHandle(pidInst, Marshal.StringToBSTR(rigControl.getMode()), DDEML.CP_WINUNICODE);
+				Data5 =   DDEML.DdeClientTransaction(null, 0, hConv, topic5, DDEML.CF_TEXT, DDEML.XTYP_REQUEST, 1000, ref pwdResult);
+				len31 = DDEML.DdeGetData(Data5, null, 0, 0) + 1;
+				data1 = new byte[len31];		
+				DDEML.DdeGetData(Data5, data1, len31, 0);
+				dataString1 = System.Text.Encoding.Default.GetString(data1);
+				processMode(dataString1);
+
+
+				// Hertz_B  (VFO) Setup hot advise 
+				/*
+				topic5 = DDEML.DdeCreateStringHandle(pidInst, Marshal.StringToBSTR(rigControl.getHertzB()), DDEML.CP_WINUNICODE);
+				Data5 =   DDEML.DdeClientTransaction(null, 0, hConv, topic5, DDEML.CF_TEXT, DDEML.XTYP_REQUEST, 1000, ref pwdResult);
+				len31 = DDEML.DdeGetData(Data5, null, 0, 0) + 1;
+				data1 = new byte[len31];		
+				DDEML.DdeGetData(Data5, data1, len31, 0);
+				dataString1 = System.Text.Encoding.Default.GetString(data1);
+				Data5 =   DDEML.DdeClientTransaction(null, 0, hConv, topic5, DDEML.CF_TEXT, DDEML.XTYP_ADVSTART, 1000, ref pwdResult);
+                */
+
+
+
+				// Optional commands only supported by LP Bridge
+				if (!(rigControl.getOffset().Equals(""))) 
+				{
+					topic5 = DDEML.DdeCreateStringHandle(pidInst, Marshal.StringToBSTR(rigControl.getOffset()), DDEML.CP_WINUNICODE);
+					Data5 =   DDEML.DdeClientTransaction(null, 0, hConv, topic5, DDEML.CF_TEXT, DDEML.XTYP_REQUEST, 1000, ref pwdResult);
+					len31 = DDEML.DdeGetData(Data5, null, 0, 0) + 1;
+					data1 = new byte[len31];		
+					DDEML.DdeGetData(Data5, data1, len31, 0);
+					dataString1 = System.Text.Encoding.Default.GetString(data1);
+					if (!(dataString1.Equals("\0\0"))) this.IFOffset = System.Double.Parse(dataString1);
+					// Setup hot advise
+					Data5 =   DDEML.DdeClientTransaction(null, 0, hConv, topic5, DDEML.CF_TEXT, DDEML.XTYP_ADVSTART, 1000, ref pwdResult);
+
+
+				}
+
+
+				// Free String Handles
+				DDEML.DdeFreeStringHandle(pidInst, topic2);
+				DDEML.DdeFreeStringHandle(pidInst, topic3);
+				DDEML.DdeFreeStringHandle(pidInst, topic4);
+				DDEML.DdeFreeStringHandle(pidInst, topic5);
+
 			}
-	
-			// Setup hot advise loop on the items of interest - frequency, mode, and TX status
-			Int32  pwdResult = 0;			
-			IntPtr topic2 = DDEML.DdeCreateStringHandle(pidInst, Marshal.StringToBSTR("HRD_HERTZ"), DDEML.CP_WINUNICODE);
-			IntPtr topic3 = DDEML.DdeCreateStringHandle(pidInst, Marshal.StringToBSTR("HRD_MODE"), DDEML.CP_WINUNICODE);
-			IntPtr topic4 = DDEML.DdeCreateStringHandle(pidInst, Marshal.StringToBSTR("HRD_TX"), DDEML.CP_WINUNICODE);
-			IntPtr topic5 = DDEML.DdeCreateStringHandle(pidInst, Marshal.StringToBSTR("HRD_RADIO"), DDEML.CP_WINUNICODE);
-			IntPtr Data2 =   DDEML.DdeClientTransaction(null, 0, hConv, topic2, DDEML.CF_TEXT, DDEML.XTYP_ADVSTART, 1000, ref pwdResult);
-			IntPtr Data3 =   DDEML.DdeClientTransaction(null, 0, hConv, topic3, DDEML.CF_TEXT, DDEML.XTYP_ADVSTART, 1000, ref pwdResult);
-			IntPtr Data4 =   DDEML.DdeClientTransaction(null, 0, hConv, topic4, DDEML.CF_TEXT, DDEML.XTYP_ADVSTART, 1000, ref pwdResult);
 
-            // Request radio HRD is connected to and set the window title with it
-			IntPtr Data5 =   DDEML.DdeClientTransaction(null, 0, hConv, topic5, DDEML.CF_TEXT, DDEML.XTYP_REQUEST, 1000, ref pwdResult);
-			Int32 len31 = DDEML.DdeGetData(Data5, null, 0, 0) + 1;
-			byte[] data1 = new byte[len31];		
-			DDEML.DdeGetData(Data5, data1, len31, 0);
-			String dataString1 = System.Text.Encoding.Default.GetString(data1);
-			this.Text = "WU2X PowerSDR/" + dataString1.Trim('\0') + " IF Stage  v0.91";
+			// Setup lockout timer interval based on Rig Control program
+			lockoutTimer.Interval = rigControl.getTimerValue();
 
-			// Free String Handles
-			DDEML.DdeFreeStringHandle(pidInst, topic2);
-			DDEML.DdeFreeStringHandle(pidInst, topic3);
-			DDEML.DdeFreeStringHandle(pidInst, topic4);
-			DDEML.DdeFreeStringHandle(pidInst, topic5);
 
 			return true; 
 
@@ -21528,9 +21794,16 @@ namespace PowerSDR
 			muteCache = chkMON.Checked;
             // Setup lockout timer
 			lockoutTimer.Elapsed += new ElapsedEventHandler(this.LockoutTimeExpiredEvent); //WU2X
-			lockoutTimer.Interval = 2000;  //  2 Second...seems to work well
 			lockoutTimer.AutoReset = false; 
-			lockoutTimer.Enabled = false;          
+			lockoutTimer.Enabled = true;    
+
+			// Setup connect lockout timer
+			lockoutConnectTimer.Elapsed += new ElapsedEventHandler(this.LockoutConnectTimeExpiredEvent); //WU2X
+			lockoutConnectTimer.Interval = 5000;  //  Lock for reconnect to rig control program 
+			lockoutConnectTimer.AutoReset = false; 
+			lockoutConnectTimer.Enabled = true;    
+
+      
 		}
 		private void setHRDFrequency(String frequency) 
 		{
@@ -21539,23 +21812,31 @@ namespace PowerSDR
 			{   // Still can't connect to HRD, skip command
 				if (!InitHRDDDE()) return;
 			}
-
+          
 			Int32  pwdResult = 0;
      
 			String freq = frequency.Replace(".",""); // Remove the period from the string
-			// System.Console.WriteLine("Freq: " + freq + ", vfotext: " +txtVFOAFreq.Text);
+			// System.Console.WriteLine("SENDING:   frequency: " +txtVFOAFreq.Text);
 
 			byte[] data = Encoding.ASCII.GetBytes("freq " + freq + "\x00");
 			// Send frequency update to HRD over DDE Execute
 		    DDEML.DdeClientTransaction(data, (uint)data.Length, hConv, IntPtr.Zero, 0,DDEML.XTYP_EXECUTE, 60000, ref pwdResult);
-			Int32 result =  DDEML.DdeGetLastError(pidInst);
-			// System.Console.WriteLine("DDE Result: " + pwdResult);
+			// Int32 result =  DDEML.DdeGetLastError(pidInst);
+
+			// Note - I don't know if there is a reliable way to tell if a DDE connection to a server was 
+			// broken. The result return code seems to be 16390 -  DMLERR_INVALIDPARAMETER  
+			// when the connection is broken - however, 16390 show up randomly when tuning around
+			// and things are working normally.  
+
+			//System.Console.WriteLine("Result of DDE Freq:" + result); 
+			//System.Console.WriteLine("DDE Result: " + pwdResult);
 
 			// Start or Restart lockout timer to ignore external VFO events
 			// for a second or two...
 			lockoutExternalUpdates = true;	
 			lockoutTimer.Stop();
 			lockoutTimer.Start();
+
 
 
 
@@ -21568,13 +21849,17 @@ namespace PowerSDR
 			{   // Still can't connect to HRD, skip command
 				if (!InitHRDDDE()) return;
 			}
-           
+
 			// We just take the mode in the string format - No Validation 
 			byte[] data = Encoding.ASCII.GetBytes("mode " + mode + "\x00");
 			Int32  pwdResult = 0;
 			// System.Console.WriteLine("Mode: " + mode);
 			DDEML.DdeClientTransaction(data, (uint)data.Length, hConv, IntPtr.Zero, 0, DDEML.XTYP_EXECUTE, 60000, ref pwdResult);
+			// Int32 result =  DDEML.DdeGetLastError(pidInst);
 
+			// System.Console.WriteLine("SENDING:   mode: " + mode);
+
+		
 			// Start or Restart lockout timer to ignore external VFO events
 			// for a second or two...
 			lockoutExternalUpdates = true;	
@@ -22119,7 +22404,7 @@ namespace PowerSDR
 			switch(current_model)
 			{
 				case Model.SOFTROCK40:
-					if_freq = (IFFrequencyForIFStageSoftRock * -1);
+					if_freq = (IFFrequencyForIFStageSoftRock * -1) + this.IFOffset + this.globalIFOffset;
                     break;
 				default :
 					if_freq = 11025.0;
@@ -22662,12 +22947,12 @@ namespace PowerSDR
 				switch(new_mode)
 				{
 					case DSPMode.USB:
-						freq -= (cw_pitch*0.0000010);
+						if (current_model != Model.SOFTROCK40) freq -= (cw_pitch*0.0000010);
 						break;
 					case DSPMode.CWU:
 						break;
 					default:
-						freq += (cw_pitch*0.0000010);
+						if (current_model != Model.SOFTROCK40) freq += (cw_pitch*0.0000010);
 						break;
 				}
 					txtVFOAFreq.Text = freq.ToString("f6");
@@ -22679,12 +22964,12 @@ namespace PowerSDR
 				switch(new_mode)
 				{
 					case DSPMode.LSB:
-						freq += (cw_pitch*0.0000010);
+						if (current_model != Model.SOFTROCK40) freq += (cw_pitch*0.0000010);
 						break;
 					case DSPMode.CWL:
 						break;
 					default:
-						freq -= (cw_pitch*0.0000010);
+						if (current_model != Model.SOFTROCK40) freq -= (cw_pitch*0.0000010);
 						break;
 				}
 					txtVFOAFreq.Text = freq.ToString("f6");
@@ -22817,15 +23102,16 @@ namespace PowerSDR
 					cw_key_mode = true;
 					DttSP.SetTXFilters(tx_filter_low, tx_filter_high);
 
+
 				switch(current_dsp_mode)
 				{
 					case DSPMode.USB:
-						freq += (cw_pitch*0.0000010);
+						if (current_model != Model.SOFTROCK40) freq += (cw_pitch*0.0000010); // WU2X
 						break;
 					case DSPMode.CWU:
 						break;
 					default:
-						freq -= (cw_pitch*0.0000010);
+						if (current_model != Model.SOFTROCK40) freq -= (cw_pitch*0.0000010);
 						break;
 				}
 					txtVFOAFreq.Text = freq.ToString("f6");
@@ -22849,12 +23135,12 @@ namespace PowerSDR
 				switch(current_dsp_mode)
 				{
 					case DSPMode.LSB:
-						freq -= (cw_pitch*0.0000010);
+						if (current_model != Model.SOFTROCK40) freq -= (cw_pitch*0.0000010);
 						break;
 					case DSPMode.CWL:
 						break;
 					default:
-						freq += (cw_pitch*0.0000010);
+						if (current_model != Model.SOFTROCK40) freq += (cw_pitch*0.0000010);
 						break;
 				}
 					txtVFOAFreq.Text = freq.ToString("f6");
@@ -23009,7 +23295,7 @@ namespace PowerSDR
 						IFFrequencyForIFStageSoftRock = if_lsb;
 						VFOOffset = VFOOffsetLSB;
 						// txtVFOAFreq_LostFocus(this, EventArgs.Empty);
-						DttSP.SetOsc(IFFrequencyForIFStageSoftRock*swap);
+						DttSP.SetOsc((IFFrequencyForIFStageSoftRock + this.IFOffset + this.globalIFOffset)*swap);
 						break;
 				}
 			}
@@ -23027,7 +23313,7 @@ namespace PowerSDR
 						IFFrequencyForIFStageSoftRock = if_usb;
 						VFOOffset = VFOOffsetUSB;
 						// txtVFOAFreq_LostFocus(this, EventArgs.Empty);
-						DttSP.SetOsc(IFFrequencyForIFStageSoftRock*swap);
+						DttSP.SetOsc((IFFrequencyForIFStageSoftRock + this.IFOffset + this.globalIFOffset)*swap);
 
 						break;
 				}
@@ -23050,10 +23336,17 @@ namespace PowerSDR
 				switch(current_model)
 				{
 					case Model.SOFTROCK40:
-						setHRDMode("CW");
+						if ((this.CWMode.Equals("CW-LSB")))
+						{
+							setHRDMode("CW");
+						} 
+						else 
+						{
+							setHRDMode("CW-R");
+						}
 						IFFrequencyForIFStageSoftRock = if_cw;
 						VFOOffset = VFOOffsetCW;
-						DttSP.SetOsc(IFFrequencyForIFStageSoftRock*swap);
+						DttSP.SetOsc((IFFrequencyForIFStageSoftRock + this.IFOffset + this.globalIFOffset)*swap);
 						break;
 				}
 			}
@@ -23067,10 +23360,17 @@ namespace PowerSDR
 				switch(current_model)
 				{
 					case Model.SOFTROCK40:
-						setHRDMode("CW");
+						if ((this.CWMode.Equals("CW-USB")))
+						{
+							setHRDMode("CW");
+						} 
+						else 
+						{
+							setHRDMode("CW-R");
+						}
 						IFFrequencyForIFStageSoftRock = if_cw;
 						VFOOffset = VFOOffsetCW;
-						DttSP.SetOsc(IFFrequencyForIFStageSoftRock*swap);
+						DttSP.SetOsc((IFFrequencyForIFStageSoftRock + this.IFOffset + this.globalIFOffset)*swap);
 						break;
 				}
 			}
@@ -23087,7 +23387,7 @@ namespace PowerSDR
 						setHRDMode("FM");
 						IFFrequencyForIFStageSoftRock = if_fm; 
 						VFOOffset = VFOOffsetFM;
-						DttSP.SetOsc(IFFrequencyForIFStageSoftRock*swap);
+						DttSP.SetOsc((IFFrequencyForIFStageSoftRock + this.IFOffset + this.globalIFOffset)*swap);
 						break;
 				}
 
@@ -23105,7 +23405,7 @@ namespace PowerSDR
 						setHRDMode("AM");
 						IFFrequencyForIFStageSoftRock = if_am;
 						VFOOffset = VFOOffsetAM;
-						DttSP.SetOsc(IFFrequencyForIFStageSoftRock*swap);
+						DttSP.SetOsc((IFFrequencyForIFStageSoftRock + this.IFOffset + this.globalIFOffset)*swap);
 						break;
 				}
 
@@ -23125,6 +23425,34 @@ namespace PowerSDR
 			if(radModeDIGU.Checked)
 			{
 				SetMode(DSPMode.DIGU);
+				switch(current_model)
+				{
+
+                    // Ok, this is a big mess. The issue here is that different models of radios have different names for
+				    // modes. Until we have more solid plan for mode, we'll just send the modes that map for the radio
+			        // models we know we support right now. HRD and LPB will ignore modes that aren't valid, so the modes
+					// that are sent and don't apply will be ignored. 
+
+					case Model.SOFTROCK40:
+						if ((this.DIGMode.Equals("DIG-USB")))
+						{
+							setHRDMode("FSK");  // Kenwood
+							setHRDMode("DATA"); // Elecraft 
+
+						} 
+						else 
+						{
+							setHRDMode("FSK-R");  // Not supported on Kenwood TS-940
+							setHRDMode("DATA-R"); // Elecraft 
+						}
+
+						// TODO: We currently don't have an IF frequency from the setup menu for this, so use the last IF freq
+						// we had. In the case of LPB, it will get the IF Frequency from offset anyway. 
+						// This called probably isn't even necessary, because this should already be set to what we are
+						// setting it to.
+						DttSP.SetOsc((IFFrequencyForIFStageSoftRock + this.IFOffset + this.globalIFOffset)*swap);
+						break;
+				}
 			}
 		}
 
@@ -23141,6 +23469,32 @@ namespace PowerSDR
 			if(radModeDIGL.Checked)
 			{
 				SetMode(DSPMode.DIGL);
+				switch(current_model)
+				{
+						// Ok, this is a big mess. The issue here is that different models of radios have different names for
+						// modes. Until we have more solid plan for mode, we'll just send the modes that map for the radio 
+						// models we know we support right now. HRD and LPB will ignore modes that aren't valid, so the modes
+						// that are sent and don't apply will be ignored.
+					case Model.SOFTROCK40:
+						if ((this.DIGMode.Equals("DIG-LSB")))
+						{
+							setHRDMode("FSK");  // Kenwood
+							setHRDMode("DATA"); // Elecraft 
+						} 
+						else 
+						{
+							setHRDMode("FSK-R");  // Not supported on Kenwood TS-940
+							setHRDMode("DATA-R"); // Elecraft 
+						}
+						
+						// TODO: We currently don't have an IF frequency from the setup menu for this, so use the last IF freq
+						// we had. In the case of LPB, it will get the IF Frequency from offset anyway. 
+						// This called probably isn't even necessary, because this should already be set to what we are
+						// setting it to.
+						
+						DttSP.SetOsc((IFFrequencyForIFStageSoftRock + this.IFOffset + this.globalIFOffset)*swap);
+						break;		
+				}
 			}
 		}
 

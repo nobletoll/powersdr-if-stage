@@ -323,8 +323,8 @@ namespace PowerSDR
 			SetRXListen(0);
 		}
 
-//		[DllImport("DttSP.dll", EntryPoint="SetRingBufferOffset")]
-//		public static extern void SetRingBufferOffset(int offset);
+		[DllImport("DttSP.dll", EntryPoint="SetRingBufferOffset")]
+		public static extern void SetRingBufferOffset(int offset);
 
 		[DllImport("DttSP.dll", EntryPoint="SetRXAGC")]
 		public static extern void SetRXAGC_DLL(AGCMode setit);
