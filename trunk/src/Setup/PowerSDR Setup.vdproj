@@ -15,6 +15,12 @@
     {
         "Entry"
         {
+        "MsmKey" = "8:_00B0ECFA46C7C6739AA1764F6092DBD9"
+        "OwnerKey" = "8:_13AD2D6E1EE04F3094D7D373DBE7AE10"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_08162A10BB044F6B977FD90C338C61E8"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -63,6 +69,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_86578D465C4A6910D81D194789B33F31"
+        "OwnerKey" = "8:_13AD2D6E1EE04F3094D7D373DBE7AE10"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_8CD6888230D04AF980F9D2A59B1424AD"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -71,6 +83,24 @@
         {
         "MsmKey" = "8:_918F87A8E9B845FA80892CAB21B78509"
         "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_B6A1A5C02C5FFD0F093AF1E6795E7876"
+        "OwnerKey" = "8:_00B0ECFA46C7C6739AA1764F6092DBD9"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D27DB260470F4B67AA4F237020F4ABD2"
+        "OwnerKey" = "8:_00B0ECFA46C7C6739AA1764F6092DBD9"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D27DB260470F4B67AA4F237020F4ABD2"
+        "OwnerKey" = "8:_13AD2D6E1EE04F3094D7D373DBE7AE10"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -150,6 +180,37 @@
         }
         "File"
         {
+            "{FB480208-1853-44D0-9ABD-A3B734C3FAAA}:_00B0ECFA46C7C6739AA1764F6092DBD9"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:Interop.ADOX, Version=2.8.0.0, Culture=neutral"
+                "ScatterAssemblies"
+                {
+                    "_00B0ECFA46C7C6739AA1764F6092DBD9"
+                    {
+                    "Name" = "8:Interop.ADOX.DLL"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:Interop.ADOX.DLL"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_25D0B75A0D034BC793456BD6A7FF8277"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
             "{A582A373-4685-4296-BEFE-614B80A702C3}:_08162A10BB044F6B977FD90C338C61E8"
             {
             "SourcePath" = "8:..\\..\\bin\\Release\\fftw_wisdom.exe"
@@ -177,6 +238,11 @@
             "AssemblyAsmDisplayName" = "8:PowerSDR, Version=1.6.3.0, Culture=neutral"
                 "ScatterAssemblies"
                 {
+                    "_13AD2D6E1EE04F3094D7D373DBE7AE10"
+                    {
+                    "Name" = "8:PowerSDR.exe"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:..\\..\\bin\\Release\\PowerSDR.exe"
             "TargetName" = "8:"
@@ -316,6 +382,37 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{FB480208-1853-44D0-9ABD-A3B734C3FAAA}:_86578D465C4A6910D81D194789B33F31"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:TRUE"
+            "AssemblyAsmDisplayName" = "8:ADODB, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+                "ScatterAssemblies"
+                {
+                    "_86578D465C4A6910D81D194789B33F31"
+                    {
+                    "Name" = "8:ADODB.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:ADODB.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_25D0B75A0D034BC793456BD6A7FF8277"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
             "{A582A373-4685-4296-BEFE-614B80A702C3}:_8CD6888230D04AF980F9D2A59B1424AD"
             {
             "SourcePath" = "8:..\\..\\bin\\Release\\pthreadVC.dll"
@@ -354,6 +451,26 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{A582A373-4685-4296-BEFE-614B80A702C3}:_B6A1A5C02C5FFD0F093AF1E6795E7876"
+            {
+            "SourcePath" = "8:msADOX.dll"
+            "TargetName" = "8:msADOX.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_25D0B75A0D034BC793456BD6A7FF8277"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
             "{A582A373-4685-4296-BEFE-614B80A702C3}:_F29E1A04B26E46CEAAB843E34AB3162F"
@@ -498,14 +615,14 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:PowerSDR-IF Stage v0.91"
-        "ProductCode" = "8:{120A8486-CABD-46E1-9E9C-DFFDDA83BDCB}"
-        "PackageCode" = "8:{75ED17A4-F399-4F3A-A90E-1452853A4C16}"
+        "ProductName" = "8:PowerSDR-IF Stage v0.92"
+        "ProductCode" = "8:{4FE06443-823A-4604-844C-721020D5B779}"
+        "PackageCode" = "8:{B0D34261-6EA8-4D2A-AEDC-4A8EF874DDD1}"
         "UpgradeCode" = "8:{E90A3779-12FB-45F9-BB93-25B19E9B789B}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:FALSE"
-        "ProductVersion" = "8:0.91"
+        "ProductVersion" = "8:0.92"
         "Manufacturer" = "8:WU2X"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:www.wu2x.com"
@@ -718,7 +835,7 @@
             }
             "{478F747B-8505-45D1-9AAE-8C3B645C26E3}:_8EA996EF35C347E99D0F34A8811976A9"
             {
-            "Name" = "8:PowerSDR-IF Stage  v0.91"
+            "Name" = "8:PowerSDR-IF Stage  v0.92"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
@@ -1219,6 +1336,20 @@
         }
         "MergeModule"
         {
+            "{35A69C6E-5BA4-440D-803D-762B59A45393}:_D27DB260470F4B67AA4F237020F4ABD2"
+            {
+            "UseDynamicProperties" = "11:TRUE"
+            "IsDependency" = "11:TRUE"
+            "SourcePath" = "8:dotnetfxredist_x86.msm"
+                "Properties"
+                {
+                }
+            "LanguageId" = "3:1033"
+            "Exclude" = "11:TRUE"
+            "Folder" = "8:"
+            "Feature" = "8:"
+            "IsolateTo" = "8:"
+            }
         }
         "ProjectOutput"
         {

@@ -90,8 +90,8 @@ namespace PowerSDR
 			this.AboutText.Name = "AboutText";
 			this.AboutText.Size = new System.Drawing.Size(352, 48);
 			this.AboutText.TabIndex = 0;
-			this.AboutText.Text = "PowerSDR/IF Stage by WU2X.  Version: 0.91. Build Date: 11/24/2007.Based on  PowerS" +
-				"DR Version: 1.9.0 . http://www.wu2x.com/";
+			this.AboutText.Text = "PowerSDR/IF Stage by WU2X.  Version: 0.92. Build Date: 7/28/2008. Based on  Power" +
+				"SDR Version: 1.9.0 . http://www.wu2x.com/";
 			this.AboutText.TextAlign = System.Drawing.ContentAlignment.TopCenter;
 			// 
 			// About
