@@ -1,7 +1,7 @@
 ﻿<Project DefaultTargets="Build" ToolsVersion="3.5" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{831AEB2F-CA78-4057-85D7-32B4816ED6AE}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -16,7 +16,7 @@
     <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
     <DefaultTargetSchema>IE50</DefaultTargetSchema>
     <DelaySign>false</DelaySign>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <RootNamespace>PowerSDR</RootNamespace>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
     <StartupObject>PowerSDR.Console</StartupObject>
@@ -158,6 +158,10 @@
     <Compile Include="CAT\CATTester.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="CAT\ICATCommands.cs" />
+    <Compile Include="CAT\RigCATCommands.cs" />
+    <Compile Include="CAT\RigCATParser.cs" />
+    <Compile Include="CAT\RigSerialPoller.cs" />
     <Compile Include="CAT\RemoteProfiles.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -457,6 +461,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FLEX3000ATUForm.resx">
       <DependentUpon>FLEX3000ATUForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="FWC\FLEX3000MixerForm.resx">
       <DependentUpon>FLEX3000MixerForm.cs</DependentUpon>
@@ -464,6 +469,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FWC\FLEX3000TestForm.resx">
       <DependentUpon>FLEX3000TestForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="FWC\FLEX5000DebugForm.resx">
       <DependentUpon>FLEX5000DebugForm.cs</DependentUpon>
@@ -539,6 +545,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="mobilewarnform.resx">
       <DependentUpon>mobilewarnform.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="paqualify.resx">
       <DependentUpon>paqualify.cs</DependentUpon>
@@ -563,6 +570,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="savemem.resx">
       <DependentUpon>savemem.cs</DependentUpon>

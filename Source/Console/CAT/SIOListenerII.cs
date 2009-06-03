@@ -45,9 +45,6 @@ namespace PowerSDR
 			console.Closing += new System.ComponentModel.CancelEventHandler(console_Closing);
 			parser = new CATParser(console);
 
-			//event handler for Serial RX Events
-			SDRSerialSupportII.SDRSerialPort.serial_rx_event += new SDRSerialSupportII.SerialRXEventHandler(SerialRXEventHandler);
-		
 			if ( console.CATEnabled )  // if CAT is on fire it up 
 			{ 
 				try 
@@ -139,6 +136,11 @@ namespace PowerSDR
 			}
 			int port_num = console.CATPort; 
 			SIO = new SDRSerialPort(port_num);
+
+			// W1CEG: Move to enableCAT() since I changed serial_rx_event to a non-static.
+			//event handler for Serial RX Events
+			this.SIO.serial_rx_event += new SDRSerialSupportII.SerialRXEventHandler(SerialRXEventHandler);
+
 			SIO.setCommParms(console.CATBaudRate, 
 							console.CATParity, 
 							console.CATDataBits, 

@@ -30,7 +30,8 @@ namespace SDRSerialSupportII
 {
 	public class SDRSerialPort
 	{
-		public static event SDRSerialSupportII.SerialRXEventHandler serial_rx_event;
+		// W1CEG: Don't use static, because we want to handle multiple SDRSerialPort instances.
+		public event SDRSerialSupportII.SerialRXEventHandler serial_rx_event;
 		
 		private SerialPort commPort; 		
 		private bool isOpen = false; 
