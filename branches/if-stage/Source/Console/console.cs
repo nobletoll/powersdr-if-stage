@@ -424,7 +424,10 @@ namespace PowerSDR
 		// ======================================================
 
 		public Radio radio;
-		private SIOListenerII siolisten = null; 
+		private SIOListenerII siolisten = null;
+
+		// W1CEG
+		private RigSerialPoller rigSerialPoller = null;
 
 		private Thread[] audio_process_thread;				// threads to run DttSP functions
 		private Thread draw_display_thread;					// draws the main display 
@@ -5938,6 +5941,9 @@ namespace PowerSDR
 			hw = new HW(0x378);					// create hardware object
 
 			siolisten = new SIOListenerII(this);
+
+			// W1CEG
+			this.rigSerialPoller = new RigSerialPoller(this);
 
 			Keyer = new CWKeyer2(this);			// create new Keyer
 			EQForm = new EQForm(this);
@@ -19867,8 +19873,8 @@ namespace PowerSDR
 					tuning_word = sr_tuning_word;
 				}
 
-
-				Hdw.DDSTuningWord = tuning_word;		
+// W1CEG
+//				Hdw.DDSTuningWord = tuning_word;		
 				SetHWFilters(dds_freq);
 				if(!mox) radio.GetDSPRX(0, 0).RXOsc = dsp_osc_freq;
 			}
@@ -29856,6 +29862,9 @@ namespace PowerSDR
 								{
 									DDSFreq = freq;
 
+									// W1CEG: Update Frequency on Rig
+									this.rigSerialPoller.updateVFOAFrequency(freq);
+
 									if(chkEnableMultiRX.Checked)
 									{
 										int diff = (int)((VFOBFreq - VFOAFreq)*1e6);
@@ -30366,7 +30375,10 @@ namespace PowerSDR
 			{
 				if(!(fwc_init && (current_model == Model.FLEX5000 || current_model == Model.FLEX3000)))
 				{
-					DDSFreq = tx_freq;					
+					DDSFreq = tx_freq;
+
+					// W1CEG: Update Frequency on Rig
+					this.rigSerialPoller.updateVFOBFrequency(freq);
 				}
 				else
 				{
