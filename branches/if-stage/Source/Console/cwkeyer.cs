@@ -187,8 +187,8 @@ namespace PowerSDR
 			set { memoryptt = value; }
 		}
 
-		private HW hw;
-		public HW Hdw 
+		private AbstractHW hw;
+		public AbstractHW Hdw 
 		{
 			set { hw = value; }
 			get { return hw ; }
