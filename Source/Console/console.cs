@@ -27051,6 +27051,7 @@ namespace PowerSDR
                         RX1Ant = rx1_ant;
                         break;
                     case Model.SDR1000:
+						this.rigSerialPoller.enableCAT();
                         Hdw.PowerOn();
                         Hdw.DDSTuningWord = 0;
                         break;
@@ -27249,12 +27250,15 @@ namespace PowerSDR
 
                 if (!(fwc_init && (current_model == Model.FLEX5000 || current_model == Model.FLEX3000)))
                 {
-                    Hdw.StandBy();
+					if (current_model == Model.SDR1000)
+						this.rigSerialPoller.disableCAT();
+					
+					Hdw.StandBy();
                 }
-                else
-                {
-                    FWC.SetStandby(true);
-                }
+				else
+				{
+					FWC.SetStandby(true);
+				}
                 chkPower.BackColor = SystemColors.Control;
                 txtVFOAFreq.ForeColor = vfo_text_dark_color;
                 txtVFOAMSD.ForeColor = vfo_text_dark_color;

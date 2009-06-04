@@ -55,9 +55,6 @@ namespace PowerSDR
 			this.rigParser = new RigCATParser(console);
 			this.sdrParser = new CATParser(console);
 
-			this.console.Activated += new EventHandler(console_Activated);
-			this.console.Closing += new System.ComponentModel.CancelEventHandler(console_Closing);
-
 			// Initialize Rig Answer Lockout Timer
 			this.rigAnswerLockoutTimer.Elapsed +=
 				new System.Timers.ElapsedEventHandler(this.RigLockoutTimerExpiredEvent);
@@ -90,25 +87,36 @@ namespace PowerSDR
 				if (this.enabled)
 					return;
 
-				this.SIO = new SDRSerialPort(this.rigCOMPort);
+				if (this.SIO == null)
+				{
+					this.SIO = new SDRSerialPort(this.rigCOMPort);
 
-				// Event handler for Serial RX Events
-				this.SIO.serial_rx_event +=
-					new SDRSerialSupportII.SerialRXEventHandler(SerialRXEventHandler);
+					// Event handler for Serial RX Events
+					this.SIO.serial_rx_event +=
+						new SDRSerialSupportII.SerialRXEventHandler(SerialRXEventHandler);
 
-				this.SIO.setCommParms(4800,Parity.None,SDRSerialPort.DataBits.EIGHT,StopBits.One);
+					this.SIO.setCommParms(4800,Parity.None,SDRSerialPort.DataBits.EIGHT,StopBits.One);
 
+					dbgWriteLine("RigSerialPoller.enableCAT(), Opening COM" +
+						this.rigCOMPort + "...");
 
-				dbgWriteLine("KenwoodSerialListener.enableCAT(), Opening COM" +
-					this.rigCOMPort + "...");
-
-				if (this.SIO.Create() == 0)
-					dbgWriteLine("KenwoodSerialListener.enableCAT(), Opened COM" +
-						this.rigCOMPort + ".");
+					if (this.SIO.Create() == 0)
+						dbgWriteLine("RigSerialPoller.enableCAT(), Opened COM" +
+							this.rigCOMPort + ".");
+					else
+						dbgWriteLine("RigSerialPoller.enableCAT(), Failed to open COM" +
+							this.rigCOMPort + ".");
+				}
 				else
-					dbgWriteLine("KenwoodSerialListener.enableCAT(), Failed to open COM" +
-						this.rigCOMPort + ".");
+				{
+					this.SIO.registerEventHandlers();
 
+					// Event handler for Serial RX Events
+					this.SIO.serial_rx_event +=
+						new SDRSerialSupportII.SerialRXEventHandler(SerialRXEventHandler);
+				}
+
+				this.keepPolling = true;
 				this.pollingThread = new Thread(new ThreadStart(this.poll));
 				this.pollingThread.Name = "Kenwood COM Port CAT Polling Thread";
 				this.pollingThread.Start();
@@ -124,25 +132,28 @@ namespace PowerSDR
 				if (!this.enabled)
 					return;
 
-				dbgWriteLine("KenwoodSerialListener.disableCAT(), Waiting for Polling Thread to finish...");
+				this.enabled = false;
+				dbgWriteLine("RigSerialPoller.disableCAT(), Waiting for Polling Thread to finish...");
+
 				this.keepPolling = false;
 				this.pollingThread.Join();
 
-				if (this.SIO != null)
+				if (this.SIO != null && this.SIO.PortIsOpen)
 				{
-					dbgWriteLine("KenwoodSerialListener.disableCAT(), Closing COM" +
+					dbgWriteLine("RigSerialPoller.disableCAT(), Closing COM" +
 						this.rigCOMPort + "...");
 
-					// :TODO: :BUG: Get this to not hang!
+					// W1CEG: This hangs...I don't know why, but there's a lot
+					//        of discussion on this on the Internet.
 //					this.SIO.Destroy();
 
-					dbgWriteLine("KenwoodSerialListener.disableCAT(), Closed COM" +
+					this.SIO.deregisterEventHandlers();
+					this.SIO.serial_rx_event -=
+						new SDRSerialSupportII.SerialRXEventHandler(SerialRXEventHandler);
+
+					dbgWriteLine("RigSerialPoller.disableCAT(), Closed COM" +
 						this.rigCOMPort + ".");
-
-					this.SIO = null;
 				}
-
-				this.enabled = false;
 			}
 		}
 
@@ -259,25 +270,6 @@ dbgWriteLine("CAT Command To Rig: " + command);
 		private void RigLockoutTimerExpiredEvent(object source, System.Timers.ElapsedEventArgs e)
 		{
 			this.rigAnswerLockout = false;
-		}
-
-		private void console_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-		{
-			this.disableCAT();
-		}
-
-		private void console_Activated(object sender, EventArgs e)
-		{
-			try
-			{
-				this.enableCAT();
-			}
-			catch (Exception ex)
-			{
-				MessageBox.Show("Could not initialize Rig CAT Control.  Exception was:\n\n " +
-					ex.Message, "Error Initializing Rig CAT Control",
-					MessageBoxButtons.OK, MessageBoxIcon.Error);
-			}
 		}
 
 		private void SerialRXEventHandler(object source, SDRSerialSupportII.SerialRXEvent e)
