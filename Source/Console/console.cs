@@ -426,9 +426,6 @@ namespace PowerSDR
 		public Radio radio;
 		private SIOListenerII siolisten = null;
 
-		// W1CEG
-		private RigSerialPoller rigSerialPoller = null;
-
 		private Thread[] audio_process_thread;				// threads to run DttSP functions
 		private Thread draw_display_thread;					// draws the main display 
 		private Thread multimeter_thread;					// updates the rx1/tx meter data
@@ -483,7 +480,9 @@ namespace PowerSDR
 		private uint rx2_serial_num = 0;
 
 		public Memory MemForm;
-		private HW hw;										// will eventually be an array of rigs to support multiple radios
+
+		// W1CEG: Use an abstract HW class.
+		private AbstractHW hw;								// will eventually be an array of rigs to support multiple radios
 
 
 		public WaveControl WaveForm;
@@ -5942,9 +5941,6 @@ namespace PowerSDR
 
 			siolisten = new SIOListenerII(this);
 
-			// W1CEG
-			this.rigSerialPoller = new RigSerialPoller(this);
-
 			Keyer = new CWKeyer2(this);			// create new Keyer
 			EQForm = new EQForm(this);
 
@@ -5952,10 +5948,13 @@ namespace PowerSDR
 
 			SetupForm = new Setup(this);		// create Setup form
 			SetupForm.StartPosition = FormStartPosition.Manual;
-			
+
 			switch(current_model)
 			{
 				case Model.SDR1000:
+					// W1CEG: Use RigHW for SDR1000.
+					hw = new RigHW(this);
+
 					Hdw.Init();							// Power down hardware
 					Hdw.StandBy();						// initialize hardware device
 					break;
@@ -18640,7 +18639,7 @@ namespace PowerSDR
 			set { quick_qsy = value; }
 		}
 
-		public HW Hdw 
+		public AbstractHW Hdw 
 		{
 			set 
 			{ 
@@ -19873,8 +19872,7 @@ namespace PowerSDR
 					tuning_word = sr_tuning_word;
 				}
 
-// W1CEG
-//				Hdw.DDSTuningWord = tuning_word;		
+				Hdw.DDSTuningWord = tuning_word;
 				SetHWFilters(dds_freq);
 				if(!mox) radio.GetDSPRX(0, 0).RXOsc = dsp_osc_freq;
 			}
@@ -27051,7 +27049,6 @@ namespace PowerSDR
                         RX1Ant = rx1_ant;
                         break;
                     case Model.SDR1000:
-						this.rigSerialPoller.enableCAT();
                         Hdw.PowerOn();
                         Hdw.DDSTuningWord = 0;
                         break;
@@ -27250,9 +27247,6 @@ namespace PowerSDR
 
                 if (!(fwc_init && (current_model == Model.FLEX5000 || current_model == Model.FLEX3000)))
                 {
-					if (current_model == Model.SDR1000)
-						this.rigSerialPoller.disableCAT();
-					
 					Hdw.StandBy();
                 }
 				else
@@ -29867,7 +29861,7 @@ namespace PowerSDR
 									DDSFreq = freq;
 
 									// W1CEG: Update Frequency on Rig
-									this.rigSerialPoller.updateVFOAFrequency(freq);
+									((RigHW) this.hw).updateVFOAFrequency(freq);
 
 									if(chkEnableMultiRX.Checked)
 									{
@@ -30382,7 +30376,7 @@ namespace PowerSDR
 					DDSFreq = tx_freq;
 
 					// W1CEG: Update Frequency on Rig
-					this.rigSerialPoller.updateVFOBFrequency(freq);
+					((RigHW) this.hw).updateVFOBFrequency(freq);
 				}
 				else
 				{
