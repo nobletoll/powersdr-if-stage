@@ -24,7 +24,7 @@ using System;
 using System.IO;
 using System.Text;
 using System.Diagnostics;
-using System.Collections.Generic;
+using System.Collections;
 using System.Globalization;
 using System.Threading;
 using System.Windows.Forms;
@@ -59,9 +59,14 @@ namespace PowerSDR
 		private bool enabled = false;
 		private string commBuffer = "";
 
-		private EventWaitHandle wh = new AutoResetEvent(false);
 		private bool rigAnswerLockout = false;
 		private System.Timers.Timer rigAnswerLockoutTimer = new System.Timers.Timer();
+		private Mutex commandMutex = new Mutex();
+
+		private bool runRigCommands = true;
+		private Thread rigCommandThread;
+		private EventWaitHandle rigCommandWaitHandle = new AutoResetEvent(false);
+		private Queue rigCommandQueue = Queue.Synchronized(new Queue());
 
 		#endregion Variables
 
@@ -80,7 +85,7 @@ namespace PowerSDR
 				new System.Timers.ElapsedEventHandler(this.RigLockoutTimerExpiredEvent);
 			this.rigAnswerLockoutTimer.Interval = 1000;
 			this.rigAnswerLockoutTimer.AutoReset = false;
-			this.rigAnswerLockoutTimer.Enabled = false;          
+			this.rigAnswerLockoutTimer.Enabled = false;
 		}
 
 		~RigSerialPoller()
@@ -96,7 +101,7 @@ namespace PowerSDR
 		private static void dbgWriteLine(string s)
 		{
 #if (DBG_PRINT)
-			System.Console.Out.WriteLine(s);
+			System.Console.Error.WriteLine(s);
 #endif
 		}
 
@@ -136,9 +141,14 @@ namespace PowerSDR
 						new SDRSerialSupportII.SerialRXEventHandler(SerialRXEventHandler);
 				}
 
+				this.runRigCommands = true;
+				this.rigCommandThread = new Thread(new ThreadStart(this.RigCommandThread));
+				this.rigCommandThread.Name = "Rig CAT Command Thread";
+				this.rigCommandThread.Start();
+
 				this.keepPolling = true;
 				this.pollingThread = new Thread(new ThreadStart(this.poll));
-				this.pollingThread.Name = "Kenwood COM Port CAT Polling Thread";
+				this.pollingThread.Name = "Rig Polling Thread";
 				this.pollingThread.Start();
 
 				this.enabled = true;
@@ -153,10 +163,19 @@ namespace PowerSDR
 					return;
 
 				this.enabled = false;
-				dbgWriteLine("RigSerialPoller.disableCAT(), Waiting for Polling Thread to finish...");
 
+				dbgWriteLine("RigSerialPoller.disableCAT(), Shutting down Rig Polling Thread.");
 				this.keepPolling = false;
+
+				dbgWriteLine("RigSerialPoller.disableCAT(), Shutting down Rig Command Thread.");
+				this.runRigCommands = false;
+				this.rigCommandWaitHandle.Set();
+
+				dbgWriteLine("RigSerialPoller.disableCAT(), Waiting for Rig Polling Thread to finish...");
 				this.pollingThread.Join();
+
+				dbgWriteLine("RigSerialPoller.disableCAT(), Waiting for Rig Command Thread to finish...");
+				this.rigCommandThread.Join();
 
 				if (this.SIO != null && this.SIO.PortIsOpen)
 				{
@@ -184,24 +203,20 @@ namespace PowerSDR
 
 		private void poll()
 		{
-			byte[] cmdIF = this.AE.GetBytes("IF;");
-			byte[] cmdFA = this.AE.GetBytes("FA;");
-			byte[] cmdFB = this.AE.GetBytes("FB;");
-
-			dbgWriteLine("RigSerialPoller.pollingThread(), Start.");
+			dbgWriteLine("RigSerialPoller.poll(), Start.");
 
 			while (this.keepPolling)
 			{
 				if (!this.vfoAInitialized)
 				{
 					Thread.Sleep(50);
-					this.SIO.put(cmdFA,(uint) cmdFA.Length);
+					this.doRigCATCommand("FA;");
 				}
 
 				if (!this.vfoBInitialized)
 				{
 					Thread.Sleep(50);
-					this.SIO.put(cmdFB,(uint) cmdFB.Length);
+					this.doRigCATCommand("FB;");
 				}
 
 				Thread.Sleep(50);
@@ -211,21 +226,67 @@ namespace PowerSDR
 				if (this.rigParser.FrequencyChanged)
 				{
 					if (this.rigParser.VFO == 0)
-						this.SIO.put(cmdFA,(uint) cmdFA.Length);
+						this.doRigCATCommand("FA;");
 					else if (this.rigParser.VFO == 1)
-						this.SIO.put(cmdFB,(uint) cmdFB.Length);
+						this.doRigCATCommand("FB;");
 					else
-						this.SIO.put(cmdIF,(uint) cmdIF.Length);
+					{
+						Thread.Sleep(50);
+						this.doRigCATCommand("IF;");
+					}
 				}
 				else
 				{
 					// Sleep an additional 50ms if we're in an "idle" state.
 					Thread.Sleep(50);
-					this.SIO.put(cmdIF,(uint) cmdIF.Length);
+					this.doRigCATCommand("IF;");
 				}
 			}
 
-			dbgWriteLine("RigSerialPoller.pollingThread(), End.");
+			dbgWriteLine("RigSerialPoller.poll(), End.");
+		}
+
+		/**
+		 * We use a separate thread to asynchronously handle UI invoked Rig CAT Commands.
+		 * 
+		 * This is needed so that we we don't get in a deadlock:
+		 * 
+		 * Serial Read Thread: Change Frequency (wait on Main Thread)
+		 * Main Thread: User clicked to change frequency -> Waiting on Serial Read
+		 * 
+		 */
+		private void RigCommandThread()
+		{
+			dbgWriteLine("RigSerialPoller.RigCommandThread(), Start.");
+
+			while (this.runRigCommands)
+			{
+				string command = null;
+
+				if (this.rigCommandQueue.Count > 0)
+					command = (string) this.rigCommandQueue.Dequeue();
+
+				if (command != null)
+				{
+					byte[] cmd = this.AE.GetBytes(command);
+
+					this.commandMutex.WaitOne();
+
+					dbgWriteLine("==> " + command);
+					this.SIO.put(cmd,(uint) cmd.Length);
+
+					// Start or Restart lockout timer to ignore incoming Rig CAT Answers.
+					this.rigAnswerLockout = true;
+					this.rigAnswerLockoutTimer.Stop();
+					this.rigAnswerLockoutTimer.Start();
+
+					this.commandMutex.ReleaseMutex();
+				}
+				else
+					this.rigCommandWaitHandle.WaitOne();  // No more commands - wait for a signal
+			}
+
+			dbgWriteLine("RigSerialPoller.RigCommandThread(), End.");
 		}
 
 		#endregion CAT Polling
@@ -235,6 +296,9 @@ namespace PowerSDR
 
 		public void updateVFOAFrequency(double freq)
 		{
+			if (!this.enabled)
+				return;
+
 			string frequency =
 				freq.ToString("f6").Replace(separator,"").PadLeft(11,'0');
 
@@ -243,7 +307,7 @@ namespace PowerSDR
 			if (frequency == this.rigParser.Frequency)
 				return;
 
-			this.doRigCATCommand("FA" + frequency + ';');
+			this.enqueueRigCATCommand("FA" + frequency + ';');
 
 			// Set our Frequency State so we don't do this again.
 			this.rigParser.Frequency = frequency;
@@ -251,6 +315,9 @@ namespace PowerSDR
 
 		public void updateVFOBFrequency(double freq)
 		{
+			if (!this.enabled)
+				return;
+
 			string frequency =
 				freq.ToString("f6").Replace(separator,"").PadLeft(11,'0');
 
@@ -259,7 +326,7 @@ namespace PowerSDR
 			if (frequency == this.rigParser.Frequency)
 				return;
 
-			this.doRigCATCommand("FB" + frequency + ';');
+			this.enqueueRigCATCommand("FB" + frequency + ';');
 
 			// Set our Frequency State so we don't do this again.
 			this.rigParser.Frequency = frequency;
@@ -267,19 +334,36 @@ namespace PowerSDR
 
 		private void doRigCATCommand(string command)
 		{
-			if (!enabled)
+			this.doRigCATCommand(command,false);
+		}
+
+		private void doRigCATCommand(string command, bool bLockout)
+		{
+			if (!this.enabled)
 				return;
 
-			byte[] bCommand = this.AE.GetBytes(command);
+			byte[] cmd = this.AE.GetBytes(command);
 
-dbgWriteLine("CAT Command To Rig: " + command);
+			this.commandMutex.WaitOne();
 
-			this.SIO.put(bCommand,(uint) bCommand.Length);
+			dbgWriteLine("==> " + command);
+			this.SIO.put(cmd,(uint) cmd.Length);
 
 			// Start or Restart lockout timer to ignore incoming Rig CAT Answers.
-			this.rigAnswerLockout = true;
-			this.rigAnswerLockoutTimer.Stop();
-			this.rigAnswerLockoutTimer.Start();
+			if (bLockout)
+			{
+				this.rigAnswerLockout = true;
+				this.rigAnswerLockoutTimer.Stop();
+				this.rigAnswerLockoutTimer.Start();
+			}
+
+			this.commandMutex.ReleaseMutex();
+		}
+
+		private void enqueueRigCATCommand(string command)
+		{
+			this.rigCommandQueue.Enqueue(command);
+			this.rigCommandWaitHandle.Set();
 		}
 
 		#endregion Outgoing CAT Commands
@@ -309,13 +393,19 @@ dbgWriteLine("CAT Command To Rig: " + command);
 					if (!this.vfoBInitialized && m.Value.StartsWith("FB"))
 						this.vfoBInitialized = true;
 
+					this.commandMutex.WaitOne();
+
 					// Don't process the Rig's Answer if we're in a lockout state.
-					if (!this.rigAnswerLockout)
+					if (this.enabled && !this.rigAnswerLockout)
 					{
-// dbgWriteLine(m.Value);
+						dbgWriteLine("<== " + m.Value);
+
+
 						// Send the match to the Rig Parser
 						this.rigParser.Answer(m.Value);
 					}
+
+					this.commandMutex.ReleaseMutex();
 
 					// Remove the match from the buffer
 					this.commBuffer = this.commBuffer.Replace(m.Value,"");
