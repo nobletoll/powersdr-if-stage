@@ -141,10 +141,8 @@ namespace PowerSDR
 						new SDRSerialSupportII.SerialRXEventHandler(SerialRXEventHandler);
 				}
 
-				this.runRigCommands = true;
-				this.rigCommandThread = new Thread(new ThreadStart(this.RigCommandThread));
-				this.rigCommandThread.Name = "Rig CAT Command Thread";
-				this.rigCommandThread.Start();
+				this.vfoAInitialized = false;
+				this.vfoBInitialized = false;
 
 				this.keepPolling = true;
 				this.pollingThread = new Thread(new ThreadStart(this.poll));
@@ -172,10 +170,12 @@ namespace PowerSDR
 				this.rigCommandWaitHandle.Set();
 
 				dbgWriteLine("RigSerialPoller.disableCAT(), Waiting for Rig Polling Thread to finish...");
-				this.pollingThread.Join();
+				if (this.pollingThread != null)
+					this.pollingThread.Join();
 
 				dbgWriteLine("RigSerialPoller.disableCAT(), Waiting for Rig Command Thread to finish...");
-				this.rigCommandThread.Join();
+				if (this.rigCommandThread != null)
+					this.rigCommandThread.Join();
 
 				if (this.SIO != null && this.SIO.PortIsOpen)
 				{
@@ -207,16 +207,31 @@ namespace PowerSDR
 
 			while (this.keepPolling)
 			{
-				if (!this.vfoAInitialized)
-				{
-					Thread.Sleep(50);
-					this.doRigCATCommand("FA;");
-				}
+				bool bInitialized = (this.vfoAInitialized && this.vfoBInitialized);
+				bool vfoAInit = this.vfoAInitialized;
+				bool vfoBInit = this.vfoBInitialized;
 
-				if (!this.vfoBInitialized)
+				if (!bInitialized)
 				{
-					Thread.Sleep(50);
-					this.doRigCATCommand("FB;");
+					if (!this.vfoAInitialized)
+					{
+						Thread.Sleep(50);
+						this.doRigCATCommand("FA;");
+					}
+
+					if (!this.vfoBInitialized)
+					{
+						Thread.Sleep(50);
+						this.doRigCATCommand("FB;");
+					}
+				}
+				else if (this.rigCommandThread == null)
+				{
+					// Start up the Command Thread after VFO-A and VFO-B are initialized.
+					this.runRigCommands = true;
+					this.rigCommandThread = new Thread(new ThreadStart(this.RigCommandThread));
+					this.rigCommandThread.Name = "Rig CAT Command Thread";
+					this.rigCommandThread.Start();
 				}
 
 				Thread.Sleep(50);
@@ -259,6 +274,8 @@ namespace PowerSDR
 		{
 			dbgWriteLine("RigSerialPoller.RigCommandThread(), Start.");
 
+			this.rigCommandQueue.Clear();
+
 			while (this.runRigCommands)
 			{
 				string command = null;
@@ -281,6 +298,10 @@ namespace PowerSDR
 					this.rigAnswerLockoutTimer.Start();
 
 					this.commandMutex.ReleaseMutex();
+
+					// :TODO: :BUG: Clear out pending commands (to prevent
+					//              jumping back to original frequency--sync problem).
+					this.rigCommandQueue.Clear();
 				}
 				else
 					this.rigCommandWaitHandle.WaitOne();  // No more commands - wait for a signal
@@ -400,10 +421,11 @@ namespace PowerSDR
 					{
 						dbgWriteLine("<== " + m.Value);
 
-
 						// Send the match to the Rig Parser
 						this.rigParser.Answer(m.Value);
 					}
+					else
+						dbgWriteLine("<=| " + m.Value);
 
 					this.commandMutex.ReleaseMutex();
 
