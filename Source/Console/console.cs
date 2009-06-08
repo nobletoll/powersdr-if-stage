@@ -756,9 +756,9 @@ namespace PowerSDR
 
 		private System.Windows.Forms.MainMenu mainMenu1;
 		private System.Windows.Forms.ButtonTS btnHidden;
-		private System.Windows.Forms.TextBoxTS txtVFOAFreq;
+		public System.Windows.Forms.TextBoxTS txtVFOAFreq;
 		private System.Windows.Forms.TextBoxTS txtVFOABand;
-		private System.Windows.Forms.TextBoxTS txtVFOBFreq;
+		public System.Windows.Forms.TextBoxTS txtVFOBFreq;
 		private System.Windows.Forms.PictureBox picDisplay;
 		private System.Windows.Forms.GroupBoxTS grpVFOA;
 		private System.Windows.Forms.GroupBoxTS grpVFOB;

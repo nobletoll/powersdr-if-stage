@@ -18,8 +18,6 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //=============================================================================
 
-#define DBG_PRINT
-
 using System;
 using System.IO;
 using System.Text;
@@ -41,14 +39,7 @@ namespace PowerSDR
 		#region Variables
 
 		private int rigCOMPort = 1;
-
-		private Thread pollingThread;
-		private bool keepPolling = true;
-
-		// States for Polling Performance
-		private bool vfoAInitialized = false;
-		private bool vfoBInitialized = false;
-
+		
 		private Console console;
 		private SDRSerialSupportII.SDRSerialPort SIO;
 		private RigCATParser rigParser;
@@ -61,7 +52,14 @@ namespace PowerSDR
 
 		private bool rigAnswerLockout = false;
 		private System.Timers.Timer rigAnswerLockoutTimer = new System.Timers.Timer();
+#if USE_COMMAND_MUTEX
 		private Mutex commandMutex = new Mutex();
+#endif
+
+		private Thread pollingThread;
+		private bool keepPolling = true;
+		private bool vfoAInitialized = false;
+		private bool vfoBInitialized = false;
 
 		private bool runRigCommands = true;
 		private Thread rigCommandThread;
@@ -98,11 +96,10 @@ namespace PowerSDR
 
 		#region Methods
 
+		[Conditional("DEBUG")]
 		private static void dbgWriteLine(string s)
 		{
-#if (DBG_PRINT)
 			System.Console.Error.WriteLine(s);
-#endif
 		}
 
 		public void enableCAT()
@@ -171,11 +168,17 @@ namespace PowerSDR
 
 				dbgWriteLine("RigSerialPoller.disableCAT(), Waiting for Rig Polling Thread to finish...");
 				if (this.pollingThread != null)
+				{
 					this.pollingThread.Join();
+					this.pollingThread = null;
+				}
 
 				dbgWriteLine("RigSerialPoller.disableCAT(), Waiting for Rig Command Thread to finish...");
 				if (this.rigCommandThread != null)
+				{
 					this.rigCommandThread.Join();
+					this.rigCommandThread = null;
+				}
 
 				if (this.SIO != null && this.SIO.PortIsOpen)
 				{
@@ -287,7 +290,9 @@ namespace PowerSDR
 				{
 					byte[] cmd = this.AE.GetBytes(command);
 
+#if USE_COMMAND_MUTEX
 					this.commandMutex.WaitOne();
+#endif
 
 					dbgWriteLine("==> " + command);
 					this.SIO.put(cmd,(uint) cmd.Length);
@@ -297,11 +302,9 @@ namespace PowerSDR
 					this.rigAnswerLockoutTimer.Stop();
 					this.rigAnswerLockoutTimer.Start();
 
+#if USE_COMMAND_MUTEX
 					this.commandMutex.ReleaseMutex();
-
-					// :TODO: :BUG: Clear out pending commands (to prevent
-					//              jumping back to original frequency--sync problem).
-					this.rigCommandQueue.Clear();
+#endif
 				}
 				else
 					this.rigCommandWaitHandle.WaitOne();  // No more commands - wait for a signal
@@ -365,7 +368,9 @@ namespace PowerSDR
 
 			byte[] cmd = this.AE.GetBytes(command);
 
+#if USE_COMMAND_MUTEX
 			this.commandMutex.WaitOne();
+#endif
 
 			dbgWriteLine("==> " + command);
 			this.SIO.put(cmd,(uint) cmd.Length);
@@ -378,7 +383,9 @@ namespace PowerSDR
 				this.rigAnswerLockoutTimer.Start();
 			}
 
+#if USE_COMMAND_MUTEX
 			this.commandMutex.ReleaseMutex();
+#endif
 		}
 
 		private void enqueueRigCATCommand(string command)
@@ -414,7 +421,9 @@ namespace PowerSDR
 					if (!this.vfoBInitialized && m.Value.StartsWith("FB"))
 						this.vfoBInitialized = true;
 
+#if USE_COMMAND_MUTEX
 					this.commandMutex.WaitOne();
+#endif
 
 					// Don't process the Rig's Answer if we're in a lockout state.
 					if (this.enabled && !this.rigAnswerLockout)
@@ -427,7 +436,9 @@ namespace PowerSDR
 					else
 						dbgWriteLine("<=| " + m.Value);
 
+#if USE_COMMAND_MUTEX
 					this.commandMutex.ReleaseMutex();
+#endif
 
 					// Remove the match from the buffer
 					this.commBuffer = this.commBuffer.Replace(m.Value,"");

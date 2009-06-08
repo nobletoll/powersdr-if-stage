@@ -29,11 +29,11 @@ using System.Globalization;
 
 namespace PowerSDR
 {
-	public class RigCATCommands
+	public class RigCATCommands : CATCommands
 	{
 		#region Variable Definitions
 
-		private Console console;
+//		private Console console;
 		private RigCATParser rigParser;
 		private CATParser sdrParser;
 
@@ -97,30 +97,14 @@ namespace PowerSDR
 		// Sets or reads the frequency of VFO A
 		public string FA(string s)
 		{
-			// :NOTE: Store Frequency Status for RigSerialPoller Performance.
-			if (this.rigParser.VFO == 0)
-			{
-				this.rigParser.FrequencyChanged = (this.rigParser.Frequency != s);
-				this.rigParser.Frequency = s;
-			}
-
-			this.sdrParser.Get("FA" + s + ';');
-	
+			this.changeVFOA(s);
 			return null;
 		}
 
 		// Sets or reads the frequency of VFO B
 		public string FB(string s)
 		{
-			// :NOTE: Store Frequency Status for RigSerialPoller Performance.
-			if (this.rigParser.VFO == 1)
-			{
-				this.rigParser.FrequencyChanged = (this.rigParser.Frequency != s);
-				this.rigParser.Frequency = s;
-			}
-
-			this.sdrParser.Get("FB" + s + ';');
-
+			this.changeVFOB(s);
 			return null;
 		}
 
@@ -180,24 +164,14 @@ namespace PowerSDR
 			string frequency = s.Substring(0,11);
 			if (vfo == '0')
 			{
-				this.rigParser.FrequencyChanged =
-					(this.rigParser.VFO == 0 && this.rigParser.Frequency != frequency);
-
 				this.rigParser.VFO = 0;
-
-				this.sdrParser.Get("FA" + frequency + ';');
+				this.changeVFOA(frequency);
 			}
 			else if (vfo == '1')
 			{
-				this.rigParser.FrequencyChanged =
-					(this.rigParser.VFO == 1 && this.rigParser.Frequency != frequency);
-
 				this.rigParser.VFO = 1;
-
-				this.sdrParser.Get("FB" + frequency + ';');
+				this.changeVFOB(frequency);
 			}
-
-			this.rigParser.Frequency = frequency;
 
 			// :TODO: RIT Frequency
 			// :TODO: RIT
@@ -1445,6 +1419,67 @@ namespace PowerSDR
 		}
 
 		#endregion Extended CAT Methods ZZR-ZZZ
-	}	
+
+
+		private void changeVFOA(string s)
+		{
+			if (this.console.SetupForm.RttyOffsetEnabledA &&
+				(this.console.RX1DSPMode == DSPMode.DIGU ||
+				this.console.RX1DSPMode == DSPMode.DIGL))
+			{
+				int f = int.Parse(s);
+		
+				if (this.console.RX1DSPMode == DSPMode.DIGU)
+					f = f - Convert.ToInt32(console.SetupForm.RttyOffsetHigh);
+				else if (console.RX1DSPMode == DSPMode.DIGL)
+					f = f + Convert.ToInt32(console.SetupForm.RttyOffsetLow);
+				
+				s = this.AddLeadingZeros(f);
+			}
+
+			if (this.rigParser.VFO != 0 || s != this.rigParser.Frequency)
+			{
+				double freq = double.Parse(s.Insert(5,separator));
+				this.console.txtVFOAFreq.Text = freq.ToString("f6");
+			}
+
+			// Store Frequency Status for RigSerialPoller Performance.
+			if (this.rigParser.VFO == 0)
+			{
+				this.rigParser.FrequencyChanged = (this.rigParser.Frequency != s);
+				this.rigParser.Frequency = s;
+			}
+		}
+
+		private void changeVFOB(string s)
+		{
+			if (this.console.SetupForm.RttyOffsetEnabledB &&
+				(this.console.RX1DSPMode == DSPMode.DIGU ||
+				this.console.RX1DSPMode == DSPMode.DIGL))
+			{
+				int f = int.Parse(s);
+
+				if (this.console.RX1DSPMode == DSPMode.DIGU)
+					f = f - Convert.ToInt32(console.SetupForm.RttyOffsetHigh);
+				else if (console.RX1DSPMode == DSPMode.DIGL)
+					f = f + Convert.ToInt32(console.SetupForm.RttyOffsetLow);
+
+				s = this.AddLeadingZeros(f);
+			}
+
+			if (this.rigParser.VFO != 1 || s != this.rigParser.Frequency)
+			{
+				double freq = double.Parse(s.Insert(5,separator));
+				this.console.txtVFOBFreq.Text = freq.ToString("f6");
+			}
+
+			// Store Frequency Status for RigSerialPoller Performance.
+			if (this.rigParser.VFO == 1)
+			{
+				this.rigParser.FrequencyChanged = (this.rigParser.Frequency != s);
+				this.rigParser.Frequency = s;
+			}
+		}
+	}
 }
 
