@@ -132,12 +132,28 @@ namespace PowerSDR
 					dbgWriteLine("RigSerialPoller.enableCAT(), Opening COM" +
 						this.rigCOMPort + "...");
 
-					if (this.SIO.Create() == 0)
-						dbgWriteLine("RigSerialPoller.enableCAT(), Opened COM" +
-							this.rigCOMPort + ".");
-					else
-						dbgWriteLine("RigSerialPoller.enableCAT(), Failed to open COM" +
-							this.rigCOMPort + ".");
+					try
+					{
+						if (this.SIO.Create() == 0)
+							dbgWriteLine("RigSerialPoller.enableCAT(), Opened COM" +
+								this.rigCOMPort + ".");
+						else
+							throw new Exception();
+					}
+					catch (Exception ex)
+					{
+						// Event handler for Serial RX Events
+						this.SIO.serial_rx_event -=
+							new SDRSerialSupportII.SerialRXEventHandler(SerialRXEventHandler);
+						
+						this.SIO = null;
+
+						MessageBox.Show("Could not initialize Rig CAT Control." +
+							((ex.Message != null) ? "\nException was:\n\n " + ex.Message : ""),
+							"Error Initializing Rig CAT Control",
+							MessageBoxButtons.OK,MessageBoxIcon.Error);
+						return;
+					}
 				}
 				else
 				{
