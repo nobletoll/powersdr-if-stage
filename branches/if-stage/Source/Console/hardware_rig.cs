@@ -27,6 +27,16 @@ namespace PowerSDR
 		private Console console;
 		private RigSerialPoller rigSerialPoller;
 
+		public enum Mode
+		{
+			LSB = 1,
+			USB = 2,
+			CW = 3,
+			FM = 4,
+			AM = 5,
+			FSK = 6,
+		}
+
 		#endregion Variable Declarations
 
 
@@ -237,6 +247,11 @@ namespace PowerSDR
 		public void updateVFOBFrequency(double freq)
 		{
 			this.rigSerialPoller.updateVFOBFrequency(freq);
+		}
+
+		public void setMode(Mode mode)
+		{
+			this.rigSerialPoller.setMode((int) mode);
 		}
 
 		#endregion Public Functions
