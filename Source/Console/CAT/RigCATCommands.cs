@@ -29,6 +29,11 @@ using System.Globalization;
 
 namespace PowerSDR
 {
+	public class RigCATEventArgs : EventArgs
+	{
+		public RigCATEventArgs() { }
+	}
+
 	public class RigCATCommands : CATCommands
 	{
 		#region Variable Definitions
@@ -1446,6 +1451,7 @@ namespace PowerSDR
 			{
 				double freq = double.Parse(s.Insert(5,separator));
 				this.console.txtVFOAFreq.Text = freq.ToString("f6");
+				this.console.txtVFOAFreq_LostFocus(this,new RigCATEventArgs());
 			}
 
 			// Store Frequency Status for RigSerialPoller Performance.
@@ -1476,6 +1482,7 @@ namespace PowerSDR
 			{
 				double freq = double.Parse(s.Insert(5,separator));
 				this.console.txtVFOBFreq.Text = freq.ToString("f6");
+				this.console.txtVFOBFreq_LostFocus(this,new RigCATEventArgs());
 			}
 
 			// Store Frequency Status for RigSerialPoller Performance.

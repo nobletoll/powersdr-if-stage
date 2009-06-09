@@ -29557,7 +29557,7 @@ namespace PowerSDR
 			}
 		}
 
-		private void txtVFOAFreq_LostFocus(object sender, System.EventArgs e)
+		public void txtVFOAFreq_LostFocus(object sender, System.EventArgs e)
 		{
 			if(txtVFOAFreq.Text == "." || txtVFOAFreq.Text == "") 
 			{
@@ -29861,7 +29861,8 @@ namespace PowerSDR
 									DDSFreq = freq;
 
 									// W1CEG: Update Frequency on Rig
-									((RigHW) this.hw).updateVFOAFrequency(freq);
+									if (!(e is RigCATEventArgs))
+										((RigHW) this.hw).updateVFOAFrequency(freq);
 
 									if(chkEnableMultiRX.Checked)
 									{
@@ -30227,7 +30228,7 @@ namespace PowerSDR
 		}
 
 		// txtVFOBFreq
-		private void txtVFOBFreq_LostFocus(object sender, System.EventArgs e)
+		public void txtVFOBFreq_LostFocus(object sender, System.EventArgs e)
 		{
 			if(txtVFOBFreq.Text == "" || txtVFOBFreq.Text == ".")
 			{
@@ -30376,7 +30377,8 @@ namespace PowerSDR
 					DDSFreq = tx_freq;
 
 					// W1CEG: Update Frequency on Rig
-					((RigHW) this.hw).updateVFOBFrequency(freq);
+					if (!(e is RigCATEventArgs))
+						((RigHW) this.hw).updateVFOBFrequency(freq);
 				}
 				else
 				{
