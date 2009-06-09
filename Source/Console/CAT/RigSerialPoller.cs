@@ -356,6 +356,16 @@ namespace PowerSDR
 			this.rigParser.Frequency = frequency;
 		}
 
+		public void setMode(int mode)
+		{
+			if (!this.enabled)
+				return;
+
+			this.rigParser.Mode = mode;
+			this.enqueueRigCATCommand("MD" + mode + ';');
+		}
+
+
 		private void doRigCATCommand(string command)
 		{
 			this.doRigCATCommand(command,false);

@@ -180,7 +180,12 @@ namespace PowerSDR
 			// :TODO: Memory Bank?
 
 			// Mode
-			this.sdrParser.Get("MD" + s[27] + ';');
+			int mode = s[27] - '0';
+			if (this.rigParser.Mode != mode)
+			{
+				this.rigParser.Mode = mode;
+				this.sdrParser.Get("MD" + s[27] + ';');
+			}
 
 			// Split
 			// :TODO: Decide on how to deal with this since SPLIT is only on

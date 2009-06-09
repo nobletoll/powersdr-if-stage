@@ -29,6 +29,7 @@ namespace PowerSDR
 		private RigCATCommands rigCmdList;
 
 		private int vfo = 99;
+		private int mode = 0;
 		private string frequency = "";
 		private bool frequencyChanged = false;
 
@@ -54,6 +55,12 @@ namespace PowerSDR
 		{
 			get { return this.vfo; }
 			set { this.vfo = value; }
+		}
+
+		public int Mode
+		{
+			get { return this.mode; }
+			set { this.mode = value; }
 		}
 
 		public string Frequency
