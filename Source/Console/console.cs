@@ -32431,10 +32431,6 @@ namespace PowerSDR
 			switch(new_mode)
 			{
 				case DSPMode.LSB:
-					// W1CEG: Update Mode on Rig
-					if (current_model == Model.SDR1000)
-						((RigHW) this.hw).setMode(RigHW.Mode.LSB);
-
 					radModeLSB.BackColor = button_selected_color;
 					//grpMode.Text = "Mode - LSB";
 					if(!rx_only && chkPower.Checked)
@@ -32447,10 +32443,6 @@ namespace PowerSDR
 					panelModeSpecificPhone.BringToFront();
 					break;
 				case DSPMode.USB:
-					// W1CEG: Update Mode on Rig
-					if (current_model == Model.SDR1000)
-						((RigHW) this.hw).setMode(RigHW.Mode.USB);
-
 					radModeUSB.BackColor = button_selected_color;
 					//grpMode.Text = "Mode - USB";
 					if(!rx_only && chkPower.Checked)
@@ -32477,10 +32469,6 @@ namespace PowerSDR
                     panelModeSpecificPhone.BringToFront();
 					break;
 				case DSPMode.CWL:
-					// W1CEG: Update Mode on Rig
-					if (current_model == Model.SDR1000)
-						((RigHW) this.hw).setMode(RigHW.Mode.CW);
-
 					radModeCWL.BackColor = button_selected_color;
 					//grpMode.Text = "Mode - CWL";
 					if(chkVFOATX.Checked) 
@@ -32514,10 +32502,6 @@ namespace PowerSDR
                     panelModeSpecificCW.BringToFront();
 					break;
 				case DSPMode.CWU:
-					// W1CEG: Update Mode on Rig
-					if (current_model == Model.SDR1000)
-						((RigHW) this.hw).setMode(RigHW.Mode.CW);
-
 					radModeCWU.BackColor = button_selected_color;
 					//grpMode.Text = "Mode - CWU";
 					if(chkVFOATX.Checked) 
@@ -32550,10 +32534,6 @@ namespace PowerSDR
                     panelModeSpecificCW.BringToFront();
 					break;
 				case DSPMode.FMN:
-					// W1CEG: Update Mode on Rig
-					if (current_model == Model.SDR1000)
-						((RigHW) this.hw).setMode(RigHW.Mode.FM);
-
 					radModeFMN.BackColor = button_selected_color;
 					//grpMode.Text = "Mode - FMN";
 					if(chkVFOATX.Checked) 
@@ -32579,10 +32559,6 @@ namespace PowerSDR
                     panelModeSpecificPhone.BringToFront();
 					break;
 				case DSPMode.AM:
-					// W1CEG: Update Mode on Rig
-					if (current_model == Model.SDR1000)
-						((RigHW) this.hw).setMode(RigHW.Mode.AM);
-
 					radModeAM.BackColor = button_selected_color;
 					//grpMode.Text = "Mode - AM";
 					if(!rx_only && chkPower.Checked)
@@ -32637,10 +32613,6 @@ namespace PowerSDR
 					Display.RXDisplayHigh = (int)sample_rate1/2;
 					break;
 				case DSPMode.DIGL:
-					// W1CEG: Update Mode on Rig
-					if (current_model == Model.SDR1000)
-						((RigHW) this.hw).setMode(RigHW.Mode.FSK);
-
 					radModeDIGL.BackColor = button_selected_color;
 					//grpMode.Text = "Mode - DIGL";
 					if(chkVFOATX.Checked) 
@@ -32654,10 +32626,6 @@ namespace PowerSDR
                     panelModeSpecificDigital.BringToFront();
 					break;
 				case DSPMode.DIGU:
-					// W1CEG: Update Mode on Rig
-					if (current_model == Model.SDR1000)
-						((RigHW) this.hw).setMode(RigHW.Mode.FSK);
-
 					radModeDIGU.BackColor = button_selected_color;
 					//grpMode.Text = "Mode - DIGU";
 					if(chkVFOATX.Checked) 
@@ -32742,6 +32710,10 @@ namespace PowerSDR
 		{
 			if(radModeLSB.Checked)
 			{
+				// W1CEG: Update Mode on Rig
+				if (current_model == Model.SDR1000)
+					((RigHW) this.hw).setMode(RigHW.Mode.LSB);
+
 				SetRX1Mode(DSPMode.LSB);
 			}
 		}
@@ -32750,6 +32722,10 @@ namespace PowerSDR
 		{
 			if(radModeUSB.Checked)
 			{
+				// W1CEG: Update Mode on Rig
+				if (current_model == Model.SDR1000)
+					((RigHW) this.hw).setMode(RigHW.Mode.USB);
+
 				SetRX1Mode(DSPMode.USB);
 			}
 		}
@@ -32766,6 +32742,10 @@ namespace PowerSDR
 		{
 			if(radModeCWL.Checked)
 			{
+				// W1CEG: Update Mode on Rig
+				if (current_model == Model.SDR1000)
+					((RigHW) this.hw).setMode(RigHW.Mode.CW);
+
 				SetRX1Mode(DSPMode.CWL);
 			}
 
@@ -32775,6 +32755,10 @@ namespace PowerSDR
 		{
 			if(radModeCWU.Checked)
 			{
+				// W1CEG: Update Mode on Rig
+				if (current_model == Model.SDR1000)
+					((RigHW) this.hw).setMode(RigHW.Mode.CW);
+
 				SetRX1Mode(DSPMode.CWU);
 			}
 		}
@@ -32783,6 +32767,10 @@ namespace PowerSDR
 		{
 			if(radModeFMN.Checked)
 			{
+				// W1CEG: Update Mode on Rig
+				if (current_model == Model.SDR1000)
+					((RigHW) this.hw).setMode(RigHW.Mode.FM);
+
 				SetRX1Mode(DSPMode.FMN);
 			}
 			//radio.GetDSP(0, 0).SetRXFilter(-50000, 50000);
@@ -32792,6 +32780,10 @@ namespace PowerSDR
 		{
 			if(radModeAM.Checked)
 			{
+				// W1CEG: Update Mode on Rig
+				if (current_model == Model.SDR1000)
+					((RigHW) this.hw).setMode(RigHW.Mode.AM);
+
 				SetRX1Mode(DSPMode.AM);
 			}
 		}
@@ -32808,6 +32800,10 @@ namespace PowerSDR
 		{
 			if(radModeDIGU.Checked)
 			{
+				// W1CEG: Update Mode on Rig
+				if (current_model == Model.SDR1000)
+					((RigHW) this.hw).setMode(RigHW.Mode.FSK);
+
 				SetRX1Mode(DSPMode.DIGU);
 			}
 		}
@@ -32824,6 +32820,10 @@ namespace PowerSDR
 		{
 			if(radModeDIGL.Checked)
 			{
+				// W1CEG: Update Mode on Rig
+				if (current_model == Model.SDR1000)
+					((RigHW) this.hw).setMode(RigHW.Mode.FSK);
+
 				SetRX1Mode(DSPMode.DIGL);
 			}
 		}
