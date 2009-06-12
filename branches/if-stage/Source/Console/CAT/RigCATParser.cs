@@ -30,17 +30,19 @@ namespace PowerSDR
 
 		private int vfo = 99;
 		private int mode = 0;
-		private string frequency = "";
+		private string vfoaFrequency = "";
+		private string vfobFrequency = "";
 		private bool frequencyChanged = false;
+		private int ritOffset = 0;
 
 		#endregion Variables
 
 
 		#region Constructor
 
-		public RigCATParser(Console c) : base(c)
+		public RigCATParser(Console c, RigSerialPoller rigSerialPoller) : base(c)
 		{
-			this.rigCmdList = new RigCATCommands(c,this);
+			this.rigCmdList = new RigCATCommands(c,rigSerialPoller,this);
 
 			// W1CEG: TS-940S has spaces in the IF answer.
 			this.sfxpattern = new Regex("^[0-9+-]*[Vv0-9 ]*$");
@@ -63,16 +65,28 @@ namespace PowerSDR
 			set { this.mode = value; }
 		}
 
-		public string Frequency
+		public string VFOAFrequency
 		{
-			get { return this.frequency; }
-			set { this.frequency = value; }
+			get { return this.vfoaFrequency; }
+			set { this.vfoaFrequency = value; }
+		}
+
+		public string VFOBFrequency
+		{
+			get { return this.vfobFrequency; }
+			set { this.vfobFrequency = value; }
 		}
 
 		public bool FrequencyChanged
 		{
 			get { return this.frequencyChanged; }
 			set { this.frequencyChanged = value; }
+		}
+
+		public int RITOffset
+		{
+			get { return this.ritOffset; }
+			set { this.ritOffset = value; }
 		}
 
 		#endregion Accessors

@@ -78,7 +78,7 @@ namespace PowerSDR
 		{
 			this.console = console;
 
-			this.rigParser = new RigCATParser(console);
+			this.rigParser = new RigCATParser(console,this);
 			this.sdrParser = new CATParser(console);
 
 			// Initialize Rig Answer Lockout Timer
@@ -336,13 +336,13 @@ namespace PowerSDR
 
 			// Only do this if our Frequency State has changed.
 			// :TODO: Do we need to pay attention to the VFO state?
-			if (frequency == this.rigParser.Frequency)
+			if (frequency == this.rigParser.VFOAFrequency)
 				return;
 
 			this.enqueueRigCATCommand("FA" + frequency + ';');
 
 			// Set our Frequency State so we don't do this again.
-			this.rigParser.Frequency = frequency;
+			this.rigParser.VFOAFrequency = frequency;
 		}
 
 		public void updateVFOBFrequency(double freq)
@@ -355,13 +355,13 @@ namespace PowerSDR
 
 			// Only do this if our Frequency State has changed.
 			// :TODO: Do we need to pay attention to the VFO state?
-			if (frequency == this.rigParser.Frequency)
+			if (frequency == this.rigParser.VFOBFrequency)
 				return;
 
 			this.enqueueRigCATCommand("FB" + frequency + ';');
 
 			// Set our Frequency State so we don't do this again.
-			this.rigParser.Frequency = frequency;
+			this.rigParser.VFOBFrequency = frequency;
 		}
 
 		public void setMode(int mode)
@@ -386,7 +386,7 @@ namespace PowerSDR
 			this.doRigCATCommand(command,false,true);
 		}
 
-		private void doRigCATCommand(string command, bool bAnswerLockout,
+		public void doRigCATCommand(string command, bool bAnswerLockout,
 			bool bCheckCommandLockout)
 		{
 			if (!this.enabled || (bCheckCommandLockout && this.rigCommandLockout))
