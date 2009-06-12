@@ -50,7 +50,7 @@ namespace PowerSDR
 		private bool enabled = false;
 		private string commBuffer = "";
 
-		private bool rigAnswerLockout = false;
+		private bool rigPollingLockout = false;
 		private System.Timers.Timer rigAnswerLockoutTimer = new System.Timers.Timer();
 		private bool rigCommandLockout = false;
 		private System.Timers.Timer rigCommandLockoutTimer = new System.Timers.Timer();
@@ -265,25 +265,28 @@ namespace PowerSDR
 
 				Thread.Sleep(50);
 
-				// If the operator is tuning the VFO Knob, we'll focus on just
-				// that for maximum performance!
-				if (this.rigParser.FrequencyChanged)
+				if (!this.rigPollingLockout)
 				{
-					if (this.rigParser.VFO == 0)
-						this.doRigCATCommand("FA;");
-					else if (this.rigParser.VFO == 1)
-						this.doRigCATCommand("FB;");
+					// If the operator is tuning the VFO Knob, we'll focus on just
+					// that for maximum performance!
+					if (this.rigParser.FrequencyChanged)
+					{
+						if (this.rigParser.VFO == 0)
+							this.doRigCATCommand("FA;");
+						else if (this.rigParser.VFO == 1)
+							this.doRigCATCommand("FB;");
+						else
+						{
+							Thread.Sleep(50);
+							this.doRigCATCommand("IF;");
+						}
+					}
 					else
 					{
+						// Sleep an additional 50ms if we're in an "idle" state.
 						Thread.Sleep(50);
 						this.doRigCATCommand("IF;");
 					}
-				}
-				else
-				{
-					// Sleep an additional 50ms if we're in an "idle" state.
-					Thread.Sleep(50);
-					this.doRigCATCommand("IF;");
 				}
 			}
 
@@ -404,7 +407,7 @@ namespace PowerSDR
 			// Start or Restart lockout timer to ignore incoming Rig CAT Answers.
 			if (bAnswerLockout)
 			{
-				this.rigAnswerLockout = true;
+				this.rigPollingLockout = true;
 				this.rigAnswerLockoutTimer.Stop();
 				this.rigAnswerLockoutTimer.Start();
 			}
@@ -428,7 +431,7 @@ namespace PowerSDR
 		private void RigAnswerLockoutTimerExpiredEvent(object source,
 			System.Timers.ElapsedEventArgs e)
 		{
-			this.rigAnswerLockout = false;
+			this.rigPollingLockout = false;
 		}
 
 		private void RigCommandLockoutTimerExpiredEvent(object source,
@@ -459,7 +462,7 @@ namespace PowerSDR
 #endif
 
 					// Don't process the Rig's Answer if we're in a lockout state.
-					if (this.enabled && !this.rigAnswerLockout)
+					if (this.enabled && !this.rigPollingLockout)
 					{
 						dbgWriteLine("<== " + m.Value);
 
