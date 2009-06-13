@@ -26137,7 +26137,9 @@ namespace PowerSDR
                         }
                         break;
                 }
-                shift_down = false;
+
+                // W1CEG: It doesn't make sense to turn shift_down off.  It's not off!
+//                shift_down = false;
             }
             else if (e.Control == true && e.Alt == true)
             {
