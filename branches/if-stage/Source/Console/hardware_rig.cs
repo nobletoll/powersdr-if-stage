@@ -254,7 +254,12 @@ namespace PowerSDR
 			this.rigSerialPoller.setMode((int) mode);
 		}
 
-		#endregion Public Functions
+        public void setSplit(bool splitOn)
+        {
+            this.rigSerialPoller.setSplit(splitOn);
+        }
+
+        #endregion Public Functions
 
 
 		#region Test Functions

@@ -385,6 +385,14 @@ namespace PowerSDR
 			this.doRigCATCommand("MD" + mode + ';',true,false);
 		}
 
+        public void setSplit(bool splitOn)
+        {
+            if (!this.enabled)
+                return;
+
+            this.enqueueRigCATCommand("SP" + ((splitOn) ? '1' : '0') + ';');
+        }
+
 
 		private void doRigCATCommand(string command)
 		{
