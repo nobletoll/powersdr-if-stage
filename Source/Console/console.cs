@@ -29501,7 +29501,7 @@ namespace PowerSDR
                     else
                     {
 						// W1CEG: Tune VFO-B with Ctrl+Wheel
-						if (this.control_down)
+                        if (this.control_down || this.current_click_tune_mode == ClickTuneMode.VFOB)
 							freq = Double.Parse(txtVFOBFreq.Text);
 						else
 							freq = Double.Parse(txtVFOAFreq.Text);
@@ -29534,7 +29534,7 @@ namespace PowerSDR
                         }
 
 						// W1CEG: Tune VFO-B with Ctrl+Wheel
-						if (this.control_down)
+                        if (this.control_down || this.current_click_tune_mode == ClickTuneMode.VFOB)
 							VFOBFreq = freq;
 						else
 							VFOAFreq = freq;
@@ -29543,7 +29543,7 @@ namespace PowerSDR
 
                 case TuneLocation.Other:
 					// W1CEG: Tune VFO-B with Ctrl+Wheel
-					if (this.control_down)
+                    if (this.control_down || this.current_click_tune_mode == ClickTuneMode.VFOB)
 						freq = Double.Parse(txtVFOBFreq.Text);
 					else
 						freq = Double.Parse(txtVFOAFreq.Text);
@@ -29576,7 +29576,7 @@ namespace PowerSDR
                     }
 
 					// W1CEG: Tune VFO-B with Ctrl+Wheel
-					if (this.control_down)
+                    if (this.control_down || this.current_click_tune_mode == ClickTuneMode.VFOB)
 						VFOBFreq = freq;
 					else
 						VFOAFreq = freq;
@@ -29889,7 +29889,7 @@ namespace PowerSDR
                                     DDSFreq = freq;
 
                                     // W1CEG: Update Frequency on Rig
-                                    if (!(e is RigCATEventArgs))
+                                    if (!(e is RigCATEventArgs) && this.hw is RigHW)
                                         ((RigHW)this.hw).updateVFOAFrequency(freq);
 
                                     if (chkEnableMultiRX.Checked)
@@ -30267,7 +30267,7 @@ namespace PowerSDR
             double freq = double.Parse(txtVFOBFreq.Text);
 
 			// W1CEG: Update Frequency on Rig
-			if (!(e is RigCATEventArgs))
+			if (!(e is RigCATEventArgs) && this.hw is RigHW)
 				((RigHW) this.hw).updateVFOBFrequency(freq);
 			
 			if (chkEnableMultiRX.Checked && !rx2_enabled)
@@ -32739,7 +32739,7 @@ namespace PowerSDR
             if (radModeLSB.Checked)
             {
 				// W1CEG: Update Mode on Rig
-				if (current_model == Model.SDR1000)
+                if (this.hw is RigHW)
 					((RigHW) this.hw).setMode(RigHW.Mode.LSB);
 
                 SetRX1Mode(DSPMode.LSB);
@@ -32751,7 +32751,7 @@ namespace PowerSDR
             if (radModeUSB.Checked)
             {
 				// W1CEG: Update Mode on Rig
-				if (current_model == Model.SDR1000)
+				if (this.hw is RigHW)
 					((RigHW) this.hw).setMode(RigHW.Mode.USB);
 
                 SetRX1Mode(DSPMode.USB);
@@ -32771,7 +32771,7 @@ namespace PowerSDR
             if (radModeCWL.Checked)
             {
 				// W1CEG: Update Mode on Rig
-				if (current_model == Model.SDR1000)
+				if (this.hw is RigHW)
 					((RigHW) this.hw).setMode(RigHW.Mode.CW);
 
                 SetRX1Mode(DSPMode.CWL);
@@ -32784,7 +32784,7 @@ namespace PowerSDR
             if (radModeCWU.Checked)
             {
 				// W1CEG: Update Mode on Rig
-				if (current_model == Model.SDR1000)
+                if (this.hw is RigHW)
 					((RigHW) this.hw).setMode(RigHW.Mode.CW);
 
                 SetRX1Mode(DSPMode.CWU);
@@ -32796,7 +32796,7 @@ namespace PowerSDR
             if (radModeFMN.Checked)
             {
 				// W1CEG: Update Mode on Rig
-				if (current_model == Model.SDR1000)
+                if (this.hw is RigHW)
 					((RigHW) this.hw).setMode(RigHW.Mode.FM);
 
                 SetRX1Mode(DSPMode.FMN);
@@ -32809,7 +32809,7 @@ namespace PowerSDR
             if (radModeAM.Checked)
             {
 				// W1CEG: Update Mode on Rig
-				if (current_model == Model.SDR1000)
+                if (this.hw is RigHW)
 					((RigHW) this.hw).setMode(RigHW.Mode.AM);
 
                 SetRX1Mode(DSPMode.AM);
@@ -32829,7 +32829,7 @@ namespace PowerSDR
             if (radModeDIGU.Checked)
             {
 				// W1CEG: Update Mode on Rig
-				if (current_model == Model.SDR1000)
+                if (this.hw is RigHW)
 					((RigHW) this.hw).setMode(RigHW.Mode.FSK);
 
                 SetRX1Mode(DSPMode.DIGU);
@@ -32849,7 +32849,7 @@ namespace PowerSDR
             if (radModeDIGL.Checked)
             {
 				// W1CEG: Update Mode on Rig
-				if (current_model == Model.SDR1000)
+                if (this.hw is RigHW)
 					((RigHW) this.hw).setMode(RigHW.Mode.FSK);
 
                 SetRX1Mode(DSPMode.DIGL);
