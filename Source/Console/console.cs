@@ -33825,6 +33825,10 @@ namespace PowerSDR
 
                         if (current_model == Model.FLEX5000 && fwc_init)
                             txtVFOBFreq_LostFocus(this, EventArgs.Empty);
+
+                        // W1CEG: Set Split on Rig
+                        if (!(e is RigCATEventArgs) && this.hw is RigHW)
+                            ((RigHW)this.hw).setSplit(true);
                     }
                 }
                 else
@@ -33852,6 +33856,10 @@ namespace PowerSDR
 
                         if (fwc_init && current_model == Model.FLEX5000 && !full_duplex)
                             txtVFOAFreq_LostFocus(this, EventArgs.Empty);
+
+                        // W1CEG: Set Split on Rig
+                        if (!(e is RigCATEventArgs) && this.hw is RigHW)
+                            ((RigHW)this.hw).setSplit(false);
                     }
                     if (current_click_tune_mode == ClickTuneMode.VFOB && !chkEnableMultiRX.Checked && !chkFullDuplex.Checked)
                         CurrentClickTuneMode = ClickTuneMode.VFOA;

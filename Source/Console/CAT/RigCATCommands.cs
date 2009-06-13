@@ -18,6 +18,8 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //=============================================================================
 
+#define RIT_FOR_VFOB
+
 using System;
 using System.Reflection;
 using System.Diagnostics;
@@ -100,11 +102,15 @@ namespace PowerSDR
 			}
 			else if (vfo == '1')
 			{
+                // Force the Rig on VFO-A to conform to the way PowerSDR handles RX1
+                this.rigSerialPoller.doRigCATCommand("FN0;",false,false);
 				this.rigParser.VFO = 1;
 				this.changeVFOB(frequency);
+                this.rigParser.VFO = 0;
 			}
 
 			// RIT Frequency - Control VFO-B
+#if RIT_FOR_VFOB
 			int rit = int.Parse(s[16] + s.Substring(17,4));
 			int offset = rit - this.rigParser.RITOffset;
 			this.rigParser.RITOffset = rit;
@@ -119,7 +125,7 @@ namespace PowerSDR
 				this.rigSerialPoller.doRigCATCommand("FB" + newFreq + ';',false,false);
 				this.changeVFOB(newFreq);
 			}
-
+#endif
 			
 			// :TODO: RIT
 			// :TODO: XIT
@@ -137,7 +143,8 @@ namespace PowerSDR
 			// Split
 			// :TODO: Decide on how to deal with this since SPLIT is only on
 			//        when TX is set to VFO-B in PowerSDR.
-			this.sdrParser.Get("ZZSP" + s[30] + ';');
+			this.sdrParser.Get("SP" + s[30] + ';');
+
 
 			// RX/TX
 			// This crazy logic sets MUTE on when TXing (when Monitor is turned off)
