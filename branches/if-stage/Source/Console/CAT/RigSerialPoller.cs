@@ -38,7 +38,10 @@ namespace PowerSDR
 	{
 		#region Variables
 
+		// Configureable Variables
 		private int rigCOMPort = 1;
+		private int pollInterval = 100;
+
 		
 		private Console console;
 		private SDRSerialSupportII.SDRSerialPort SIO;
@@ -277,14 +280,13 @@ namespace PowerSDR
 							this.doRigCATCommand("FB;");
 						else
 						{
-							Thread.Sleep(50);
+							Thread.Sleep(this.pollInterval - 50);
 							this.doRigCATCommand("IF;");
 						}
 					}
 					else
 					{
-						// Sleep an additional 50ms if we're in an "idle" state.
-						Thread.Sleep(50);
+						Thread.Sleep(this.pollInterval - 50);
 						this.doRigCATCommand("IF;");
 					}
 				}
