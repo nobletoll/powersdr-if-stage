@@ -619,6 +619,10 @@ namespace PowerSDR
         public byte rx2_image_phase_checksum;
 
         private bool shift_down;							// used to modify tuning rate
+
+		// W1CEG
+		private bool control_down;                          // used to turn VFO-B
+
         private bool calibrating;							// true if running a calibration routine
         private bool manual_mox;							// True if the MOX button was clicked on (not PTT)		
 
@@ -26032,16 +26036,24 @@ namespace PowerSDR
 
         private void Console_KeyUp(object sender, System.Windows.Forms.KeyEventArgs e)
         {
-            if (e.Shift == false && shift_down)
-                shift_down = false;
-        }
+			if (e.Shift == false && shift_down)
+				shift_down = false;
+			
+			// W1CEG
+			if (e.Control == false && this.control_down)
+				this.control_down = false;
+		}
 
         private void Console_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
         {
-            if (e.Shift == true && !shift_down)
-                shift_down = true;
+			if (e.Shift == true && !shift_down)
+				shift_down = true;
 
-            if (e.Control == true && e.Shift == true)
+			// W1CEG
+			if (e.Control == true && !this.control_down)
+				this.control_down = true;
+
+			if (e.Control == true && e.Shift == true)
             {
                 switch (e.KeyCode)
                 {
@@ -29488,7 +29500,12 @@ namespace PowerSDR
                     }
                     else
                     {
-                        freq = Double.Parse(txtVFOAFreq.Text);
+						// W1CEG: Tune VFO-B with Ctrl+Wheel
+						if (this.control_down)
+							freq = Double.Parse(txtVFOBFreq.Text);
+						else
+							freq = Double.Parse(txtVFOAFreq.Text);
+
                         mult = wheel_tune_list[wheel_tune_index];
                         if (shift_down && mult >= 0.000009) mult /= 10;
 
@@ -29516,13 +29533,22 @@ namespace PowerSDR
                             }
                         }
 
-                        VFOAFreq = freq;
-                    }
+						// W1CEG: Tune VFO-B with Ctrl+Wheel
+						if (this.control_down)
+							VFOBFreq = freq;
+						else
+							VFOAFreq = freq;
+					}
                     break;
 
                 case TuneLocation.Other:
-                    freq = Double.Parse(txtVFOAFreq.Text);
-                    mult = wheel_tune_list[wheel_tune_index];
+					// W1CEG: Tune VFO-B with Ctrl+Wheel
+					if (this.control_down)
+						freq = Double.Parse(txtVFOBFreq.Text);
+					else
+						freq = Double.Parse(txtVFOAFreq.Text);
+
+					mult = wheel_tune_list[wheel_tune_index];
                     if (shift_down && mult >= 0.000009) mult /= 10;
 
                     if (mult == 0.009)
@@ -29549,7 +29575,12 @@ namespace PowerSDR
                         }
                     }
 
-                    VFOAFreq = freq;
+					// W1CEG: Tune VFO-B with Ctrl+Wheel
+					if (this.control_down)
+						VFOBFreq = freq;
+					else
+						VFOAFreq = freq;
+
                     break;
             }
         }
@@ -30235,7 +30266,11 @@ namespace PowerSDR
 
             double freq = double.Parse(txtVFOBFreq.Text);
 
-            if (chkEnableMultiRX.Checked && !rx2_enabled)
+			// W1CEG: Update Frequency on Rig
+			if (!(e is RigCATEventArgs))
+				((RigHW) this.hw).updateVFOBFrequency(freq);
+			
+			if (chkEnableMultiRX.Checked && !rx2_enabled)
             {
                 int diff = (int)((VFOBFreq - VFOAFreq) * 1e6);
                 double rx2_osc = radio.GetDSPRX(0, 0).RXOsc - diff;
@@ -30372,10 +30407,6 @@ namespace PowerSDR
                 if (!(fwc_init && (current_model == Model.FLEX5000 || current_model == Model.FLEX3000)))
                 {
                     DDSFreq = tx_freq;
-
-                    // W1CEG: Update Frequency on Rig
-                    if (!(e is RigCATEventArgs))
-                        ((RigHW)this.hw).updateVFOBFrequency(freq);
                 }
                 else
                 {
