@@ -125,14 +125,19 @@ namespace PowerSDR
 
 				if (offsetDiff != 0)
 				{
-//					string vfob = this.console.VFOBFreq.ToString("f6").Replace(separator,"").PadLeft(11,'0');
-//					double newFreq = ((double) (int.Parse(this.rigParser.VFOBFrequency) + offset)) / 1000000;
 					frequency = (int.Parse(this.rigParser.VFOBFrequency) +
 						offsetDiff).ToString().PadLeft(11,'0');
 
-//					this.rigSerialPoller.updateVFOBFrequency(newFreq);
-					this.rigSerialPoller.doRigCATCommand("FB" + frequency + ';',false,false);
+					this.rigSerialPoller.doRigCATCommand("FB" + frequency + ';',
+						false,false);
 					this.changeVFOB(frequency);
+				}
+
+				// Reset RIT when it gets close to 9.990 max.
+				if (Math.Abs(ritOffset) > 8000)
+				{
+					this.rigSerialPoller.doRigCATCommand("RC;",false,false);
+					this.rigParser.RITOffset = 0;
 				}
 			}
 #endif
