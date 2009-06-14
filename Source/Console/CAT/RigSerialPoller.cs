@@ -41,13 +41,13 @@ namespace PowerSDR
 		#region Variables
 
 		// Configureable Variables
-		public int rigCOMPort = 1;
 		public int pollingInterval = 200;
 		public int pollingLockoutTime = 2000;
 		public int commandLockoutTime = 2000;
 
 		
 		private Console console;
+		private RigHW hw;
 		private SDRSerialSupportII.SDRSerialPort SIO;
 		private RigCATParser rigParser;
 		private CATParser sdrParser;
@@ -81,9 +81,10 @@ namespace PowerSDR
 
 		#region Constructor
 
-		public RigSerialPoller(Console console)
+		public RigSerialPoller(Console console, RigHW hw)
 		{
 			this.console = console;
+			this.hw = hw;
 
 			this.rigParser = new RigCATParser(console,this);
 			this.sdrParser = new CATParser(console);
@@ -128,22 +129,23 @@ namespace PowerSDR
 
 				if (this.SIO == null)
 				{
-					this.SIO = new SDRSerialPort(this.rigCOMPort);
+					this.SIO = new SDRSerialPort(this.hw.COMPort);
 
 					// Event handler for Serial RX Events
 					this.SIO.serial_rx_event +=
 						new SDRSerialSupportII.SerialRXEventHandler(SerialRXEventHandler);
 
-					this.SIO.setCommParms(4800,Parity.None,SDRSerialPort.DataBits.EIGHT,StopBits.One);
+					this.SIO.setCommParms(this.hw.COMBaudRate,this.hw.COMParity,
+						this.hw.COMDataBits,this.hw.COMStopBits);
 
 					dbgWriteLine("RigSerialPoller.enableCAT(), Opening COM" +
-						this.rigCOMPort + "...");
+						this.hw.COMPort + "...");
 
 					try
 					{
 						if (this.SIO.Create() == 0)
 							dbgWriteLine("RigSerialPoller.enableCAT(), Opened COM" +
-								this.rigCOMPort + ".");
+								this.hw.COMPort + ".");
 						else
 							throw new Exception();
 					}
@@ -216,7 +218,7 @@ namespace PowerSDR
 				if (this.SIO != null && this.SIO.PortIsOpen)
 				{
 					dbgWriteLine("RigSerialPoller.disableCAT(), Closing COM" +
-						this.rigCOMPort + "...");
+						this.hw.COMPort + "...");
 
 					// W1CEG: This hangs...I don't know why, but there's a lot
 					//        of discussion on this on the Internet.
@@ -227,7 +229,7 @@ namespace PowerSDR
 						new SDRSerialSupportII.SerialRXEventHandler(SerialRXEventHandler);
 
 					dbgWriteLine("RigSerialPoller.disableCAT(), Closed COM" +
-						this.rigCOMPort + ".");
+						this.hw.COMPort + ".");
 				}
 			}
 		}

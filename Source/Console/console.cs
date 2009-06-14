@@ -485,7 +485,6 @@ namespace PowerSDR
         // W1CEG: Use an abstract HW class.
         private AbstractHW hw;								// will eventually be an array of rigs to support multiple radios
 
-
         public WaveControl WaveForm;
         public PAQualify PAQualForm;
         public ProductionTest ProdTestForm;
@@ -5961,16 +5960,18 @@ namespace PowerSDR
             InitFilterPresets();					// Initialize filter values
 
             SetupForm = new Setup(this);		// create Setup form
-            XVTRForm = new XVTRForm(this);      // WU2X: Moved initialization			XVTRForm = new XVTRForm(this);
+            XVTRForm = new XVTRForm(this);      // WU2X: Moved initialization
+
+			// W1CEG: Instantiate RigHW before SetupIF
+			if (current_model == Model.SDR1000)
+				hw = new RigHW(this);
+
             SetupIFForm = new SetupIF(this);   // WU2X: Menu for IF Stage setup 
             SetupForm.StartPosition = FormStartPosition.Manual;
 
             switch (current_model)
             {
                 case Model.SDR1000:
-                    // W1CEG: Use RigHW for SDR1000.
-                    hw = new RigHW(this);
-
                     Hdw.Init();							// Power down hardware
                     Hdw.StandBy();						// initialize hardware device
                     break;
@@ -37283,5 +37284,42 @@ namespace PowerSDR
         }
 
         // WU2X: End
-    }
+
+		// W1CEG:  Start
+		/////////////////////////////////////////////////////////
+		// Rig Connection                                      //
+		/////////////////////////////////////////////////////////
+
+		public int RigCOMPort
+		{
+			get { return ((RigHW) this.hw).COMPort; }
+			set { ((RigHW) this.hw).COMPort = value; }
+		}
+
+		public Parity RigCOMParity
+		{
+			set { ((RigHW) this.hw).COMParity = value; }
+			get { return ((RigHW) this.hw).COMParity; }
+		}
+
+		public StopBits RigCOMStopBits
+		{
+			set { ((RigHW) this.hw).COMStopBits = value; }
+			get { return ((RigHW) this.hw).COMStopBits; }
+		}
+
+		public SDRSerialSupportII.SDRSerialPort.DataBits RigCOMDataBits
+		{
+			set { ((RigHW) this.hw).COMDataBits = value; }
+			get { return ((RigHW) this.hw).COMDataBits; }
+		}
+
+		public int RigCOMBaudRate
+		{
+			set { ((RigHW) this.hw).COMBaudRate = value; }
+			get { return ((RigHW) this.hw).COMBaudRate; }
+		}
+
+		// W1CEG: End
+	}
 }
