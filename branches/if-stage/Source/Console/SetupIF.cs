@@ -1,4 +1,6 @@
-﻿using System;
+﻿// Author: WU2X, S.McClements
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -20,7 +22,9 @@ namespace PowerSDR
 
         public SetupIF(Console c)
         {
+            this.console = c;
             InitializeComponent();
+            GetOptions();
         }
 
         private void btnCancel_Click(object sender, System.EventArgs e)
@@ -334,6 +338,41 @@ namespace PowerSDR
 			foreach(ColorButton c in colorbutton_list)
 				c.Automatic = "";
 		}
+
+        private void udIFGlobalOffset_ValueChanged(object sender, System.EventArgs e)
+        {
+            console.globalIFOffset = (double)udIFGlobalOffset.Value * 1e-6;
+        }
+
+        private void udIFLSB_ValueChanged(object sender, System.EventArgs e)
+        {
+            console.IFLSB = (double)udIFLSB.Value * 1e-6;
+        }
+
+        private void udIFUSB_ValueChanged(object sender, System.EventArgs e)
+        {
+            console.IFUSB = (double)udIFUSB.Value * 1e-6;
+        }
+
+        private void udIFCW_ValueChanged(object sender, System.EventArgs e)
+        {
+            console.IFCW = (double)udIFCW.Value * 1e-6;
+        }
+
+        private void udIFAM_ValueChanged(object sender, System.EventArgs e)
+        {
+            console.IFAM = (double)udIFAM.Value * 1e-6;
+        }
+
+        private void udIFFM_ValueChanged(object sender, System.EventArgs e)
+        {
+            console.IFFM = (double)udIFFM.Value * 1e-6;
+        }
+
+        private void udIFFSK_ValueChanged(object sender, System.EventArgs e)
+        {
+            console.IFFSK = (double)udIFFSK.Value * 1e-6;
+        }
 
     }
 }

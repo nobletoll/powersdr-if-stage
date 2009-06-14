@@ -620,8 +620,8 @@ namespace PowerSDR
 
         private bool shift_down;							// used to modify tuning rate
 
-		// W1CEG
-		private bool control_down;                          // used to turn VFO-B
+        // W1CEG
+        private bool control_down;                          // used to turn VFO-B
 
         private bool calibrating;							// true if running a calibration routine
         private bool manual_mox;							// True if the MOX button was clicked on (not PTT)		
@@ -1282,12 +1282,12 @@ namespace PowerSDR
 
             if (this.Text.IndexOf("SVN") >= 0)
             {
-				if(File.Exists(Application.StartupPath+"\\..\\.svn\\entries"))
+                if (File.Exists(Application.StartupPath + "\\..\\.svn\\entries"))
                 {
                     try
                     {
                         string temp = this.Text;
-						StreamReader reader = new StreamReader(Application.StartupPath+"\\..\\.svn\\entries");
+                        StreamReader reader = new StreamReader(Application.StartupPath + "\\..\\.svn\\entries");
                         for (int i = 0; i < 3; i++)
                             reader.ReadLine();
 
@@ -1296,7 +1296,7 @@ namespace PowerSDR
 
                         int svn_rev = int.Parse(current_rev);
                         int title_rev = int.Parse(temp.Substring(temp.IndexOf(":") + 2, 4));
-						this.Text = temp.Replace(title_rev.ToString(), svn_rev.ToString());
+                        this.Text = temp.Replace(title_rev.ToString(), svn_rev.ToString());
                     }
                     catch (Exception)
                     {
@@ -26036,24 +26036,24 @@ namespace PowerSDR
 
         private void Console_KeyUp(object sender, System.Windows.Forms.KeyEventArgs e)
         {
-			if (e.Shift == false && shift_down)
-				shift_down = false;
-			
-			// W1CEG
-			if (e.Control == false && this.control_down)
-				this.control_down = false;
-		}
+            if (e.Shift == false && shift_down)
+                shift_down = false;
+
+            // W1CEG
+            if (e.Control == false && this.control_down)
+                this.control_down = false;
+        }
 
         private void Console_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
         {
-			if (e.Shift == true && !shift_down)
-				shift_down = true;
+            if (e.Shift == true && !shift_down)
+                shift_down = true;
 
-			// W1CEG
-			if (e.Control == true && !this.control_down)
-				this.control_down = true;
+            // W1CEG
+            if (e.Control == true && !this.control_down)
+                this.control_down = true;
 
-			if (e.Control == true && e.Shift == true)
+            if (e.Control == true && e.Shift == true)
             {
                 switch (e.KeyCode)
                 {
@@ -29502,11 +29502,11 @@ namespace PowerSDR
                     }
                     else
                     {
-						// W1CEG: Tune VFO-B with Ctrl+Wheel
+                        // W1CEG: Tune VFO-B with Ctrl+Wheel
                         if (this.control_down || this.current_click_tune_mode == ClickTuneMode.VFOB)
-							freq = Double.Parse(txtVFOBFreq.Text);
-						else
-							freq = Double.Parse(txtVFOAFreq.Text);
+                            freq = Double.Parse(txtVFOBFreq.Text);
+                        else
+                            freq = Double.Parse(txtVFOAFreq.Text);
 
                         mult = wheel_tune_list[wheel_tune_index];
                         if (shift_down && mult >= 0.000009) mult /= 10;
@@ -29535,22 +29535,22 @@ namespace PowerSDR
                             }
                         }
 
-						// W1CEG: Tune VFO-B with Ctrl+Wheel
+                        // W1CEG: Tune VFO-B with Ctrl+Wheel
                         if (this.control_down || this.current_click_tune_mode == ClickTuneMode.VFOB)
-							VFOBFreq = freq;
-						else
-							VFOAFreq = freq;
-					}
+                            VFOBFreq = freq;
+                        else
+                            VFOAFreq = freq;
+                    }
                     break;
 
                 case TuneLocation.Other:
-					// W1CEG: Tune VFO-B with Ctrl+Wheel
+                    // W1CEG: Tune VFO-B with Ctrl+Wheel
                     if (this.control_down || this.current_click_tune_mode == ClickTuneMode.VFOB)
-						freq = Double.Parse(txtVFOBFreq.Text);
-					else
-						freq = Double.Parse(txtVFOAFreq.Text);
+                        freq = Double.Parse(txtVFOBFreq.Text);
+                    else
+                        freq = Double.Parse(txtVFOAFreq.Text);
 
-					mult = wheel_tune_list[wheel_tune_index];
+                    mult = wheel_tune_list[wheel_tune_index];
                     if (shift_down && mult >= 0.000009) mult /= 10;
 
                     if (mult == 0.009)
@@ -29577,11 +29577,11 @@ namespace PowerSDR
                         }
                     }
 
-					// W1CEG: Tune VFO-B with Ctrl+Wheel
+                    // W1CEG: Tune VFO-B with Ctrl+Wheel
                     if (this.control_down || this.current_click_tune_mode == ClickTuneMode.VFOB)
-						VFOBFreq = freq;
-					else
-						VFOAFreq = freq;
+                        VFOBFreq = freq;
+                    else
+                        VFOAFreq = freq;
 
                     break;
             }
@@ -30268,11 +30268,11 @@ namespace PowerSDR
 
             double freq = double.Parse(txtVFOBFreq.Text);
 
-			// W1CEG: Update Frequency on Rig
+            // W1CEG: Update Frequency on Rig
 			if (!(e is RigCATEventArgs) && this.hw is RigHW)
-				((RigHW) this.hw).updateVFOBFrequency(freq);
-			
-			if (chkEnableMultiRX.Checked && !rx2_enabled)
+                ((RigHW)this.hw).updateVFOBFrequency(freq);
+
+            if (chkEnableMultiRX.Checked && !rx2_enabled)
             {
                 int diff = (int)((VFOBFreq - VFOAFreq) * 1e6);
                 double rx2_osc = radio.GetDSPRX(0, 0).RXOsc - diff;
@@ -32740,10 +32740,12 @@ namespace PowerSDR
         {
             if (radModeLSB.Checked)
             {
-				// W1CEG: Update Mode on Rig
-                if (this.hw is RigHW)
-					((RigHW) this.hw).setMode(RigHW.Mode.LSB);
-
+                // W1CEG: Update Mode on Rig
+                // WU2X: Set IF Freq
+                if (this.hw is RigHW) {
+                    ((RigHW)this.hw).setMode(RigHW.Mode.LSB);
+                    if_freq = if_lsb + global_if_offset;
+                }
                 SetRX1Mode(DSPMode.LSB);
             }
         }
@@ -32752,10 +32754,12 @@ namespace PowerSDR
         {
             if (radModeUSB.Checked)
             {
-				// W1CEG: Update Mode on Rig
-				if (this.hw is RigHW)
-					((RigHW) this.hw).setMode(RigHW.Mode.USB);
-
+                // W1CEG: Update Mode on Rig
+                // WU2X: Set IF Freq
+				if (this.hw is RigHW) {
+                    ((RigHW)this.hw).setMode(RigHW.Mode.USB);
+                    if_freq = if_usb + global_if_offset;
+                }
                 SetRX1Mode(DSPMode.USB);
             }
         }
@@ -32772,9 +32776,13 @@ namespace PowerSDR
         {
             if (radModeCWL.Checked)
             {
-				// W1CEG: Update Mode on Rig
-				if (this.hw is RigHW)
-					((RigHW) this.hw).setMode(RigHW.Mode.CW);
+                // W1CEG: Update Mode on Rig
+                // WU2X: Set IF Freq
+                if (this.hw is RigHW)
+                {
+                    ((RigHW)this.hw).setMode(RigHW.Mode.CW);
+                    if_freq = if_cw + global_if_offset;
+                }
 
                 SetRX1Mode(DSPMode.CWL);
             }
@@ -32785,9 +32793,12 @@ namespace PowerSDR
         {
             if (radModeCWU.Checked)
             {
-				// W1CEG: Update Mode on Rig
-                if (this.hw is RigHW)
-					((RigHW) this.hw).setMode(RigHW.Mode.CW);
+                // W1CEG: Update Mode on Rig
+                // WU2X: Set IF Freq
+                if (this.hw is RigHW) {
+                    ((RigHW)this.hw).setMode(RigHW.Mode.CW);
+                    if_freq = if_cw + global_if_offset;
+                }
 
                 SetRX1Mode(DSPMode.CWU);
             }
@@ -32797,10 +32808,12 @@ namespace PowerSDR
         {
             if (radModeFMN.Checked)
             {
-				// W1CEG: Update Mode on Rig
-                if (this.hw is RigHW)
-					((RigHW) this.hw).setMode(RigHW.Mode.FM);
-
+                // W1CEG: Update Mode on Rig
+                // WU2X: Set IF Freq
+                if (this.hw is RigHW) {
+                    ((RigHW)this.hw).setMode(RigHW.Mode.FM);
+                    if_freq = if_fm + global_if_offset;
+                }
                 SetRX1Mode(DSPMode.FMN);
             }
             //radio.GetDSP(0, 0).SetRXFilter(-50000, 50000);
@@ -32810,9 +32823,12 @@ namespace PowerSDR
         {
             if (radModeAM.Checked)
             {
-				// W1CEG: Update Mode on Rig
-                if (this.hw is RigHW)
-					((RigHW) this.hw).setMode(RigHW.Mode.AM);
+                // W1CEG: Update Mode on Rig
+                // WU2X: Set IF Freq
+                if (this.hw is RigHW) {
+                    ((RigHW)this.hw).setMode(RigHW.Mode.AM);
+                    if_freq = if_am + global_if_offset;
+                }
 
                 SetRX1Mode(DSPMode.AM);
             }
@@ -32830,9 +32846,12 @@ namespace PowerSDR
         {
             if (radModeDIGU.Checked)
             {
-				// W1CEG: Update Mode on Rig
-                if (this.hw is RigHW)
-					((RigHW) this.hw).setMode(RigHW.Mode.FSK);
+                // W1CEG: Update Mode on Rig
+                // WU2X: Set IF Freq
+                if (this.hw is RigHW) {
+                    ((RigHW)this.hw).setMode(RigHW.Mode.FSK);
+                    if_freq = if_fsk + global_if_offset;
+                }
 
                 SetRX1Mode(DSPMode.DIGU);
             }
@@ -32850,9 +32869,12 @@ namespace PowerSDR
         {
             if (radModeDIGL.Checked)
             {
-				// W1CEG: Update Mode on Rig
-                if (this.hw is RigHW)
-					((RigHW) this.hw).setMode(RigHW.Mode.FSK);
+                // W1CEG: Update Mode on Rig
+                // WU2X: Set IF Freq
+                if (this.hw is RigHW) {
+                    ((RigHW)this.hw).setMode(RigHW.Mode.FSK);
+                    if_freq = if_fsk + global_if_offset;
+                }
 
                 SetRX1Mode(DSPMode.DIGL);
             }
@@ -37144,5 +37166,122 @@ namespace PowerSDR
                 filterRX2Form.DSPMode = rx2_dsp_mode;
             }
         }
+
+
+        // WU2X:  Start
+        /////////////////////////////////////////////////////////
+        // Intermediate Frequency by mode - from setup if menu //
+        /////////////////////////////////////////////////////////
+
+        private double global_if_offset = 0.0;
+        public double globalIFOffset
+        {
+            get { return global_if_offset; }
+            set
+            {
+                global_if_offset = value;
+                switch (rx1_dsp_mode)
+                {
+                    case DSPMode.LSB:
+                        radModeLSB_CheckedChanged(this, EventArgs.Empty);
+                        break;
+                    case DSPMode.USB:
+                        radModeUSB_CheckedChanged(this, EventArgs.Empty);
+                        break;
+                    case DSPMode.DIGL:
+                        radModeDIGL_CheckedChanged(this, EventArgs.Empty);
+                        break;
+                    case DSPMode.CWL:
+                        radModeCWL_CheckedChanged(this, EventArgs.Empty);
+                        break;
+                    case DSPMode.DIGU:
+                        radModeDIGU_CheckedChanged(this, EventArgs.Empty);
+                        break;
+                    case DSPMode.CWU:
+                        radModeCWU_CheckedChanged(this, EventArgs.Empty);
+                        break;
+                    case DSPMode.AM:
+                        radModeAM_CheckedChanged(this, EventArgs.Empty);
+                        break;                      
+                    case DSPMode.SAM:
+                        radModeSAM_CheckedChanged(this, EventArgs.Empty);
+                        break;
+                    case DSPMode.FMN:
+                        radModeFMN_CheckedChanged(this, EventArgs.Empty);
+                        break;
+                    case DSPMode.DSB:
+                        radModeDSB_CheckedChanged(this, EventArgs.Empty);
+                        break;
+                }
+            }
+        }
+
+        private double if_lsb = 0.0;
+        public double IFLSB
+        {
+            get { return if_lsb; }
+            set
+            {
+                if_lsb = value;
+                radModeLSB_CheckedChanged(this, EventArgs.Empty); 
+            }
+        }
+
+        private double if_usb = 0.0;
+        public double IFUSB
+        {
+            get { return if_usb; }
+            set
+            {
+                if_usb = value;
+                radModeUSB_CheckedChanged(this, EventArgs.Empty); 
+            }
+        }
+
+        private double if_cw = 0.0;
+        public double IFCW
+        {
+            get { return if_cw; }
+            set
+            {
+                if_cw = value;
+                radModeCWL_CheckedChanged(this, EventArgs.Empty); 
+                radModeCWU_CheckedChanged(this, EventArgs.Empty); 
+
+            }
+        }
+
+        private double if_am = 0.0;
+        public double IFAM
+        {
+            get { return if_am; }
+            set
+            {
+                if_am = value;
+                radModeAM_CheckedChanged(this, EventArgs.Empty); 
+            }
+        }
+        private double if_fm = 0.0;
+        public double IFFM
+        {
+            get { return if_fm; }
+            set
+            {
+                if_fm = value;
+                radModeFMN_CheckedChanged(this, EventArgs.Empty);
+            }
+        }
+        private double if_fsk = 0.0;
+        public double IFFSK
+        {
+            get { return if_fsk; }
+            set
+            {
+                if_fsk = value;
+                radModeDIGL_CheckedChanged(this, EventArgs.Empty); // WU2X: TODO: ??? Wrong method called?
+            }
+        }
+
+        // WU2X: End
     }
 }
