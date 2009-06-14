@@ -18,6 +18,10 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //=============================================================================
 
+using System.IO.Ports;
+using SDRSerialSupportII;
+
+
 namespace PowerSDR
 {
 	public class RigHW : AbstractHW
@@ -51,6 +55,40 @@ namespace PowerSDR
 
 	
 		#region Configurations
+
+		private int com_port;
+		public int COMPort
+		{
+			get { return com_port; }
+			set { com_port = value; }
+		}
+
+		private Parity com_parity;
+		public Parity COMParity
+		{
+			set { com_parity = value; }
+			get { return com_parity; }
+		}
+
+		private StopBits com_stop_bits;
+		public StopBits COMStopBits
+		{
+			set { com_stop_bits = value; }
+			get { return com_stop_bits; }
+		}
+		private SDRSerialPort.DataBits com_data_bits;
+		public SDRSerialPort.DataBits COMDataBits
+		{
+			set { com_data_bits = value; }
+			get { return com_data_bits; }
+		}
+
+		private int com_baud_rate;
+		public int COMBaudRate
+		{
+			set { com_baud_rate = value; }
+			get { return com_baud_rate; }
+		}
 
 		public override ushort LPTAddr
 		{
@@ -214,7 +252,7 @@ namespace PowerSDR
 
 		public override void Init()
 		{
-			this.rigSerialPoller = new RigSerialPoller(this.console);
+			this.rigSerialPoller = new RigSerialPoller(this.console,this);
 		}
 
 		public override void ignorePTT(bool v) { }
