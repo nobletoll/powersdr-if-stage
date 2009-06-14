@@ -85,16 +85,22 @@ namespace PowerSDR
 		// needs work in the split area
 		public string IF(string s)
 		{
+			bool rit = (s[21] == '1');
 			char vfo = s[28];
-
-			// Set TX VFO
-			// :TODO: Decide on how to handle VFO Switching
-//			this.sdrParser.Get("FT" + vfo + ';');
 
 			// Frequency
 			// :NOTE: Store Frequency Status for RigSerialPoller Performance.
 			// :TODO: Deal with vfo = 2 or 3
 			string frequency = s.Substring(0,11);
+
+			// :NOTE: When RIT is on, IF returns Current VFO Frequency + RIT.
+			//        We need to revert the RIT Offset from the Frequency.
+			if (rit)
+			{
+				int ritOffset = int.Parse(s[16] + s.Substring(17,4));
+				frequency = (int.Parse(frequency) - ritOffset).ToString().PadLeft(11,'0');
+			}
+	
 			if (vfo == '0')
 			{
 				this.rigParser.VFO = 0;
@@ -109,29 +115,28 @@ namespace PowerSDR
                 this.rigParser.VFO = 0;
 			}
 
-			// RIT Frequency - Control VFO-B
+			// RIT Frequency - Control VFO-B when RIT and XIT are off
 #if RIT_FOR_VFOB
-			int rit = int.Parse(s[16] + s.Substring(17,4));
-			int offset = rit - this.rigParser.RITOffset;
-			this.rigParser.RITOffset = rit;
-			
-			if (offset != 0) {
-//				string vfob = this.console.VFOBFreq.ToString("f6").Replace(separator,"").PadLeft(11,'0');
-//				double newFreq = ((double) (int.Parse(this.rigParser.VFOBFrequency) + offset)) / 1000000;
-				string newFreq =
-					(int.Parse(this.rigParser.VFOBFrequency) + offset).ToString().PadLeft(11,'0');
+			if (!rit && s[22] == '0')
+			{
+				int ritOffset = int.Parse(s[16] + s.Substring(17,4));
+				int offsetDiff = ritOffset - this.rigParser.RITOffset;
+				this.rigParser.RITOffset = ritOffset;
 
-//				this.rigSerialPoller.updateVFOBFrequency(newFreq);
-				this.rigSerialPoller.doRigCATCommand("FB" + newFreq + ';',false,false);
-				this.changeVFOB(newFreq);
+				if (offsetDiff != 0)
+				{
+//					string vfob = this.console.VFOBFreq.ToString("f6").Replace(separator,"").PadLeft(11,'0');
+//					double newFreq = ((double) (int.Parse(this.rigParser.VFOBFrequency) + offset)) / 1000000;
+					frequency = (int.Parse(this.rigParser.VFOBFrequency) +
+						offsetDiff).ToString().PadLeft(11,'0');
+
+//					this.rigSerialPoller.updateVFOBFrequency(newFreq);
+					this.rigSerialPoller.doRigCATCommand("FB" + frequency + ';',false,false);
+					this.changeVFOB(frequency);
+				}
 			}
 #endif
 			
-			// :TODO: RIT
-			// :TODO: XIT
-
-			// :TODO: Memory Bank?
-
 			// Mode
 			int mode = s[27] - '0';
 			if (this.rigParser.Mode != mode)
