@@ -4372,7 +4372,9 @@ namespace PowerSDR
             "256",
             "512",
             "1024",
-            "2048"});
+            "2048",
+            "3072",
+            "4096"});
             this.comboAudioBuffer1.Location = new System.Drawing.Point(16, 24);
             this.comboAudioBuffer1.Name = "comboAudioBuffer1";
             this.comboAudioBuffer1.Size = new System.Drawing.Size(56, 21);

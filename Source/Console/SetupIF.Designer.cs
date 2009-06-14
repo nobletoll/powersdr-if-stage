@@ -32,14 +32,14 @@
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.numericUpDown7 = new System.Windows.Forms.NumericUpDown();
+            this.udIFGlobalOffset = new System.Windows.Forms.NumericUpDownTS();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.numericUpDown6 = new System.Windows.Forms.NumericUpDown();
-            this.numericUpDown5 = new System.Windows.Forms.NumericUpDown();
-            this.numericUpDown4 = new System.Windows.Forms.NumericUpDown();
-            this.numericUpDown3 = new System.Windows.Forms.NumericUpDown();
-            this.numericUpDown2 = new System.Windows.Forms.NumericUpDown();
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+            this.udIFFSK = new System.Windows.Forms.NumericUpDownTS();
+            this.udIFFM = new System.Windows.Forms.NumericUpDownTS();
+            this.udIFAM = new System.Windows.Forms.NumericUpDownTS();
+            this.udIFCW = new System.Windows.Forms.NumericUpDownTS();
+            this.udIFUSB = new System.Windows.Forms.NumericUpDownTS();
+            this.udIFLSB = new System.Windows.Forms.NumericUpDownTS();
             this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
@@ -55,14 +55,14 @@
             this.tabControl1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.groupBox2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown7)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udIFGlobalOffset)).BeginInit();
             this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown6)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown5)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown4)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udIFFSK)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udIFFM)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udIFAM)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udIFCW)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udIFUSB)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udIFLSB)).BeginInit();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -94,13 +94,13 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(578, 275);
+            this.tabPage2.Size = new System.Drawing.Size(584, 275);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "IF Frequencies";
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.numericUpDown7);
+            this.groupBox2.Controls.Add(this.udIFGlobalOffset);
             this.groupBox2.Location = new System.Drawing.Point(11, 199);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(138, 65);
@@ -108,32 +108,42 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "IF Frequency Global Offset (Hz)";
             // 
-            // numericUpDown7
+            // udIFGlobalOffset
             // 
-            this.numericUpDown7.Location = new System.Drawing.Point(43, 39);
-            this.numericUpDown7.Maximum = new decimal(new int[] {
+            this.udIFGlobalOffset.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.udIFGlobalOffset.Location = new System.Drawing.Point(46, 39);
+            this.udIFGlobalOffset.Maximum = new decimal(new int[] {
             96000,
             0,
             0,
             0});
-            this.numericUpDown7.Minimum = new decimal(new int[] {
+            this.udIFGlobalOffset.Minimum = new decimal(new int[] {
             96000,
             0,
             0,
             -2147483648});
-            this.numericUpDown7.Name = "numericUpDown7";
-            this.numericUpDown7.Size = new System.Drawing.Size(79, 20);
-            this.numericUpDown7.TabIndex = 12;
-            this.numericUpDown7.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.udIFGlobalOffset.Name = "udIFGlobalOffset";
+            this.udIFGlobalOffset.Size = new System.Drawing.Size(79, 20);
+            this.udIFGlobalOffset.TabIndex = 18;
+            this.udIFGlobalOffset.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.udIFGlobalOffset.ValueChanged += new System.EventHandler(this.udIFGlobalOffset_ValueChanged);
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.numericUpDown6);
-            this.groupBox1.Controls.Add(this.numericUpDown5);
-            this.groupBox1.Controls.Add(this.numericUpDown4);
-            this.groupBox1.Controls.Add(this.numericUpDown3);
-            this.groupBox1.Controls.Add(this.numericUpDown2);
-            this.groupBox1.Controls.Add(this.numericUpDown1);
+            this.groupBox1.Controls.Add(this.udIFFSK);
+            this.groupBox1.Controls.Add(this.udIFFM);
+            this.groupBox1.Controls.Add(this.udIFAM);
+            this.groupBox1.Controls.Add(this.udIFCW);
+            this.groupBox1.Controls.Add(this.udIFUSB);
+            this.groupBox1.Controls.Add(this.udIFLSB);
             this.groupBox1.Controls.Add(this.label6);
             this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.label4);
@@ -147,113 +157,173 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "IF Frequency (Hz)";
             // 
-            // numericUpDown6
+            // udIFFSK
             // 
-            this.numericUpDown6.Location = new System.Drawing.Point(46, 140);
-            this.numericUpDown6.Maximum = new decimal(new int[] {
+            this.udIFFSK.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.udIFFSK.Location = new System.Drawing.Point(46, 140);
+            this.udIFFSK.Maximum = new decimal(new int[] {
             96000,
             0,
             0,
             0});
-            this.numericUpDown6.Minimum = new decimal(new int[] {
+            this.udIFFSK.Minimum = new decimal(new int[] {
             96000,
             0,
             0,
             -2147483648});
-            this.numericUpDown6.Name = "numericUpDown6";
-            this.numericUpDown6.Size = new System.Drawing.Size(79, 20);
-            this.numericUpDown6.TabIndex = 11;
-            this.numericUpDown6.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.udIFFSK.Name = "udIFFSK";
+            this.udIFFSK.Size = new System.Drawing.Size(79, 20);
+            this.udIFFSK.TabIndex = 17;
+            this.udIFFSK.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.udIFFSK.ValueChanged += new System.EventHandler(this.udIFFSK_ValueChanged);
             // 
-            // numericUpDown5
+            // udIFFM
             // 
-            this.numericUpDown5.Location = new System.Drawing.Point(46, 117);
-            this.numericUpDown5.Maximum = new decimal(new int[] {
+            this.udIFFM.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.udIFFM.Location = new System.Drawing.Point(46, 117);
+            this.udIFFM.Maximum = new decimal(new int[] {
             96000,
             0,
             0,
             0});
-            this.numericUpDown5.Minimum = new decimal(new int[] {
+            this.udIFFM.Minimum = new decimal(new int[] {
             96000,
             0,
             0,
             -2147483648});
-            this.numericUpDown5.Name = "numericUpDown5";
-            this.numericUpDown5.Size = new System.Drawing.Size(79, 20);
-            this.numericUpDown5.TabIndex = 10;
-            this.numericUpDown5.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.udIFFM.Name = "udIFFM";
+            this.udIFFM.Size = new System.Drawing.Size(79, 20);
+            this.udIFFM.TabIndex = 16;
+            this.udIFFM.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.udIFFM.ValueChanged += new System.EventHandler(this.udIFFM_ValueChanged);
             // 
-            // numericUpDown4
+            // udIFAM
             // 
-            this.numericUpDown4.Location = new System.Drawing.Point(46, 95);
-            this.numericUpDown4.Maximum = new decimal(new int[] {
+            this.udIFAM.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.udIFAM.Location = new System.Drawing.Point(46, 95);
+            this.udIFAM.Maximum = new decimal(new int[] {
             96000,
             0,
             0,
             0});
-            this.numericUpDown4.Minimum = new decimal(new int[] {
+            this.udIFAM.Minimum = new decimal(new int[] {
             96000,
             0,
             0,
             -2147483648});
-            this.numericUpDown4.Name = "numericUpDown4";
-            this.numericUpDown4.Size = new System.Drawing.Size(79, 20);
-            this.numericUpDown4.TabIndex = 9;
-            this.numericUpDown4.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.udIFAM.Name = "udIFAM";
+            this.udIFAM.Size = new System.Drawing.Size(79, 20);
+            this.udIFAM.TabIndex = 15;
+            this.udIFAM.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.udIFAM.ValueChanged += new System.EventHandler(this.udIFAM_ValueChanged);
             // 
-            // numericUpDown3
+            // udIFCW
             // 
-            this.numericUpDown3.Location = new System.Drawing.Point(46, 73);
-            this.numericUpDown3.Maximum = new decimal(new int[] {
+            this.udIFCW.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.udIFCW.Location = new System.Drawing.Point(46, 73);
+            this.udIFCW.Maximum = new decimal(new int[] {
             96000,
             0,
             0,
             0});
-            this.numericUpDown3.Minimum = new decimal(new int[] {
+            this.udIFCW.Minimum = new decimal(new int[] {
             96000,
             0,
             0,
             -2147483648});
-            this.numericUpDown3.Name = "numericUpDown3";
-            this.numericUpDown3.Size = new System.Drawing.Size(79, 20);
-            this.numericUpDown3.TabIndex = 8;
-            this.numericUpDown3.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.udIFCW.Name = "udIFCW";
+            this.udIFCW.Size = new System.Drawing.Size(79, 20);
+            this.udIFCW.TabIndex = 14;
+            this.udIFCW.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.udIFCW.ValueChanged += new System.EventHandler(this.udIFCW_ValueChanged);
             // 
-            // numericUpDown2
+            // udIFUSB
             // 
-            this.numericUpDown2.Location = new System.Drawing.Point(46, 50);
-            this.numericUpDown2.Maximum = new decimal(new int[] {
+            this.udIFUSB.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.udIFUSB.Location = new System.Drawing.Point(46, 50);
+            this.udIFUSB.Maximum = new decimal(new int[] {
             96000,
             0,
             0,
             0});
-            this.numericUpDown2.Minimum = new decimal(new int[] {
+            this.udIFUSB.Minimum = new decimal(new int[] {
             96000,
             0,
             0,
             -2147483648});
-            this.numericUpDown2.Name = "numericUpDown2";
-            this.numericUpDown2.Size = new System.Drawing.Size(79, 20);
-            this.numericUpDown2.TabIndex = 7;
-            this.numericUpDown2.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.udIFUSB.Name = "udIFUSB";
+            this.udIFUSB.Size = new System.Drawing.Size(79, 20);
+            this.udIFUSB.TabIndex = 13;
+            this.udIFUSB.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.udIFUSB.ValueChanged += new System.EventHandler(this.udIFUSB_ValueChanged);
             // 
-            // numericUpDown1
+            // udIFLSB
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(46, 26);
-            this.numericUpDown1.Maximum = new decimal(new int[] {
+            this.udIFLSB.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.udIFLSB.Location = new System.Drawing.Point(46, 26);
+            this.udIFLSB.Maximum = new decimal(new int[] {
             96000,
             0,
             0,
             0});
-            this.numericUpDown1.Minimum = new decimal(new int[] {
+            this.udIFLSB.Minimum = new decimal(new int[] {
             96000,
             0,
             0,
             -2147483648});
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(79, 20);
-            this.numericUpDown1.TabIndex = 6;
-            this.numericUpDown1.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.udIFLSB.Name = "udIFLSB";
+            this.udIFLSB.Size = new System.Drawing.Size(79, 20);
+            this.udIFLSB.TabIndex = 12;
+            this.udIFLSB.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.udIFLSB.ValueChanged += new System.EventHandler(this.udIFLSB_ValueChanged);
             // 
             // label6
             // 
@@ -314,7 +384,7 @@
             this.tabPage3.BackColor = System.Drawing.SystemColors.Control;
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(578, 275);
+            this.tabPage3.Size = new System.Drawing.Size(584, 275);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Audio";
             // 
@@ -384,15 +454,15 @@
             this.tabControl1.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown7)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udIFGlobalOffset)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown6)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown5)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown4)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udIFFSK)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udIFFM)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udIFAM)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udIFCW)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udIFUSB)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udIFLSB)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -415,13 +485,13 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.NumericUpDown numericUpDown1;
-        private System.Windows.Forms.NumericUpDown numericUpDown6;
-        private System.Windows.Forms.NumericUpDown numericUpDown5;
-        private System.Windows.Forms.NumericUpDown numericUpDown4;
-        private System.Windows.Forms.NumericUpDown numericUpDown3;
-        private System.Windows.Forms.NumericUpDown numericUpDown2;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.NumericUpDown numericUpDown7;
+        private System.Windows.Forms.NumericUpDownTS udIFCW;
+        private System.Windows.Forms.NumericUpDownTS udIFUSB;
+        private System.Windows.Forms.NumericUpDownTS udIFLSB;
+        private System.Windows.Forms.NumericUpDownTS udIFGlobalOffset;
+        private System.Windows.Forms.NumericUpDownTS udIFFSK;
+        private System.Windows.Forms.NumericUpDownTS udIFFM;
+        private System.Windows.Forms.NumericUpDownTS udIFAM;
     }
 }
