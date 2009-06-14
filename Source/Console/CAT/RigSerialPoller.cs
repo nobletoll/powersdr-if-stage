@@ -18,6 +18,8 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //=============================================================================
 
+//#define USE_COMMAND_MUTEX
+
 using System;
 using System.IO;
 using System.Text;
@@ -39,8 +41,10 @@ namespace PowerSDR
 		#region Variables
 
 		// Configureable Variables
-		private int rigCOMPort = 1;
-		private int pollInterval = 100;
+		public int rigCOMPort = 1;
+		public int pollingInterval = 200;
+		public int pollingLockoutTime = 2000;
+		public int commandLockoutTime = 2000;
 
 		
 		private Console console;
@@ -54,7 +58,7 @@ namespace PowerSDR
 		private string commBuffer = "";
 
 		private bool rigPollingLockout = false;
-		private System.Timers.Timer rigAnswerLockoutTimer = new System.Timers.Timer();
+		private System.Timers.Timer rigPollingLockoutTimer = new System.Timers.Timer();
 		private bool rigCommandLockout = false;
 		private System.Timers.Timer rigCommandLockoutTimer = new System.Timers.Timer();
 
@@ -85,16 +89,16 @@ namespace PowerSDR
 			this.sdrParser = new CATParser(console);
 
 			// Initialize Rig Answer Lockout Timer
-			this.rigAnswerLockoutTimer.Elapsed +=
+			this.rigPollingLockoutTimer.Elapsed +=
 				new System.Timers.ElapsedEventHandler(this.RigAnswerLockoutTimerExpiredEvent);
-			this.rigAnswerLockoutTimer.Interval = 1000;
-			this.rigAnswerLockoutTimer.AutoReset = false;
-			this.rigAnswerLockoutTimer.Enabled = false;
+			this.rigPollingLockoutTimer.Interval = pollingLockoutTime;
+			this.rigPollingLockoutTimer.AutoReset = false;
+			this.rigPollingLockoutTimer.Enabled = false;
 
 			// Initialize Rig Answer Lockout Timer
 			this.rigCommandLockoutTimer.Elapsed +=
 				new System.Timers.ElapsedEventHandler(this.RigCommandLockoutTimerExpiredEvent);
-			this.rigCommandLockoutTimer.Interval = 1000;
+			this.rigCommandLockoutTimer.Interval = commandLockoutTime;
 			this.rigCommandLockoutTimer.AutoReset = false;
 			this.rigCommandLockoutTimer.Enabled = false;
 		}
@@ -280,13 +284,13 @@ namespace PowerSDR
 							this.doRigCATCommand("FB;");
 						else
 						{
-							Thread.Sleep(this.pollInterval - 50);
+							Thread.Sleep(this.pollingInterval - 50);
 							this.doRigCATCommand("IF;");
 						}
 					}
 					else
 					{
-						Thread.Sleep(this.pollInterval - 50);
+						Thread.Sleep(this.pollingInterval - 50);
 						this.doRigCATCommand("IF;");
 					}
 				}
@@ -399,7 +403,14 @@ namespace PowerSDR
 			this.doRigCATCommand(command,false,true);
 		}
 
-		public void doRigCATCommand(string command, bool bAnswerLockout,
+		public void doRigCATCommand(string command,bool bPollingLockout,
+			bool bCheckCommandLockout)
+		{
+			this.doRigCATCommand(command,bPollingLockout,
+				this.pollingLockoutTime,bCheckCommandLockout);
+		}
+
+		public void doRigCATCommand(string command, bool bPollingLockout, int pollingLockoutTime,
 			bool bCheckCommandLockout)
 		{
 			if (!this.enabled || (bCheckCommandLockout && this.rigCommandLockout))
@@ -415,11 +426,12 @@ namespace PowerSDR
 			this.SIO.put(cmd,(uint) cmd.Length);
 
 			// Start or Restart lockout timer to ignore incoming Rig CAT Answers.
-			if (bAnswerLockout)
+			if (bPollingLockout)
 			{
+				this.rigPollingLockoutTimer.Interval = pollingLockoutTime;
 				this.rigPollingLockout = true;
-				this.rigAnswerLockoutTimer.Stop();
-				this.rigAnswerLockoutTimer.Start();
+				this.rigPollingLockoutTimer.Stop();
+				this.rigPollingLockoutTimer.Start();
 			}
 
 #if USE_COMMAND_MUTEX
