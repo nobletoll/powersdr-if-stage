@@ -37024,7 +37024,12 @@ namespace PowerSDR
             if (chkVFOATX.Focused && !chkVFOATX.Checked) chkVFOATX.Checked = true;
             if (chkVFOATX.Checked)
             {
-                if (chkVFOBTX.Checked) chkVFOBTX.Checked = false;
+				// W1CEG: Set focus to chkVFOATX if we have focus elsewhere.
+				//        This prevents chkVFOBTX from potentually coming on at
+				//        the same time because it has focus.  See first line
+				//        in chkVFOBTX_CheckedChanged().
+				if (!chkVFOATX.Focused) chkVFOATX.Focus();
+				if (chkVFOBTX.Checked) chkVFOBTX.Checked = false;
                 chkVFOATX.BackColor = Color.Red;//button_selected_color;
                 txtVFOAFreq_LostFocus(this, EventArgs.Empty);
             }
@@ -37039,7 +37044,12 @@ namespace PowerSDR
             if (chkVFOBTX.Focused && !chkVFOBTX.Checked) chkVFOBTX.Checked = true;
             if (chkVFOBTX.Checked)
             {
-                if (chkVFOATX.Checked) chkVFOATX.Checked = false;
+				// W1CEG: Set focus to chkVFOBTX if we have focus elsewhere.
+				//        This prevents chkVFOATX from potentually coming on at
+				//        the same time because it has focus.  See first line
+				//        in chkVFOATX_CheckedChanged().
+				if (!chkVFOBTX.Focused) chkVFOBTX.Focus();
+				if (chkVFOATX.Checked) chkVFOATX.Checked = false;
                 chkVFOBTX.BackColor = Color.Red;//button_selected_color;
                 txtVFOBFreq_LostFocus(this, EventArgs.Empty);
                 if (fwc_init && current_model == Model.FLEX5000 && FWCEEPROM.RX2OK && chkRX2.Checked)
