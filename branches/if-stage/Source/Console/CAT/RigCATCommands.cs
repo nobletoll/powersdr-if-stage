@@ -151,9 +151,12 @@ namespace PowerSDR
 			}
 
 			// Split
-			// :TODO: Decide on how to deal with this since SPLIT is only on
-			//        when TX is set to VFO-B in PowerSDR.
-			this.sdrParser.Get("ZZSP" + s[30] + ';');
+			bool split = (s[30] == '1');
+			if (this.rigParser.Split != split)
+			{
+				this.rigParser.Split = split;
+				this.sdrParser.Get("ZZSP" + s[30] + ';');
+			}
 
 
 			// RX/TX

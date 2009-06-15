@@ -127,6 +127,8 @@ namespace PowerSDR
 				if (this.enabled)
 					return;
 
+				this.rigParser.initStates();
+
 				if (this.SIO == null)
 				{
 					this.SIO = new SDRSerialPort(this.hw.COMPort);
@@ -391,13 +393,14 @@ namespace PowerSDR
 			this.doRigCATCommand("MD" + mode + ';',true,false);
 		}
 
-        public void setSplit(bool splitOn)
-        {
-            if (!this.enabled)
-                return;
+		public void setSplit(bool splitOn)
+		{
+			if (!this.enabled || this.rigParser.Split == splitOn)
+				return;
 
-            this.enqueueRigCATCommand("SP" + ((splitOn) ? '1' : '0') + ';');
-        }
+			this.enqueueRigCATCommand("SP" + ((splitOn) ? '1' : '0') + ';');
+			this.rigParser.Split = splitOn;
+		}
 
 
 		private void doRigCATCommand(string command)

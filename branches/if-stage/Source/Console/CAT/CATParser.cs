@@ -56,7 +56,7 @@ namespace PowerSDR
 		// W1CEG: Make visible for derived RigCATParser.
 		protected CATCommands cmdlist;
 
-		private Console console;
+		protected Console console;
 		public string Error1 = "?;";
 		public string Error2 = "E;";
 		public string Error3 = "O;";

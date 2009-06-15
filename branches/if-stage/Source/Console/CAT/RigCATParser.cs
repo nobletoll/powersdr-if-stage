@@ -28,19 +28,13 @@ namespace PowerSDR
 
 		private RigCATCommands rigCmdList;
 
-		private int vfo = 99;
-		private int mode = 0;
-		private string vfoaFrequency = "";
-		private string vfobFrequency = "";
-		private bool frequencyChanged = false;
-		private int ritOffset = 0;
-
 		#endregion Variables
 
 
 		#region Constructor
 
-		public RigCATParser(Console c, RigSerialPoller rigSerialPoller) : base(c)
+		public RigCATParser(Console c,RigSerialPoller rigSerialPoller)
+			: base(c)
 		{
 			this.rigCmdList = new RigCATCommands(c,rigSerialPoller,this);
 
@@ -48,45 +42,64 @@ namespace PowerSDR
 			this.sfxpattern = new Regex("^[0-9+-]*[Vv0-9 ]*$");
 		}
 
+
+		public void initStates()
+		{
+			this.split = this.console.VFOSplit;
+		}
+
 		#endregion Constructor
 
 
 		#region Accessors
 
+		private int vfo = 99;
 		public int VFO
 		{
 			get { return this.vfo; }
 			set { this.vfo = value; }
 		}
 
+		private int mode = 0;
 		public int Mode
 		{
 			get { return this.mode; }
 			set { this.mode = value; }
 		}
 
+		private string vfoaFrequency = "";
 		public string VFOAFrequency
 		{
 			get { return this.vfoaFrequency; }
 			set { this.vfoaFrequency = value; }
 		}
 
+		private string vfobFrequency = "";
 		public string VFOBFrequency
 		{
 			get { return this.vfobFrequency; }
 			set { this.vfobFrequency = value; }
 		}
 
+		private bool frequencyChanged = false;
 		public bool FrequencyChanged
 		{
 			get { return this.frequencyChanged; }
 			set { this.frequencyChanged = value; }
 		}
 
+		private int ritOffset = 0;
 		public int RITOffset
 		{
 			get { return this.ritOffset; }
 			set { this.ritOffset = value; }
+		}
+
+		private bool split = false;
+		public bool Split
+		{
+			get { return this.split; }
+			set { this.split = value; }
 		}
 
 		#endregion Accessors
@@ -107,13 +120,13 @@ namespace PowerSDR
 			this.current_cat = pCmdString;
 
 			// Abort if the overall string length is less than 3 (aa;)
-			if(current_cat.Length < 3)
+			if (current_cat.Length < 3)
 				return Error1;
 
-			if(!this.CheckFormat())
+			if (!this.CheckFormat())
 				return Error1;
 
-			switch(prefix)
+			switch (prefix)
 			{
 				case "AC":
 					break;
