@@ -451,5 +451,20 @@ namespace PowerSDR
 			if (this.comboRigStopBits.SelectedIndex >= 0)
 				this.console.RigCOMStopBits = SDRSerialPort.stringToStopBits(this.comboRigStopBits.Text);
 		}
+
+		private void udRigPollingInterval_ValueChanged(object sender,EventArgs e)
+		{
+			this.console.RigPollingInterval = int.Parse(this.udRigPollingInterval.Text);
+		}
+
+		private void udRigTuningPollingInterval_ValueChanged(object sender,EventArgs e)
+		{
+			this.console.RigPollingInterval = int.Parse(this.udRigTuningPollingInterval.Text);
+		}
+
+		private void udRigPollingLockoutTime_ValueChanged(object sender,EventArgs e)
+		{
+			this.console.RigPollingInterval = int.Parse(this.udRigPollingLockoutTime.Text);
+		}
 	}
 }

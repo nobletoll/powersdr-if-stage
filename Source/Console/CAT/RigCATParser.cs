@@ -45,6 +45,7 @@ namespace PowerSDR
 
 		public void initStates()
 		{
+			this.mode = RigHW.getModeFromDSPMode(this.console.RX1DSPMode);
 			this.split = this.console.VFOSplit;
 		}
 

@@ -90,6 +90,29 @@ namespace PowerSDR
 			get { return com_baud_rate; }
 		}
 
+
+		private int rigPollingInterval = 200;
+		public int RigPollingInterval
+		{
+			get { return this.rigPollingInterval; }
+			set { this.rigPollingInterval = value; }
+		}
+
+		private int rigTuningPollingInterval = 50;
+		public int RigTuningPollingInterval
+		{
+			get { return this.rigTuningPollingInterval; }
+			set { this.rigTuningPollingInterval = value; }
+		}
+
+		private int rigPollingLockoutTime = 2000;
+		public int RigPollingLockoutTime
+		{
+			get { return this.rigPollingLockoutTime; }
+			set { this.rigPollingLockoutTime = value; }
+		}
+
+
 		public override ushort LPTAddr
 		{
 			get { return 0; }
@@ -296,6 +319,30 @@ namespace PowerSDR
         {
             this.rigSerialPoller.setSplit(splitOn);
         }
+
+
+		public static int getModeFromDSPMode(DSPMode dspMode)
+		{
+			switch (dspMode)
+			{
+				case DSPMode.LSB:
+					return (int) Mode.LSB;
+				case DSPMode.USB:
+					return (int) Mode.USB;
+				case DSPMode.CWL:
+				case DSPMode.CWU:
+					return (int) Mode.CW;
+				case DSPMode.FMN:
+					return (int) Mode.FM;
+				case DSPMode.AM:
+					return (int) Mode.AM;
+				case DSPMode.DIGU:
+				case DSPMode.DIGL:
+					return (int) Mode.FSK;
+				default:
+					return (int) Mode.LSB;
+			}
+		}
 
         #endregion Public Functions
 
