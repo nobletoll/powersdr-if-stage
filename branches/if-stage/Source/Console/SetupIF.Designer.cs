@@ -52,6 +52,19 @@ namespace PowerSDR
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
 			this.grpRigTimingBox = new System.Windows.Forms.GroupBox();
+			this.grpRigTypeBox = new System.Windows.Forms.GroupBox();
+			this.comboRigType = new System.Windows.Forms.ComboBox();
+			this.tabPage2 = new System.Windows.Forms.TabPage();
+			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.label6 = new System.Windows.Forms.Label();
+			this.label5 = new System.Windows.Forms.Label();
+			this.label4 = new System.Windows.Forms.Label();
+			this.label3 = new System.Windows.Forms.Label();
+			this.label2 = new System.Windows.Forms.Label();
+			this.label1 = new System.Windows.Forms.Label();
+			this.tabPage3 = new System.Windows.Forms.TabPage();
+			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.labelRigTuningPollingInterval = new System.Windows.Forms.LabelTS();
 			this.udRigTuningPollingInterval = new System.Windows.Forms.NumericUpDownTS();
 			this.labelRigPollingLockoutTime = new System.Windows.Forms.LabelTS();
@@ -69,26 +82,13 @@ namespace PowerSDR
 			this.comboRigParity = new System.Windows.Forms.ComboBoxTS();
 			this.comboRigDataBits = new System.Windows.Forms.ComboBoxTS();
 			this.comboRigStopBits = new System.Windows.Forms.ComboBoxTS();
-			this.grpRigTypeBox = new System.Windows.Forms.GroupBox();
-			this.comboRigType = new System.Windows.Forms.ComboBox();
-			this.tabPage2 = new System.Windows.Forms.TabPage();
-			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.udIFGlobalOffset = new System.Windows.Forms.NumericUpDownTS();
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.udIFFSK = new System.Windows.Forms.NumericUpDownTS();
 			this.udIFFM = new System.Windows.Forms.NumericUpDownTS();
 			this.udIFAM = new System.Windows.Forms.NumericUpDownTS();
 			this.udIFCW = new System.Windows.Forms.NumericUpDownTS();
 			this.udIFUSB = new System.Windows.Forms.NumericUpDownTS();
 			this.udIFLSB = new System.Windows.Forms.NumericUpDownTS();
-			this.label6 = new System.Windows.Forms.Label();
-			this.label5 = new System.Windows.Forms.Label();
-			this.label4 = new System.Windows.Forms.Label();
-			this.label3 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
-			this.label1 = new System.Windows.Forms.Label();
-			this.tabPage3 = new System.Windows.Forms.TabPage();
-			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.btnImportDB = new System.Windows.Forms.ButtonTS();
 			this.btnResetDB = new System.Windows.Forms.ButtonTS();
 			this.btnApply = new System.Windows.Forms.ButtonTS();
@@ -97,15 +97,15 @@ namespace PowerSDR
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.grpRigTimingBox.SuspendLayout();
+			this.grpRigTypeBox.SuspendLayout();
+			this.tabPage2.SuspendLayout();
+			this.groupBox2.SuspendLayout();
+			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize) (this.udRigTuningPollingInterval)).BeginInit();
 			((System.ComponentModel.ISupportInitialize) (this.udRigPollingLockoutTime)).BeginInit();
 			((System.ComponentModel.ISupportInitialize) (this.udRigPollingInterval)).BeginInit();
 			this.grpRigSerialBox.SuspendLayout();
-			this.grpRigTypeBox.SuspendLayout();
-			this.tabPage2.SuspendLayout();
-			this.groupBox2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize) (this.udIFGlobalOffset)).BeginInit();
-			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize) (this.udIFFSK)).BeginInit();
 			((System.ComponentModel.ISupportInitialize) (this.udIFFM)).BeginInit();
 			((System.ComponentModel.ISupportInitialize) (this.udIFAM)).BeginInit();
@@ -153,6 +153,133 @@ namespace PowerSDR
 			this.grpRigTimingBox.TabStop = false;
 			this.grpRigTimingBox.Text = "Rig Timing (ms)";
 			this.toolTip1.SetToolTip(this.grpRigTimingBox,"Configurable Timeouts and Intervals used for polling information from the Rig");
+			// 
+			// grpRigTypeBox
+			// 
+			this.grpRigTypeBox.Controls.Add(this.comboRigType);
+			this.grpRigTypeBox.Location = new System.Drawing.Point(7,7);
+			this.grpRigTypeBox.Name = "grpRigTypeBox";
+			this.grpRigTypeBox.Size = new System.Drawing.Size(141,55);
+			this.grpRigTypeBox.TabIndex = 0;
+			this.grpRigTypeBox.TabStop = false;
+			this.grpRigTypeBox.Text = "Rig Type";
+			// 
+			// comboRigType
+			// 
+			this.comboRigType.FormattingEnabled = true;
+			this.comboRigType.Items.AddRange(new object[] {
+            "Kenwood TS-940S"});
+			this.comboRigType.Location = new System.Drawing.Point(9,20);
+			this.comboRigType.Name = "comboRigType";
+			this.comboRigType.Size = new System.Drawing.Size(123,21);
+			this.comboRigType.TabIndex = 0;
+			this.toolTip1.SetToolTip(this.comboRigType,"Defines what kind of rig will control PowerSDR");
+			// 
+			// tabPage2
+			// 
+			this.tabPage2.BackColor = System.Drawing.SystemColors.Control;
+			this.tabPage2.Controls.Add(this.groupBox2);
+			this.tabPage2.Controls.Add(this.groupBox1);
+			this.tabPage2.Location = new System.Drawing.Point(4,22);
+			this.tabPage2.Name = "tabPage2";
+			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage2.Size = new System.Drawing.Size(584,275);
+			this.tabPage2.TabIndex = 1;
+			this.tabPage2.Text = "IF Frequencies";
+			// 
+			// groupBox2
+			// 
+			this.groupBox2.Controls.Add(this.udIFGlobalOffset);
+			this.groupBox2.Location = new System.Drawing.Point(11,199);
+			this.groupBox2.Name = "groupBox2";
+			this.groupBox2.Size = new System.Drawing.Size(174,65);
+			this.groupBox2.TabIndex = 1;
+			this.groupBox2.TabStop = false;
+			this.groupBox2.Text = "IF Frequency Global Offset (Hz)";
+			// 
+			// groupBox1
+			// 
+			this.groupBox1.Controls.Add(this.udIFFSK);
+			this.groupBox1.Controls.Add(this.udIFFM);
+			this.groupBox1.Controls.Add(this.udIFAM);
+			this.groupBox1.Controls.Add(this.udIFCW);
+			this.groupBox1.Controls.Add(this.udIFUSB);
+			this.groupBox1.Controls.Add(this.udIFLSB);
+			this.groupBox1.Controls.Add(this.label6);
+			this.groupBox1.Controls.Add(this.label5);
+			this.groupBox1.Controls.Add(this.label4);
+			this.groupBox1.Controls.Add(this.label3);
+			this.groupBox1.Controls.Add(this.label2);
+			this.groupBox1.Controls.Add(this.label1);
+			this.groupBox1.Location = new System.Drawing.Point(11,6);
+			this.groupBox1.Name = "groupBox1";
+			this.groupBox1.Size = new System.Drawing.Size(131,180);
+			this.groupBox1.TabIndex = 0;
+			this.groupBox1.TabStop = false;
+			this.groupBox1.Text = "IF Frequency (Hz)";
+			// 
+			// label6
+			// 
+			this.label6.Location = new System.Drawing.Point(8,149);
+			this.label6.Name = "label6";
+			this.label6.Size = new System.Drawing.Size(27,20);
+			this.label6.TabIndex = 5;
+			this.label6.Text = "FSK";
+			this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			// 
+			// label5
+			// 
+			this.label5.Location = new System.Drawing.Point(13,123);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(22,20);
+			this.label5.TabIndex = 4;
+			this.label5.Text = "FM";
+			this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			// 
+			// label4
+			// 
+			this.label4.Location = new System.Drawing.Point(12,97);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size(23,20);
+			this.label4.TabIndex = 3;
+			this.label4.Text = "AM";
+			this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			// 
+			// label3
+			// 
+			this.label3.Location = new System.Drawing.Point(10,71);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(25,20);
+			this.label3.TabIndex = 2;
+			this.label3.Text = "CW";
+			this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			// 
+			// label2
+			// 
+			this.label2.Location = new System.Drawing.Point(6,45);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(29,20);
+			this.label2.TabIndex = 1;
+			this.label2.Text = "USB";
+			this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			// 
+			// label1
+			// 
+			this.label1.Location = new System.Drawing.Point(8,19);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(27,20);
+			this.label1.TabIndex = 0;
+			this.label1.Text = "LSB";
+			this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			// 
+			// tabPage3
+			// 
+			this.tabPage3.BackColor = System.Drawing.SystemColors.Control;
+			this.tabPage3.Location = new System.Drawing.Point(4,22);
+			this.tabPage3.Name = "tabPage3";
+			this.tabPage3.Size = new System.Drawing.Size(584,275);
+			this.tabPage3.TabIndex = 2;
+			this.tabPage3.Text = "Audio";
 			// 
 			// labelRigTuningPollingInterval
 			// 
@@ -416,49 +543,6 @@ namespace PowerSDR
 			this.comboRigStopBits.TabIndex = 5;
 			this.comboRigStopBits.SelectedIndexChanged += new System.EventHandler(this.comboRigStopBits_SelectedIndexChanged);
 			// 
-			// grpRigTypeBox
-			// 
-			this.grpRigTypeBox.Controls.Add(this.comboRigType);
-			this.grpRigTypeBox.Location = new System.Drawing.Point(7,7);
-			this.grpRigTypeBox.Name = "grpRigTypeBox";
-			this.grpRigTypeBox.Size = new System.Drawing.Size(141,55);
-			this.grpRigTypeBox.TabIndex = 0;
-			this.grpRigTypeBox.TabStop = false;
-			this.grpRigTypeBox.Text = "Rig Type";
-			// 
-			// comboRigType
-			// 
-			this.comboRigType.FormattingEnabled = true;
-			this.comboRigType.Items.AddRange(new object[] {
-            "Kenwood TS-940S"});
-			this.comboRigType.Location = new System.Drawing.Point(9,20);
-			this.comboRigType.Name = "comboRigType";
-			this.comboRigType.Size = new System.Drawing.Size(123,21);
-			this.comboRigType.TabIndex = 0;
-			this.toolTip1.SetToolTip(this.comboRigType,"Defines what kind of rig will control PowerSDR");
-			// 
-			// tabPage2
-			// 
-			this.tabPage2.BackColor = System.Drawing.SystemColors.Control;
-			this.tabPage2.Controls.Add(this.groupBox2);
-			this.tabPage2.Controls.Add(this.groupBox1);
-			this.tabPage2.Location = new System.Drawing.Point(4,22);
-			this.tabPage2.Name = "tabPage2";
-			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage2.Size = new System.Drawing.Size(584,275);
-			this.tabPage2.TabIndex = 1;
-			this.tabPage2.Text = "IF Frequencies";
-			// 
-			// groupBox2
-			// 
-			this.groupBox2.Controls.Add(this.udIFGlobalOffset);
-			this.groupBox2.Location = new System.Drawing.Point(11,199);
-			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(174,65);
-			this.groupBox2.TabIndex = 1;
-			this.groupBox2.TabStop = false;
-			this.groupBox2.Text = "IF Frequency Global Offset (Hz)";
-			// 
 			// udIFGlobalOffset
 			// 
 			this.udIFGlobalOffset.Increment = new decimal(new int[] {
@@ -486,27 +570,6 @@ namespace PowerSDR
             0,
             0});
 			this.udIFGlobalOffset.ValueChanged += new System.EventHandler(this.udIFGlobalOffset_ValueChanged);
-			// 
-			// groupBox1
-			// 
-			this.groupBox1.Controls.Add(this.udIFFSK);
-			this.groupBox1.Controls.Add(this.udIFFM);
-			this.groupBox1.Controls.Add(this.udIFAM);
-			this.groupBox1.Controls.Add(this.udIFCW);
-			this.groupBox1.Controls.Add(this.udIFUSB);
-			this.groupBox1.Controls.Add(this.udIFLSB);
-			this.groupBox1.Controls.Add(this.label6);
-			this.groupBox1.Controls.Add(this.label5);
-			this.groupBox1.Controls.Add(this.label4);
-			this.groupBox1.Controls.Add(this.label3);
-			this.groupBox1.Controls.Add(this.label2);
-			this.groupBox1.Controls.Add(this.label1);
-			this.groupBox1.Location = new System.Drawing.Point(11,6);
-			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(131,180);
-			this.groupBox1.TabIndex = 0;
-			this.groupBox1.TabStop = false;
-			this.groupBox1.Text = "IF Frequency (Hz)";
 			// 
 			// udIFFSK
 			// 
@@ -676,69 +739,6 @@ namespace PowerSDR
             0});
 			this.udIFLSB.ValueChanged += new System.EventHandler(this.udIFLSB_ValueChanged);
 			// 
-			// label6
-			// 
-			this.label6.Location = new System.Drawing.Point(8,149);
-			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(27,20);
-			this.label6.TabIndex = 5;
-			this.label6.Text = "FSK";
-			this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			// 
-			// label5
-			// 
-			this.label5.Location = new System.Drawing.Point(13,123);
-			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(22,20);
-			this.label5.TabIndex = 4;
-			this.label5.Text = "FM";
-			this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			// 
-			// label4
-			// 
-			this.label4.Location = new System.Drawing.Point(12,97);
-			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(23,20);
-			this.label4.TabIndex = 3;
-			this.label4.Text = "AM";
-			this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			// 
-			// label3
-			// 
-			this.label3.Location = new System.Drawing.Point(10,71);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(25,20);
-			this.label3.TabIndex = 2;
-			this.label3.Text = "CW";
-			this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			// 
-			// label2
-			// 
-			this.label2.Location = new System.Drawing.Point(6,45);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(29,20);
-			this.label2.TabIndex = 1;
-			this.label2.Text = "USB";
-			this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			// 
-			// label1
-			// 
-			this.label1.Location = new System.Drawing.Point(8,19);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(27,20);
-			this.label1.TabIndex = 0;
-			this.label1.Text = "LSB";
-			this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			// 
-			// tabPage3
-			// 
-			this.tabPage3.BackColor = System.Drawing.SystemColors.Control;
-			this.tabPage3.Location = new System.Drawing.Point(4,22);
-			this.tabPage3.Name = "tabPage3";
-			this.tabPage3.Size = new System.Drawing.Size(584,275);
-			this.tabPage3.TabIndex = 2;
-			this.tabPage3.Text = "Audio";
-			// 
 			// btnImportDB
 			// 
 			this.btnImportDB.Image = null;
@@ -805,15 +805,15 @@ namespace PowerSDR
 			this.tabControl1.ResumeLayout(false);
 			this.tabPage1.ResumeLayout(false);
 			this.grpRigTimingBox.ResumeLayout(false);
+			this.grpRigTypeBox.ResumeLayout(false);
+			this.tabPage2.ResumeLayout(false);
+			this.groupBox2.ResumeLayout(false);
+			this.groupBox1.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize) (this.udRigTuningPollingInterval)).EndInit();
 			((System.ComponentModel.ISupportInitialize) (this.udRigPollingLockoutTime)).EndInit();
 			((System.ComponentModel.ISupportInitialize) (this.udRigPollingInterval)).EndInit();
 			this.grpRigSerialBox.ResumeLayout(false);
-			this.grpRigTypeBox.ResumeLayout(false);
-			this.tabPage2.ResumeLayout(false);
-			this.groupBox2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize) (this.udIFGlobalOffset)).EndInit();
-			this.groupBox1.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize) (this.udIFFSK)).EndInit();
 			((System.ComponentModel.ISupportInitialize) (this.udIFFM)).EndInit();
 			((System.ComponentModel.ISupportInitialize) (this.udIFAM)).EndInit();
