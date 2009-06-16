@@ -37330,6 +37330,28 @@ namespace PowerSDR
 			get { return ((RigHW) this.hw).COMBaudRate; }
 		}
 
+		/////////////////////////////////////////////////////////
+		// Rig Poll Timing                                     //
+		/////////////////////////////////////////////////////////
+
+		public int RigPollingInterval
+		{
+			get { return ((RigHW) this.hw).RigPollingInterval; }
+			set { ((RigHW) this.hw).RigPollingInterval = value; }
+		}
+
+		public int RigTuningPollingInterval
+		{
+			get { return ((RigHW) this.hw).RigTuningPollingInterval; }
+			set { ((RigHW) this.hw).RigTuningPollingInterval = value; }
+		}
+
+		public int RigPollingLockoutTime
+		{
+			get { return ((RigHW) this.hw).RigPollingLockoutTime; }
+			set { ((RigHW) this.hw).RigPollingLockoutTime = value; }
+		}
+
 		// W1CEG: End
 	}
 }

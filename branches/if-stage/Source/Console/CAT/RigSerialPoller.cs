@@ -40,12 +40,6 @@ namespace PowerSDR
 	{
 		#region Variables
 
-		// Configureable Variables
-		public int pollingInterval = 200;
-		public int pollingLockoutTime = 2000;
-		public int commandLockoutTime = 2000;
-
-		
 		private Console console;
 		private RigHW hw;
 		private SDRSerialSupportII.SDRSerialPort SIO;
@@ -59,8 +53,6 @@ namespace PowerSDR
 
 		private bool rigPollingLockout = false;
 		private System.Timers.Timer rigPollingLockoutTimer = new System.Timers.Timer();
-		private bool rigCommandLockout = false;
-		private System.Timers.Timer rigCommandLockoutTimer = new System.Timers.Timer();
 
 #if USE_COMMAND_MUTEX
 		private Mutex commandMutex = new Mutex();
@@ -89,19 +81,12 @@ namespace PowerSDR
 			this.rigParser = new RigCATParser(console,this);
 			this.sdrParser = new CATParser(console);
 
-			// Initialize Rig Answer Lockout Timer
+			// Initialize Rig Polling Lockout Timer
 			this.rigPollingLockoutTimer.Elapsed +=
-				new System.Timers.ElapsedEventHandler(this.RigAnswerLockoutTimerExpiredEvent);
-			this.rigPollingLockoutTimer.Interval = pollingLockoutTime;
+				new System.Timers.ElapsedEventHandler(this.RigPollingLockoutTimerExpiredEvent);
+			this.rigPollingLockoutTimer.Interval = this.hw.RigPollingLockoutTime;
 			this.rigPollingLockoutTimer.AutoReset = false;
 			this.rigPollingLockoutTimer.Enabled = false;
-
-			// Initialize Rig Answer Lockout Timer
-			this.rigCommandLockoutTimer.Elapsed +=
-				new System.Timers.ElapsedEventHandler(this.RigCommandLockoutTimerExpiredEvent);
-			this.rigCommandLockoutTimer.Interval = commandLockoutTime;
-			this.rigCommandLockoutTimer.AutoReset = false;
-			this.rigCommandLockoutTimer.Enabled = false;
 		}
 
 		~RigSerialPoller()
@@ -255,13 +240,13 @@ namespace PowerSDR
 				{
 					if (!this.vfoAInitialized)
 					{
-						Thread.Sleep(50);
+						Thread.Sleep(this.hw.RigTuningPollingInterval);
 						this.doRigCATCommand("FA;");
 					}
 
 					if (!this.vfoBInitialized)
 					{
-						Thread.Sleep(50);
+						Thread.Sleep(this.hw.RigTuningPollingInterval);
 						this.doRigCATCommand("FB;");
 					}
 				}
@@ -274,7 +259,7 @@ namespace PowerSDR
 					this.rigCommandThread.Start();
 				}
 
-				Thread.Sleep(50);
+				Thread.Sleep(this.hw.RigTuningPollingInterval);
 
 				if (!this.rigPollingLockout)
 				{
@@ -286,17 +271,14 @@ namespace PowerSDR
 							this.doRigCATCommand("FA;");
 						else if (this.rigParser.VFO == 1)
 							this.doRigCATCommand("FB;");
-						else
-						{
-							Thread.Sleep(this.pollingInterval - 50);
-							this.doRigCATCommand("IF;");
-						}
+
+						continue;
 					}
-					else
-					{
-						Thread.Sleep(this.pollingInterval - 50);
-						this.doRigCATCommand("IF;");
-					}
+
+					if (this.hw.RigPollingInterval > this.hw.RigTuningPollingInterval)
+						Thread.Sleep(this.hw.RigPollingInterval - this.hw.RigTuningPollingInterval);
+
+					this.doRigCATCommand("IF;");
 				}
 			}
 
@@ -379,15 +361,8 @@ namespace PowerSDR
 
 		public void setMode(int mode)
 		{
-			if (!this.enabled)
+			if (!this.enabled || this.rigParser.Mode == mode)
 				return;
-
-			// Mode changing appears to be a bit intensive on the Rig.  We need
-			// to lock out our polling for a bit to allow the Rig to safely
-			// change modes.
-			this.rigCommandLockout = true;
-			this.rigCommandLockoutTimer.Stop();
-			this.rigCommandLockoutTimer.Start();
 
 			this.rigParser.Mode = mode;
 			this.doRigCATCommand("MD" + mode + ';',true,false);
@@ -409,16 +384,17 @@ namespace PowerSDR
 		}
 
 		public void doRigCATCommand(string command,bool bPollingLockout,
-			bool bCheckCommandLockout)
+			bool bCheckRigPollingLockout)
 		{
 			this.doRigCATCommand(command,bPollingLockout,
-				this.pollingLockoutTime,bCheckCommandLockout);
+				this.hw.RigPollingLockoutTime,bCheckRigPollingLockout);
 		}
 
-		public void doRigCATCommand(string command, bool bPollingLockout, int pollingLockoutTime,
-			bool bCheckCommandLockout)
+		public void doRigCATCommand(string command, bool bPollingLockout,
+			int pollingLockoutTime, bool bCheckRigPollingLockout)
 		{
-			if (!this.enabled || (bCheckCommandLockout && this.rigCommandLockout))
+			if (!this.enabled ||
+				(bCheckRigPollingLockout && this.rigPollingLockout))
 				return;
 
 			byte[] cmd = this.AE.GetBytes(command);
@@ -431,9 +407,9 @@ namespace PowerSDR
 			this.SIO.put(cmd,(uint) cmd.Length);
 
 			// Start or Restart lockout timer to ignore incoming Rig CAT Answers.
-			if (bPollingLockout)
+			if (bPollingLockout && pollingLockoutTime > 0)
 			{
-				this.rigPollingLockoutTimer.Interval = pollingLockoutTime;
+				this.rigPollingLockoutTimer.Interval = this.hw.RigPollingLockoutTime;
 				this.rigPollingLockout = true;
 				this.rigPollingLockoutTimer.Stop();
 				this.rigPollingLockoutTimer.Start();
@@ -455,16 +431,10 @@ namespace PowerSDR
 
 		#region Events
 
-		private void RigAnswerLockoutTimerExpiredEvent(object source,
+		private void RigPollingLockoutTimerExpiredEvent(object source,
 			System.Timers.ElapsedEventArgs e)
 		{
 			this.rigPollingLockout = false;
-		}
-
-		private void RigCommandLockoutTimerExpiredEvent(object source,
-			System.Timers.ElapsedEventArgs e)
-		{
-			this.rigCommandLockout = false;
 		}
 
 		private void SerialRXEventHandler(object source,SDRSerialSupportII.SerialRXEvent e)
