@@ -148,7 +148,7 @@ namespace PowerSDR
 			this.grpRigTimingBox.Controls.Add(this.udRigPollingInterval);
 			this.grpRigTimingBox.Location = new System.Drawing.Point(154,68);
 			this.grpRigTimingBox.Name = "grpRigTimingBox";
-			this.grpRigTimingBox.Size = new System.Drawing.Size(190,105);
+			this.grpRigTimingBox.Size = new System.Drawing.Size(194,105);
 			this.grpRigTimingBox.TabIndex = 92;
 			this.grpRigTimingBox.TabStop = false;
 			this.grpRigTimingBox.Text = "Rig Timing (ms)";
@@ -159,7 +159,7 @@ namespace PowerSDR
 			this.labelRigTuningPollingInterval.Image = null;
 			this.labelRigTuningPollingInterval.Location = new System.Drawing.Point(6,45);
 			this.labelRigTuningPollingInterval.Name = "labelRigTuningPollingInterval";
-			this.labelRigTuningPollingInterval.Size = new System.Drawing.Size(116,20);
+			this.labelRigTuningPollingInterval.Size = new System.Drawing.Size(120,20);
 			this.labelRigTuningPollingInterval.TabIndex = 18;
 			this.labelRigTuningPollingInterval.Text = "Tuning Polling Interval:";
 			this.labelRigTuningPollingInterval.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -171,7 +171,7 @@ namespace PowerSDR
             0,
             0,
             0});
-			this.udRigTuningPollingInterval.Location = new System.Drawing.Point(128,45);
+			this.udRigTuningPollingInterval.Location = new System.Drawing.Point(132,45);
 			this.udRigTuningPollingInterval.Maximum = new decimal(new int[] {
             10000,
             0,
@@ -197,9 +197,9 @@ namespace PowerSDR
 			// labelRigPollingLockoutTime
 			// 
 			this.labelRigPollingLockoutTime.Image = null;
-			this.labelRigPollingLockoutTime.Location = new System.Drawing.Point(9,72);
+			this.labelRigPollingLockoutTime.Location = new System.Drawing.Point(6,72);
 			this.labelRigPollingLockoutTime.Name = "labelRigPollingLockoutTime";
-			this.labelRigPollingLockoutTime.Size = new System.Drawing.Size(113,20);
+			this.labelRigPollingLockoutTime.Size = new System.Drawing.Size(120,20);
 			this.labelRigPollingLockoutTime.TabIndex = 16;
 			this.labelRigPollingLockoutTime.Text = "Polling Lockout Time:";
 			this.labelRigPollingLockoutTime.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -211,7 +211,7 @@ namespace PowerSDR
             0,
             0,
             0});
-			this.udRigPollingLockoutTime.Location = new System.Drawing.Point(128,72);
+			this.udRigPollingLockoutTime.Location = new System.Drawing.Point(132,72);
 			this.udRigPollingLockoutTime.Maximum = new decimal(new int[] {
             10000,
             0,
@@ -237,9 +237,9 @@ namespace PowerSDR
 			// labelRigPollingInterval
 			// 
 			this.labelRigPollingInterval.Image = null;
-			this.labelRigPollingInterval.Location = new System.Drawing.Point(9,19);
+			this.labelRigPollingInterval.Location = new System.Drawing.Point(6,19);
 			this.labelRigPollingInterval.Name = "labelRigPollingInterval";
-			this.labelRigPollingInterval.Size = new System.Drawing.Size(113,20);
+			this.labelRigPollingInterval.Size = new System.Drawing.Size(120,20);
 			this.labelRigPollingInterval.TabIndex = 14;
 			this.labelRigPollingInterval.Text = "Polling Interval:";
 			this.labelRigPollingInterval.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -251,7 +251,7 @@ namespace PowerSDR
             0,
             0,
             0});
-			this.udRigPollingInterval.Location = new System.Drawing.Point(128,19);
+			this.udRigPollingInterval.Location = new System.Drawing.Point(132,19);
 			this.udRigPollingInterval.Maximum = new decimal(new int[] {
             10000,
             0,
@@ -462,7 +462,7 @@ namespace PowerSDR
 			// udIFGlobalOffset
 			// 
 			this.udIFGlobalOffset.Increment = new decimal(new int[] {
-            1,
+            10,
             0,
             0,
             0});
@@ -479,7 +479,7 @@ namespace PowerSDR
             -2147483648});
 			this.udIFGlobalOffset.Name = "udIFGlobalOffset";
 			this.udIFGlobalOffset.Size = new System.Drawing.Size(79,20);
-			this.udIFGlobalOffset.TabIndex = 18;
+			this.udIFGlobalOffset.TabIndex = 7;
 			this.udIFGlobalOffset.Value = new decimal(new int[] {
             0,
             0,
@@ -511,7 +511,7 @@ namespace PowerSDR
 			// udIFFSK
 			// 
 			this.udIFFSK.Increment = new decimal(new int[] {
-            1,
+            10,
             0,
             0,
             0});
@@ -528,7 +528,7 @@ namespace PowerSDR
             -2147483648});
 			this.udIFFSK.Name = "udIFFSK";
 			this.udIFFSK.Size = new System.Drawing.Size(79,20);
-			this.udIFFSK.TabIndex = 17;
+			this.udIFFSK.TabIndex = 6;
 			this.udIFFSK.Value = new decimal(new int[] {
             0,
             0,
@@ -539,7 +539,7 @@ namespace PowerSDR
 			// udIFFM
 			// 
 			this.udIFFM.Increment = new decimal(new int[] {
-            1,
+            10,
             0,
             0,
             0});
@@ -556,7 +556,7 @@ namespace PowerSDR
             -2147483648});
 			this.udIFFM.Name = "udIFFM";
 			this.udIFFM.Size = new System.Drawing.Size(79,20);
-			this.udIFFM.TabIndex = 16;
+			this.udIFFM.TabIndex = 5;
 			this.udIFFM.Value = new decimal(new int[] {
             0,
             0,
@@ -567,7 +567,7 @@ namespace PowerSDR
 			// udIFAM
 			// 
 			this.udIFAM.Increment = new decimal(new int[] {
-            1,
+            10,
             0,
             0,
             0});
@@ -584,7 +584,7 @@ namespace PowerSDR
             -2147483648});
 			this.udIFAM.Name = "udIFAM";
 			this.udIFAM.Size = new System.Drawing.Size(79,20);
-			this.udIFAM.TabIndex = 15;
+			this.udIFAM.TabIndex = 4;
 			this.udIFAM.Value = new decimal(new int[] {
             0,
             0,
@@ -595,7 +595,7 @@ namespace PowerSDR
 			// udIFCW
 			// 
 			this.udIFCW.Increment = new decimal(new int[] {
-            1,
+            10,
             0,
             0,
             0});
@@ -612,7 +612,7 @@ namespace PowerSDR
             -2147483648});
 			this.udIFCW.Name = "udIFCW";
 			this.udIFCW.Size = new System.Drawing.Size(79,20);
-			this.udIFCW.TabIndex = 14;
+			this.udIFCW.TabIndex = 3;
 			this.udIFCW.Value = new decimal(new int[] {
             0,
             0,
@@ -623,7 +623,7 @@ namespace PowerSDR
 			// udIFUSB
 			// 
 			this.udIFUSB.Increment = new decimal(new int[] {
-            1,
+            10,
             0,
             0,
             0});
@@ -640,7 +640,7 @@ namespace PowerSDR
             -2147483648});
 			this.udIFUSB.Name = "udIFUSB";
 			this.udIFUSB.Size = new System.Drawing.Size(79,20);
-			this.udIFUSB.TabIndex = 13;
+			this.udIFUSB.TabIndex = 2;
 			this.udIFUSB.Value = new decimal(new int[] {
             0,
             0,
@@ -651,7 +651,7 @@ namespace PowerSDR
 			// udIFLSB
 			// 
 			this.udIFLSB.Increment = new decimal(new int[] {
-            1,
+            10,
             0,
             0,
             0});
@@ -668,7 +668,7 @@ namespace PowerSDR
             -2147483648});
 			this.udIFLSB.Name = "udIFLSB";
 			this.udIFLSB.Size = new System.Drawing.Size(79,20);
-			this.udIFLSB.TabIndex = 12;
+			this.udIFLSB.TabIndex = 1;
 			this.udIFLSB.Value = new decimal(new int[] {
             0,
             0,
