@@ -87,6 +87,7 @@ namespace PowerSDR
 		{
 			bool rit = (s[21] == '1');
 			char vfo = s[28];
+			int mode = s[27] - '0';
 
 			// Frequency
 			// :NOTE: Store Frequency Status for RigSerialPoller Performance.
@@ -100,19 +101,29 @@ namespace PowerSDR
 				int ritOffset = int.Parse(s[16] + s.Substring(17,4));
 				frequency = (int.Parse(frequency) - ritOffset).ToString().PadLeft(11,'0');
 			}
-	
+
 			if (vfo == '0')
 			{
 				this.rigParser.VFO = 0;
 				this.changeVFOA(frequency);
+
+				// Mode
+				if (this.rigParser.VFOAMode != mode)
+				{
+					this.rigParser.VFOAMode = mode;
+					this.sdrParser.Get("MD" + s[27] + ';');
+				}
 			}
 			else if (vfo == '1')
 			{
-                // Force the Rig on VFO-A to conform to the way PowerSDR handles RX1
-                this.rigSerialPoller.doRigCATCommand("FN0;",false,false);
+				// Force the Rig on VFO-A to conform to the way PowerSDR handles RX1
+				this.rigSerialPoller.doRigCATCommand("FN0;",false,false);
 				this.rigParser.VFO = 1;
 				this.changeVFOB(frequency);
-                this.rigParser.VFO = 0;
+				this.rigParser.VFO = 0;
+
+				// Mode
+				this.rigParser.VFOBMode = mode;
 			}
 
 			// RIT Frequency - Control VFO-B when RIT and XIT are off
@@ -141,23 +152,6 @@ namespace PowerSDR
 				}
 			}
 #endif
-			
-			// Mode
-			int mode = s[27] - '0';
-			if (this.rigParser.Mode != mode)
-			{
-				this.rigParser.Mode = mode;
-				this.sdrParser.Get("MD" + s[27] + ';');
-			}
-
-			// Split
-			bool split = (s[30] == '1');
-			if (this.rigParser.Split != split)
-			{
-				this.rigParser.Split = split;
-				this.sdrParser.Get("ZZSP" + s[30] + ';');
-			}
-
 
 			// RX/TX
 			// This crazy logic sets MUTE on when TXing (when Monitor is turned off)
@@ -179,6 +173,14 @@ namespace PowerSDR
 					if (!this.transmittingWithMute)
 						this.console.MUT = false;
 				}
+			}
+
+			// Split
+			bool split = (s[30] == '1');
+			if (this.rigParser.Split != split)
+			{
+				this.rigParser.Split = split;
+				this.sdrParser.Get("ZZSP" + s[30] + ';');
 			}
 
 			return null;

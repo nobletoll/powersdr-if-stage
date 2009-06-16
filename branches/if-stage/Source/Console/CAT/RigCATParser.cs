@@ -45,7 +45,7 @@ namespace PowerSDR
 
 		public void initStates()
 		{
-			this.mode = RigHW.getModeFromDSPMode(this.console.RX1DSPMode);
+			this.vfoaMode = RigHW.getModeFromDSPMode(this.console.RX1DSPMode);
 			this.split = this.console.VFOSplit;
 		}
 
@@ -61,11 +61,18 @@ namespace PowerSDR
 			set { this.vfo = value; }
 		}
 
-		private int mode = 0;
-		public int Mode
+		private int vfoaMode = 0;
+		public int VFOAMode
 		{
-			get { return this.mode; }
-			set { this.mode = value; }
+			get { return this.vfoaMode; }
+			set { this.vfoaMode = value; }
+		}
+
+		private int vfobMode = -1;
+		public int VFOBMode
+		{
+			get { return this.vfobMode; }
+			set { this.vfobMode = value; }
 		}
 
 		private string vfoaFrequency = "";
