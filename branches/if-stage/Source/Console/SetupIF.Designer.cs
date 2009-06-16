@@ -94,6 +94,9 @@ namespace PowerSDR
 			this.btnApply = new System.Windows.Forms.ButtonTS();
 			this.btnCancel = new System.Windows.Forms.ButtonTS();
 			this.btnOK = new System.Windows.Forms.ButtonTS();
+			this.grpOptionalPollingCommandsBox = new System.Windows.Forms.GroupBox();
+			this.chkRigPollVFOB = new System.Windows.Forms.CheckBoxTS();
+			this.chkRigPollIFFreq = new System.Windows.Forms.CheckBoxTS();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.grpRigTimingBox.SuspendLayout();
@@ -112,6 +115,7 @@ namespace PowerSDR
 			((System.ComponentModel.ISupportInitialize) (this.udIFCW)).BeginInit();
 			((System.ComponentModel.ISupportInitialize) (this.udIFUSB)).BeginInit();
 			((System.ComponentModel.ISupportInitialize) (this.udIFLSB)).BeginInit();
+			this.grpOptionalPollingCommandsBox.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// tabControl1
@@ -128,6 +132,7 @@ namespace PowerSDR
 			// tabPage1
 			// 
 			this.tabPage1.BackColor = System.Drawing.SystemColors.Control;
+			this.tabPage1.Controls.Add(this.grpOptionalPollingCommandsBox);
 			this.tabPage1.Controls.Add(this.grpRigTimingBox);
 			this.tabPage1.Controls.Add(this.grpRigSerialBox);
 			this.tabPage1.Controls.Add(this.grpRigTypeBox);
@@ -168,6 +173,7 @@ namespace PowerSDR
 			// 
 			this.comboRigType.FormattingEnabled = true;
 			this.comboRigType.Items.AddRange(new object[] {
+            "Elecraft K3",
             "Kenwood TS-940S"});
 			this.comboRigType.Location = new System.Drawing.Point(9,20);
 			this.comboRigType.Name = "comboRigType";
@@ -414,7 +420,7 @@ namespace PowerSDR
 			this.grpRigSerialBox.Controls.Add(this.comboRigStopBits);
 			this.grpRigSerialBox.Location = new System.Drawing.Point(7,68);
 			this.grpRigSerialBox.Name = "grpRigSerialBox";
-			this.grpRigSerialBox.Size = new System.Drawing.Size(141,172);
+			this.grpRigSerialBox.Size = new System.Drawing.Size(141,201);
 			this.grpRigSerialBox.TabIndex = 91;
 			this.grpRigSerialBox.TabStop = false;
 			this.grpRigSerialBox.Text = "Rig Serial Connection";
@@ -789,6 +795,43 @@ namespace PowerSDR
 			this.btnOK.Text = "OK";
 			this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
 			// 
+			// grpOptionalPollingCommandsBox
+			// 
+			this.grpOptionalPollingCommandsBox.Controls.Add(this.chkRigPollIFFreq);
+			this.grpOptionalPollingCommandsBox.Controls.Add(this.chkRigPollVFOB);
+			this.grpOptionalPollingCommandsBox.Location = new System.Drawing.Point(154,179);
+			this.grpOptionalPollingCommandsBox.Name = "grpOptionalPollingCommandsBox";
+			this.grpOptionalPollingCommandsBox.Size = new System.Drawing.Size(194,90);
+			this.grpOptionalPollingCommandsBox.TabIndex = 93;
+			this.grpOptionalPollingCommandsBox.TabStop = false;
+			this.grpOptionalPollingCommandsBox.Text = "Optional Information To Poll";
+			this.toolTip1.SetToolTip(this.grpOptionalPollingCommandsBox,"Additional Commands to polled on the Rig");
+			// 
+			// chkRigPollVFOB
+			// 
+			this.chkRigPollVFOB.AutoSize = true;
+			this.chkRigPollVFOB.Location = new System.Drawing.Point(9,19);
+			this.chkRigPollVFOB.Name = "chkRigPollVFOB";
+			this.chkRigPollVFOB.Size = new System.Drawing.Size(57,17);
+			this.chkRigPollVFOB.TabIndex = 0;
+			this.chkRigPollVFOB.Text = "VFO-B";
+			this.toolTip1.SetToolTip(this.chkRigPollVFOB,"Poll for VFO-B");
+			this.chkRigPollVFOB.UseVisualStyleBackColor = true;
+			this.chkRigPollVFOB.CheckedChanged += new System.EventHandler(this.chkRigPollVFOB_CheckedChanged);
+			// 
+			// chkRigPollIFFreq
+			// 
+			this.chkRigPollIFFreq.AutoSize = true;
+			this.chkRigPollIFFreq.Enabled = false;
+			this.chkRigPollIFFreq.Location = new System.Drawing.Point(9,42);
+			this.chkRigPollIFFreq.Name = "chkRigPollIFFreq";
+			this.chkRigPollIFFreq.Size = new System.Drawing.Size(88,17);
+			this.chkRigPollIFFreq.TabIndex = 1;
+			this.chkRigPollIFFreq.Text = "IF Frequency";
+			this.toolTip1.SetToolTip(this.chkRigPollIFFreq,"Poll for IF Frequency");
+			this.chkRigPollIFFreq.UseVisualStyleBackColor = true;
+			this.chkRigPollIFFreq.CheckedChanged += new System.EventHandler(this.chkRigPollIFFreq_CheckedChanged);
+			// 
 			// SetupIF
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F,13F);
@@ -820,6 +863,8 @@ namespace PowerSDR
 			((System.ComponentModel.ISupportInitialize) (this.udIFCW)).EndInit();
 			((System.ComponentModel.ISupportInitialize) (this.udIFUSB)).EndInit();
 			((System.ComponentModel.ISupportInitialize) (this.udIFLSB)).EndInit();
+			this.grpOptionalPollingCommandsBox.ResumeLayout(false);
+			this.grpOptionalPollingCommandsBox.PerformLayout();
 			this.ResumeLayout(false);
 
         }
@@ -871,5 +916,8 @@ namespace PowerSDR
 		private System.Windows.Forms.LabelTS labelRigPollingLockoutTime;
 		private System.Windows.Forms.NumericUpDownTS udRigPollingLockoutTime;
 		private System.Windows.Forms.LabelTS labelRigPollingInterval;
+		private System.Windows.Forms.GroupBox grpOptionalPollingCommandsBox;
+		private System.Windows.Forms.CheckBoxTS chkRigPollVFOB;
+		private System.Windows.Forms.CheckBoxTS chkRigPollIFFreq;
     }
 }
