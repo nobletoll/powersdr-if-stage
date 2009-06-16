@@ -454,17 +454,17 @@ namespace PowerSDR
 
 		private void udRigPollingInterval_ValueChanged(object sender,EventArgs e)
 		{
-			this.console.RigPollingInterval = int.Parse(this.udRigPollingInterval.Text);
+			this.console.RigPollingInterval = (int) this.udRigPollingInterval.Value;
 		}
 
 		private void udRigTuningPollingInterval_ValueChanged(object sender,EventArgs e)
 		{
-			this.console.RigPollingInterval = int.Parse(this.udRigTuningPollingInterval.Text);
+			this.console.RigPollingInterval = (int) this.udRigTuningPollingInterval.Value;
 		}
 
 		private void udRigPollingLockoutTime_ValueChanged(object sender,EventArgs e)
 		{
-			this.console.RigPollingInterval = int.Parse(this.udRigPollingLockoutTime.Text);
+			this.console.RigPollingInterval = (int) this.udRigPollingLockoutTime.Value;
 		}
 	}
 }
