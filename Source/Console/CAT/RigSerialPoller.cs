@@ -364,10 +364,10 @@ namespace PowerSDR
 
 		public void setMode(int mode)
 		{
-			if (!this.enabled || this.rigParser.Mode == mode)
+			if (!this.enabled || this.rigParser.VFOAMode == mode)
 				return;
 
-			this.rigParser.Mode = mode;
+			this.rigParser.VFOAMode = mode;
 			this.doRigCATCommand("MD" + mode + ';',true,false);
 		}
 
@@ -375,6 +375,20 @@ namespace PowerSDR
 		{
 			if (!this.enabled || this.rigParser.Split == splitOn)
 				return;
+
+			if (splitOn)
+			{
+				if (this.rigParser.VFOAMode != this.rigParser.VFOBMode)
+				{
+					// Jump to VFO-B and change the mode to sync with VFO-A...
+					this.doRigCATCommand("FN1;",true,false);
+					Thread.Sleep(this.hw.RigTuningPollingInterval);
+					this.doRigCATCommand("MD" + this.rigParser.VFOAMode + ';',true,false);
+					Thread.Sleep(this.hw.RigTuningPollingInterval);
+					this.doRigCATCommand("FN0;",true,false);
+					this.rigParser.VFOBMode = this.rigParser.VFOAMode;
+				}
+			}
 
 			this.enqueueRigCATCommand("SP" + ((splitOn) ? '1' : '0') + ';');
 			this.rigParser.Split = splitOn;
