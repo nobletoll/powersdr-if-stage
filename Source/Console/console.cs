@@ -37352,6 +37352,22 @@ namespace PowerSDR
 			set { ((RigHW) this.hw).RigPollingLockoutTime = value; }
 		}
 
+		/////////////////////////////////////////////////////////
+		// Optional Rig Poll Information                       //
+		/////////////////////////////////////////////////////////
+
+		public bool RigPollVFOB
+		{
+			get { return ((RigHW) this.hw).RigPollVFOB; }
+			set { ((RigHW) this.hw).RigPollVFOB = value; }
+		}
+
+		public bool RigPollIFFreq
+		{
+			get { return ((RigHW) this.hw).RigPollIFFreq; }
+			set { ((RigHW) this.hw).RigPollIFFreq = value; }
+		}
+
 		// W1CEG: End
 	}
 }

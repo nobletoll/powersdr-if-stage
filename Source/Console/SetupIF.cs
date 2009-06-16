@@ -466,5 +466,15 @@ namespace PowerSDR
 		{
 			this.console.RigPollingInterval = (int) this.udRigPollingLockoutTime.Value;
 		}
+
+		private void chkRigPollVFOB_CheckedChanged(object sender,EventArgs e)
+		{
+			this.console.RigPollVFOB = this.chkRigPollVFOB.Checked;
+		}
+
+		private void chkRigPollIFFreq_CheckedChanged(object sender,EventArgs e)
+		{
+			this.console.RigPollIFFreq = this.chkRigPollIFFreq.Checked;
+		}
 	}
 }

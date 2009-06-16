@@ -275,6 +275,9 @@ namespace PowerSDR
 						continue;
 					}
 
+					if (this.hw.RigPollVFOB)
+						this.doRigCATCommand("FB;");
+
 					if (this.hw.RigPollingInterval > this.hw.RigTuningPollingInterval)
 						Thread.Sleep(this.hw.RigPollingInterval - this.hw.RigTuningPollingInterval);
 

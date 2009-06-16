@@ -113,6 +113,21 @@ namespace PowerSDR
 		}
 
 
+		public bool rigPollVFOB = false;
+		public bool RigPollVFOB
+		{
+			get { return this.rigPollVFOB; }
+			set { this.rigPollVFOB = value; }
+		}
+
+		public bool rigPollIFFreq = false;
+		public bool RigPollIFFreq
+		{
+			get { return this.rigPollIFFreq; }
+			set { this.rigPollIFFreq = value; }
+		}
+
+
 		public override ushort LPTAddr
 		{
 			get { return 0; }
