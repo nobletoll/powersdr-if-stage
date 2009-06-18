@@ -77,6 +77,44 @@ namespace PowerSDR
 			return null;
 		}
 
+		public string FI(string s)
+		{
+			string ifFreqString = "821" + s;
+			double ifFreq = double.Parse(ifFreqString.Insert(1,separator)) + this.console.globalIFOffset;
+
+			switch ((K3Rig.Mode) this.rig.VFOAMode)
+			{
+				case K3Rig.Mode.LSB:
+					ifFreq += this.console.IFLSB;
+					break;
+				case K3Rig.Mode.USB:
+					ifFreq += this.console.IFUSB;
+					break;
+				case K3Rig.Mode.CWL:
+					ifFreq += this.console.IFCW;
+					break;
+				case K3Rig.Mode.CWU:
+					ifFreq += this.console.IFCW;
+					break;
+				case K3Rig.Mode.FM:
+					ifFreq += this.console.IFFM;
+					break;
+				case K3Rig.Mode.AM:
+					ifFreq += this.console.IFAM;
+					break;
+				case K3Rig.Mode.DIGU:
+					ifFreq += this.console.IFFSK;
+					break;
+				case K3Rig.Mode.DIGL:
+					ifFreq += this.console.IFFSK;
+					break;
+			}
+
+			this.console.IFFreq = ifFreq;
+
+			return null;
+		}
+
 		// Reads the transceiver status
 		// needs work in the split area
 		public string IF(string s)

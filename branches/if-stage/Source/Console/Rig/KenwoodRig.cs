@@ -25,6 +25,17 @@ namespace PowerSDR
 {
 	public class KenwoodRig : Rig
 	{
+		public enum Mode
+		{
+			LSB = 1,
+			USB = 2,
+			CW = 3,
+			FM = 4,
+			AM = 5,
+			FSK = 6,
+		}
+
+
 		public KenwoodRig(RigHW hw,Console console)
 			: base(hw,console)
 		{
@@ -48,6 +59,29 @@ namespace PowerSDR
 			return false;
 		}
 
+		public override int getModeFromDSPMode(DSPMode dspMode)
+		{
+			switch (dspMode)
+			{
+				case DSPMode.LSB:
+					return (int) Mode.LSB;
+				case DSPMode.USB:
+					return (int) Mode.USB;
+				case DSPMode.CWL:
+				case DSPMode.CWU:
+					return (int) Mode.CW;
+				case DSPMode.FMN:
+					return (int) Mode.FM;
+				case DSPMode.AM:
+					return (int) Mode.AM;
+				case DSPMode.DIGU:
+				case DSPMode.DIGL:
+					return (int) Mode.FSK;
+				default:
+					return (int) Mode.LSB;
+			}
+		}
+
 		#endregion Defaults & Supported Functions
 
 
@@ -66,6 +100,10 @@ namespace PowerSDR
 		public override void getVFOBFreq()
 		{
 			this.doRigCATCommand("FB;");
+		}
+
+		public override void getIFFreq()
+		{
 		}
 
 		#endregion Get CAT Commands
@@ -136,13 +174,15 @@ namespace PowerSDR
 			this.doRigCATCommand("FN1;",false,false);
 		}
 
-		public override void setMode(int mode)
+		public override void setMode(DSPMode mode)
 		{
-			if (!this.enabled || this.VFOAMode == mode)
+			int setMode = this.getModeFromDSPMode(mode);
+
+			if (!this.enabled || this.VFOAMode == setMode)
 				return;
 
-			this.VFOAMode = mode;
-			this.doRigCATCommand("MD" + mode + ';',true,false);
+			this.VFOAMode = setMode;
+			this.doRigCATCommand("MD" + setMode + ';',true,false);
 		}
 
 		public override void setSplit(bool splitOn)
