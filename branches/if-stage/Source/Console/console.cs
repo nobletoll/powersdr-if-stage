@@ -5966,7 +5966,7 @@ namespace PowerSDR
 			if (current_model == Model.SDR1000)
 				hw = new RigHW(this);
 
-            SetupIFForm = new SetupIF(this);   // WU2X: Menu for IF Stage setup 
+            SetupIFForm = new SetupIF(this,this.hw);   // WU2X: Menu for IF Stage setup 
             SetupForm.StartPosition = FormStartPosition.Manual;
 
             switch (current_model)
@@ -29893,7 +29893,7 @@ namespace PowerSDR
 
                                     // W1CEG: Update Frequency on Rig
                                     if (!(e is RigCATEventArgs) && this.hw is RigHW)
-                                        ((RigHW)this.hw).updateVFOAFrequency(freq);
+                                        ((RigHW)this.hw).setVFOAFreq(freq);
 
                                     if (chkEnableMultiRX.Checked)
                                     {
@@ -30271,7 +30271,7 @@ namespace PowerSDR
 
             // W1CEG: Update Frequency on Rig
 			if (!(e is RigCATEventArgs) && this.hw is RigHW)
-                ((RigHW)this.hw).updateVFOBFrequency(freq);
+                ((RigHW)this.hw).setVFOBFreq(freq);
 
             if (chkEnableMultiRX.Checked && !rx2_enabled)
             {
@@ -34409,7 +34409,7 @@ namespace PowerSDR
         private void menu_setup_if_Click(object sender, System.EventArgs e)
         {
             if (SetupIFForm.IsDisposed)
-                SetupIFForm = new SetupIF(this);
+                SetupIFForm = new SetupIF(this,this.hw);
             SetupIFForm.Show();
             SetupIFForm.Focus();
         }
@@ -37299,6 +37299,12 @@ namespace PowerSDR
 		/////////////////////////////////////////////////////////
 		// Rig Connection                                      //
 		/////////////////////////////////////////////////////////
+
+		public string RigType
+		{
+			get { return ((RigHW) this.hw).RigType; }
+			set { ((RigHW) this.hw).RigType = value; }
+		}
 
 		public int RigCOMPort
 		{

@@ -40,10 +40,15 @@ namespace PowerSDR
 
 		private System.Windows.Forms.OpenFileDialog openFileDialog1;
 		private Console console;
+		private RigHW hw = null;
 
-		public SetupIF(Console c)
+		public SetupIF(Console c, AbstractHW hw)
 		{
 			this.console = c;
+
+			if (hw is RigHW)
+				this.hw = (RigHW) hw;
+
 			this.InitializeComponent();
 
 			this.RefreshCOMPortLists();
@@ -422,12 +427,18 @@ namespace PowerSDR
 
 		private void comboRigPort_SelectedIndexChanged(object sender, System.EventArgs e)
 		{
+			if (this.hw == null)
+				return;
+
 			if (this.comboRigPort.Text.StartsWith("COM"))
 				this.console.RigCOMPort = Int32.Parse(this.comboRigPort.Text.Substring(3));
 		}
 
 		private void comboRigParity_SelectedIndexChanged(object sender, System.EventArgs e)
 		{
+			if (this.hw == null)
+				return;
+
 			string selection = this.comboRigParity.SelectedText;
 
 			if (selection != null)
@@ -436,45 +447,99 @@ namespace PowerSDR
 
 		private void comboRigBaud_SelectedIndexChanged(object sender, System.EventArgs e)
 		{
+			if (this.hw == null)
+				return;
+
 			if (this.comboRigBaud.SelectedIndex >= 0)
 				this.console.RigCOMBaudRate = Int32.Parse(this.comboRigBaud.Text);
 		}
 
 		private void comboRigDataBits_SelectedIndexChanged(object sender, System.EventArgs e)
 		{
+			if (this.hw == null)
+				return;
+
 			if (this.comboRigDataBits.SelectedIndex >= 0)
 				this.console.RigCOMDataBits = SDRSerialPort.stringToDataBits(this.comboRigDataBits.Text);
 		}
 
 		private void comboRigStopBits_SelectedIndexChanged(object sender, System.EventArgs e)
 		{
+			if (this.hw == null)
+				return;
+
 			if (this.comboRigStopBits.SelectedIndex >= 0)
 				this.console.RigCOMStopBits = SDRSerialPort.stringToStopBits(this.comboRigStopBits.Text);
 		}
 
-		private void udRigPollingInterval_ValueChanged(object sender,EventArgs e)
+		private void udRigPollingInterval_ValueChanged(object sender, EventArgs e)
 		{
+			if (this.hw == null)
+				return;
+
 			this.console.RigPollingInterval = (int) this.udRigPollingInterval.Value;
 		}
 
-		private void udRigTuningPollingInterval_ValueChanged(object sender,EventArgs e)
+		private void udRigTuningPollingInterval_ValueChanged(object sender, EventArgs e)
 		{
+			if (this.hw == null)
+				return;
+
 			this.console.RigPollingInterval = (int) this.udRigTuningPollingInterval.Value;
 		}
 
-		private void udRigPollingLockoutTime_ValueChanged(object sender,EventArgs e)
+		private void udRigPollingLockoutTime_ValueChanged(object sender, EventArgs e)
 		{
+			if (this.hw == null)
+				return;
+
 			this.console.RigPollingInterval = (int) this.udRigPollingLockoutTime.Value;
 		}
 
-		private void chkRigPollVFOB_CheckedChanged(object sender,EventArgs e)
+		private void chkRigPollVFOB_CheckedChanged(object sender, EventArgs e)
 		{
+			if (this.hw == null)
+				return;
+
 			this.console.RigPollVFOB = this.chkRigPollVFOB.Checked;
 		}
 
-		private void chkRigPollIFFreq_CheckedChanged(object sender,EventArgs e)
+		private void chkRigPollIFFreq_CheckedChanged(object sender, EventArgs e)
 		{
+			if (this.hw == null)
+				return;
+
 			this.console.RigPollIFFreq = this.chkRigPollIFFreq.Checked;
+		}
+
+		private void comboRigType_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if (this.hw == null)
+				return;
+
+			// :TODO: Give the option to power off PowerSDR to make this change.
+			if (this.console.PowerOn)
+			{
+				this.comboRigType.Text = this.console.RigType;
+				return;
+			}
+
+			this.console.RigType = this.comboRigType.Text;
+
+			this.comboRigBaud.Text = this.hw.defaultBaudRate().ToString();
+			this.chkRigPollVFOB.Checked = this.hw.needsPollVFOB();
+
+			if (this.hw.supportsIFFreq())
+			{
+				this.chkRigPollIFFreq.Enabled = true;
+				this.chkRigPollIFFreq.Checked = true;
+			}
+			else
+			{
+				this.chkRigPollIFFreq.Enabled = false;
+				this.chkRigPollIFFreq.Checked = false;
+			}
+
 		}
 	}
 }

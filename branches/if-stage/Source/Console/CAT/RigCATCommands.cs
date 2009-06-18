@@ -40,7 +40,7 @@ namespace PowerSDR
 	{
 		#region Variable Definitions
 
-		private RigSerialPoller rigSerialPoller;
+		private Rig rig;
 		private RigCATParser rigParser;
 		private CATParser sdrParser;
 
@@ -52,14 +52,10 @@ namespace PowerSDR
 
 		#region Constructors
 
-		public RigCATCommands()
+		public RigCATCommands(Console console, Rig rig, RigCATParser parser) :
+			base(console,parser)
 		{
-		}
-
-		public RigCATCommands(Console console, RigSerialPoller rigSerialPoller,
-			RigCATParser parser) : base(console,parser)
-		{
-			this.rigSerialPoller = rigSerialPoller;
+			this.rig = rig;
 			this.rigParser = parser;
 			this.sdrParser = parser;
 		}
@@ -104,26 +100,26 @@ namespace PowerSDR
 
 			if (vfo == '0')
 			{
-				this.rigParser.VFO = 0;
+				this.rig.VFO = 0;
 				this.changeVFOA(frequency);
 
 				// Mode
-				if (this.rigParser.VFOAMode != mode)
+				if (this.rig.VFOAMode != mode)
 				{
-					this.rigParser.VFOAMode = mode;
+					this.rig.VFOAMode = mode;
 					this.sdrParser.Get("MD" + s[27] + ';');
 				}
 			}
 			else if (vfo == '1')
 			{
 				// Force the Rig on VFO-A to conform to the way PowerSDR handles RX1
-				this.rigSerialPoller.doRigCATCommand("FN0;",false,false);
-				this.rigParser.VFO = 1;
+				this.rig.setVFOA();
+				this.rig.VFO = 1;
 				this.changeVFOB(frequency);
-				this.rigParser.VFO = 0;
+				this.rig.VFO = 0;
 
 				// Mode
-				this.rigParser.VFOBMode = mode;
+				this.rig.VFOBMode = mode;
 			}
 
 			// RIT Frequency - Control VFO-B when RIT and XIT are off
@@ -131,24 +127,23 @@ namespace PowerSDR
 			if (!rit && s[22] == '0')
 			{
 				int ritOffset = int.Parse(s[16] + s.Substring(17,4));
-				int offsetDiff = ritOffset - this.rigParser.RITOffset;
-				this.rigParser.RITOffset = ritOffset;
+				int offsetDiff = ritOffset - this.rig.RITOffset;
+				this.rig.RITOffset = ritOffset;
 
 				if (offsetDiff != 0)
 				{
-					frequency = (int.Parse(this.rigParser.VFOBFrequency) +
+					frequency = (int.Parse(this.rig.VFOBFrequency) +
 						offsetDiff).ToString().PadLeft(11,'0');
 
-					this.rigSerialPoller.doRigCATCommand("FB" + frequency + ';',
-						false,false);
+					this.rig.setVFOBFreq(frequency);
 					this.changeVFOB(frequency);
 				}
 
 				// Reset RIT when it gets close to 9.990 max.
 				if (Math.Abs(ritOffset) > 8000)
 				{
-					this.rigSerialPoller.doRigCATCommand("RC;",false,false);
-					this.rigParser.RITOffset = 0;
+					this.rig.clearRIT();
+					this.rig.RITOffset = 0;
 				}
 			}
 #endif
@@ -177,9 +172,9 @@ namespace PowerSDR
 
 			// Split
 			bool split = (s[30] == '1');
-			if (this.rigParser.Split != split)
+			if (this.rig.Split != split)
 			{
-				this.rigParser.Split = split;
+				this.rig.Split = split;
 				this.sdrParser.Get("ZZSP" + s[30] + ';');
 			}
 
@@ -203,7 +198,7 @@ namespace PowerSDR
 				s = this.AddLeadingZeros(f);
 			}
 
-			if (this.rigParser.VFO != 0 || s != this.rigParser.VFOAFrequency)
+			if (this.rig.VFO != 0 || s != this.rig.VFOAFrequency)
 			{
 				double freq = double.Parse(s.Insert(5,separator));
 				this.console.txtVFOAFreq.Text = freq.ToString("f6");
@@ -211,10 +206,10 @@ namespace PowerSDR
 			}
 
 			// Store Frequency Status for RigSerialPoller Performance.
-			if (this.rigParser.VFO == 0)
-				this.rigParser.FrequencyChanged = (this.rigParser.VFOAFrequency != s);
+			if (this.rig.VFO == 0)
+				this.rig.FrequencyChanged = (this.rig.VFOAFrequency != s);
 
-			this.rigParser.VFOAFrequency = s;
+			this.rig.VFOAFrequency = s;
 		}
 
 		private void changeVFOB(string s)
@@ -233,7 +228,7 @@ namespace PowerSDR
 				s = this.AddLeadingZeros(f);
 			}
 
-			if (this.rigParser.VFO != 1 || s != this.rigParser.VFOBFrequency)
+			if (this.rig.VFO != 1 || s != this.rig.VFOBFrequency)
 			{
 				double freq = double.Parse(s.Insert(5,separator));
 				this.console.txtVFOBFreq.Text = freq.ToString("f6");
@@ -241,10 +236,10 @@ namespace PowerSDR
 			}
 
 			// Store Frequency Status for RigSerialPoller Performance.
-			if (this.rigParser.VFO == 1)
-				this.rigParser.FrequencyChanged = (this.rigParser.VFOBFrequency != s);
+			if (this.rig.VFO == 1)
+				this.rig.FrequencyChanged = (this.rig.VFOBFrequency != s);
 
-			this.rigParser.VFOBFrequency = s;
+			this.rig.VFOBFrequency = s;
 		}
 	}
 }
