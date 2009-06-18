@@ -25,6 +25,19 @@ namespace PowerSDR
 {
 	public class K3Rig : KenwoodRig
 	{
+		public enum Mode
+		{
+			LSB = 1,
+			USB = 2,
+			CWL = 3,
+			FM = 4,
+			AM = 5,
+			DIGL = 6,
+			CWU = 7,
+			DIGU = 9,
+		}
+
+
 		public K3Rig(RigHW hw,Console console)
 			: base(hw,console)
 		{
@@ -48,12 +61,40 @@ namespace PowerSDR
 			return true;
 		}
 
+		public override int getModeFromDSPMode(DSPMode dspMode)
+		{
+			switch (dspMode)
+			{
+				case DSPMode.LSB:
+					return (int) Mode.LSB;
+				case DSPMode.USB:
+					return (int) Mode.USB;
+				case DSPMode.CWL:
+					return (int) Mode.CWU;
+				case DSPMode.CWU:
+					return (int) Mode.CWU;
+				case DSPMode.FMN:
+					return (int) Mode.FM;
+				case DSPMode.AM:
+					return (int) Mode.AM;
+				case DSPMode.DIGU:
+					return (int) Mode.DIGU;
+				case DSPMode.DIGL:
+					return (int) Mode.DIGL;
+				default:
+					return (int) Mode.LSB;
+			}
+		}
+
 		#endregion Defaults & Supported Functions
 
 
 		#region Get CAT Commands
 
-
+		public override void getIFFreq()
+		{
+			this.doRigCATCommand("FI;");
+		}
 
 		#endregion Get CAT Commands
 

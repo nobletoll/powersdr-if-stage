@@ -32744,7 +32744,7 @@ namespace PowerSDR
                 // W1CEG: Update Mode on Rig
                 // WU2X: Set IF Freq
                 if (this.hw is RigHW) {
-                    ((RigHW)this.hw).setMode(RigHW.Mode.LSB);
+                    ((RigHW)this.hw).setMode(DSPMode.LSB);
                     if_freq = if_lsb + global_if_offset;
                 }
                 SetRX1Mode(DSPMode.LSB);
@@ -32758,7 +32758,7 @@ namespace PowerSDR
                 // W1CEG: Update Mode on Rig
                 // WU2X: Set IF Freq
 				if (this.hw is RigHW) {
-                    ((RigHW)this.hw).setMode(RigHW.Mode.USB);
+					((RigHW) this.hw).setMode(DSPMode.USB);
                     if_freq = if_usb + global_if_offset;
                 }
                 SetRX1Mode(DSPMode.USB);
@@ -32781,7 +32781,7 @@ namespace PowerSDR
                 // WU2X: Set IF Freq
                 if (this.hw is RigHW)
                 {
-                    ((RigHW)this.hw).setMode(RigHW.Mode.CW);
+					((RigHW) this.hw).setMode(DSPMode.CWL);
                     if_freq = if_cw + global_if_offset;
                 }
 
@@ -32797,7 +32797,7 @@ namespace PowerSDR
                 // W1CEG: Update Mode on Rig
                 // WU2X: Set IF Freq
                 if (this.hw is RigHW) {
-                    ((RigHW)this.hw).setMode(RigHW.Mode.CW);
+					((RigHW) this.hw).setMode(DSPMode.CWU);
                     if_freq = if_cw + global_if_offset;
                 }
 
@@ -32812,7 +32812,7 @@ namespace PowerSDR
                 // W1CEG: Update Mode on Rig
                 // WU2X: Set IF Freq
                 if (this.hw is RigHW) {
-                    ((RigHW)this.hw).setMode(RigHW.Mode.FM);
+					((RigHW) this.hw).setMode(DSPMode.FMN);
                     if_freq = if_fm + global_if_offset;
                 }
                 SetRX1Mode(DSPMode.FMN);
@@ -32827,7 +32827,7 @@ namespace PowerSDR
                 // W1CEG: Update Mode on Rig
                 // WU2X: Set IF Freq
                 if (this.hw is RigHW) {
-                    ((RigHW)this.hw).setMode(RigHW.Mode.AM);
+					((RigHW) this.hw).setMode(DSPMode.AM);
                     if_freq = if_am + global_if_offset;
                 }
 
@@ -32850,7 +32850,7 @@ namespace PowerSDR
                 // W1CEG: Update Mode on Rig
                 // WU2X: Set IF Freq
                 if (this.hw is RigHW) {
-                    ((RigHW)this.hw).setMode(RigHW.Mode.FSK);
+					((RigHW) this.hw).setMode(DSPMode.DIGU);
                     if_freq = if_fsk + global_if_offset;
                 }
 
@@ -32873,7 +32873,7 @@ namespace PowerSDR
                 // W1CEG: Update Mode on Rig
                 // WU2X: Set IF Freq
                 if (this.hw is RigHW) {
-                    ((RigHW)this.hw).setMode(RigHW.Mode.FSK);
+					((RigHW) this.hw).setMode(DSPMode.DIGL);
                     if_freq = if_fsk + global_if_offset;
                 }
 

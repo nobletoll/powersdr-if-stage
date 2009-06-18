@@ -117,6 +117,8 @@ namespace PowerSDR
 
 			while (this.keepPolling)
 			{
+				bool sleep = false;
+
 				if (!this.vfoAInitialized || !this.vfoBInitialized)
 				{
 					if (!this.vfoAInitialized)
@@ -154,7 +156,18 @@ namespace PowerSDR
 					}
 
 					if (this.hw.RigPollVFOB)
+					{
 						this.rig.getVFOBFreq();
+						sleep = true;
+					}
+
+					if (this.hw.RigPollIFFreq)
+					{
+						if (sleep)
+							Thread.Sleep(this.hw.RigTuningPollingInterval);
+
+						this.rig.getIFFreq();
+					}
 
 					if (this.hw.RigPollingInterval > this.hw.RigTuningPollingInterval)
 						Thread.Sleep(this.hw.RigPollingInterval - this.hw.RigTuningPollingInterval);

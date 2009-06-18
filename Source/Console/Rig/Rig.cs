@@ -238,7 +238,7 @@ namespace PowerSDR
 
 		private void initRigStates()
 		{
-			this.vfoaMode = RigHW.getModeFromDSPMode(this.console.RX1DSPMode);
+			this.vfoaMode = this.getModeFromDSPMode(this.console.RX1DSPMode);
 			this.split = this.console.VFOSplit;
 		}
 
@@ -261,6 +261,7 @@ namespace PowerSDR
 		public abstract int defaultBaudRate();
 		public abstract bool needsPollVFOB();
 		public abstract bool supportsIFFreq();
+		public abstract int getModeFromDSPMode(DSPMode dspMode);
 
 		#endregion Defaults & Supported Functions
 
@@ -270,6 +271,7 @@ namespace PowerSDR
 		public abstract void getRigInformation();
 		public abstract void getVFOAFreq();
 		public abstract void getVFOBFreq();
+		public abstract void getIFFreq();
 
 		#endregion Get CAT Commands
 
@@ -281,7 +283,7 @@ namespace PowerSDR
 		public abstract void setVFOBFreq(string freq);
 		public abstract void setVFOA();
 		public abstract void setVFOB();
-		public abstract void setMode(int mode);
+		public abstract void setMode(DSPMode mode);
 		public abstract void setSplit(bool splitOn);
 		public abstract void clearRIT();
 		

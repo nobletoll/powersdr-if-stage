@@ -32,16 +32,6 @@ namespace PowerSDR
 		private Console console;
 		private Rig rig;
 
-		public enum Mode
-		{
-			LSB = 1,
-			USB = 2,
-			CW = 3,
-			FM = 4,
-			AM = 5,
-			FSK = 6,
-		}
-
 		public enum RigTypeEnum
 		{
 			Kenwood,
@@ -198,10 +188,10 @@ namespace PowerSDR
 				this.rig.setVFOBFreq(freq);
 		}
 
-		public void setMode(Mode mode)
+		public void setMode(DSPMode mode)
 		{
 			if (this.rig != null)
-				this.rig.setMode((int) mode);
+				this.rig.setMode(mode);
 		}
 
 		public void setSplit(bool splitOn)
@@ -233,30 +223,6 @@ namespace PowerSDR
 				return this.rig.supportsIFFreq();
 
 			return false;
-		}
-
-
-		public static int getModeFromDSPMode(DSPMode dspMode)
-		{
-			switch (dspMode)
-			{
-				case DSPMode.LSB:
-					return (int) Mode.LSB;
-				case DSPMode.USB:
-					return (int) Mode.USB;
-				case DSPMode.CWL:
-				case DSPMode.CWU:
-					return (int) Mode.CW;
-				case DSPMode.FMN:
-					return (int) Mode.FM;
-				case DSPMode.AM:
-					return (int) Mode.AM;
-				case DSPMode.DIGU:
-				case DSPMode.DIGL:
-					return (int) Mode.FSK;
-				default:
-					return (int) Mode.LSB;
-			}
 		}
 
 		#endregion Public Functions

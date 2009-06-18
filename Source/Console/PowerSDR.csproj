@@ -159,9 +159,6 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="CAT\ICATCommands.cs" />
-    <Compile Include="CAT\RigCATCommands.cs" />
-    <Compile Include="CAT\RigCATParser.cs" />
-    <Compile Include="CAT\RigSerialPoller.cs" />
     <Compile Include="CAT\RemoteProfiles.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -392,6 +389,9 @@
     <Compile Include="Rig\K3Rig.cs" />
     <Compile Include="Rig\KenwoodRig.cs" />
     <Compile Include="Rig\Rig.cs" />
+    <Compile Include="Rig\RigCATCommands.cs" />
+    <Compile Include="Rig\RigCATParser.cs" />
+    <Compile Include="Rig\RigSerialPoller.cs" />
     <Compile Include="ringbuffer.cs">
       <SubType>Code</SubType>
     </Compile>
