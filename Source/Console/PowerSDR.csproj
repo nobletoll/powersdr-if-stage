@@ -389,6 +389,9 @@
     <Compile Include="release_notes.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Rig\K3Rig.cs" />
+    <Compile Include="Rig\KenwoodRig.cs" />
+    <Compile Include="Rig\Rig.cs" />
     <Compile Include="ringbuffer.cs">
       <SubType>Code</SubType>
     </Compile>

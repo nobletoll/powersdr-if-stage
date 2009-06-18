@@ -33,85 +33,16 @@ namespace PowerSDR
 
 		#region Constructor
 
-		public RigCATParser(Console c,RigSerialPoller rigSerialPoller)
+		public RigCATParser(Console c, Rig rig)
 			: base(c)
 		{
-			this.rigCmdList = new RigCATCommands(c,rigSerialPoller,this);
+			this.rigCmdList = new RigCATCommands(c,rig,this);
 
 			// W1CEG: TS-940S has spaces in the IF answer.
 			this.sfxpattern = new Regex("^[0-9+-]*[Vv0-9 ]*$");
 		}
 
-
-		public void initStates()
-		{
-			this.vfoaMode = RigHW.getModeFromDSPMode(this.console.RX1DSPMode);
-			this.split = this.console.VFOSplit;
-		}
-
 		#endregion Constructor
-
-
-		#region Accessors
-
-		private int vfo = 99;
-		public int VFO
-		{
-			get { return this.vfo; }
-			set { this.vfo = value; }
-		}
-
-		private int vfoaMode = 0;
-		public int VFOAMode
-		{
-			get { return this.vfoaMode; }
-			set { this.vfoaMode = value; }
-		}
-
-		private int vfobMode = -1;
-		public int VFOBMode
-		{
-			get { return this.vfobMode; }
-			set { this.vfobMode = value; }
-		}
-
-		private string vfoaFrequency = "";
-		public string VFOAFrequency
-		{
-			get { return this.vfoaFrequency; }
-			set { this.vfoaFrequency = value; }
-		}
-
-		private string vfobFrequency = "";
-		public string VFOBFrequency
-		{
-			get { return this.vfobFrequency; }
-			set { this.vfobFrequency = value; }
-		}
-
-		private bool frequencyChanged = false;
-		public bool FrequencyChanged
-		{
-			get { return this.frequencyChanged; }
-			set { this.frequencyChanged = value; }
-		}
-
-		private int ritOffset = 0;
-		public int RITOffset
-		{
-			get { return this.ritOffset; }
-			set { this.ritOffset = value; }
-		}
-
-		private bool split = false;
-		public bool Split
-		{
-			get { return this.split; }
-			set { this.split = value; }
-		}
-
-		#endregion Accessors
-
 
 		#region Answer
 

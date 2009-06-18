@@ -20,6 +20,7 @@
 
 using System.IO.Ports;
 using SDRSerialSupportII;
+using System.Diagnostics;
 
 
 namespace PowerSDR
@@ -29,7 +30,7 @@ namespace PowerSDR
 		#region Variable Declarations
 
 		private Console console;
-		private RigSerialPoller rigSerialPoller;
+		private Rig rig;
 
 		public enum Mode
 		{
@@ -39,6 +40,12 @@ namespace PowerSDR
 			FM = 4,
 			AM = 5,
 			FSK = 6,
+		}
+
+		public enum RigTypeEnum
+		{
+			Kenwood,
+			K3
 		}
 
 		#endregion Variable Declarations
@@ -53,8 +60,33 @@ namespace PowerSDR
 
 		#endregion Constructor
 
-	
-		#region Configurations
+
+		#region SetupIF Settings
+
+		private string rigType;
+		public string RigType
+		{
+			get { return this.rigType; }
+			set
+			{
+				this.rigType = value;
+
+				// :NOTE: We can only reassign the Rig if the Power is off.
+				// :TODO: See if we can force a power off to do this.
+				if (!this.console.PowerOn)
+				{
+					switch (RigHW.getRigType(this.rigType))
+					{
+						case RigTypeEnum.Kenwood:
+							this.rig = new KenwoodRig(this,this.console);
+							break;
+						case RigTypeEnum.K3:
+							this.rig = new K3Rig(this,this.console);
+							break;
+					}
+				}
+			}
+		}
 
 		private int com_port;
 		public int COMPort
@@ -127,213 +159,81 @@ namespace PowerSDR
 			set { this.rigPollIFFreq = value; }
 		}
 
-
-		public override ushort LPTAddr
-		{
-			get { return 0; }
-			set {}
-		}
-
-		public override bool XVTRPresent
-		{
-			set {}
-		}
-
-		public override bool PAPresent
-		{
-			set {}
-		}
-
-		public override bool ATUPresent
-		{
-			set {}
-		}
-
-		public override bool USBPresent
-		{
-			set {}
-		}
-
-		public override bool OzyControl
-		{
-			set {}
-		}
-
-		public override int PLLMult
-		{
-			set {}
-		}
-
-		#endregion Configurations
-
-
-		#region Control
-
-		// gets or sets the BPF Relay using an integer index
-		public override BPFBand BPFRelay
-		{
-			set {}
-		}
-
-		// true means TX mode
-		public override bool TransmitRelay
-		{
-			set {}
-		}
-
-		// true means the Mute Relay is engaged (muted)
-		public override bool MuteRelay
-		{
-			set {}
-		}
-
-		// gets or sets the X2 pins 1-7
-		public override byte X2
-		{
-			get { return 0; }
-			set {}
-		}
-
-		// true means 0dB (40dB for old configs)
-		public override bool GainRelay
-		{
-			set {}
-		}
-
-		// RFE only properties
-		// returns an integer index into the LPF switches
-		public override RFELPFBand RFE_LPF
-		{
-			set {}
-		}
-
-		public override bool RFE_TR
-		{
-			set {}
-		}
-
-		// true means the RF path is active to the XVTR
-		public override bool XVTR_RF
-		{
-			get { return false; }
-			set {}
-		}
-
-		// true means the TR relay on the xvtr is active
-		public override bool XVTR_TR
-		{
-			set {}
-		}
-
-		// true means the 10dB attenuator is switched inline
-		public override bool Attn
-		{
-			set {}
-		}
-
-		public override bool ImpulseEnable
-		{
-			set {}
-		}
-
-		public override bool PABias
-		{
-			set {}
-		}
-
-		public override PAFBand PA_LPF
-		{
-			set {}
-		}
-
-		public override bool PA_ADC_CLK
-		{
-			set {}
-		}
-
-		public override bool PA_ADC_DI
-		{
-			set {}
-		}
-
-		public override bool PA_ADC_CS_NOT
-		{
-			set {}
-		}
-
-		public override bool PA_TR_Relay
-		{
-			set {}
-		}
-
-		public override bool ATU_DI
-		{
-			set {}
-		}
-
-		public override long DDSTuningWord
-		{
-			get { return 0; }
-			set { }
-		}
-
-		public override bool UpdateHardware
-		{
-			get { return false; }
-			set {}
-		}
-
-		#endregion Control
+		#endregion SetupIF Settings
 
 
 		#region Public Functions
 
-		public override void Init()
+		[Conditional("DEBUG")]
+		public static void dbgWriteLine(string s)
 		{
-			this.rigSerialPoller = new RigSerialPoller(this.console,this);
+			System.Console.Error.WriteLine(s);
 		}
 
-		public override void ignorePTT(bool v) { }
+		public override void Init()
+		{
+		}
 
 		public override void StandBy()
 		{
-			this.rigSerialPoller.disableCAT();
+			if (this.rig != null)
+				this.rig.disableSerialConnection();
 		}
 
 		public override void PowerOn()
 		{
-			this.rigSerialPoller.enableCAT();
+			if (this.rig != null)
+				this.rig.enableSerialConnection();
 		}
 
-		public override byte StatusPort() { return 0; }
-
-		public override void Impulse() { }
-
-		public override byte PA_GetADC(int chan) { return 0; }
-
-		public override bool PA_ATUTune(ATUTuneMode mode) { return false; }
-
-		public override void SetDDSDAC(int level) { }
-
-		public void updateVFOAFrequency(double freq)
+		public void setVFOAFreq(double freq)
 		{
-			this.rigSerialPoller.updateVFOAFrequency(freq);
+			if (this.rig != null)
+				this.rig.setVFOAFreq(freq);
 		}
 
-		public void updateVFOBFrequency(double freq)
+		public void setVFOBFreq(double freq)
 		{
-			this.rigSerialPoller.updateVFOBFrequency(freq);
+			if (this.rig != null)
+				this.rig.setVFOBFreq(freq);
 		}
 
 		public void setMode(Mode mode)
 		{
-			this.rigSerialPoller.setMode((int) mode);
+			if (this.rig != null)
+				this.rig.setMode((int) mode);
 		}
 
-        public void setSplit(bool splitOn)
-        {
-            this.rigSerialPoller.setSplit(splitOn);
-        }
+		public void setSplit(bool splitOn)
+		{
+			if (this.rig != null)
+				this.rig.setSplit(splitOn);
+		}
+
+
+		public int defaultBaudRate()
+		{
+			if (this.rig != null)
+				return this.rig.defaultBaudRate();
+
+			return 4800;
+		}
+
+		public bool needsPollVFOB()
+		{
+			if (this.rig != null)
+				return this.rig.needsPollVFOB();
+
+			return false;
+		}
+
+		public bool supportsIFFreq()
+		{
+			if (this.rig != null)
+				return this.rig.supportsIFFreq();
+
+			return false;
+		}
 
 
 		public static int getModeFromDSPMode(DSPMode dspMode)
@@ -359,7 +259,202 @@ namespace PowerSDR
 			}
 		}
 
-        #endregion Public Functions
+		#endregion Public Functions
+
+
+		#region Private Functions
+
+		private static RigTypeEnum getRigType(string rigType)
+		{
+			switch (rigType)
+			{
+				case "Kenwood TS-940S":
+					return RigTypeEnum.Kenwood;
+				case "Elecraft K3":
+					return RigTypeEnum.K3;
+				default:
+					return RigTypeEnum.Kenwood;
+			}
+		}
+
+		#endregion Private Functions
+
+
+		#region Overrided Public Functions
+
+		public override void ignorePTT(bool v) { }
+
+		public override byte StatusPort() { return 0; }
+
+		public override void Impulse() { }
+
+		public override byte PA_GetADC(int chan) { return 0; }
+
+		public override bool PA_ATUTune(ATUTuneMode mode) { return false; }
+
+		public override void SetDDSDAC(int level) { }
+
+		#endregion Overrided Public Functions
+
+
+		#region Overrided Configurations
+
+		public override ushort LPTAddr
+		{
+			get { return 0; }
+			set { }
+		}
+
+		public override bool XVTRPresent
+		{
+			set { }
+		}
+
+		public override bool PAPresent
+		{
+			set { }
+		}
+
+		public override bool ATUPresent
+		{
+			set { }
+		}
+
+		public override bool USBPresent
+		{
+			set { }
+		}
+
+		public override bool OzyControl
+		{
+			set { }
+		}
+
+		public override int PLLMult
+		{
+			set { }
+		}
+
+		#endregion Overrided Configurations
+
+
+		#region Control
+
+		// gets or sets the BPF Relay using an integer index
+		public override BPFBand BPFRelay
+		{
+			set { }
+		}
+
+		// true means TX mode
+		public override bool TransmitRelay
+		{
+			set { }
+		}
+
+		// true means the Mute Relay is engaged (muted)
+		public override bool MuteRelay
+		{
+			set { }
+		}
+
+		// gets or sets the X2 pins 1-7
+		public override byte X2
+		{
+			get { return 0; }
+			set { }
+		}
+
+		// true means 0dB (40dB for old configs)
+		public override bool GainRelay
+		{
+			set { }
+		}
+
+		// RFE only properties
+		// returns an integer index into the LPF switches
+		public override RFELPFBand RFE_LPF
+		{
+			set { }
+		}
+
+		public override bool RFE_TR
+		{
+			set { }
+		}
+
+		// true means the RF path is active to the XVTR
+		public override bool XVTR_RF
+		{
+			get { return false; }
+			set { }
+		}
+
+		// true means the TR relay on the xvtr is active
+		public override bool XVTR_TR
+		{
+			set { }
+		}
+
+		// true means the 10dB attenuator is switched inline
+		public override bool Attn
+		{
+			set { }
+		}
+
+		public override bool ImpulseEnable
+		{
+			set { }
+		}
+
+		public override bool PABias
+		{
+			set { }
+		}
+
+		public override PAFBand PA_LPF
+		{
+			set { }
+		}
+
+		public override bool PA_ADC_CLK
+		{
+			set { }
+		}
+
+		public override bool PA_ADC_DI
+		{
+			set { }
+		}
+
+		public override bool PA_ADC_CS_NOT
+		{
+			set { }
+		}
+
+		public override bool PA_TR_Relay
+		{
+			set { }
+		}
+
+		public override bool ATU_DI
+		{
+			set { }
+		}
+
+		public override long DDSTuningWord
+		{
+			get { return 0; }
+			set { }
+		}
+
+		public override bool UpdateHardware
+		{
+			get { return false; }
+			set { }
+		}
+
+		#endregion Control
 
 
 		#region Test Functions
