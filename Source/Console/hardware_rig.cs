@@ -154,7 +154,7 @@ namespace PowerSDR
 
 		#region Public Functions
 
-		[Conditional("DEBUG")]
+//		[Conditional("DEBUG")]
 		public static void dbgWriteLine(string s)
 		{
 			System.Console.Error.WriteLine(s);
