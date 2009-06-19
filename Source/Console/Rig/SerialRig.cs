@@ -117,9 +117,8 @@ namespace PowerSDR
 
 		public override void connect()
 		{
-			lock (this)
 			{
-				if (this.enabled)
+				if (this.connected)
 					return;
 
 				this.initRigStates();
@@ -172,7 +171,7 @@ namespace PowerSDR
 
 				this.rigSerialPoller.enable();
 
-				this.enabled = true;
+				this.connected = true;
 			}
 		}
 
@@ -180,10 +179,10 @@ namespace PowerSDR
 		{
 			lock (this)
 			{
-				if (!this.enabled)
+				if (!this.connected)
 					return;
 
-				this.enabled = false;
+				this.connected = false;
 
 				RigHW.dbgWriteLine("Rig.disableSerialConnection(), Shutting down Rig Command Thread.");
 				this.runRigCommands = false;
@@ -304,7 +303,7 @@ namespace PowerSDR
 		protected void doRigCATCommand(string command, bool bPollingLockout,
 			int pollingLockoutTime, bool bCheckRigPollingLockout)
 		{
-			if (!this.enabled ||
+			if (!this.connected ||
 				(bCheckRigPollingLockout && this.rigPollingLockout))
 				return;
 

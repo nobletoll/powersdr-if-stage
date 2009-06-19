@@ -39,7 +39,7 @@ namespace PowerSDR
 		public bool rigPollingLockout = false;
 		protected System.Timers.Timer rigPollingLockoutTimer = new System.Timers.Timer();
 
-		protected bool enabled = false;
+		protected bool connected = false;
 
 		protected ASCIIEncoding AE = new ASCIIEncoding();
 		protected static string separator =
