@@ -54,7 +54,7 @@ namespace PowerSDR
 
 		#region SetupIF Settings
 
-		private string rigType;
+		private string rigType = "";
 		public string RigType
 		{
 			get { return this.rigType; }
@@ -178,6 +178,21 @@ namespace PowerSDR
 		{
 			if (this.rig != null)
 				this.rig.connect();
+		}
+
+		public string getRigName()
+		{
+			if (this.rigType == "Ham Radio Deluxe")
+			{
+				string rigName = null;
+
+				if (this.rig != null && this.rig is HRDRig)
+					rigName = ((HRDRig) this.rig).getRigName();
+
+				return (rigName != null) ? rigName : "Ham Radio Deluxe";
+			}
+
+			return this.rigType;
 		}
 
 		public void setVFOAFreq(double freq)
