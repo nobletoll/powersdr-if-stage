@@ -526,20 +526,38 @@ namespace PowerSDR
 
 			this.console.RigType = this.comboRigType.Text;
 
-			this.comboRigBaud.Text = this.hw.defaultBaudRate().ToString();
-			this.chkRigPollVFOB.Checked = this.hw.needsPollVFOB();
-
-			if (this.hw.supportsIFFreq())
+			if (this.hw.hasSerialConnection())
 			{
+				this.grpRigSerialBox.Enabled = true;
+				this.udRigPollingInterval.Enabled = true;
+				this.udRigTuningPollingInterval.Enabled = true;
+				this.chkRigPollVFOB.Enabled = true;
 				this.chkRigPollIFFreq.Enabled = true;
-				this.chkRigPollIFFreq.Checked = true;
+
+				this.comboRigBaud.Text = this.hw.defaultBaudRate().ToString();
+				this.chkRigPollVFOB.Checked = this.hw.needsPollVFOB();
+
+				if (this.hw.supportsIFFreq())
+				{
+					this.chkRigPollIFFreq.Enabled = true;
+					this.chkRigPollIFFreq.Checked = true;
+				}
+				else
+				{
+					this.chkRigPollIFFreq.Enabled = false;
+					this.chkRigPollIFFreq.Checked = false;
+				}
 			}
 			else
 			{
-				this.chkRigPollIFFreq.Enabled = false;
+				this.grpRigSerialBox.Enabled = false;
+				this.udRigPollingInterval.Enabled = false;
+				this.udRigTuningPollingInterval.Enabled = false;
+				this.chkRigPollVFOB.Checked = false;
+				this.chkRigPollVFOB.Enabled = false;
 				this.chkRigPollIFFreq.Checked = false;
+				this.chkRigPollIFFreq.Enabled = false;
 			}
-
 		}
 	}
 }

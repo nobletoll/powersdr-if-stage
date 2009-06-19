@@ -229,6 +229,11 @@ namespace PowerSDR
 			return false;
 		}
 
+		public bool hasSerialConnection()
+		{
+			return (this.rig == null || !(this.rig is HRDRig));
+		}
+
 		#endregion Public Functions
 
 
