@@ -253,22 +253,25 @@ namespace PowerSDR
         private void processFrequency(String frequency)
         {
 
+            String frequency2 = frequency.Trim('\0').PadLeft(7, '0');
+            String freqMhz = frequency2.Substring(0, frequency2.Length - 6) + separator  + frequency2.Substring(frequency2.Length - 6, 6);
+
+
             if (this.console.SetupForm.RttyOffsetEnabledA &&
                 (this.console.RX1DSPMode == DSPMode.DIGU ||
                 this.console.RX1DSPMode == DSPMode.DIGL))
             {
-                int f = int.Parse(frequency);
+                int f = int.Parse(freqMhz);
 
                 if (this.console.RX1DSPMode == DSPMode.DIGU)
                     f = f - Convert.ToInt32(console.SetupForm.RttyOffsetHigh);
                 else if (console.RX1DSPMode == DSPMode.DIGL)
                     f = f + Convert.ToInt32(console.SetupForm.RttyOffsetLow);
 
-                frequency = this.AddLeadingZeros(f);
             }
 
 
-            double freq = double.Parse(frequency.Insert(5, separator));
+            double freq = double.Parse(freqMhz);
             this.console.txtVFOAFreq.Text = freq.ToString("f6");
             this.console.txtVFOAFreq_LostFocus(this, new RigCATEventArgs());
            
