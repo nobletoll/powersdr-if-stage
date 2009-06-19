@@ -23,7 +23,7 @@ using System.Threading;
 
 namespace PowerSDR
 {
-	public class KenwoodRig : Rig
+	public class KenwoodRig : SerialRig
 	{
 		public enum Mode
 		{

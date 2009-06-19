@@ -167,13 +167,13 @@ namespace PowerSDR
 		public override void StandBy()
 		{
 			if (this.rig != null)
-				this.rig.disableSerialConnection();
+				this.rig.disconnect();
 		}
 
 		public override void PowerOn()
 		{
 			if (this.rig != null)
-				this.rig.enableSerialConnection();
+				this.rig.connect();
 		}
 
 		public void setVFOAFreq(double freq)

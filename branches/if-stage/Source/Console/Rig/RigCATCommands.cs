@@ -40,7 +40,7 @@ namespace PowerSDR
 	{
 		#region Variable Definitions
 
-		private Rig rig;
+		private SerialRig rig;
 		private RigCATParser rigParser;
 		private CATParser sdrParser;
 
@@ -52,7 +52,7 @@ namespace PowerSDR
 
 		#region Constructors
 
-		public RigCATCommands(Console console, Rig rig, RigCATParser parser) :
+		public RigCATCommands(Console console, SerialRig rig, RigCATParser parser) :
 			base(console,parser)
 		{
 			this.rig = rig;

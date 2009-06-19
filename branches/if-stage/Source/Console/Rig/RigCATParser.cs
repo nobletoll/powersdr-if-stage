@@ -33,7 +33,7 @@ namespace PowerSDR
 
 		#region Constructor
 
-		public RigCATParser(Console c, Rig rig)
+		public RigCATParser(Console c, SerialRig rig)
 			: base(c)
 		{
 			this.rigCmdList = new RigCATCommands(c,rig,this);
