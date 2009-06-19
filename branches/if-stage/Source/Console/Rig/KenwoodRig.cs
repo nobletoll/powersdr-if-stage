@@ -112,7 +112,7 @@ namespace PowerSDR
 
 		public override void setVFOAFreq(double freq)
 		{
-			if (!this.enabled)
+			if (!this.connected)
 				return;
 
 			string frequency =
@@ -131,7 +131,7 @@ namespace PowerSDR
 
 		public override void setVFOAFreq(string freq)
 		{
-			if (!this.enabled)
+			if (!this.connected)
 				return;
 
 			// Only do this if our Frequency State has changed.
@@ -146,7 +146,7 @@ namespace PowerSDR
 
 		public override void setVFOBFreq(double freq)
 		{
-			if (!this.enabled)
+			if (!this.connected)
 				return;
 
 			string frequency =
@@ -165,7 +165,7 @@ namespace PowerSDR
 
 		public override void setVFOBFreq(string freq)
 		{
-			if (!this.enabled)
+			if (!this.connected)
 				return;
 
 			// Only do this if our Frequency State has changed.
@@ -192,7 +192,7 @@ namespace PowerSDR
 		{
 			int setMode = this.getModeFromDSPMode(mode);
 
-			if (!this.enabled || this.VFOAMode == setMode)
+			if (!this.connected || this.VFOAMode == setMode)
 				return;
 
 			this.VFOAMode = setMode;
@@ -201,7 +201,7 @@ namespace PowerSDR
 
 		public override void setSplit(bool splitOn)
 		{
-			if (!this.enabled || this.Split == splitOn)
+			if (!this.connected || this.Split == splitOn)
 				return;
 
 			if (splitOn)

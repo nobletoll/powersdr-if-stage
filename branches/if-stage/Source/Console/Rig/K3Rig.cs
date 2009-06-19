@@ -112,7 +112,7 @@ namespace PowerSDR
 
 		public override void setSplit(bool splitOn)
 		{
-			if (!this.enabled || this.Split == splitOn)
+			if (!this.connected || this.Split == splitOn)
 				return;
 
 			// :TODO: Figure out how to sync up VFO-A/B Modes on K3
