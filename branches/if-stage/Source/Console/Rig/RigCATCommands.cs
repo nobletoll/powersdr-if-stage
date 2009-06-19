@@ -79,7 +79,7 @@ namespace PowerSDR
 
 		public string FI(string s)
 		{
-			double ifFreq = double.Parse("0.00" s) + this.console.globalIFOffset;
+			double ifFreq = double.Parse("0.00" + s) + this.console.globalIFOffset;
 
 			switch ((K3Rig.Mode) this.rig.VFOAMode)
 			{
