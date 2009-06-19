@@ -14,6 +14,7 @@ namespace PowerSDR
         private Int32 pidInst;								// DDE 
         private DDEML.DdeCallback dcb;                      // DDE callback method for HRD updates
         private RigControl rigControl = new RigControl("Ham Radio Deluxe");
+        private string rigName;
 
 
         public HRDRig(RigHW hw, Console console)
@@ -53,6 +54,11 @@ namespace PowerSDR
         public override void getRigInformation()
         {
 
+        }
+
+        public string getRigName()
+        {
+            return this.rigName;
         }
 
         public override void getVFOAFreq()
@@ -183,6 +189,7 @@ namespace PowerSDR
                 byte[] data1 = new byte[len31];
                 DDEML.DdeGetData(Data5, data1, len31, 0);
                 String dataString1 = System.Text.Encoding.Default.GetString(data1);
+                this.rigName = dataString1.Trim('\0');
                
 
                 // Grab frequency and mode from rig and sync PowerSDR
