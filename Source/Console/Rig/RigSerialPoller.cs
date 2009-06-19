@@ -33,7 +33,7 @@ namespace PowerSDR
 	{
 		private Console console;
 		private RigHW hw;
-		private Rig rig;
+		private SerialRig rig;
 
 		private bool enabled = false;
 		private ASCIIEncoding AE = new ASCIIEncoding();
@@ -49,7 +49,7 @@ namespace PowerSDR
 
 		#region Constructor
 
-		public RigSerialPoller(Console console, RigHW hw, Rig rig)
+		public RigSerialPoller(Console console, RigHW hw, SerialRig rig)
 		{
 			this.console = console;
 			this.hw = hw;

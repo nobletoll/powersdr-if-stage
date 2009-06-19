@@ -34,21 +34,12 @@ namespace PowerSDR
 	public abstract class Rig
 	{
 		protected RigHW hw;
-		private Console console;
-		private RigCATParser rigParser;
+		protected Console console;
 
-		private RigSerialPoller rigSerialPoller;
 		public bool rigPollingLockout = false;
-		private System.Timers.Timer rigPollingLockoutTimer = new System.Timers.Timer();
+		protected System.Timers.Timer rigPollingLockoutTimer = new System.Timers.Timer();
 
 		protected bool enabled = false;
-		protected SDRSerialPort SIO;
-
-		// Rig Commands
-		private bool runRigCommands = true;
-		private Thread rigCommandThread;
-		private EventWaitHandle rigCommandWaitHandle = new AutoResetEvent(false);
-		private Queue rigCommandQueue = Queue.Synchronized(new Queue());
 
 		protected ASCIIEncoding AE = new ASCIIEncoding();
 		protected static string separator =
@@ -59,8 +50,6 @@ namespace PowerSDR
 		{
 			this.hw = hw;
 			this.console = console;
-			this.rigSerialPoller = new RigSerialPoller(this.console,this.hw,this);
-			this.rigParser = new RigCATParser(this.console,this);
 
 			// Initialize Rig Polling Lockout Timer
 			this.rigPollingLockoutTimer.Elapsed +=
@@ -70,188 +59,11 @@ namespace PowerSDR
 			this.rigPollingLockoutTimer.Enabled = false;
 		}
 
-		#region Rig States
-
-		private int vfo = 99;
-		public int VFO
-		{
-			get { return this.vfo; }
-			set { this.vfo = value; }
-		}
-
-		private int vfoaMode = 0;
-		public int VFOAMode
-		{
-			get { return this.vfoaMode; }
-			set { this.vfoaMode = value; }
-		}
-
-		private int vfobMode = -1;
-		public int VFOBMode
-		{
-			get { return this.vfobMode; }
-			set { this.vfobMode = value; }
-		}
-
-		private string vfoaFrequency = "";
-		public string VFOAFrequency
-		{
-			get { return this.vfoaFrequency; }
-			set { this.vfoaFrequency = value; }
-		}
-
-		private string vfobFrequency = "";
-		public string VFOBFrequency
-		{
-			get { return this.vfobFrequency; }
-			set { this.vfobFrequency = value; }
-		}
-
-		private bool frequencyChanged = false;
-		public bool FrequencyChanged
-		{
-			get { return this.frequencyChanged; }
-			set { this.frequencyChanged = value; }
-		}
-
-		private int ritOffset = 0;
-		public int RITOffset
-		{
-			get { return this.ritOffset; }
-			set { this.ritOffset = value; }
-		}
-
-		private bool split = false;
-		public bool Split
-		{
-			get { return this.split; }
-			set { this.split = value; }
-		}
-
-		#endregion Rig States
-
 
 		#region Initialization
 
-		public void enableSerialConnection()
-		{
-			lock (this)
-			{
-				if (this.enabled)
-					return;
-
-				this.initRigStates();
-
-				if (this.SIO == null)
-				{
-					this.SIO = new SDRSerialPort(this.hw.COMPort);
-
-					// Event handler for Serial RX Events
-					this.SIO.serial_rx_event +=
-						new SerialRXEventHandler(this.rigSerialPoller.SerialRXEventHandler);
-
-					this.SIO.setCommParms(this.hw.COMBaudRate,this.hw.COMParity,
-						this.hw.COMDataBits,this.hw.COMStopBits);
-
-					RigHW.dbgWriteLine("Rig.enableSerialConnection(), Opening COM" +
-						this.hw.COMPort + "...");
-
-					try
-					{
-						if (this.SIO.Create() == 0)
-							RigHW.dbgWriteLine("Rig.enableSerialConnection(), Opened COM" +
-								this.hw.COMPort + ".");
-						else
-							throw new Exception();
-					}
-					catch (Exception ex)
-					{
-						// Event handler for Serial RX Events
-						this.SIO.serial_rx_event -=
-							new SerialRXEventHandler(this.rigSerialPoller.SerialRXEventHandler);
-
-						this.SIO = null;
-
-						MessageBox.Show("Could not initialize Rig CAT Control." +
-							((ex.Message != null) ? "\nException was:\n\n " + ex.Message : ""),
-							"Error Initializing Rig CAT Control",
-							MessageBoxButtons.OK,MessageBoxIcon.Error);
-						return;
-					}
-				}
-				else
-				{
-					this.SIO.registerEventHandlers();
-
-					// Event handler for Serial RX Events
-					this.SIO.serial_rx_event +=
-						new SerialRXEventHandler(this.rigSerialPoller.SerialRXEventHandler);
-				}
-
-				this.rigSerialPoller.enable();
-
-				this.enabled = true;
-			}
-		}
-
-		public void disableSerialConnection()
-		{
-			lock (this)
-			{
-				if (!this.enabled)
-					return;
-
-				this.enabled = false;
-
-				RigHW.dbgWriteLine("Rig.disableSerialConnection(), Shutting down Rig Command Thread.");
-				this.runRigCommands = false;
-				this.rigCommandWaitHandle.Set();
-
-				this.rigSerialPoller.disable();
-
-				RigHW.dbgWriteLine("Rig.disableSerialConnection(), Waiting for Rig Command Thread to finish...");
-				if (this.rigCommandThread != null)
-				{
-					this.rigCommandThread.Join();
-					this.rigCommandThread = null;
-				}
-
-				if (this.SIO != null && this.SIO.PortIsOpen)
-				{
-					RigHW.dbgWriteLine("Rig.disableSerialConnection(), Closing COM" +
-						this.hw.COMPort + "...");
-
-					this.SIO.deregisterEventHandlers();
-					this.SIO.serial_rx_event -=
-						new SerialRXEventHandler(this.rigSerialPoller.SerialRXEventHandler);
-
-					// W1CEG: This hangs...I don't know why, but there's a lot
-					//        of discussion on this on the Internet.
-					this.SIO.Destroy();
-					this.SIO = null;
-
-					RigHW.dbgWriteLine("Rig.disableSerialConnection(), Closed COM" +
-						this.hw.COMPort + ".");
-				}
-			}
-		}
-
-		private void initRigStates()
-		{
-			this.vfoaMode = this.getModeFromDSPMode(this.console.RX1DSPMode);
-			this.split = this.console.VFOSplit;
-		}
-
-		public void startCommandThread()
-		{
-			if (this.rigCommandThread != null)
-				return;
-
-			this.runRigCommands = true;
-			this.rigCommandThread = new Thread(new ThreadStart(this.RigCommandThread));
-			this.rigCommandThread.Name = "Rig CAT Command Thread";
-			this.rigCommandThread.Start();
-		}
+		public abstract void connect();
+		public abstract void disconnect();
 
 		#endregion Initialization
 
@@ -288,96 +100,6 @@ namespace PowerSDR
 		public abstract void clearRIT();
 		
 		#endregion Set CAT Commands
-
-		#region Answer CAT Commands
-
-		public void handleRigAnswer(string s)
-		{
-			this.rigParser.Answer(s);
-		}
-
-		#endregion Answer CAT Commands
-
-
-		#region Rig Commands
-
-		protected void enqueueRigCATCommand(string command)
-		{
-			this.rigCommandQueue.Enqueue(command);
-			this.rigCommandWaitHandle.Set();
-		}
-
-		protected void doRigCATCommand(string command)
-		{
-			this.doRigCATCommand(command,false,true);
-		}
-
-		protected void doRigCATCommand(string command, bool bPollingLockout,
-			bool bCheckRigPollingLockout)
-		{
-			this.doRigCATCommand(command,bPollingLockout,
-				this.hw.RigPollingLockoutTime,bCheckRigPollingLockout);
-		}
-
-		protected void doRigCATCommand(string command, bool bPollingLockout,
-			int pollingLockoutTime, bool bCheckRigPollingLockout)
-		{
-			if (!this.enabled ||
-				(bCheckRigPollingLockout && this.rigPollingLockout))
-				return;
-
-			byte[] cmd = this.AE.GetBytes(command);
-
-			RigHW.dbgWriteLine("==> " + command);
-			this.SIO.put(cmd,(uint) cmd.Length);
-
-			// Start or Restart lockout timer to ignore incoming Rig CAT Answers.
-			if (bPollingLockout && pollingLockoutTime > 0)
-			{
-				this.rigPollingLockoutTimer.Interval = this.hw.RigPollingLockoutTime;
-				this.rigPollingLockout = true;
-				this.rigPollingLockoutTimer.Stop();
-				this.rigPollingLockoutTimer.Start();
-			}
-		}
-
-		#endregion Rig Commands
-
-
-		#region Threads
-
-		/**
-		 * We use a separate thread to asynchronously handle UI invoked Rig CAT Commands.
-		 * 
-		 * This is needed so that we we don't get in a deadlock:
-		 * 
-		 * Serial Read Thread: Change Frequency (wait on Main Thread)
-		 * Main Thread: User clicked to change frequency -> Waiting on Serial Read
-		 * 
-		 */
-		private void RigCommandThread()
-		{
-			RigHW.dbgWriteLine("Rig.RigCommandThread(), Start.");
-
-			this.rigCommandQueue.Clear();
-
-			while (this.runRigCommands)
-			{
-				string command = null;
-
-				if (this.rigCommandQueue.Count > 0)
-					command = (string) this.rigCommandQueue.Dequeue();
-
-				if (command != null)
-					this.doRigCATCommand(command,true,false);
-				else
-					this.rigCommandWaitHandle.WaitOne();  // No more commands - wait for a signal
-			}
-
-			RigHW.dbgWriteLine("Rig.RigCommandThread(), End.");
-		}
-
-		#endregion Threads
 
 
 		#region Event Handlers
