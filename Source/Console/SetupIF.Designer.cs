@@ -475,7 +475,8 @@ namespace PowerSDR
 			this.comboRigType.FormattingEnabled = true;
 			this.comboRigType.Items.AddRange(new object[] {
             "Elecraft K3",
-            "Kenwood TS-940S"});
+            "Kenwood TS-940S",
+            "Ham Radio Deluxe"});
 			this.comboRigType.Location = new System.Drawing.Point(9,20);
 			this.comboRigType.Name = "comboRigType";
 			this.comboRigType.Size = new System.Drawing.Size(123,21);

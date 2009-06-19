@@ -35,7 +35,8 @@ namespace PowerSDR
 		public enum RigTypeEnum
 		{
 			Kenwood,
-			K3
+			K3,
+			HRD,
 		}
 
 		#endregion Variable Declarations
@@ -72,6 +73,9 @@ namespace PowerSDR
 							break;
 						case RigTypeEnum.K3:
 							this.rig = new K3Rig(this,this.console);
+							break;
+						case RigTypeEnum.HRD:
+							this.rig = new HRDRig(this,this.console);
 							break;
 					}
 				}
@@ -154,7 +158,7 @@ namespace PowerSDR
 
 		#region Public Functions
 
-//		[Conditional("DEBUG")]
+		[Conditional("DEBUG")]
 		public static void dbgWriteLine(string s)
 		{
 			System.Console.Error.WriteLine(s);
@@ -238,6 +242,8 @@ namespace PowerSDR
 					return RigTypeEnum.Kenwood;
 				case "Elecraft K3":
 					return RigTypeEnum.K3;
+				case "Ham Radio Deluxe":
+					return RigTypeEnum.HRD;
 				default:
 					return RigTypeEnum.Kenwood;
 			}
