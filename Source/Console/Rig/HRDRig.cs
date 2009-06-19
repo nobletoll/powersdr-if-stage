@@ -268,7 +268,7 @@ namespace PowerSDR
             }
 
 
-            double freq = double.Parse(s.Insert(5, separator));
+            double freq = double.Parse(frequency.Insert(5, separator));
             this.console.txtVFOAFreq.Text = freq.ToString("f6");
             this.console.txtVFOAFreq_LostFocus(this, new RigCATEventArgs());
            
