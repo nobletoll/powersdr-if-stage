@@ -34542,7 +34542,7 @@ namespace PowerSDR
         {
             try
             {
-                Process.Start("http://support.flex-radio.com/BugList.aspx?it=b");
+                Process.Start("http://code.google.com/p/powersdr-if-stage/issues/list");
             }
             catch (Exception) { }
         }
