@@ -1,4 +1,31 @@
-﻿using System;
+﻿//=================================================================
+// HRDRig.cs
+//=================================================================
+//
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// as published by the Free Software Foundation; either version 2
+// of the License, or (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+//
+// ================================================================
+//
+// Author: S.McClements - WU2X, 6/20/2009
+//
+// This class communicates with HRD over DDE. This allows any rig
+// HRD supports to connect to PowerSDR/IF. 
+//
+//=================================================================
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,8 +40,9 @@ namespace PowerSDR
         private IntPtr hConv;								// HRD DDE Conversation Handle.
         private Int32 pidInst;								// DDE 
         private DDEML.DdeCallback dcb;                      // DDE callback method for HRD updates
-        private RigControl rigControl = new RigControl("Ham Radio Deluxe");
+        private DDEApplication ddeApplication = new DDEApplication("Ham Radio Deluxe");
         private string rigName;
+        private bool muteCache;				                // Mute button state cache
 
 
         public HRDRig(RigHW hw, Console console)
@@ -25,35 +53,7 @@ namespace PowerSDR
 
         public override void disconnect()
         {
-        }
-
-        public override int defaultBaudRate()
-        {
-
-            // TODO
-            return 0;
-        }
-
-        public override bool needsPollVFOB()
-        {
-            // TODO
-            return false;
-        }
-
-        public override bool supportsIFFreq()
-        {
-            return false;
-        }
-
-        public override int getModeFromDSPMode(PowerSDR.DSPMode dspMode)
-        {
-            // TODO
-            return 0;
-        }
-
-        public override void getRigInformation()
-        {
-
+            // DDE Disconnect doesn't work. Works ok without disconnect. 
         }
 
         public string getRigName()
@@ -61,63 +61,79 @@ namespace PowerSDR
             return this.rigName;
         }
 
-        public override void getVFOAFreq()
+        public override void setVFOAFreq(double f)
         {
+            // Check to see that we are connected to HRD
+            if (!connected)
+            { 
+                this.connect();
+            }
+
+            Int32 pwdResult = 0;
+
+            String frequency = f.ToString("f6");
+            String freq = frequency.Replace(".", ""); // Remove the period from the string
+ 
+            byte[] data = Encoding.ASCII.GetBytes("freq " + freq + "\x00");
+            // Send frequency update to HRD over DDE Execute
+            DDEML.DdeClientTransaction(data, (uint)data.Length, hConv, IntPtr.Zero, 0, DDEML.XTYP_EXECUTE, 60000, ref pwdResult);
+            // Int32 result =  DDEML.DdeGetLastError(pidInst);
+
+            // Note - I don't know if there is a reliable way to tell if a DDE connection to a server was 
+            // broken. The result return code seems to be 16390 -  DMLERR_INVALIDPARAMETER  
+            // when the connection is broken - however, 16390 show up randomly when tuning around
+            // and things are working normally.  
+
+            //System.Console.WriteLine("Result of DDE Freq:" + result); 
+            //System.Console.WriteLine("DDE Result: " + pwdResult);
+
+            // Start or Restart lockout timer to ignore external VFO events
+            // for a second or two...
+
+            this.rigPollingLockout = true;
+            this.rigPollingLockoutTimer.Stop();
+            this.rigPollingLockoutTimer.Start();
 
         }
 
-        public override void getVFOBFreq()
+        public override void setMode(PowerSDR.DSPMode m)
         {
 
-        }
+            // Check to see that we are connected to HRD
+            if (!connected)
+            {
+                connect();
+            }
 
+            String mode = null;
 
-        public override void getIFFreq()
-        {
+            //TODO:
 
-        }
+            // For now, just map the PowerSDR modes to some common HRD strings.
+            // Modes like DIGL map to different string names depending on what radio
+            // you are connected to in HRD. We can fix this if someone asks. 
 
-        public override void setVFOAFreq(double freq)
-        {
+            if (m == PowerSDR.DSPMode.LSB) mode = "LSB";
+            if (m == PowerSDR.DSPMode.USB) mode = "USB";
+            if (m == PowerSDR.DSPMode.CWU) mode = "CW";
+            if (m == PowerSDR.DSPMode.CWL) mode = "CW";
+            if (m == PowerSDR.DSPMode.FMN) mode = "FM";
+            if (m == PowerSDR.DSPMode.AM) mode = "AM";
+            if (m == PowerSDR.DSPMode.DIGU) mode = "FSK";
+            if (m == PowerSDR.DSPMode.DIGL) mode = "FSK";
 
-        }
+            // We just take the mode in the string format - No Validation 
+            byte[] data = Encoding.ASCII.GetBytes("mode " + mode + "\x00");
+            Int32 pwdResult = 0;
 
-        public override void setVFOBFreq(double freq)
-        {
+            DDEML.DdeClientTransaction(data, (uint)data.Length, hConv, IntPtr.Zero, 0, DDEML.XTYP_EXECUTE, 60000, ref pwdResult);
+ 
+            // Start or Restart lockout timer to ignore external VFO events
+            // for a second or two...
 
-        }
-        public override void setVFOAFreq(string freq)
-        {
-
-        }
-
-        public override void setVFOBFreq(string freq)
-        {
-
-        }
-
-        public override void setVFOA()
-        {
-
-        }
-
-        public override void setVFOB()
-        {
-
-        }
-
-        public override void setMode(PowerSDR.DSPMode mode)
-        {
-
-        }
-
-        public override void setSplit(bool split)
-        {
-
-        }
-
-        public override void clearRIT()
-        {
+            this.rigPollingLockout = true;
+            this.rigPollingLockoutTimer.Stop();
+            this.rigPollingLockoutTimer.Start();
 
         }
 
@@ -140,8 +156,8 @@ namespace PowerSDR
                 dcb = new DDEML.DdeCallback(HRDDdeCallback);
                 Int32 status2 = DDEML.DdeInitialize(ref pidInst, dcb, 0, ulRef);
                 // Allocate String Handles
-                IntPtr service = DDEML.DdeCreateStringHandle(pidInst, Marshal.StringToBSTR(rigControl.getService()), DDEML.CP_WINUNICODE);
-                IntPtr topic = DDEML.DdeCreateStringHandle(pidInst, Marshal.StringToBSTR(rigControl.getTopic()), DDEML.CP_WINUNICODE);
+                IntPtr service = DDEML.DdeCreateStringHandle(pidInst, Marshal.StringToBSTR(ddeApplication.getService()), DDEML.CP_WINUNICODE);
+                IntPtr topic = DDEML.DdeCreateStringHandle(pidInst, Marshal.StringToBSTR(ddeApplication.getTopic()), DDEML.CP_WINUNICODE);
 
                 hConv = DDEML.DdeConnect(pidInst,
                     service,
@@ -157,12 +173,8 @@ namespace PowerSDR
                 if (result != 0)
                 {
 
-                   
-                    MessageBox.Show("Unable to connect to " + rigControl.getProgramName() + ". Please make sure that " + rigControl.getProgramName() + " is running and properly controlling your radio. DDE Connection Error: " + result, "Error",
+                    MessageBox.Show("Unable to connect to " + ddeApplication.getProgramName() + ". Please make sure that " + ddeApplication.getProgramName() + " is running and properly controlling your radio. DDE Connection Error: " + result, "Error",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
- 
-
-
 
                 }
                 else
@@ -170,14 +182,12 @@ namespace PowerSDR
                     connected = true;
                 }
 
-
-
                 // Setup hot advise loop on the items of interest - frequency, mode, and TX status
                 Int32 pwdResult = 0;
-                IntPtr topic2 = DDEML.DdeCreateStringHandle(pidInst, Marshal.StringToBSTR(rigControl.getHertz()), DDEML.CP_WINUNICODE);
-                IntPtr topic3 = DDEML.DdeCreateStringHandle(pidInst, Marshal.StringToBSTR(rigControl.getMode()), DDEML.CP_WINUNICODE);
-                IntPtr topic4 = DDEML.DdeCreateStringHandle(pidInst, Marshal.StringToBSTR(rigControl.getTX()), DDEML.CP_WINUNICODE);
-                IntPtr topic5 = DDEML.DdeCreateStringHandle(pidInst, Marshal.StringToBSTR(rigControl.getRadio()), DDEML.CP_WINUNICODE);
+                IntPtr topic2 = DDEML.DdeCreateStringHandle(pidInst, Marshal.StringToBSTR(ddeApplication.getHertz()), DDEML.CP_WINUNICODE);
+                IntPtr topic3 = DDEML.DdeCreateStringHandle(pidInst, Marshal.StringToBSTR(ddeApplication.getMode()), DDEML.CP_WINUNICODE);
+                IntPtr topic4 = DDEML.DdeCreateStringHandle(pidInst, Marshal.StringToBSTR(ddeApplication.getTX()), DDEML.CP_WINUNICODE);
+                IntPtr topic5 = DDEML.DdeCreateStringHandle(pidInst, Marshal.StringToBSTR(ddeApplication.getRadio()), DDEML.CP_WINUNICODE);
 
                 IntPtr Data2 = DDEML.DdeClientTransaction(null, 0, hConv, topic2, DDEML.CF_TEXT, DDEML.XTYP_ADVSTART, 1000, ref pwdResult);
                 IntPtr Data3 = DDEML.DdeClientTransaction(null, 0, hConv, topic3, DDEML.CF_TEXT, DDEML.XTYP_ADVSTART, 1000, ref pwdResult);
@@ -190,14 +200,14 @@ namespace PowerSDR
                 DDEML.DdeGetData(Data5, data1, len31, 0);
                 String dataString1 = System.Text.Encoding.Default.GetString(data1);
                 this.rigName = dataString1.Trim('\0');
-               
+
 
                 // Grab frequency and mode from rig and sync PowerSDR
                 // The external radio is the master and powersdr is the the slave
                 // TODO: Turn code to poll DDE connection on a topic into a method
 
                 // Frequency 
-                topic5 = DDEML.DdeCreateStringHandle(pidInst, Marshal.StringToBSTR(rigControl.getHertz()), DDEML.CP_WINUNICODE);
+                topic5 = DDEML.DdeCreateStringHandle(pidInst, Marshal.StringToBSTR(ddeApplication.getHertz()), DDEML.CP_WINUNICODE);
                 Data5 = DDEML.DdeClientTransaction(null, 0, hConv, topic5, DDEML.CF_TEXT, DDEML.XTYP_REQUEST, 1000, ref pwdResult);
                 len31 = DDEML.DdeGetData(Data5, null, 0, 0) + 1;
                 data1 = new byte[len31];
@@ -206,7 +216,7 @@ namespace PowerSDR
                 processFrequency(dataString1);
 
                 // Mode 
-                topic5 = DDEML.DdeCreateStringHandle(pidInst, Marshal.StringToBSTR(rigControl.getMode()), DDEML.CP_WINUNICODE);
+                topic5 = DDEML.DdeCreateStringHandle(pidInst, Marshal.StringToBSTR(ddeApplication.getMode()), DDEML.CP_WINUNICODE);
                 Data5 = DDEML.DdeClientTransaction(null, 0, hConv, topic5, DDEML.CF_TEXT, DDEML.XTYP_REQUEST, 1000, ref pwdResult);
                 len31 = DDEML.DdeGetData(Data5, null, 0, 0) + 1;
                 data1 = new byte[len31];
@@ -216,6 +226,8 @@ namespace PowerSDR
 
 
                 // Hertz_B  (VFO) Setup hot advise 
+                // HRD Currently has a problem returning Hertz_A and Hertz_B - intermitantly sends 000000000. Really screws things. 
+
                 /*
                 topic5 = DDEML.DdeCreateStringHandle(pidInst, Marshal.StringToBSTR(rigControl.getHertzB()), DDEML.CP_WINUNICODE);
                 Data5 =   DDEML.DdeClientTransaction(null, 0, hConv, topic5, DDEML.CF_TEXT, DDEML.XTYP_REQUEST, 1000, ref pwdResult);
@@ -226,8 +238,6 @@ namespace PowerSDR
                 Data5 =   DDEML.DdeClientTransaction(null, 0, hConv, topic5, DDEML.CF_TEXT, DDEML.XTYP_ADVSTART, 1000, ref pwdResult);
                 */
 
-
-
                 // Free String Handles
                 DDEML.DdeFreeStringHandle(pidInst, topic2);
                 DDEML.DdeFreeStringHandle(pidInst, topic3);
@@ -237,32 +247,15 @@ namespace PowerSDR
             }
 
             // Setup lockout timer interval based on Rig Control program
-            this.rigPollingLockoutTimer.Interval = this.rigControl.getTimerValue(); 
-
-
-
-
+            this.rigPollingLockoutTimer.Interval = this.ddeApplication.getTimerValue();
 
         }
-
-
-        protected string AddLeadingZeros(int n)
-        {
-            string num = n.ToString();
-
-            while (num.Length < 11)
-                num = num.Insert(0, "0");
-
-            return num;
-        }
-
 
         private void processFrequency(String frequency)
         {
 
             String frequency2 = frequency.Trim('\0').PadLeft(7, '0');
-            String freqMhz = frequency2.Substring(0, frequency2.Length - 6) + separator  + frequency2.Substring(frequency2.Length - 6, 6);
-
+            String freqMhz = frequency2.Substring(0, frequency2.Length - 6) + separator + frequency2.Substring(frequency2.Length - 6, 6);
 
             if (this.console.SetupForm.RttyOffsetEnabledA &&
                 (this.console.RX1DSPMode == DSPMode.DIGU ||
@@ -281,81 +274,27 @@ namespace PowerSDR
             double freq = double.Parse(freqMhz);
             this.console.txtVFOAFreq.Text = freq.ToString("f6");
             this.console.txtVFOAFreq_LostFocus(this, new RigCATEventArgs());
-           
 
-
-
-
-
-
-            // TODO
-       
-
-
-            /*
-            // If less than 1Mhz, fill in zeros
-            String frequency2 = frequency.Trim('\0').PadLeft(7, '0');
-            String freqMhz = frequency2.Substring(0, frequency2.Length - 6) + "." + frequency2.Substring(frequency2.Length - 6, 6);
-
-            // If the PowerSDR VFOA doesn't equal the VFO of the Rig, update it
-            if (!txtVFOAFreq.Text.Equals(freqMhz))
-            {
-                txtVFOAFreq.Text = freqMhz;
-                // EventArgs signal this change comes from an external source
-                txtVFOAFreq_LostFocus(this, new HRDEventArgs(HRDEventArgs.Source.External));
-            }
-             * 
-             * */
         }
 
         private void processMode(String mode)
         {
 
+            // TODO:
+            // Some modes sent depend on the radio HRD is connected to, i.e. FSK. Fix if someone needs it. 
 
-            // TODO
-
-            /*
-
-            // Don't force a mode state change unless we need to
-            if ((mode.StartsWith("LSB")) && (!radModeLSB.Checked)) radModeLSB.Checked = true;
-            if ((mode.StartsWith("USB")) && (!radModeUSB.Checked)) radModeUSB.Checked = true;
-            if ((mode.StartsWith("AM")) && (!radModeAM.Checked)) radModeAM.Checked = true;
-            if ((mode.StartsWith("FM")) && (!radModeFMN.Checked)) radModeFMN.Checked = true;
-
-            // Modes with IF Frequency not in the setup menu
-            // LP Bridge will support these
-            // TODO: Add IF Frequencies for these modes in setup menu
-            // TODO: Mode names are not standard between radios. 
-
-            if ((this.DIGMode.Equals("DIG-USB") && ((mode.StartsWith("FSK\0") || mode.StartsWith("DATA\0")) && (!radModeDIGU.Checked)))) radModeDIGU.Checked = true;
-            if ((this.DIGMode.Equals("DIG-LSB") && ((mode.StartsWith("FSK\0") || mode.StartsWith("DATA\0")) && (!radModeDIGL.Checked)))) radModeDIGL.Checked = true;
-            // Does the opposite mode of FSK
-
-            if ((mode.StartsWith("FSK-R")) || (mode.StartsWith("DATA-R")))
-            {
-                if ((this.DIGMode.Equals("DIG-USB") && (!radModeDIGL.Checked))) radModeDIGL.Checked = true;
-                if ((this.DIGMode.Equals("DIG-LSB") && (!radModeDIGU.Checked))) radModeDIGU.Checked = true;
-            }
-
-            // CW
-            if ((this.CWMode.Equals("CW-USB") && mode.StartsWith("CW\0") && (!radModeCWU.Checked))) radModeCWU.Checked = true;
-            if ((this.CWMode.Equals("CW-LSB") && mode.StartsWith("CW\0") && (!radModeCWL.Checked))) radModeCWL.Checked = true;
-            // Does the opposite mode of CW
-            if ((mode.StartsWith("CW-R")))
-            {   // Do reverse of default mode
-                if ((this.CWMode.Equals("CW-LSB") && (!radModeCWU.Checked))) radModeCWU.Checked = true;
-                if ((this.CWMode.Equals("CW-USB") && (!radModeCWL.Checked))) radModeCWL.Checked = true;
-            }
-
-              */
+            if ((mode.StartsWith("LSB")) && (this.console.RX1DSPMode != DSPMode.LSB)) this.console.RX1DSPMode = DSPMode.LSB;
+            if ((mode.StartsWith("USB")) && (this.console.RX1DSPMode != DSPMode.USB)) this.console.RX1DSPMode = DSPMode.USB;
+            if ((mode.StartsWith("CW")) && (this.console.RX1DSPMode != DSPMode.CWU)) this.console.RX1DSPMode = DSPMode.CWU;
+            if ((mode.StartsWith("FM")) && (this.console.RX1DSPMode != DSPMode.FMN)) this.console.RX1DSPMode = DSPMode.FMN;
+            if ((mode.StartsWith("AM")) && (this.console.RX1DSPMode != DSPMode.LSB)) this.console.RX1DSPMode = DSPMode.AM;
+            if ((mode.StartsWith("FSK")) && (this.console.RX1DSPMode != DSPMode.DIGU)) this.console.RX1DSPMode = DSPMode.DIGU;
 
         }
 
-
-
         public IntPtr HRDDdeCallback(Int32 uType, Int32 uFmt, IntPtr hconv, IntPtr hsz1, IntPtr hsz2, IntPtr hdata, IntPtr dwData1, IntPtr dwData2)
         {
-            // CalibrateFreq(9.958015F);
+
             switch (uType)
             {
                 case DDEML.XTYP_ADVDATA:  // Advise Data
@@ -378,37 +317,37 @@ namespace PowerSDR
                     /////////////////////
                     // HRD_TX Handling //
                     /////////////////////	
-                    if (item.ToString().Equals(rigControl.getTX()) && dataString.StartsWith("On"))
+                    if (item.ToString().Equals(ddeApplication.getTX()) && dataString.StartsWith("On"))
                     {
                         // TX ON - MUTE
                         // Save mute state - on TX off revert to this state
-                        //this.chkMUT.CheckedChanged += new System.EventHandler(this.chkMUT_CheckedChanged);
-                        // TODO muteCache = chkMUT.Checked;
+
+                        this.muteCache = this.console.MUT;
                         // If the monitor isn't checked then mute 
-                      //TODO  if (!chkMON.Checked)
+                        if (!this.console.MON)
                         {
-                      //TODO      chkMUT.Checked = true;
+                            this.console.MUT = true;
                         }
                     }
-                    else if (item.ToString().Equals(rigControl.getTX()))
+                    else if (item.ToString().Equals(ddeApplication.getTX()))
                     {
                         // TX_OFF - UNMUTE - Unless mute was already on
                         // Revert to previous state
-                       // TODO  chkMUT.Checked = muteCache;
+                        this.console.MUT =  this.muteCache;
                     }
 
                     ///////////////////////
                     // HRD_MODE Handling //
                     ///////////////////////
 
-                    if ((item.ToString().Equals(rigControl.getMode())) && !(this.rigPollingLockout))
+                    if ((item.ToString().Equals(ddeApplication.getMode())) && !(this.rigPollingLockout))
                     {
 
                         // System.Console.WriteLine("RECEIVED:  Mode: " + dataString);
                         processMode(dataString);
 
                     }
-                    else if ((item.ToString().Equals(rigControl.getMode())))
+                    else if ((item.ToString().Equals(ddeApplication.getMode())))
                     {
 
                         // System.Console.WriteLine("RECEIVED:  Mode: " + dataString + " : IGNORING - IN LOCKOUT");
@@ -429,13 +368,12 @@ namespace PowerSDR
 
 
 
-                    if (item.ToString().Equals(rigControl.getHertz()) && !(this.rigPollingLockout))
+                    if (item.ToString().Equals(ddeApplication.getHertz()) && !(this.rigPollingLockout))
                     {
                         // System.Console.WriteLine("RECEIVED:  frequency: " + dataString);
                         processFrequency(dataString);
 
                     }
-
 
                     //////////////////////////
                     // HRD_HERTZ_B Handling //
@@ -453,16 +391,45 @@ namespace PowerSDR
                     }
                     */
 
-
                     return new IntPtr(DDEML.DDE_FACK); // - Means OK I processed it...
-
 
             }
 
             // Ignore any other transaction type
             return IntPtr.Zero;
-
+        
         }
 
+        // Methods not implementable when using HRD
+        public override void setVFOBFreq(double freq) { }
+        public override void setVFOAFreq(string freq) { }
+        public override void setVFOBFreq(string freq) { }
+        public override void setVFOA() { }
+        public override void setVFOB() { }
+        public override void setSplit(bool split) { }
+        public override void clearRIT() { }
+        public override void getVFOAFreq() { }
+        public override void getVFOBFreq() { }
+        public override void getIFFreq() { }
+        public override void getRigInformation() { }
+        public override int defaultBaudRate()
+        {
+            return 0;
+        }
+
+        public override bool needsPollVFOB()
+        {
+            return false;
+        }
+
+        public override bool supportsIFFreq()
+        {
+            return false;
+        }
+
+        public override int getModeFromDSPMode(PowerSDR.DSPMode dspMode)
+        {
+            return 0;
+        }
     }
 }
