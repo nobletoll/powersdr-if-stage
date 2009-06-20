@@ -27,7 +27,7 @@ using System;
 
 namespace PowerSDR
 {
-    public class RigControl
+    public class DDEApplication
     {
 
         // TODO: Actually make this class read from a config file, so that new programs can be added
@@ -48,7 +48,7 @@ namespace PowerSDR
 
         private string programName = "";
 
-        public RigControl(string pgm)
+        public DDEApplication(string pgm)
         {
             if (pgm.Equals("Ham Radio Deluxe"))
             {

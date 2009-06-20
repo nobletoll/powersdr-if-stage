@@ -393,7 +393,7 @@
     <Compile Include="Rig\Rig.cs" />
     <Compile Include="Rig\RigCATCommands.cs" />
     <Compile Include="Rig\RigCATParser.cs" />
-    <Compile Include="Rig\RigControl.cs" />
+    <Compile Include="Rig\DDEApplication.cs" />
     <Compile Include="Rig\RigSerialPoller.cs" />
     <Compile Include="Rig\SerialRig.cs" />
     <Compile Include="ringbuffer.cs">
