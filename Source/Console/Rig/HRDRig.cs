@@ -134,15 +134,12 @@ namespace PowerSDR
             this.rigPollingLockout = true;
             this.rigPollingLockoutTimer.Stop();
             this.rigPollingLockoutTimer.Start();
-
         }
 
         public override void connect()
         {
-
             if (!connected)
             {
-
                 Int32 ulRef = 0;
 
                 // This instance is global as it needs to hang around for HRD to call
@@ -243,12 +240,12 @@ namespace PowerSDR
                 DDEML.DdeFreeStringHandle(pidInst, topic3);
                 DDEML.DdeFreeStringHandle(pidInst, topic4);
                 DDEML.DdeFreeStringHandle(pidInst, topic5);
-
             }
 
             // Setup lockout timer interval based on Rig Control program
             this.rigPollingLockoutTimer.Interval = this.ddeApplication.getTimerValue();
 
+            this.console.updateConsoleTitle();
         }
 
         private void processFrequency(String frequency)

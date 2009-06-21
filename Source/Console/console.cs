@@ -1319,17 +1319,7 @@ namespace PowerSDR
             }
 
 			// W1CEG: Add Rig Name to Title.
-			if (current_model == Model.SDR1000 && this.hw is RigHW)
-			{
-				string rigName = ((RigHW) this.hw).getRigName();
-
-				if (rigName != null && rigName.Length > 0)
-					this.Text = this.Text.Replace("RIG",rigName);
-				else
-					this.Text = this.Text.Replace("- RIG - ","");
-			}
-			else
-				this.Text = this.Text.Replace("- RIG - ","");
+			this.updateConsoleTitle();
 
 			if (run_setup_wizard)
             {
@@ -37390,5 +37380,31 @@ namespace PowerSDR
 		}
 
 		// W1CEG: End
+
+		public void updateConsoleTitle()
+		{
+			// W1CEG: Add Rig Name to Title.
+			if (current_model != Model.SDR1000 || this.hw == null || !(this.hw is RigHW))
+				return;
+
+			string rigName = ((RigHW) this.hw).getRigName();
+
+			if (rigName == null || rigName.Length <= 0)
+				return;
+
+			int index = this.Text.IndexOf(" - ");
+
+			if (index < 0)
+				return;
+
+			index += 2;
+			int index2 = this.Text.IndexOf("- v",index);
+
+			if (index2 < index)
+				this.Text = this.Text.Insert(index,' ' + rigName + " -");
+			else
+				this.Text = this.Text.Substring(0,index + 1) + rigName + ' ' +
+					this.Text.Substring(index2,this.Text.Length - index2);
+		}
 	}
 }
