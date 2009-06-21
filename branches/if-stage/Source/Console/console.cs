@@ -2532,9 +2532,7 @@ namespace PowerSDR
 			// chkSR
 			// 
 			resources.ApplyResources(this.chkSR,"chkSR");
-			this.chkSR.BackColor = System.Drawing.Color.Yellow;
-			this.chkSR.Checked = true;
-			this.chkSR.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.chkSR.BackColor = System.Drawing.Color.Transparent;
 			this.chkSR.FlatAppearance.BorderSize = 0;
 			this.chkSR.ForeColor = System.Drawing.SystemColors.ControlLightLight;
 			this.chkSR.Image = null;
@@ -29121,6 +29119,10 @@ namespace PowerSDR
 
         private void chkSR_CheckedChanged(object sender, System.EventArgs e)
         {
+			// W1CEG: Don't allow SR
+			if (current_model == Model.SDR1000 && this.hw is RigHW && chkSR.Checked)
+				chkSR.Checked = false;
+
             if (SetupForm != null) SetupForm.SpurReduction = chkSR.Checked;
             if (chkEnableMultiRX.Checked) txtVFOBFreq_LostFocus(this, EventArgs.Empty);
             if (chkSR.Checked) chkSR.BackColor = button_selected_color;
