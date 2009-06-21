@@ -38,8 +38,8 @@ namespace PowerSDR
 		{
 			this.rigCmdList = new RigCATCommands(c,rig,this);
 
-			// W1CEG: TS-940S has spaces in the IF answer.
-			this.sfxpattern = new Regex("^[0-9+-]*[Vv0-9 ]*$");
+			// W1CEG: TS-940S and K3 has spaces in the IF answer.
+			this.sfxpattern = new Regex("^[Vv0-9 +-]*$");
 		}
 
 		#endregion Constructor
@@ -49,7 +49,7 @@ namespace PowerSDR
 		// Overloaded Get method accepts either byte or string
 		public new string Answer(byte[] pCmdString)
 		{
-			string rtncmd = Get(AE.GetString(pCmdString));
+			string rtncmd = this.Get(AE.GetString(pCmdString));
 			return rtncmd;
 		}
 
