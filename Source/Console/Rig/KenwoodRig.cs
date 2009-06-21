@@ -157,7 +157,7 @@ namespace PowerSDR
 			if (frequency == this.VFOBFrequency)
 				return;
 
-			this.enqueueRigCATCommand("FB" + freq + ';');
+			this.enqueueRigCATCommand("FB" + frequency + ';');
 
 			// Set our Frequency State so we don't do this again.
 			this.VFOBFrequency = frequency;
