@@ -525,6 +525,7 @@ namespace PowerSDR
 			}
 
 			this.console.RigType = this.comboRigType.Text;
+			this.console.updateConsoleTitle();
 
 			if (this.hw.hasSerialConnection())
 			{
