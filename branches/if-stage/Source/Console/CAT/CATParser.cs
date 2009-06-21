@@ -66,7 +66,7 @@ namespace PowerSDR
 		protected ASCIIEncoding AE = new ASCIIEncoding();
 
 		// W1CEG: Move sfxpattern as a member to be overriden by RigCATParser.
-		protected Regex sfxpattern = new Regex("^[0-9+-]*[Vv0-9\\ ]*$");
+		protected Regex sfxpattern = new Regex("^[+-]?[Vv0-9]*$");
 
 		#endregion Variable declarations
 
