@@ -29852,27 +29852,31 @@ namespace PowerSDR
                     }
                 }
 
-                if (rx1_dsp_mode == DSPMode.CWL)
-                    freq += (double)cw_pitch * 0.0000010;
-                else if (rx1_dsp_mode == DSPMode.CWU)
-                    freq -= (double)cw_pitch * 0.0000010;
+				// W1CEG: Do not apply CW Pitch for IF Stage
+				if (current_model != Model.SDR1000 || !(this.hw is RigHW))
+				{
+					if (rx1_dsp_mode == DSPMode.CWL)
+						freq += (double) cw_pitch * 0.0000010;
+					else if (rx1_dsp_mode == DSPMode.CWU)
+						freq -= (double) cw_pitch * 0.0000010;
 
-                switch (RX1DSPMode)
-                {
-                    case DSPMode.AM:
-                    case DSPMode.SAM:
-                    case DSPMode.FMN:
-                        if (mox) freq -= 0.011025;
-                        break;
-                    case DSPMode.USB:
-                    case DSPMode.DIGU:
-                        if (chkTUN.Checked) freq -= cw_pitch * 1e-6;
-                        break;
-                    case DSPMode.LSB:
-                    case DSPMode.DIGL:
-                        if (chkTUN.Checked) freq += cw_pitch * 1e-6;
-                        break;
-                }
+					switch (RX1DSPMode)
+					{
+						case DSPMode.AM:
+						case DSPMode.SAM:
+						case DSPMode.FMN:
+							if (mox) freq -= 0.011025;
+							break;
+						case DSPMode.USB:
+						case DSPMode.DIGU:
+							if (chkTUN.Checked) freq -= cw_pitch * 1e-6;
+							break;
+						case DSPMode.LSB:
+						case DSPMode.DIGL:
+							if (chkTUN.Checked) freq += cw_pitch * 1e-6;
+							break;
+					}
+				}
 
                 if (freq < min_freq) freq = min_freq;
                 else if (freq > max_freq) freq = max_freq;
