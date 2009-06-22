@@ -117,6 +117,7 @@ namespace PowerSDR
 
 		public override void connect()
 		{
+			lock (this)
 			{
 				if (this.connected)
 					return;
