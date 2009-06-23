@@ -135,13 +135,13 @@ namespace PowerSDR
 					this.SIO.setCommParms(this.hw.COMBaudRate,this.hw.COMParity,
 						this.hw.COMDataBits,this.hw.COMStopBits);
 
-					RigHW.dbgWriteLine("Rig.enableSerialConnection(), Opening COM" +
+					RigHW.dbgWriteLine("Rig.connect(), Opening COM" +
 						this.hw.COMPort + "...");
 
 					try
 					{
 						if (this.SIO.Create() == 0)
-							RigHW.dbgWriteLine("Rig.enableSerialConnection(), Opened COM" +
+							RigHW.dbgWriteLine("Rig.connect(), Opened COM" +
 								this.hw.COMPort + ".");
 						else
 							throw new Exception();
@@ -185,13 +185,13 @@ namespace PowerSDR
 
 				this.connected = false;
 
-				RigHW.dbgWriteLine("Rig.disableSerialConnection(), Shutting down Rig Command Thread.");
+				RigHW.dbgWriteLine("Rig.disconnect(), Shutting down Rig Command Thread.");
 				this.runRigCommands = false;
 				this.rigCommandWaitHandle.Set();
 
 				this.rigSerialPoller.disable();
 
-				RigHW.dbgWriteLine("Rig.disableSerialConnection(), Waiting for Rig Command Thread to finish...");
+				RigHW.dbgWriteLine("Rig.disconnect(), Waiting for Rig Command Thread to finish...");
 				if (this.rigCommandThread != null)
 				{
 					this.rigCommandThread.Join();
@@ -200,19 +200,17 @@ namespace PowerSDR
 
 				if (this.SIO != null && this.SIO.PortIsOpen)
 				{
-					RigHW.dbgWriteLine("Rig.disableSerialConnection(), Closing COM" +
+					RigHW.dbgWriteLine("Rig.disconnect(), Closing COM" +
 						this.hw.COMPort + "...");
 
 					this.SIO.deregisterEventHandlers();
 					this.SIO.serial_rx_event -=
 						new SerialRXEventHandler(this.rigSerialPoller.SerialRXEventHandler);
 
-					// W1CEG: This hangs...I don't know why, but there's a lot
-					//        of discussion on this on the Internet.
 					this.SIO.Destroy();
 					this.SIO = null;
 
-					RigHW.dbgWriteLine("Rig.disableSerialConnection(), Closed COM" +
+					RigHW.dbgWriteLine("Rig.disconnect(), Closed COM" +
 						this.hw.COMPort + ".");
 				}
 			}
