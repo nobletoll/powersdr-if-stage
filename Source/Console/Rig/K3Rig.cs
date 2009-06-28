@@ -70,7 +70,7 @@ namespace PowerSDR
 				case DSPMode.USB:
 					return (int) Mode.USB;
 				case DSPMode.CWL:
-					return (int) Mode.CWU;
+					return (int) Mode.CWL;
 				case DSPMode.CWU:
 					return (int) Mode.CWU;
 				case DSPMode.FMN:
