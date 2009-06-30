@@ -108,7 +108,8 @@ namespace PowerSDR
 					break;
 			}
 
-			this.console.IFFreq = ifFreq;
+			if (this.console.IFFreq != ifFreq)
+				this.console.IFFreq = ifFreq;
 
 			return null;
 		}
