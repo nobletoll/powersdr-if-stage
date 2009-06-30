@@ -82,6 +82,39 @@ namespace PowerSDR
 			}
 		}
 
+		public override void setConsoleModeFromString(string mode)
+		{
+			switch (mode)
+			{
+				case "1":
+					this.console.RX1DSPMode = DSPMode.LSB;
+					break;
+				case "2":
+					this.console.RX1DSPMode = DSPMode.USB;
+					break;
+				case "3":
+					this.console.RX1DSPMode = DSPMode.CWU;
+					break;
+				case "4":
+					this.console.RX1DSPMode = DSPMode.FMN;
+					break;
+				case "5":
+					this.console.RX1DSPMode = DSPMode.AM;
+					break;
+				case "6":
+					this.console.RX1DSPMode = DSPMode.DIGL;
+					break;
+				case "7":
+					this.console.RX1DSPMode = DSPMode.CWL;
+					break;
+				case "9":
+					this.console.RX1DSPMode = DSPMode.DIGU;
+					break;
+				default:
+					break;
+			}
+		}
+
 		#endregion Defaults & Supported Functions
 
 

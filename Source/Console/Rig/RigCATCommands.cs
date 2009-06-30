@@ -144,7 +144,7 @@ namespace PowerSDR
 				if (this.rig.VFOAMode != mode)
 				{
 					this.rig.VFOAMode = mode;
-					this.sdrParser.Get("MD" + s[27] + ';');
+					this.rig.setConsoleModeFromString(s[27].ToString());
 				}
 			}
 			else if (vfo == '1')
