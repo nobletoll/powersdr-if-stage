@@ -242,6 +242,7 @@ namespace PowerSDR
 		public abstract override bool needsPollVFOB();
 		public abstract override bool supportsIFFreq();
 		public abstract override int getModeFromDSPMode(DSPMode dspMode);
+		public abstract void setConsoleModeFromString(string mode);
 
 		#endregion Defaults & Supported Functions
 
