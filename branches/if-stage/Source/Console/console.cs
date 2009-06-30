@@ -25054,47 +25054,49 @@ namespace PowerSDR
                                 }
                                 break;
                             case MeterTXMode.FORWARD_POWER:
-                                switch (current_model)
-                                {
-                                    case Model.FLEX5000:
-                                    case Model.FLEX3000:
-                                        //output = ((double)pa_fwd_power/4096*2.5).ToString("f3")+" V";
-                                        power = FWCPAPower(pa_fwd_power);
-                                        //power = (double)pm.Watts;
-                                        //output = power.ToString("f0")+" W";
-                                        new_meter_data = (float)power;
-                                        break;
+								switch (current_model)
+								{
+									case Model.FLEX5000:
+									case Model.FLEX3000:
+										//output = ((double)pa_fwd_power/4096*2.5).ToString("f3")+" V";
+										power = FWCPAPower(pa_fwd_power);
+										//power = (double)pm.Watts;
+										//output = power.ToString("f0")+" W";
+										new_meter_data = (float) power;
+										break;
 									case Model.SDR1000:
 										if (this.meterHW != null && this.meterHW.UseMeter)
 										{
 											power = this.meterHW.FwdPower;
 											new_meter_data = (float) power;
+										}
 										break;
-                                    default:
-                                        if (pa_present && VFOAFreq < 30.0)
-                                        {
-                                            power = PAPower(pa_fwd_power);
-                                            //output = power.ToString("f0")+" W";
-                                            new_meter_data = (float)power;
-                                        }
-                                        else
-                                        {
-                                            if (Audio.CurrentAudioState1 == Audio.AudioState.DTTSP &&
-                                                rx1_dsp_mode != DSPMode.CWL &&
-                                                rx1_dsp_mode != DSPMode.CWU)
-                                            {
-                                                num = (float)Math.Max(0.0, DttSP.CalculateTXMeter(1, DttSP.MeterType.PWR));
-                                                num *= (float)((double)ptbPWR.Value * 0.01);
-                                                //output = (num*1000).ToString("f0")+" mW";
-                                                new_meter_data = num;
-                                            }
-                                            else
-                                            {
-                                                //output = "N/A";
-                                                new_meter_data = 0.0f;
-                                            }
-                                        }
-                                        break;
+									default:
+										if (pa_present && VFOAFreq < 30.0)
+										{
+											power = PAPower(pa_fwd_power);
+											//output = power.ToString("f0")+" W";
+											new_meter_data = (float) power;
+										}
+										else
+										{
+											if (Audio.CurrentAudioState1 == Audio.AudioState.DTTSP &&
+												rx1_dsp_mode != DSPMode.CWL &&
+												rx1_dsp_mode != DSPMode.CWU)
+											{
+												num = (float) Math.Max(0.0,DttSP.CalculateTXMeter(1,DttSP.MeterType.PWR));
+												num *= (float) ((double) ptbPWR.Value * 0.01);
+												//output = (num*1000).ToString("f0")+" mW";
+												new_meter_data = num;
+											}
+											else
+											{
+												//output = "N/A";
+												new_meter_data = 0.0f;
+											}
+										}
+										break;
+								}
                                 break;
                             case MeterTXMode.REVERSE_POWER:
                                 switch (current_model)
