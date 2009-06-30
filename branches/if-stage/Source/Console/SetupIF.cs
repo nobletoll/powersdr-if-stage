@@ -40,14 +40,17 @@ namespace PowerSDR
 
 		private System.Windows.Forms.OpenFileDialog openFileDialog1;
 		private Console console;
-		private RigHW hw = null;
+		private RigHW rigHW = null;
+		private MeterHW meterHW = null;
 
-		public SetupIF(Console c, AbstractHW hw)
+		public SetupIF(Console c, AbstractHW rigHW, MeterHW meterHW)
 		{
 			this.console = c;
 
-			if (hw is RigHW)
-				this.hw = (RigHW) hw;
+			if (rigHW is RigHW)
+				this.rigHW = (RigHW) rigHW;
+
+			this.meterHW = meterHW;
 
 			this.InitializeComponent();
 
@@ -58,10 +61,20 @@ namespace PowerSDR
 
 			if (comboRigPort.Items.Count > 0)
 				this.comboRigPort.SelectedIndex = 0;
-			this.comboRigBaud.Text = "4800";
 			this.comboRigParity.Text = "none";
 			this.comboRigDataBits.Text = "8";
 			this.comboRigStopBits.Text = "1";
+
+			this.comboMeterType.Text = "Array Solutions PowerMaster";
+
+			// :NOTE: Use second COM Port by default for Meter...
+			if (comboMeterPort.Items.Count > 1)
+				this.comboMeterPort.SelectedIndex = 1;
+			else if (comboMeterPort.Items.Count > 0)
+				this.comboMeterPort.SelectedIndex = 0;
+			this.comboMeterParity.Text = "none";
+			this.comboMeterDataBits.Text = "8";
+			this.comboMeterStopBits.Text = "1";
 
 			// Read from database...
 			this.GetOptions();
@@ -387,7 +400,10 @@ namespace PowerSDR
 			this.comboRigPort.Items.Clear();
 
 			foreach (string s in comPorts)
+			{
 				this.comboRigPort.Items.Add(s);
+				this.comboMeterPort.Items.Add(s);
+			}
 		}
 
 		private void udIFGlobalOffset_ValueChanged(object sender,System.EventArgs e)
@@ -427,7 +443,7 @@ namespace PowerSDR
 
 		private void comboRigPort_SelectedIndexChanged(object sender, System.EventArgs e)
 		{
-			if (this.hw == null)
+			if (this.rigHW == null)
 				return;
 
 			if (this.comboRigPort.Text.StartsWith("COM"))
@@ -436,7 +452,7 @@ namespace PowerSDR
 
 		private void comboRigParity_SelectedIndexChanged(object sender, System.EventArgs e)
 		{
-			if (this.hw == null)
+			if (this.rigHW == null)
 				return;
 
 			string selection = this.comboRigParity.SelectedText;
@@ -447,7 +463,7 @@ namespace PowerSDR
 
 		private void comboRigBaud_SelectedIndexChanged(object sender, System.EventArgs e)
 		{
-			if (this.hw == null)
+			if (this.rigHW == null)
 				return;
 
 			if (this.comboRigBaud.SelectedIndex >= 0)
@@ -456,7 +472,7 @@ namespace PowerSDR
 
 		private void comboRigDataBits_SelectedIndexChanged(object sender, System.EventArgs e)
 		{
-			if (this.hw == null)
+			if (this.rigHW == null)
 				return;
 
 			if (this.comboRigDataBits.SelectedIndex >= 0)
@@ -465,7 +481,7 @@ namespace PowerSDR
 
 		private void comboRigStopBits_SelectedIndexChanged(object sender, System.EventArgs e)
 		{
-			if (this.hw == null)
+			if (this.rigHW == null)
 				return;
 
 			if (this.comboRigStopBits.SelectedIndex >= 0)
@@ -474,7 +490,7 @@ namespace PowerSDR
 
 		private void udRigPollingInterval_ValueChanged(object sender, EventArgs e)
 		{
-			if (this.hw == null)
+			if (this.rigHW == null)
 				return;
 
 			this.console.RigPollingInterval = (int) this.udRigPollingInterval.Value;
@@ -482,7 +498,7 @@ namespace PowerSDR
 
 		private void udRigTuningPollingInterval_ValueChanged(object sender, EventArgs e)
 		{
-			if (this.hw == null)
+			if (this.rigHW == null)
 				return;
 
 			this.console.RigPollingInterval = (int) this.udRigTuningPollingInterval.Value;
@@ -490,7 +506,7 @@ namespace PowerSDR
 
 		private void udRigPollingLockoutTime_ValueChanged(object sender, EventArgs e)
 		{
-			if (this.hw == null)
+			if (this.rigHW == null)
 				return;
 
 			this.console.RigPollingInterval = (int) this.udRigPollingLockoutTime.Value;
@@ -498,7 +514,7 @@ namespace PowerSDR
 
 		private void chkRigPollVFOB_CheckedChanged(object sender, EventArgs e)
 		{
-			if (this.hw == null)
+			if (this.rigHW == null)
 				return;
 
 			this.console.RigPollVFOB = this.chkRigPollVFOB.Checked;
@@ -506,7 +522,7 @@ namespace PowerSDR
 
 		private void chkRigPollIFFreq_CheckedChanged(object sender, EventArgs e)
 		{
-			if (this.hw == null)
+			if (this.rigHW == null)
 				return;
 
 			this.console.RigPollIFFreq = this.chkRigPollIFFreq.Checked;
@@ -514,7 +530,7 @@ namespace PowerSDR
 
 		private void comboRigType_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (this.hw == null)
+			if (this.rigHW == null)
 				return;
 
 			// :TODO: Give the option to power off PowerSDR to make this change.
@@ -527,7 +543,7 @@ namespace PowerSDR
 			this.console.RigType = this.comboRigType.Text;
 			this.console.updateConsoleTitle();
 
-			if (this.hw.hasSerialConnection())
+			if (this.rigHW.hasSerialConnection())
 			{
 				this.grpRigSerialBox.Enabled = true;
 				this.udRigPollingInterval.Enabled = true;
@@ -535,10 +551,10 @@ namespace PowerSDR
 				this.chkRigPollVFOB.Enabled = true;
 				this.chkRigPollIFFreq.Enabled = true;
 
-				this.comboRigBaud.Text = this.hw.defaultBaudRate().ToString();
-				this.chkRigPollVFOB.Checked = this.hw.needsPollVFOB();
+				this.comboRigBaud.Text = this.rigHW.defaultBaudRate().ToString();
+				this.chkRigPollVFOB.Checked = this.rigHW.needsPollVFOB();
 
-				if (this.hw.supportsIFFreq())
+				if (this.rigHW.supportsIFFreq())
 				{
 					this.chkRigPollIFFreq.Enabled = true;
 					this.chkRigPollIFFreq.Checked = true;
@@ -559,6 +575,109 @@ namespace PowerSDR
 				this.chkRigPollIFFreq.Checked = false;
 				this.chkRigPollIFFreq.Enabled = false;
 			}
+		}
+
+		private void chkUseMeter_CheckedChanged(object sender, EventArgs e)
+		{
+			if (this.meterHW == null)
+				return;
+
+			// :TODO: Give the option to power off PowerSDR to make this change.
+			if (this.console.PowerOn)
+			{
+				this.chkUseMeter.Checked = this.console.UseMeter;
+				return;
+			}
+
+			this.console.UseMeter = this.chkUseMeter.Checked;
+
+			if (this.chkUseMeter.Checked)
+			{
+				this.comboMeterType.Enabled = true;
+				this.grpMeterSerialBox.Enabled = true;
+				this.grpMeterTimingBox.Enabled = true;
+				this.console.PAPresent = true;
+			}
+			else
+			{
+				this.comboMeterType.Enabled = false;
+				this.grpMeterSerialBox.Enabled = false;
+				this.grpMeterTimingBox.Enabled = false;
+				this.console.PAPresent = false;
+			}
+		}
+
+		private void comboMeterType_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if (this.meterHW == null)
+				return;
+
+			// :TODO: Give the option to power off PowerSDR to make this change.
+			if (this.console.PowerOn)
+			{
+				this.comboMeterType.Text = this.console.MeterType;
+				return;
+			}
+
+			this.console.MeterType = this.comboMeterType.Text;
+
+			if (this.meterHW != null)
+				this.comboMeterBaud.Text = this.meterHW.defaultBaudRate().ToString();
+		}
+
+		private void comboMeterPort_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if (this.meterHW == null)
+				return;
+
+			if (this.comboMeterPort.Text.StartsWith("COM"))
+				this.console.MeterCOMPort = Int32.Parse(this.comboMeterPort.Text.Substring(3));
+		}
+
+		private void comboMeterParity_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if (this.meterHW == null)
+				return;
+
+			string selection = this.comboMeterParity.SelectedText;
+
+			if (selection != null)
+				this.console.MeterCOMParity = SDRSerialPort.stringToParity(selection);
+		}
+
+		private void comboMeterBaud_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if (this.meterHW == null)
+				return;
+
+			if (this.comboMeterBaud.SelectedIndex >= 0)
+				this.console.MeterCOMBaudRate = Int32.Parse(this.comboMeterBaud.Text);
+		}
+
+		private void comboMeterDataBits_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if (this.meterHW == null)
+				return;
+
+			if (this.comboMeterDataBits.SelectedIndex >= 0)
+				this.console.MeterCOMDataBits = SDRSerialPort.stringToDataBits(this.comboMeterDataBits.Text);
+		}
+
+		private void comboMeterStopBits_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if (this.meterHW == null)
+				return;
+
+			if (this.comboMeterStopBits.SelectedIndex >= 0)
+				this.console.MeterCOMStopBits = SDRSerialPort.stringToStopBits(this.comboMeterStopBits.Text);
+		}
+
+		private void comboMeterTimingInterval_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if (this.meterHW == null)
+				return;
+
+			this.console.MeterTimingInterval = int.Parse(this.comboMeterTimingInterval.Text);
 		}
 	}
 }
