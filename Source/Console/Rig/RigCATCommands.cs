@@ -44,7 +44,6 @@ namespace PowerSDR
 		private RigCATParser rigParser;
 		private CATParser sdrParser;
 
-		private bool transmitting = false;
 		private bool transmittingWithMute = false;
 
 		#endregion Variable Definitions
@@ -186,26 +185,29 @@ namespace PowerSDR
 #endif
 
 			// RX/TX
+			bool tx = (s[26] == '1');
+
 			// This crazy logic sets MUTE on when TXing (when Monitor is turned off)
 			if (!this.console.MON)
 			{
-				if (!this.transmitting && s[26] == '1')
+				if (!this.console.MOX && tx)
 				{
-					this.transmitting = true;
-
 					if (this.console.MUT)
 						this.transmittingWithMute = true;
 					else
 						this.console.MUT = true;
 				}
-				else if (this.transmitting && s[26] == '0')
+				else if (this.console.MOX && !tx)
 				{
-					this.transmitting = false;
-
 					if (!this.transmittingWithMute)
 						this.console.MUT = false;
 				}
 			}
+
+			// If RX/TX Status is changing, set the console's MOX
+			if (!this.console.MOX && tx || this.console.MOX && !tx)
+				this.console.MOX = tx;
+
 
 			// Split
 			bool split = (s[30] == '1');

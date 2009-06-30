@@ -484,6 +484,7 @@ namespace PowerSDR
 
         // W1CEG: Use an abstract HW class.
         private AbstractHW hw;								// will eventually be an array of rigs to support multiple radios
+		private MeterHW meterHW;
 
         public WaveControl WaveForm;
         public PAQualify PAQualForm;
@@ -5928,7 +5929,6 @@ namespace PowerSDR
             Display.Init();						// Initialize Display variables
             InitDisplayModes();					// Initialize Display Modes
             InitAGCModes();						// Initialize AGC Modes
-            InitMultiMeterModes();				// Initialize MultiMeter Modes
             ProcessSampleThreadController[] pstc = new ProcessSampleThreadController[3];
             audio_process_thread = new Thread[3];
             for (uint proc_thread = 0; proc_thread < 3; proc_thread++)
@@ -5965,9 +5965,17 @@ namespace PowerSDR
 
 			// W1CEG: Instantiate RigHW before SetupIF
 			if (current_model == Model.SDR1000)
-				hw = new RigHW(this);
+			{
+				this.hw = new RigHW(this);
+				this.meterHW = new MeterHW(this);
+			}
 
-            SetupIFForm = new SetupIF(this,this.hw);   // WU2X: Menu for IF Stage setup 
+			// W1CEG:  Moved this call down after RigHW is instantiated so that
+			//         we can check for RigHW.
+			//         Used to be after InitAGCModes() earlier in this function.
+			InitMultiMeterModes();				// Initialize MultiMeter Modes
+
+            SetupIFForm = new SetupIF(this,this.hw,this.meterHW);   // WU2X: Menu for IF Stage setup 
             SetupForm.StartPosition = FormStartPosition.Manual;
 
             switch (current_model)
@@ -8509,30 +8517,45 @@ namespace PowerSDR
         {
             comboMeterRXMode.Items.Add("Signal");
             comboMeterRXMode.Items.Add("Sig Avg");
-            comboMeterRXMode.Items.Add("ADC L");
-            comboMeterRXMode.Items.Add("ADC R");
-            comboMeterRXMode.Items.Add("ADC2 L");
-            comboMeterRXMode.Items.Add("ADC2 R");
+
+			if (!(this.hw is RigHW))
+			{
+				comboMeterRXMode.Items.Add("ADC L");
+				comboMeterRXMode.Items.Add("ADC R");
+				comboMeterRXMode.Items.Add("ADC2 L");
+				comboMeterRXMode.Items.Add("ADC2 R");
+			}
+
             comboMeterRXMode.Items.Add("Off");
 
             comboRX2MeterMode.Items.Add("Signal");
             comboRX2MeterMode.Items.Add("Sig Avg");
-            comboRX2MeterMode.Items.Add("ADC L");
-            comboRX2MeterMode.Items.Add("ADC R");
-            comboRX2MeterMode.Items.Add("ADC2 L");
-            comboRX2MeterMode.Items.Add("ADC2 R");
+
+			if (!(this.hw is RigHW))
+			{
+				comboRX2MeterMode.Items.Add("ADC L");
+				comboRX2MeterMode.Items.Add("ADC R");
+				comboRX2MeterMode.Items.Add("ADC2 L");
+				comboRX2MeterMode.Items.Add("ADC2 R");
+			}
+
             comboRX2MeterMode.Items.Add("Off");
 
             comboMeterTXMode.Items.Add("Fwd Pwr");
             comboMeterTXMode.Items.Add("Ref Pwr");
             comboMeterTXMode.Items.Add("SWR");
-            comboMeterTXMode.Items.Add("Mic");
-            comboMeterTXMode.Items.Add("EQ");
-            comboMeterTXMode.Items.Add("Leveler");
-            comboMeterTXMode.Items.Add("Lev Gain");
-            comboMeterTXMode.Items.Add("ALC");
-            comboMeterTXMode.Items.Add("ALC Comp");
-            comboMeterTXMode.Items.Add("CPDR");
+
+			if (!(this.hw is RigHW))
+			{
+				comboMeterTXMode.Items.Add("Mic");
+				comboMeterTXMode.Items.Add("EQ");
+				comboMeterTXMode.Items.Add("Leveler");
+				comboMeterTXMode.Items.Add("Lev Gain");
+				comboMeterTXMode.Items.Add("ALC");
+				comboMeterTXMode.Items.Add("ALC Comp");
+				comboMeterTXMode.Items.Add("CPDR");
+			}
+
             comboMeterTXMode.Items.Add("Off");
         }
 
@@ -21778,10 +21801,18 @@ namespace PowerSDR
             set { cat_ptt = value; }
         }
 
+		private bool rigMOX = false;
         public bool MOX
         {
             get { return chkMOX.Checked; }
-            set { chkMOX.Checked = value; }
+            set
+			{
+				this.rigMOX = value;
+				chkMOX.Checked = value;
+
+				if (this.meterHW != null)
+					this.meterHW.MOX(value);
+			}
         }
 
         public bool MOXEnabled
@@ -23148,7 +23179,7 @@ namespace PowerSDR
                         meter_data_ready = false;
                     }
 
-                    if (!mox)
+					if (!mox && (!this.meterHW.UseMeter || !this.rigMOX))
                     {
                         num = current_meter_data;
 
@@ -23401,8 +23432,8 @@ namespace PowerSDR
                             break;
                     }
 
-                    if ((!mox && current_meter_rx_mode != MeterRXMode.OFF) ||
-                        (mox && current_meter_tx_mode != MeterTXMode.OFF))
+					if ((!mox || (!this.meterHW.UseMeter || !this.rigMOX) && current_meter_rx_mode != MeterRXMode.OFF) ||
+						(mox || (this.meterHW.UseMeter && this.rigMOX) && current_meter_tx_mode != MeterTXMode.OFF))
                     {
                         if (pixel_x <= 0) pixel_x = 1;
 
@@ -23444,7 +23475,7 @@ namespace PowerSDR
 
                     if (meter_timer.DurationMsec >= meter_dig_delay)
                     {
-                        if (!mox)
+						if (!mox && (!this.meterHW.UseMeter || !this.rigMOX))
                         {
                             switch (current_meter_rx_mode)
                             {
@@ -23480,7 +23511,7 @@ namespace PowerSDR
                                 case MeterTXMode.REVERSE_POWER:
                                     if ((fwc_init && (current_model == Model.FLEX5000 || current_model == Model.FLEX3000)) ||
                                         (pa_present && VFOAFreq < 30.0))
-                                        output = num.ToString("f0") + " W";
+                                        output = num.ToString(format) + " W";
                                     else output = (num * 1000).ToString("f0") + " mW";
                                     break;
                                 case MeterTXMode.SWR:
@@ -23505,7 +23536,6 @@ namespace PowerSDR
                     #region Edge
                     if (meter_data_ready)
                     {
-                        current_meter_data = new_meter_data;
                         meter_data_ready = false;
                     }
 
@@ -23515,10 +23545,21 @@ namespace PowerSDR
                     }
                     else
                     {
-                        if (current_meter_data > avg_num)
-                            num = avg_num = current_meter_data * 0.8 + avg_num * 0.2; // fast rise
-                        else
-                            num = avg_num = current_meter_data * 0.2 + avg_num * 0.8; // slow decay
+						// W1CEG: Speed up the TX meter.
+						if (this.meterHW.UseMeter && this.rigMOX)
+						{
+							if (current_meter_data > avg_num)
+								num = avg_num = current_meter_data * 0.9 + avg_num * 0.1; // fast rise
+							else
+								num = avg_num = current_meter_data * 0.6 + avg_num * 0.4; // slow decay
+						}
+						else
+						{
+							if (current_meter_data > avg_num)
+								num = avg_num = current_meter_data * 0.8 + avg_num * 0.2; // fast rise
+							else
+								num = avg_num = current_meter_data * 0.2 + avg_num * 0.8; // slow decay
+						}
                     }
 
                     g.DrawRectangle(new Pen(edge_meter_background_color), 0, 0, W, H);
@@ -23526,7 +23567,7 @@ namespace PowerSDR
                     SolidBrush low_brush = new SolidBrush(edge_low_color);
                     SolidBrush high_brush = new SolidBrush(edge_high_color);
 
-                    if (!mox)
+					if (!mox && (!this.meterHW.UseMeter || !this.rigMOX))
                     {
                         switch (current_meter_rx_mode)
                         {
@@ -23660,7 +23701,11 @@ namespace PowerSDR
                                 break;
                             case MeterTXMode.FORWARD_POWER:
                             case MeterTXMode.REVERSE_POWER:
-                                if (pa_present || (fwc_init && (current_model == Model.FLEX5000 || current_model == Model.FLEX3000)))
+								if (this.meterHW.UseMeter)
+								{
+									pixel_x = this.meterHW.PaintMeter(g,W,H,num);
+								}
+                                else if (pa_present || (fwc_init && (current_model == Model.FLEX5000 || current_model == Model.FLEX3000)))
                                 {
                                     g.FillRectangle(low_brush, 0, H - 4, (int)(W * 0.75), 2);
                                     g.FillRectangle(high_brush, (int)(W * 0.75), H - 4, (int)(W * 0.25) - 10, 2);
@@ -23875,8 +23920,8 @@ namespace PowerSDR
                         }
                     }
 
-                    if ((!mox && current_meter_rx_mode != MeterRXMode.OFF) ||
-                        (mox && current_meter_tx_mode != MeterTXMode.OFF))
+					if ((!mox && (!this.meterHW.UseMeter || !this.rigMOX) && current_meter_rx_mode != MeterRXMode.OFF) ||
+						(mox || (this.meterHW.UseMeter && this.rigMOX) && current_meter_tx_mode != MeterTXMode.OFF))
                     {
                         pixel_x = Math.Max(0, pixel_x);
                         pixel_x = Math.Min(W - 3, pixel_x);
@@ -23903,7 +23948,7 @@ namespace PowerSDR
 
                     if (meter_timer.DurationMsec >= meter_dig_delay)
                     {
-                        if (!mox)
+						if (!mox && (!this.meterHW.UseMeter || !this.rigMOX))
                         {
                             switch (current_meter_rx_mode)
                             {
@@ -23939,14 +23984,20 @@ namespace PowerSDR
                                     break;
                                 case MeterTXMode.FORWARD_POWER:
                                 case MeterTXMode.REVERSE_POWER:
-                                    if ((fwc_init && (current_model == Model.FLEX5000 || current_model == Model.FLEX3000)) ||
+									if (this.meterHW.UseMeter)
+										output = num.ToString(format) + " W";
+									else if ((fwc_init && (current_model == Model.FLEX5000 || current_model == Model.FLEX3000)) ||
                                         (pa_present && VFOAFreq < 30.0))
-                                        output = num.ToString("f0") + " W";
-                                    else output = num.ToString("f0") + " mW";
+										output = num.ToString("f0") + " W";
+									else
+										output = num.ToString("f0") + " mW";
                                     break;
                                 case MeterTXMode.SWR:
-                                    output = num.ToString("f1") + " : 1";
-                                    break;
+									if (this.meterHW.UseMeter)
+										output = num.ToString("f2") + " : 1";
+									else
+										output = num.ToString("f1") + " : 1";
+									break;
                                 case MeterTXMode.OFF:
                                     output = "";
                                     break;
@@ -24788,7 +24839,7 @@ namespace PowerSDR
             {
                 if (!meter_data_ready)
                 {
-                    if (!mox)
+					if (!mox && (!this.meterHW.UseMeter || !this.rigMOX))
                     {
                         /*if(Audio.CurrentAudioState1 != Audio.AudioState.DTTSP)
                             goto end;*/
@@ -25013,6 +25064,12 @@ namespace PowerSDR
                                         //output = power.ToString("f0")+" W";
                                         new_meter_data = (float)power;
                                         break;
+									case Model.SDR1000:
+										if (this.meterHW != null && this.meterHW.UseMeter)
+										{
+											power = this.meterHW.FwdPower;
+											new_meter_data = (float) power;
+										break;
                                     default:
                                         if (pa_present && VFOAFreq < 30.0)
                                         {
@@ -25038,7 +25095,6 @@ namespace PowerSDR
                                             }
                                         }
                                         break;
-                                }
                                 break;
                             case MeterTXMode.REVERSE_POWER:
                                 switch (current_model)
@@ -25050,7 +25106,14 @@ namespace PowerSDR
                                         //output = power.ToString("f0")+" W";
                                         new_meter_data = (float)power;
                                         break;
-                                    default:
+									case Model.SDR1000:
+										if (this.meterHW != null && this.meterHW.UseMeter)
+										{
+											power = this.meterHW.RevPower;
+											new_meter_data = (float) power;
+										}
+										break;
+									default:
                                         power = PAPower(pa_rev_power);
                                         //output = power.ToString("f0")+" W";
                                         new_meter_data = (float)power;
@@ -25059,25 +25122,32 @@ namespace PowerSDR
                                 break;
                             case MeterTXMode.SWR:
                                 double swr = 0.0;
-                                if (chkTUN.Checked)
-                                {
-                                    switch (current_model)
-                                    {
-                                        case Model.FLEX5000:
-                                        case Model.FLEX3000:
-                                            swr = FWCSWR(pa_fwd_power, pa_rev_power);
-                                            //output = swr.ToString("f1")+" : 1";	
-                                            break;
-                                        case Model.SDR1000:
-                                            swr = SWR(pa_fwd_power, pa_rev_power);
-                                            //output = swr.ToString("f1")+" : 1";
-                                            break;
-                                    }
-                                }
-                                else
-                                {
-                                    //output = "in TUN only ";
-                                }
+
+								if (this.meterHW != null && this.meterHW.UseMeter)
+									swr = this.meterHW.VSWR;
+								else
+								{
+									if (chkTUN.Checked)
+									{
+										switch (current_model)
+										{
+											case Model.FLEX5000:
+											case Model.FLEX3000:
+												swr = FWCSWR(pa_fwd_power,pa_rev_power);
+												//output = swr.ToString("f1")+" : 1";	
+												break;
+											case Model.SDR1000:
+												swr = SWR(pa_fwd_power,pa_rev_power);
+												//output = swr.ToString("f1")+" : 1";
+												break;
+										}
+									}
+									else
+									{
+										//output = "in TUN only ";
+									}
+								}
+
                                 new_meter_data = (float)swr;
                                 break;
                             case MeterTXMode.OFF:
@@ -27091,6 +27161,8 @@ namespace PowerSDR
                     case Model.SDR1000:
                         Hdw.PowerOn();
                         Hdw.DDSTuningWord = 0;
+						if (this.meterHW != null)
+							this.meterHW.PowerOn();
                         break;
                 }
 
@@ -27288,6 +27360,8 @@ namespace PowerSDR
                 if (!(fwc_init && (current_model == Model.FLEX5000 || current_model == Model.FLEX3000)))
                 {
                     Hdw.StandBy();
+					if (this.meterHW != null)
+						this.meterHW.StandBy();
                 }
                 else
                 {
@@ -28399,7 +28473,8 @@ namespace PowerSDR
             t1.Start();
             if (rx_only && chkMOX.Checked)
             {
-                chkMOX.Checked = false;
+				if (!(this.hw is RigHW))
+	                chkMOX.Checked = false;
                 return;
             }
 
@@ -34418,7 +34493,7 @@ namespace PowerSDR
         private void menu_setup_if_Click(object sender, System.EventArgs e)
         {
             if (SetupIFForm.IsDisposed)
-                SetupIFForm = new SetupIF(this,this.hw);
+                SetupIFForm = new SetupIF(this,this.hw,this.meterHW);
             SetupIFForm.Show();
             SetupIFForm.Focus();
         }
@@ -37323,26 +37398,26 @@ namespace PowerSDR
 
 		public Parity RigCOMParity
 		{
-			set { ((RigHW) this.hw).COMParity = value; }
 			get { return ((RigHW) this.hw).COMParity; }
+			set { ((RigHW) this.hw).COMParity = value; }
 		}
 
 		public StopBits RigCOMStopBits
 		{
-			set { ((RigHW) this.hw).COMStopBits = value; }
 			get { return ((RigHW) this.hw).COMStopBits; }
+			set { ((RigHW) this.hw).COMStopBits = value; }
 		}
 
 		public SDRSerialSupportII.SDRSerialPort.DataBits RigCOMDataBits
 		{
-			set { ((RigHW) this.hw).COMDataBits = value; }
 			get { return ((RigHW) this.hw).COMDataBits; }
+			set { ((RigHW) this.hw).COMDataBits = value; }
 		}
 
 		public int RigCOMBaudRate
 		{
-			set { ((RigHW) this.hw).COMBaudRate = value; }
 			get { return ((RigHW) this.hw).COMBaudRate; }
+			set { ((RigHW) this.hw).COMBaudRate = value; }
 		}
 
 		/////////////////////////////////////////////////////////
@@ -37381,6 +37456,59 @@ namespace PowerSDR
 		{
 			get { return ((RigHW) this.hw).RigPollIFFreq; }
 			set { ((RigHW) this.hw).RigPollIFFreq = value; }
+		}
+
+
+		/////////////////////////////////////////////////////////
+		// Meter Connection                                      //
+		/////////////////////////////////////////////////////////
+
+		public bool UseMeter
+		{
+			get { return this.meterHW.UseMeter; }
+			set { this.meterHW.UseMeter = value; }
+		}
+
+		public string MeterType
+		{
+			get { return this.meterHW.MeterType; }
+			set { this.meterHW.MeterType = value; }
+		}
+
+		public int MeterCOMPort
+		{
+			get { return this.meterHW.COMPort; }
+			set { this.meterHW.COMPort = value; }
+		}
+
+		public Parity MeterCOMParity
+		{
+			get { return this.meterHW.COMParity; }
+			set { this.meterHW.COMParity = value; }
+		}
+
+		public StopBits MeterCOMStopBits
+		{
+			get { return this.meterHW.COMStopBits; }
+			set { this.meterHW.COMStopBits = value; }
+		}
+
+		public SDRSerialSupportII.SDRSerialPort.DataBits MeterCOMDataBits
+		{
+			get { return this.meterHW.COMDataBits; }
+			set { this.meterHW.COMDataBits = value; }
+		}
+
+		public int MeterCOMBaudRate
+		{
+			get { return this.meterHW.COMBaudRate; }
+			set { this.meterHW.COMBaudRate = value; }
+		}
+
+		public int MeterTimingInterval
+		{
+			get { return this.meterHW.MeterTimingInterval; }
+			set { this.meterHW.MeterTimingInterval = value; }
 		}
 
 		// W1CEG: End
