@@ -23539,6 +23539,7 @@ namespace PowerSDR
                     #region Edge
                     if (meter_data_ready)
                     {
+						current_meter_data = new_meter_data;
                         meter_data_ready = false;
                     }
 
