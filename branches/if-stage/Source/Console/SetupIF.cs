@@ -61,6 +61,7 @@ namespace PowerSDR
 
 			if (comboRigPort.Items.Count > 0)
 				this.comboRigPort.SelectedIndex = 0;
+			this.comboRigBaud.Text = "4800";
 			this.comboRigParity.Text = "none";
 			this.comboRigDataBits.Text = "8";
 			this.comboRigStopBits.Text = "1";
@@ -72,6 +73,7 @@ namespace PowerSDR
 				this.comboMeterPort.SelectedIndex = 1;
 			else if (comboMeterPort.Items.Count > 0)
 				this.comboMeterPort.SelectedIndex = 0;
+			this.comboMeterBaud.Text = "38400";
 			this.comboMeterParity.Text = "none";
 			this.comboMeterDataBits.Text = "8";
 			this.comboMeterStopBits.Text = "1";

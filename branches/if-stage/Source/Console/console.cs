@@ -5968,6 +5968,7 @@ namespace PowerSDR
 			{
 				this.hw = new RigHW(this);
 				this.meterHW = new MeterHW(this);
+				this.SpurReduction = false;
 			}
 
 			// W1CEG:  Moved this call down after RigHW is instantiated so that
@@ -23179,7 +23180,7 @@ namespace PowerSDR
                         meter_data_ready = false;
                     }
 
-					if (!mox && (!this.meterHW.UseMeter || !this.rigMOX))
+					if (!mox && (this.meterHW == null || !this.meterHW.UseMeter || !this.rigMOX))
                     {
                         num = current_meter_data;
 
@@ -23432,8 +23433,8 @@ namespace PowerSDR
                             break;
                     }
 
-					if ((!mox || (!this.meterHW.UseMeter || !this.rigMOX) && current_meter_rx_mode != MeterRXMode.OFF) ||
-						(mox || (this.meterHW.UseMeter && this.rigMOX) && current_meter_tx_mode != MeterTXMode.OFF))
+					if ((!mox || (this.meterHW == null || !this.meterHW.UseMeter || !this.rigMOX) && current_meter_rx_mode != MeterRXMode.OFF) ||
+						(mox || (this.meterHW != null && this.meterHW.UseMeter && this.rigMOX) && current_meter_tx_mode != MeterTXMode.OFF))
                     {
                         if (pixel_x <= 0) pixel_x = 1;
 
@@ -23475,7 +23476,7 @@ namespace PowerSDR
 
                     if (meter_timer.DurationMsec >= meter_dig_delay)
                     {
-						if (!mox && (!this.meterHW.UseMeter || !this.rigMOX))
+						if (!mox && (this.meterHW == null || !this.meterHW.UseMeter || !this.rigMOX))
                         {
                             switch (current_meter_rx_mode)
                             {
@@ -23546,7 +23547,7 @@ namespace PowerSDR
                     else
                     {
 						// W1CEG: Speed up the TX meter.
-						if (this.meterHW.UseMeter && this.rigMOX)
+						if (this.meterHW != null && this.meterHW.UseMeter && this.rigMOX)
 						{
 							if (current_meter_data > avg_num)
 								num = avg_num = current_meter_data * 0.9 + avg_num * 0.1; // fast rise
@@ -23567,7 +23568,7 @@ namespace PowerSDR
                     SolidBrush low_brush = new SolidBrush(edge_low_color);
                     SolidBrush high_brush = new SolidBrush(edge_high_color);
 
-					if (!mox && (!this.meterHW.UseMeter || !this.rigMOX))
+					if (!mox && (this.meterHW == null || !this.meterHW.UseMeter || !this.rigMOX))
                     {
                         switch (current_meter_rx_mode)
                         {
@@ -23701,7 +23702,7 @@ namespace PowerSDR
                                 break;
                             case MeterTXMode.FORWARD_POWER:
                             case MeterTXMode.REVERSE_POWER:
-								if (this.meterHW.UseMeter)
+								if (this.meterHW != null && this.meterHW.UseMeter)
 								{
 									pixel_x = this.meterHW.PaintMeter(g,W,H,num);
 								}
@@ -23920,8 +23921,8 @@ namespace PowerSDR
                         }
                     }
 
-					if ((!mox && (!this.meterHW.UseMeter || !this.rigMOX) && current_meter_rx_mode != MeterRXMode.OFF) ||
-						(mox || (this.meterHW.UseMeter && this.rigMOX) && current_meter_tx_mode != MeterTXMode.OFF))
+					if ((!mox && (this.meterHW == null || !this.meterHW.UseMeter || !this.rigMOX) && current_meter_rx_mode != MeterRXMode.OFF) ||
+						(mox || (this.meterHW != null && this.meterHW.UseMeter && this.rigMOX) && current_meter_tx_mode != MeterTXMode.OFF))
                     {
                         pixel_x = Math.Max(0, pixel_x);
                         pixel_x = Math.Min(W - 3, pixel_x);
@@ -23948,7 +23949,7 @@ namespace PowerSDR
 
                     if (meter_timer.DurationMsec >= meter_dig_delay)
                     {
-						if (!mox && (!this.meterHW.UseMeter || !this.rigMOX))
+						if (!mox && (this.meterHW == null || !this.meterHW.UseMeter || !this.rigMOX))
                         {
                             switch (current_meter_rx_mode)
                             {
@@ -23984,7 +23985,7 @@ namespace PowerSDR
                                     break;
                                 case MeterTXMode.FORWARD_POWER:
                                 case MeterTXMode.REVERSE_POWER:
-									if (this.meterHW.UseMeter)
+									if (this.meterHW != null && this.meterHW.UseMeter)
 										output = num.ToString(format) + " W";
 									else if ((fwc_init && (current_model == Model.FLEX5000 || current_model == Model.FLEX3000)) ||
                                         (pa_present && VFOAFreq < 30.0))
@@ -23993,7 +23994,7 @@ namespace PowerSDR
 										output = num.ToString("f0") + " mW";
                                     break;
                                 case MeterTXMode.SWR:
-									if (this.meterHW.UseMeter)
+									if (this.meterHW != null && this.meterHW.UseMeter)
 										output = num.ToString("f2") + " : 1";
 									else
 										output = num.ToString("f1") + " : 1";
@@ -24839,7 +24840,7 @@ namespace PowerSDR
             {
                 if (!meter_data_ready)
                 {
-					if (!mox && (!this.meterHW.UseMeter || !this.rigMOX))
+					if (!mox && (this.meterHW == null || !this.meterHW.UseMeter || !this.rigMOX))
                     {
                         /*if(Audio.CurrentAudioState1 != Audio.AudioState.DTTSP)
                             goto end;*/
