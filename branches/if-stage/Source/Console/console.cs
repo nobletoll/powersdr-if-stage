@@ -1303,6 +1303,8 @@ namespace PowerSDR
                         // do nothing
                     }
                 }
+				else  // W1CEG: Strip off SVN from title if not available.
+					this.Text = this.Text.Substring(0,this.Text.IndexOf("   SVN"));
 
                 if (show_alpha_warning)
                 {
