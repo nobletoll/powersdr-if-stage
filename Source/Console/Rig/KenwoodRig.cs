@@ -117,7 +117,7 @@ namespace PowerSDR
 
 		public override bool ritAppliedInIFCATCommand()
 		{
-			return false;
+			return true;
 		}
 
 		#endregion Defaults & Supported Functions
