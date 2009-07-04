@@ -115,6 +115,11 @@ namespace PowerSDR
 			}
 		}
 
+		public override bool ritAppliedInIFCATCommand()
+		{
+			return false;
+		}
+
 		#endregion Defaults & Supported Functions
 
 

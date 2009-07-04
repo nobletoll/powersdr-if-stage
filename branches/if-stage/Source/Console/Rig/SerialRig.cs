@@ -243,6 +243,7 @@ namespace PowerSDR
 		public abstract override bool supportsIFFreq();
 		public abstract override int getModeFromDSPMode(DSPMode dspMode);
 		public abstract void setConsoleModeFromString(string mode);
+		public abstract bool ritAppliedInIFCATCommand();
 
 		#endregion Defaults & Supported Functions
 
