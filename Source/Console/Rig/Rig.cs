@@ -98,6 +98,8 @@ namespace PowerSDR
 		public abstract void setMode(DSPMode mode);
 		public abstract void setSplit(bool splitOn);
 		public abstract void clearRIT();
+		public abstract void setRIT(bool rit);
+		public abstract void setRIT(int ritOffset);
 		
 		#endregion Set CAT Commands
 

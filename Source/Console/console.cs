@@ -29911,10 +29911,15 @@ namespace PowerSDR
             }
             else
             {
-                if (chkRIT.Checked && !mox)
-                    freq += (int)udRIT.Value * 0.000001;
-                else if (chkXIT.Checked && mox && !chkVFOSplit.Checked && !chkVFOBTX.Checked)
-                    freq += (int)udXIT.Value * 0.000001;
+				// W1CEG: Do not apply RIT & XIT for RigHW.  The rig, itself,
+				//        applies the RIT value to the VFO-A frequency.
+				if (current_model != Model.SDR1000 || !(this.hw is RigHW))
+				{
+					if (chkRIT.Checked && !mox)
+						freq += (int) udRIT.Value * 0.000001;
+					else if (chkXIT.Checked && mox && !chkVFOSplit.Checked && !chkVFOBTX.Checked)
+						freq += (int) udXIT.Value * 0.000001;
+				}
 
                 if (freq < min_freq) freq = min_freq;
                 else if (freq > max_freq) freq = max_freq;
@@ -34033,7 +34038,10 @@ namespace PowerSDR
 
         private void chkRIT_CheckedChanged(object sender, System.EventArgs e)
         {
-            if (chkRIT.Checked)
+			if (this.hw is RigHW)
+				((RigHW) this.hw).setRIT(chkRIT.Checked);
+			
+			if (chkRIT.Checked)
             {
                 chkRIT.BackColor = button_selected_color;
                 Display.RIT = (int)udRIT.Value;
@@ -34050,7 +34058,10 @@ namespace PowerSDR
 
         private void udRIT_ValueChanged(object sender, System.EventArgs e)
         {
-            if (chkRIT.Checked && !mox)
+			if (this.hw is RigHW)
+				((RigHW) this.hw).setRIT((int) udRIT.Value);
+			
+			if (chkRIT.Checked && !mox)
                 txtVFOAFreq_LostFocus(this, EventArgs.Empty);
             if (chkRIT.Checked) Display.RIT = (int)udRIT.Value;
 
