@@ -119,6 +119,7 @@ namespace PowerSDR
 		public string IF(string s)
 		{
 			bool rit = (s[21] == '1');
+			int ritOffset = int.Parse(s[16] + s.Substring(17,4));
 			char vfo = s[28];
 			int mode = s[27] - '0';
 
@@ -127,13 +128,10 @@ namespace PowerSDR
 			// :TODO: Deal with vfo = 2 or 3
 			string frequency = s.Substring(0,11);
 
-			// :NOTE: When RIT is on, IF returns Current VFO Frequency + RIT.
+			// :NOTE: When RIT is on, some rigts return Current VFO Frequency + RIT.
 			//        We need to revert the RIT Offset from the Frequency.
-			if (rit)
-			{
-				int ritOffset = int.Parse(s[16] + s.Substring(17,4));
+			if (this.rig.ritAppliedInIFCATCommand() && rit)
 				frequency = (int.Parse(frequency) - ritOffset).ToString().PadLeft(11,'0');
-			}
 
 			if (vfo == '0')
 			{
@@ -163,7 +161,6 @@ namespace PowerSDR
 #if RIT_FOR_VFOB
 			if (!rit && s[22] == '0')
 			{
-				int ritOffset = int.Parse(s[16] + s.Substring(17,4));
 				int offsetDiff = ritOffset - this.rig.RITOffset;
 				this.rig.RITOffset = ritOffset;
 
