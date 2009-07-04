@@ -19,6 +19,7 @@
 //=============================================================================
 
 using System.Threading;
+using System;
 
 
 namespace PowerSDR
@@ -263,6 +264,39 @@ namespace PowerSDR
 		public override void clearRIT()
 		{
 			this.doRigCATCommand("RC;",false,false);
+			this.RITOffset = 0;
+		}
+
+		public override void setRIT(bool rit)
+		{
+			this.doRigCATCommand("RT" + ((rit) ? '1' : '0') + ';',true,false);
+		}
+
+		public override void setRIT(int ritOffset)
+		{
+			if (!this.RITOffsetInitialized || ritOffset == this.RITOffset)
+				return;
+
+			// If offsets have opposite polarity, clear RIT, first.
+			if (ritOffset == 0 || ritOffset < 0 && this.RITOffset > 0 ||
+				ritOffset > 0 && this.RITOffset < 0)
+			{
+				this.doRigCATCommand("RC;",true,false);
+				this.RITOffset = 0;
+				Thread.Sleep(this.hw.RigTuningPollingInterval);
+			}
+
+			string cmd = (ritOffset > this.RITOffset) ? "RU;" : "RD;";
+
+			for (int count = Math.Abs(ritOffset - this.RITOffset) / 10; count > 0; count--)
+			{
+				this.doRigCATCommand(cmd,true,false);
+
+				if (count > 1)
+					Thread.Sleep(this.hw.RigTuningPollingInterval);
+			}
+
+			this.RITOffset = ritOffset;
 		}
 
 		#endregion Set CAT Commands

@@ -119,7 +119,7 @@ namespace PowerSDR
 		public string IF(string s)
 		{
 			bool rit = (s[21] == '1');
-			int ritOffset = int.Parse(s[16] + s.Substring(17,4));
+			int ritOffset = int.Parse(s.Substring(16,5));
 			char vfo = s[28];
 			int mode = s[27] - '0';
 
@@ -157,7 +157,15 @@ namespace PowerSDR
 				this.rig.VFOBMode = mode;
 			}
 
-			// RIT Frequency - Control VFO-B when RIT and XIT are off
+
+			// RIT
+			if (this.console.RITOn != rit)
+				this.console.RITOn = rit;
+
+			if (this.rig.RITOffset != ritOffset)
+				this.sdrParser.Get("ZZRF" + s.Substring(16,5) + ';');
+
+			// Control VFO-B when RIT and XIT are off
 #if RIT_FOR_VFOB
 			if (!rit && s[22] == '0')
 			{
@@ -180,7 +188,14 @@ namespace PowerSDR
 					this.rig.RITOffset = 0;
 				}
 			}
+			else
+				this.rig.RITOffset = ritOffset;
+#else
+			this.rig.RITOffset = ritOffset;
 #endif
+
+			this.rig.RITOffsetInitialized = true;
+
 
 			// RX/TX
 			bool tx = (s[26] == '1');

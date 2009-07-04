@@ -219,6 +219,18 @@ namespace PowerSDR
 				this.rig.setSplit(splitOn);
 		}
 
+		public void setRIT(bool rit)
+		{
+			if (this.rig != null)
+				this.rig.setRIT(rit);
+		}
+
+		public void setRIT(int ritOffset)
+		{
+			if (this.rig != null)
+				this.rig.setRIT(ritOffset);
+		}
+
 
 		public int defaultBaudRate()
 		{

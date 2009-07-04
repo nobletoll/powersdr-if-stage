@@ -404,11 +404,15 @@ namespace PowerSDR
         public override void setVFOA() { }
         public override void setVFOB() { }
         public override void setSplit(bool split) { }
-        public override void clearRIT() { }
-        public override void getVFOAFreq() { }
+		public override void clearRIT() { }
+		public override void setRIT(bool rit) { }
+		public override void setRIT(int ritOffset) { }
+		public override void getVFOAFreq() { }
         public override void getVFOBFreq() { }
         public override void getIFFreq() { }
         public override void getRigInformation() { }
+
+
         public override int defaultBaudRate()
         {
             return 0;

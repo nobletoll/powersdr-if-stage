@@ -103,6 +103,13 @@ namespace PowerSDR
 			set { this.ritOffset = value; }
 		}
 
+		private bool ritOffsetInitialized = false;
+		public bool RITOffsetInitialized
+		{
+			get { return this.ritOffsetInitialized; }
+			set { this.ritOffsetInitialized = value; }
+		}
+
 		private bool split = false;
 		public bool Split
 		{
@@ -220,6 +227,7 @@ namespace PowerSDR
 		{
 			this.vfoaMode = this.getModeFromDSPMode(this.console.RX1DSPMode);
 			this.split = this.console.VFOSplit;
+			this.ritOffsetInitialized = false;
 		}
 
 		public void startCommandThread()
