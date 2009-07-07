@@ -28475,12 +28475,16 @@ namespace PowerSDR
         private bool mox = false;
         private void chkMOX_CheckedChanged2(object sender, System.EventArgs e)
         {
+			// W1CEG: For RigHW, we don't need to do any special MOX processing.
+			//        We're only setting the flag as a status indicator.
+			if (this.hw is RigHW)
+				return;
+
             //Debug.WriteLine("MOX: "+chkMOX.Checked);	
             t1.Start();
             if (rx_only && chkMOX.Checked)
             {
-				if (!(this.hw is RigHW))
-	                chkMOX.Checked = false;
+                chkMOX.Checked = false;
                 return;
             }
 
