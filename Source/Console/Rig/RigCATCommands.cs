@@ -78,7 +78,10 @@ namespace PowerSDR
 
 		public string FI(string s)
 		{
-			double ifFreq = double.Parse("0.00" + s) + this.console.globalIFOffset;
+			// :NOTE: K3 Center Frequency is 8.21
+			int freq = 8210000 + int.Parse(s);
+			freq = 8215000 - freq;
+			double ifFreq = ((double) freq) / 1000000 + this.console.globalIFOffset;
 
 			switch ((K3Rig.Mode) this.rig.VFOAMode)
 			{
@@ -109,7 +112,10 @@ namespace PowerSDR
 			}
 
 			if (this.console.IFFreq != ifFreq)
+			{
+				RigHW.dbgWriteLine("FI: " + ifFreq);
 				this.console.IFFreq = ifFreq;
+			}
 
 			return null;
 		}
