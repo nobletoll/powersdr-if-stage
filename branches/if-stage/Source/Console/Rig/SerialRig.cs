@@ -48,8 +48,8 @@ namespace PowerSDR
 
 		protected SerialRig(RigHW hw, Console console) : base(hw,console)
 		{
-			this.rigSerialPoller = new RigSerialPoller(this.console,this.hw,this);
-			this.rigParser = new RigCATParser(this.console,this);
+			this.rigSerialPoller = new RigSerialPoller(this.console,this.hw);
+			this.rigParser = new RigCATParser(this.console,this.hw);
 		}
 
 		#region Rig States

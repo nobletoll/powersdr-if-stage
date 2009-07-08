@@ -413,6 +413,11 @@ namespace PowerSDR
 			console.globalIFOffset = (double) udIFGlobalOffset.Value * 1e-6;
 		}
 
+		private void udLOCenterFreq_ValueChanged(object sender,EventArgs e)
+		{
+			console.globalIFOffset = (int) udIFGlobalOffset.Value;
+		}
+
 		private void udIFLSB_ValueChanged(object sender,System.EventArgs e)
 		{
 			console.IFLSB = (double) udIFLSB.Value * 1e-6;
@@ -577,6 +582,8 @@ namespace PowerSDR
 				this.chkRigPollIFFreq.Checked = false;
 				this.chkRigPollIFFreq.Enabled = false;
 			}
+
+			this.udLOCenterFreq.Enabled = (this.rigHW.needsLOCenterFreq());
 		}
 
 		private void chkUseMeter_CheckedChanged(object sender, EventArgs e)
