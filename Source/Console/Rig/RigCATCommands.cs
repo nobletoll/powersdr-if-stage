@@ -52,11 +52,11 @@ namespace PowerSDR
 
 		#region Constructors
 
-		public RigCATCommands(Console console, RigHW hw, RigCATParser parser) :
+		public RigCATCommands(Console console, RigHW hw, SerialRig rig, RigCATParser parser) :
 			base(console,parser)
 		{
 			this.hw = hw;
-			this.rig = (SerialRig) hw.Rig;
+			this.rig = rig;
 			this.rigParser = parser;
 			this.sdrParser = parser;
 		}
