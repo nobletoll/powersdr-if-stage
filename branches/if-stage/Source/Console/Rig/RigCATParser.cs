@@ -33,10 +33,10 @@ namespace PowerSDR
 
 		#region Constructor
 
-		public RigCATParser(Console c, RigHW hw)
+		public RigCATParser(Console c, RigHW hw, SerialRig rig)
 			: base(c)
 		{
-			this.rigCmdList = new RigCATCommands(c,hw,this);
+			this.rigCmdList = new RigCATCommands(c,hw,rig,this);
 
 			// W1CEG: TS-940S and K3 has spaces in the IF answer.
 			this.sfxpattern = new Regex("^[Vv0-9 +-]*$");
