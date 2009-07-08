@@ -61,6 +61,11 @@ namespace PowerSDR
 			return true;
 		}
 
+		public override bool needsLOFreq()
+		{
+			return true;
+		}
+
 		public override int getModeFromDSPMode(DSPMode dspMode)
 		{
 			switch (dspMode)

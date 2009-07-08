@@ -418,16 +418,6 @@ namespace PowerSDR
             return 0;
         }
 
-        public override bool needsPollVFOB()
-        {
-            return false;
-        }
-
-        public override bool supportsIFFreq()
-        {
-            return false;
-        }
-
         public override int getModeFromDSPMode(PowerSDR.DSPMode dspMode)
         {
             return 0;

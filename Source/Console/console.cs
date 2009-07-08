@@ -37332,7 +37332,13 @@ namespace PowerSDR
             }
         }
 
-        private double if_lsb = 0.0;
+		public int LOCenterFreq
+		{
+			get { return ((RigHW) this.hw).LOCenterFreq; }
+			set { ((RigHW) this.hw).LOCenterFreq = value; }
+		}
+		
+		private double if_lsb = 0.0;
         public double IFLSB
         {
             get { return if_lsb; }

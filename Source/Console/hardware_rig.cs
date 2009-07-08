@@ -54,6 +54,11 @@ namespace PowerSDR
 
 		#region SetupIF Settings
 
+		public Rig Rig
+		{
+			get { return this.rig; }
+		}
+
 		private string rigType = "";
 		public string RigType
 		{
@@ -82,38 +87,45 @@ namespace PowerSDR
 			}
 		}
 
+		private int loCenterFreq;
+		public int LOCenterFreq
+		{
+			get { return this.loCenterFreq; }
+			set { this.loCenterFreq = value; }
+		}
+
 		private int com_port;
 		public int COMPort
 		{
-			get { return com_port; }
-			set { com_port = value; }
+			get { return this.com_port; }
+			set { this.com_port = value; }
 		}
 
 		private Parity com_parity;
 		public Parity COMParity
 		{
-			set { com_parity = value; }
-			get { return com_parity; }
+			set { this.com_parity = value; }
+			get { return this.com_parity; }
 		}
 
 		private StopBits com_stop_bits;
 		public StopBits COMStopBits
 		{
-			set { com_stop_bits = value; }
-			get { return com_stop_bits; }
+			set { this.com_stop_bits = value; }
+			get { return this.com_stop_bits; }
 		}
 		private SDRSerialPort.DataBits com_data_bits;
 		public SDRSerialPort.DataBits COMDataBits
 		{
-			set { com_data_bits = value; }
-			get { return com_data_bits; }
+			set { this.com_data_bits = value; }
+			get { return this.com_data_bits; }
 		}
 
 		private int com_baud_rate;
 		public int COMBaudRate
 		{
-			set { com_baud_rate = value; }
-			get { return com_baud_rate; }
+			set { this.com_baud_rate = value; }
+			get { return this.com_baud_rate; }
 		}
 
 
@@ -249,6 +261,14 @@ namespace PowerSDR
 		}
 
 		public bool supportsIFFreq()
+		{
+			if (this.rig != null)
+				return this.rig.supportsIFFreq();
+
+			return false;
+		}
+
+		public bool needsLOCenterFreq()
 		{
 			if (this.rig != null)
 				return this.rig.supportsIFFreq();

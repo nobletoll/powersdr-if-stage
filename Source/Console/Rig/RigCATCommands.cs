@@ -40,6 +40,7 @@ namespace PowerSDR
 	{
 		#region Variable Definitions
 
+		private RigHW hw;
 		private SerialRig rig;
 		private RigCATParser rigParser;
 		private CATParser sdrParser;
@@ -51,10 +52,11 @@ namespace PowerSDR
 
 		#region Constructors
 
-		public RigCATCommands(Console console, SerialRig rig, RigCATParser parser) :
+		public RigCATCommands(Console console, RigHW hw, RigCATParser parser) :
 			base(console,parser)
 		{
-			this.rig = rig;
+			this.hw = hw;
+			this.rig = (SerialRig) hw.Rig;
 			this.rigParser = parser;
 			this.sdrParser = parser;
 		}
@@ -78,9 +80,9 @@ namespace PowerSDR
 
 		public string FI(string s)
 		{
-			// :NOTE: K3 Center Frequency is 8.21
+			// :NOTE: K3 Center Frequency is 8.210 MHz
 			int freq = 8210000 + int.Parse(s);
-			freq = 8215000 - freq;
+			freq = this.hw.LOCenterFreq - freq;
 			double ifFreq = ((double) freq) / 1000000 + this.console.globalIFOffset;
 
 			switch ((K3Rig.Mode) this.rig.VFOAMode)

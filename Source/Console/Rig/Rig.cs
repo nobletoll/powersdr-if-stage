@@ -71,8 +71,22 @@ namespace PowerSDR
 		#region Defaults & Supported Functions
 
 		public abstract int defaultBaudRate();
-		public abstract bool needsPollVFOB();
-		public abstract bool supportsIFFreq();
+		
+		public virtual bool needsPollVFOB()
+		{
+			return false;
+		}
+
+		public virtual bool supportsIFFreq()
+		{
+			return false;
+		}
+		
+		public virtual bool needsLOFreq()
+		{
+			return false;
+		}
+
 		public abstract int getModeFromDSPMode(DSPMode dspMode);
 
 		#endregion Defaults & Supported Functions

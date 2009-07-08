@@ -49,11 +49,11 @@ namespace PowerSDR
 
 		#region Constructor
 
-		public RigSerialPoller(Console console, RigHW hw, SerialRig rig)
+		public RigSerialPoller(Console console, RigHW hw)
 		{
 			this.console = console;
 			this.hw = hw;
-			this.rig = rig;
+			this.rig = (SerialRig) hw.Rig;
 		}
 
 		~RigSerialPoller()
