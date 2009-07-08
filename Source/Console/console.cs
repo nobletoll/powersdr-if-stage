@@ -32428,14 +32428,14 @@ namespace PowerSDR
                     switch (new_mode)
                     {
                         case DSPMode.USB:
-							if (!(this.hw is RigHW))
-								rx1_freq -= (cw_pitch * 0.0000010);
+                            // WU2X: DELETE: if (!(this.hw is RigHW))
+								// WU2X: DELETE: rx1_freq -= (cw_pitch * 0.0000010);
                             break;
                         case DSPMode.CWU:
                             break;
                         default:
-							if (!(this.hw is RigHW))
-								rx1_freq += (cw_pitch * 0.0000010);
+                            // WU2X: DELETE: if (!(this.hw is RigHW))
+                                // WU2X: DELETE: rx1_freq += (cw_pitch * 0.0000010);
                             break;
                     }
                     txtVFOAFreq.Text = rx1_freq.ToString("f6");
@@ -32450,14 +32450,14 @@ namespace PowerSDR
                     switch (new_mode)
                     {
                         case DSPMode.LSB:
-							if (!(this.hw is RigHW))
-								rx1_freq += (cw_pitch * 0.0000010);
+                            // WU2X: DELETE: if (!(this.hw is RigHW))
+                                // WU2X: DELETE: rx1_freq += (cw_pitch * 0.0000010);
                             break;
                         case DSPMode.CWL:
                             break;
                         default:
-							if (!(this.hw is RigHW))
-								rx1_freq -= (cw_pitch * 0.0000010);
+                            // WU2X: DELETE: if (!(this.hw is RigHW))
+                                // WU2X: DELETE: rx1_freq -= (cw_pitch * 0.0000010);
                             break;
                     }
                     txtVFOAFreq.Text = rx1_freq.ToString("f6");
@@ -32629,14 +32629,14 @@ namespace PowerSDR
                     switch (rx1_dsp_mode)
                     {
                         case DSPMode.USB:
-							if (!(this.hw is RigHW))
-								rx1_freq += (cw_pitch * 0.0000010);
+                            // WU2X: DELETE: if (!(this.hw is RigHW))
+                                // WU2X: DELETE: rx1_freq += (cw_pitch * 0.0000010);
                             break;
                         case DSPMode.CWU:
                             break;
                         default:
-							if (!(this.hw is RigHW))
-								rx1_freq -= (cw_pitch * 0.0000010);
+                            // WU2X: DELETE: if (!(this.hw is RigHW))
+                                // WU2X: DELETE: rx1_freq -= (cw_pitch * 0.0000010);
                             break;
                     }
                     txtVFOAFreq.Text = rx1_freq.ToString("f6");
@@ -32663,14 +32663,14 @@ namespace PowerSDR
                     switch (rx1_dsp_mode)
                     {
                         case DSPMode.LSB:
-							if (!(this.hw is RigHW))
-								rx1_freq -= (cw_pitch * 0.0000010);
+                            // WU2X: DELETE: if (!(this.hw is RigHW))
+                                // WU2X: DELETE: rx1_freq -= (cw_pitch * 0.0000010);
                             break;
                         case DSPMode.CWL:
                             break;
                         default:
-							if (!(this.hw is RigHW))
-								rx1_freq += (cw_pitch * 0.0000010);
+                            // WU2X: DELETE: if (!(this.hw is RigHW))
+                                // WU2X: DELETE: rx1_freq += (cw_pitch * 0.0000010);
                             break;
                     }
                     txtVFOAFreq.Text = rx1_freq.ToString("f6");
@@ -35686,14 +35686,14 @@ namespace PowerSDR
                     switch (new_mode)
                     {
                         case DSPMode.USB:
-							if (!(this.hw is RigHW))
-								rx2_freq -= (cw_pitch * 0.0000010);
+                            // WU2X: DELETE: if (!(this.hw is RigHW))
+                                // WU2X: DELETE: rx2_freq -= (cw_pitch * 0.0000010);
                             break;
                         case DSPMode.CWU:
                             break;
                         default:
-							if (!(this.hw is RigHW))
-								rx2_freq += (cw_pitch * 0.0000010);
+                            // WU2X: DELETE: if (!(this.hw is RigHW))
+                                // WU2X: DELETE: rx2_freq += (cw_pitch * 0.0000010);
                             break;
                     }
                     txtVFOBFreq.Text = rx2_freq.ToString("f6");
@@ -35708,14 +35708,14 @@ namespace PowerSDR
                     switch (new_mode)
                     {
                         case DSPMode.LSB:
-							if (!(this.hw is RigHW))
-								rx2_freq += (cw_pitch * 0.0000010);
+                            // WU2X: DELETE: if (!(this.hw is RigHW))
+                                // WU2X: DELETE: rx2_freq += (cw_pitch * 0.0000010);
                             break;
                         case DSPMode.CWL:
                             break;
                         default:
-							if (!(this.hw is RigHW))
-								rx2_freq -= (cw_pitch * 0.0000010);
+                            // WU2X: DELETE: if (!(this.hw is RigHW))
+                                // WU2X: DELETE: rx2_freq -= (cw_pitch * 0.0000010);
                             break;
                     }
                     txtVFOBFreq.Text = rx2_freq.ToString("f6");
@@ -35848,14 +35848,14 @@ namespace PowerSDR
                     switch (rx2_dsp_mode)
                     {
                         case DSPMode.USB:
-							if (!(this.hw is RigHW))
-								rx2_freq += (cw_pitch * 0.0000010);
+                            // WU2X: DELETE: if (!(this.hw is RigHW))
+                                // WU2X: DELETE: rx2_freq += (cw_pitch * 0.0000010);
                             break;
                         case DSPMode.CWU:
                             break;
                         default:
-							if (!(this.hw is RigHW))
-								rx2_freq -= (cw_pitch * 0.0000010);
+                            // WU2X: DELETE: if (!(this.hw is RigHW))
+                                // WU2X: DELETE: rx2_freq -= (cw_pitch * 0.0000010);
                             break;
                     }
                     txtVFOBFreq.Text = rx2_freq.ToString("f6");
@@ -35881,14 +35881,14 @@ namespace PowerSDR
                     switch (rx1_dsp_mode)
                     {
                         case DSPMode.LSB:
-							if (!(this.hw is RigHW))
-								rx2_freq -= (cw_pitch * 0.0000010);
+                            // WU2X: DELETE: if (!(this.hw is RigHW))
+                                // WU2X: DELETE: rx2_freq -= (cw_pitch * 0.0000010);
                             break;
                         case DSPMode.CWL:
                             break;
                         default:
-							if (!(this.hw is RigHW))
-								rx2_freq += (cw_pitch * 0.0000010);
+                            // WU2X: DELETE: if (!(this.hw is RigHW))
+                                // WU2X: DELETE: rx2_freq += (cw_pitch * 0.0000010);
                             break;
                     }
                     txtVFOBFreq.Text = rx2_freq.ToString("f6");
