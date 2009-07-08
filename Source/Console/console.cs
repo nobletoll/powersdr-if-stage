@@ -36647,7 +36647,7 @@ namespace PowerSDR
                 radio.GetDSPRX(0, 1).BufferSize != size)
             {
                 bool poweron = PowerOn;
-                if (poweron)
+				if (poweron && !(this.hw is RigHW))
                 {
                     PowerOn = false;
                     Thread.Sleep(100);
@@ -36683,7 +36683,7 @@ namespace PowerSDR
                     }
                 }
 
-                if (poweron) PowerOn = true;
+				if (poweron && !(this.hw is RigHW)) PowerOn = true;
             }
         }
 
@@ -36725,7 +36725,7 @@ namespace PowerSDR
                 radio.GetDSPRX(1, 1).BufferSize != size)
             {
                 bool poweron = PowerOn;
-                if (poweron)
+				if (poweron && !(this.hw is RigHW))
                 {
                     PowerOn = false;
                     Thread.Sleep(100);
@@ -36761,7 +36761,7 @@ namespace PowerSDR
                     }
                 }
 
-                if (poweron) PowerOn = true;
+				if (poweron && !(this.hw is RigHW)) PowerOn = true;
             }
         }
 
