@@ -29942,30 +29942,26 @@ namespace PowerSDR
                     }
                 }
 
-				// W1CEG: Do not apply CW Pitch for IF Stage
-				if (current_model != Model.SDR1000 || !(this.hw is RigHW))
-				{
-					if (rx1_dsp_mode == DSPMode.CWL)
-						freq += (double) cw_pitch * 0.0000010;
-					else if (rx1_dsp_mode == DSPMode.CWU)
-						freq -= (double) cw_pitch * 0.0000010;
+				if (rx1_dsp_mode == DSPMode.CWL)
+					freq += (double) cw_pitch * 0.0000010;
+				else if (rx1_dsp_mode == DSPMode.CWU)
+					freq -= (double) cw_pitch * 0.0000010;
 
-					switch (RX1DSPMode)
-					{
-						case DSPMode.AM:
-						case DSPMode.SAM:
-						case DSPMode.FMN:
-							if (mox) freq -= 0.011025;
-							break;
-						case DSPMode.USB:
-						case DSPMode.DIGU:
-							if (chkTUN.Checked) freq -= cw_pitch * 1e-6;
-							break;
-						case DSPMode.LSB:
-						case DSPMode.DIGL:
-							if (chkTUN.Checked) freq += cw_pitch * 1e-6;
-							break;
-					}
+				switch (RX1DSPMode)
+				{
+					case DSPMode.AM:
+					case DSPMode.SAM:
+					case DSPMode.FMN:
+						if (mox) freq -= 0.011025;
+						break;
+					case DSPMode.USB:
+					case DSPMode.DIGU:
+						if (chkTUN.Checked) freq -= cw_pitch * 1e-6;
+						break;
+					case DSPMode.LSB:
+					case DSPMode.DIGL:
+						if (chkTUN.Checked) freq += cw_pitch * 1e-6;
+						break;
 				}
 
                 if (freq < min_freq) freq = min_freq;
@@ -29991,8 +29987,17 @@ namespace PowerSDR
                                     DDSFreq = freq;
 
                                     // W1CEG: Update Frequency on Rig
-                                    if (!(e is RigCATEventArgs) && this.hw is RigHW)
-                                        ((RigHW)this.hw).setVFOAFreq(freq);
+									if (!(e is RigCATEventArgs) && this.hw is RigHW)
+									{
+										double unPitchedFreq = freq;
+
+										if (rx1_dsp_mode == DSPMode.CWL)
+											unPitchedFreq -= (double) cw_pitch * 0.0000010;
+										else if (rx1_dsp_mode == DSPMode.CWU)
+											unPitchedFreq += (double) cw_pitch * 0.0000010;
+
+										((RigHW) this.hw).setVFOAFreq(unPitchedFreq);
+									}
 
                                     if (chkEnableMultiRX.Checked)
                                     {
@@ -32423,12 +32428,14 @@ namespace PowerSDR
                     switch (new_mode)
                     {
                         case DSPMode.USB:
-                            rx1_freq -= (cw_pitch * 0.0000010);
+							if (!(this.hw is RigHW))
+								rx1_freq -= (cw_pitch * 0.0000010);
                             break;
                         case DSPMode.CWU:
                             break;
                         default:
-                            rx1_freq += (cw_pitch * 0.0000010);
+							if (!(this.hw is RigHW))
+								rx1_freq += (cw_pitch * 0.0000010);
                             break;
                     }
                     txtVFOAFreq.Text = rx1_freq.ToString("f6");
@@ -32443,12 +32450,14 @@ namespace PowerSDR
                     switch (new_mode)
                     {
                         case DSPMode.LSB:
-                            rx1_freq += (cw_pitch * 0.0000010);
+							if (!(this.hw is RigHW))
+								rx1_freq += (cw_pitch * 0.0000010);
                             break;
                         case DSPMode.CWL:
                             break;
                         default:
-                            rx1_freq -= (cw_pitch * 0.0000010);
+							if (!(this.hw is RigHW))
+								rx1_freq -= (cw_pitch * 0.0000010);
                             break;
                     }
                     txtVFOAFreq.Text = rx1_freq.ToString("f6");
@@ -32620,12 +32629,14 @@ namespace PowerSDR
                     switch (rx1_dsp_mode)
                     {
                         case DSPMode.USB:
-                            rx1_freq += (cw_pitch * 0.0000010);
+							if (!(this.hw is RigHW))
+								rx1_freq += (cw_pitch * 0.0000010);
                             break;
                         case DSPMode.CWU:
                             break;
                         default:
-                            rx1_freq -= (cw_pitch * 0.0000010);
+							if (!(this.hw is RigHW))
+								rx1_freq -= (cw_pitch * 0.0000010);
                             break;
                     }
                     txtVFOAFreq.Text = rx1_freq.ToString("f6");
@@ -32652,12 +32663,14 @@ namespace PowerSDR
                     switch (rx1_dsp_mode)
                     {
                         case DSPMode.LSB:
-                            rx1_freq -= (cw_pitch * 0.0000010);
+							if (!(this.hw is RigHW))
+								rx1_freq -= (cw_pitch * 0.0000010);
                             break;
                         case DSPMode.CWL:
                             break;
                         default:
-                            rx1_freq += (cw_pitch * 0.0000010);
+							if (!(this.hw is RigHW))
+								rx1_freq += (cw_pitch * 0.0000010);
                             break;
                     }
                     txtVFOAFreq.Text = rx1_freq.ToString("f6");
@@ -35673,12 +35686,14 @@ namespace PowerSDR
                     switch (new_mode)
                     {
                         case DSPMode.USB:
-                            rx2_freq -= (cw_pitch * 0.0000010);
+							if (!(this.hw is RigHW))
+								rx2_freq -= (cw_pitch * 0.0000010);
                             break;
                         case DSPMode.CWU:
                             break;
                         default:
-                            rx2_freq += (cw_pitch * 0.0000010);
+							if (!(this.hw is RigHW))
+								rx2_freq += (cw_pitch * 0.0000010);
                             break;
                     }
                     txtVFOBFreq.Text = rx2_freq.ToString("f6");
@@ -35693,12 +35708,14 @@ namespace PowerSDR
                     switch (new_mode)
                     {
                         case DSPMode.LSB:
-                            rx2_freq += (cw_pitch * 0.0000010);
+							if (!(this.hw is RigHW))
+								rx2_freq += (cw_pitch * 0.0000010);
                             break;
                         case DSPMode.CWL:
                             break;
                         default:
-                            rx2_freq -= (cw_pitch * 0.0000010);
+							if (!(this.hw is RigHW))
+								rx2_freq -= (cw_pitch * 0.0000010);
                             break;
                     }
                     txtVFOBFreq.Text = rx2_freq.ToString("f6");
@@ -35831,12 +35848,14 @@ namespace PowerSDR
                     switch (rx2_dsp_mode)
                     {
                         case DSPMode.USB:
-                            rx2_freq += (cw_pitch * 0.0000010);
+							if (!(this.hw is RigHW))
+								rx2_freq += (cw_pitch * 0.0000010);
                             break;
                         case DSPMode.CWU:
                             break;
                         default:
-                            rx2_freq -= (cw_pitch * 0.0000010);
+							if (!(this.hw is RigHW))
+								rx2_freq -= (cw_pitch * 0.0000010);
                             break;
                     }
                     txtVFOBFreq.Text = rx2_freq.ToString("f6");
@@ -35862,12 +35881,14 @@ namespace PowerSDR
                     switch (rx1_dsp_mode)
                     {
                         case DSPMode.LSB:
-                            rx2_freq -= (cw_pitch * 0.0000010);
+							if (!(this.hw is RigHW))
+								rx2_freq -= (cw_pitch * 0.0000010);
                             break;
                         case DSPMode.CWL:
                             break;
                         default:
-                            rx2_freq += (cw_pitch * 0.0000010);
+							if (!(this.hw is RigHW))
+								rx2_freq += (cw_pitch * 0.0000010);
                             break;
                     }
                     txtVFOBFreq.Text = rx2_freq.ToString("f6");
