@@ -170,8 +170,9 @@ namespace PowerSDR
 			if (this.console.RITOn != rit)
 				this.console.RITOn = rit;
 
+			bool changeRIT = false;
 			if (this.rig.RITOffset != ritOffset)
-				this.sdrParser.Get("ZZRF" + s.Substring(16,5) + ';');
+				changeRIT = true;
 
 			// Control VFO-B when RIT and XIT are off
 #if RIT_FOR_VFOB
@@ -201,6 +202,8 @@ namespace PowerSDR
 #else
 			this.rig.RITOffset = ritOffset;
 #endif
+			if (changeRIT)
+				this.sdrParser.Get("ZZRF" + s.Substring(16,5) + ';');
 
 			this.rig.RITOffsetInitialized = true;
 

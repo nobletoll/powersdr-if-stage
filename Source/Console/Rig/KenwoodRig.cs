@@ -277,9 +277,11 @@ namespace PowerSDR
 			if (!this.RITOffsetInitialized || ritOffset == this.RITOffset)
 				return;
 
-			// If offsets have opposite polarity, clear RIT, first.
+			// If offsets have opposite polarity or difference from 0 is less,
+			// clear RIT, first.
 			if (ritOffset == 0 || ritOffset < 0 && this.RITOffset > 0 ||
-				ritOffset > 0 && this.RITOffset < 0)
+				ritOffset > 0 && this.RITOffset < 0 ||
+				Math.Abs(ritOffset) < Math.Abs(this.RITOffset - ritOffset))
 			{
 				this.doRigCATCommand("RC;",true,false);
 				this.RITOffset = 0;
