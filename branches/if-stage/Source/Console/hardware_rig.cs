@@ -271,7 +271,7 @@ namespace PowerSDR
 		public bool needsLOCenterFreq()
 		{
 			if (this.rig != null)
-				return this.rig.supportsIFFreq();
+				return this.rig.needsLOFreq();
 
 			return false;
 		}

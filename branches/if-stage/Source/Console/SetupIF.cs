@@ -78,6 +78,8 @@ namespace PowerSDR
 			this.comboMeterDataBits.Text = "8";
 			this.comboMeterStopBits.Text = "1";
 
+			this.udLOCenterFreq.Value = 8215000;
+
 			// Read from database...
 			this.GetOptions();
 		}
@@ -415,7 +417,7 @@ namespace PowerSDR
 
 		private void udLOCenterFreq_ValueChanged(object sender,EventArgs e)
 		{
-			console.globalIFOffset = (int) udIFGlobalOffset.Value;
+			console.LOCenterFreq = (int) udLOCenterFreq.Value;
 		}
 
 		private void udIFLSB_ValueChanged(object sender,System.EventArgs e)
