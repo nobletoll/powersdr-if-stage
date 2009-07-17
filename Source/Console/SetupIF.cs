@@ -510,10 +510,18 @@ namespace PowerSDR
 			if (this.rigHW == null)
 				return;
 
-			this.console.RigPollingInterval = (int) this.udRigTuningPollingInterval.Value;
+			this.console.RigTuningPollingInterval = (int) this.udRigTuningPollingInterval.Value;
 		}
 
-		private void udRigPollingLockoutTime_ValueChanged(object sender, EventArgs e)
+		private void udRigTuningCATInterval_ValueChanged(object sender,EventArgs e)
+		{
+			if (this.rigHW == null)
+				return;
+
+			this.console.RigTuningCATInterval = (int) this.udRigTuningCATInterval.Value;
+		}
+
+		private void udRigPollingLockoutTime_ValueChanged(object sender,EventArgs e)
 		{
 			if (this.rigHW == null)
 				return;
@@ -557,6 +565,7 @@ namespace PowerSDR
 				this.grpRigSerialBox.Enabled = true;
 				this.udRigPollingInterval.Enabled = true;
 				this.udRigTuningPollingInterval.Enabled = true;
+				this.udRigTuningCATInterval.Enabled = true;
 				this.chkRigPollVFOB.Enabled = true;
 				this.chkRigPollIFFreq.Enabled = true;
 
@@ -579,6 +588,7 @@ namespace PowerSDR
 				this.grpRigSerialBox.Enabled = false;
 				this.udRigPollingInterval.Enabled = false;
 				this.udRigTuningPollingInterval.Enabled = false;
+				this.udRigTuningCATInterval.Enabled = false;
 				this.chkRigPollVFOB.Checked = false;
 				this.chkRigPollVFOB.Enabled = false;
 				this.chkRigPollIFFreq.Checked = false;

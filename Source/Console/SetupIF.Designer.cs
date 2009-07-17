@@ -50,51 +50,16 @@ namespace PowerSDR
         {
 			this.components = new System.ComponentModel.Container();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.comboMeterType = new System.Windows.Forms.ComboBoxTS();
-			this.comboMeterPort = new System.Windows.Forms.ComboBoxTS();
 			this.grpMeterTimingBox = new System.Windows.Forms.GroupBox();
-			this.comboMeterTimingInterval = new System.Windows.Forms.ComboBoxTS();
-			this.labelTS8 = new System.Windows.Forms.LabelTS();
-			this.comboRigType = new System.Windows.Forms.ComboBoxTS();
-			this.comboRigPort = new System.Windows.Forms.ComboBoxTS();
 			this.grpRigTimingBox = new System.Windows.Forms.GroupBox();
-			this.labelRigTuningPollingInterval = new System.Windows.Forms.LabelTS();
-			this.udRigTuningPollingInterval = new System.Windows.Forms.NumericUpDownTS();
-			this.labelRigPollingLockoutTime = new System.Windows.Forms.LabelTS();
-			this.udRigPollingLockoutTime = new System.Windows.Forms.NumericUpDownTS();
-			this.labelRigPollingInterval = new System.Windows.Forms.LabelTS();
-			this.udRigPollingInterval = new System.Windows.Forms.NumericUpDownTS();
 			this.grpOptionalPollingCommandsBox = new System.Windows.Forms.GroupBox();
-			this.chkRigPollIFFreq = new System.Windows.Forms.CheckBoxTS();
-			this.chkRigPollVFOB = new System.Windows.Forms.CheckBoxTS();
-			this.btnImportDB = new System.Windows.Forms.ButtonTS();
-			this.btnResetDB = new System.Windows.Forms.ButtonTS();
-			this.btnApply = new System.Windows.Forms.ButtonTS();
-			this.btnCancel = new System.Windows.Forms.ButtonTS();
-			this.btnOK = new System.Windows.Forms.ButtonTS();
+			this.label8 = new System.Windows.Forms.Label();
 			this.tabPage3 = new System.Windows.Forms.TabPage();
-			this.grpMeterSerialBox = new System.Windows.Forms.GroupBoxTS();
-			this.comboMeterBaud = new System.Windows.Forms.ComboBoxTS();
-			this.labelTS1 = new System.Windows.Forms.LabelTS();
-			this.labelTS2 = new System.Windows.Forms.LabelTS();
-			this.labelTS3 = new System.Windows.Forms.LabelTS();
-			this.labelTS4 = new System.Windows.Forms.LabelTS();
-			this.labelTS5 = new System.Windows.Forms.LabelTS();
-			this.comboMeterParity = new System.Windows.Forms.ComboBoxTS();
-			this.comboMeterDataBits = new System.Windows.Forms.ComboBoxTS();
-			this.comboMeterStopBits = new System.Windows.Forms.ComboBoxTS();
 			this.grpMeterTypeBox = new System.Windows.Forms.GroupBox();
-			this.chkUseMeter = new System.Windows.Forms.CheckBoxTS();
 			this.tabPage2 = new System.Windows.Forms.TabPage();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
-			this.udIFGlobalOffset = new System.Windows.Forms.NumericUpDownTS();
+			this.label7 = new System.Windows.Forms.Label();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.udIFFSK = new System.Windows.Forms.NumericUpDownTS();
-			this.udIFFM = new System.Windows.Forms.NumericUpDownTS();
-			this.udIFAM = new System.Windows.Forms.NumericUpDownTS();
-			this.udIFCW = new System.Windows.Forms.NumericUpDownTS();
-			this.udIFUSB = new System.Windows.Forms.NumericUpDownTS();
-			this.udIFLSB = new System.Windows.Forms.NumericUpDownTS();
 			this.label6 = new System.Windows.Forms.Label();
 			this.label5 = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
@@ -102,7 +67,20 @@ namespace PowerSDR
 			this.label2 = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
+			this.grpRigTypeBox = new System.Windows.Forms.GroupBox();
+			this.tabControl1 = new System.Windows.Forms.TabControl();
+			this.chkRigPollIFFreq = new System.Windows.Forms.CheckBoxTS();
+			this.chkRigPollVFOB = new System.Windows.Forms.CheckBoxTS();
+			this.labelTS6 = new System.Windows.Forms.LabelTS();
+			this.udRigTuningCATInterval = new System.Windows.Forms.NumericUpDownTS();
+			this.labelRigTuningPollingInterval = new System.Windows.Forms.LabelTS();
+			this.udRigTuningPollingInterval = new System.Windows.Forms.NumericUpDownTS();
+			this.labelRigPollingLockoutTime = new System.Windows.Forms.LabelTS();
+			this.udRigPollingLockoutTime = new System.Windows.Forms.NumericUpDownTS();
+			this.labelRigPollingInterval = new System.Windows.Forms.LabelTS();
+			this.udRigPollingInterval = new System.Windows.Forms.NumericUpDownTS();
 			this.grpRigSerialBox = new System.Windows.Forms.GroupBoxTS();
+			this.comboRigPort = new System.Windows.Forms.ComboBoxTS();
 			this.comboRigBaud = new System.Windows.Forms.ComboBoxTS();
 			this.lblCATBaud = new System.Windows.Forms.LabelTS();
 			this.lblCATPort = new System.Windows.Forms.LabelTS();
@@ -112,60 +90,61 @@ namespace PowerSDR
 			this.comboRigParity = new System.Windows.Forms.ComboBoxTS();
 			this.comboRigDataBits = new System.Windows.Forms.ComboBoxTS();
 			this.comboRigStopBits = new System.Windows.Forms.ComboBoxTS();
-			this.grpRigTypeBox = new System.Windows.Forms.GroupBox();
-			this.tabControl1 = new System.Windows.Forms.TabControl();
-			this.label7 = new System.Windows.Forms.Label();
+			this.comboRigType = new System.Windows.Forms.ComboBoxTS();
 			this.udLOCenterFreq = new System.Windows.Forms.NumericUpDownTS();
-			this.label8 = new System.Windows.Forms.Label();
+			this.udIFGlobalOffset = new System.Windows.Forms.NumericUpDownTS();
+			this.udIFFSK = new System.Windows.Forms.NumericUpDownTS();
+			this.udIFFM = new System.Windows.Forms.NumericUpDownTS();
+			this.udIFAM = new System.Windows.Forms.NumericUpDownTS();
+			this.udIFCW = new System.Windows.Forms.NumericUpDownTS();
+			this.udIFUSB = new System.Windows.Forms.NumericUpDownTS();
+			this.udIFLSB = new System.Windows.Forms.NumericUpDownTS();
+			this.comboMeterTimingInterval = new System.Windows.Forms.ComboBoxTS();
+			this.labelTS8 = new System.Windows.Forms.LabelTS();
+			this.grpMeterSerialBox = new System.Windows.Forms.GroupBoxTS();
+			this.comboMeterPort = new System.Windows.Forms.ComboBoxTS();
+			this.comboMeterBaud = new System.Windows.Forms.ComboBoxTS();
+			this.labelTS1 = new System.Windows.Forms.LabelTS();
+			this.labelTS2 = new System.Windows.Forms.LabelTS();
+			this.labelTS3 = new System.Windows.Forms.LabelTS();
+			this.labelTS4 = new System.Windows.Forms.LabelTS();
+			this.labelTS5 = new System.Windows.Forms.LabelTS();
+			this.comboMeterParity = new System.Windows.Forms.ComboBoxTS();
+			this.comboMeterDataBits = new System.Windows.Forms.ComboBoxTS();
+			this.comboMeterStopBits = new System.Windows.Forms.ComboBoxTS();
+			this.chkUseMeter = new System.Windows.Forms.CheckBoxTS();
+			this.comboMeterType = new System.Windows.Forms.ComboBoxTS();
+			this.btnImportDB = new System.Windows.Forms.ButtonTS();
+			this.btnResetDB = new System.Windows.Forms.ButtonTS();
+			this.btnApply = new System.Windows.Forms.ButtonTS();
+			this.btnCancel = new System.Windows.Forms.ButtonTS();
+			this.btnOK = new System.Windows.Forms.ButtonTS();
 			this.grpMeterTimingBox.SuspendLayout();
 			this.grpRigTimingBox.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize) (this.udRigTuningPollingInterval)).BeginInit();
-			((System.ComponentModel.ISupportInitialize) (this.udRigPollingLockoutTime)).BeginInit();
-			((System.ComponentModel.ISupportInitialize) (this.udRigPollingInterval)).BeginInit();
 			this.grpOptionalPollingCommandsBox.SuspendLayout();
 			this.tabPage3.SuspendLayout();
-			this.grpMeterSerialBox.SuspendLayout();
 			this.grpMeterTypeBox.SuspendLayout();
 			this.tabPage2.SuspendLayout();
 			this.groupBox2.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize) (this.udIFGlobalOffset)).BeginInit();
 			this.groupBox1.SuspendLayout();
+			this.tabPage1.SuspendLayout();
+			this.grpRigTypeBox.SuspendLayout();
+			this.tabControl1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize) (this.udRigTuningCATInterval)).BeginInit();
+			((System.ComponentModel.ISupportInitialize) (this.udRigTuningPollingInterval)).BeginInit();
+			((System.ComponentModel.ISupportInitialize) (this.udRigPollingLockoutTime)).BeginInit();
+			((System.ComponentModel.ISupportInitialize) (this.udRigPollingInterval)).BeginInit();
+			this.grpRigSerialBox.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize) (this.udLOCenterFreq)).BeginInit();
+			((System.ComponentModel.ISupportInitialize) (this.udIFGlobalOffset)).BeginInit();
 			((System.ComponentModel.ISupportInitialize) (this.udIFFSK)).BeginInit();
 			((System.ComponentModel.ISupportInitialize) (this.udIFFM)).BeginInit();
 			((System.ComponentModel.ISupportInitialize) (this.udIFAM)).BeginInit();
 			((System.ComponentModel.ISupportInitialize) (this.udIFCW)).BeginInit();
 			((System.ComponentModel.ISupportInitialize) (this.udIFUSB)).BeginInit();
 			((System.ComponentModel.ISupportInitialize) (this.udIFLSB)).BeginInit();
-			this.tabPage1.SuspendLayout();
-			this.grpRigSerialBox.SuspendLayout();
-			this.grpRigTypeBox.SuspendLayout();
-			this.tabControl1.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize) (this.udLOCenterFreq)).BeginInit();
+			this.grpMeterSerialBox.SuspendLayout();
 			this.SuspendLayout();
-			// 
-			// comboMeterType
-			// 
-			this.comboMeterType.Enabled = false;
-			this.comboMeterType.FormattingEnabled = true;
-			this.comboMeterType.Items.AddRange(new object[] {
-            "Array Solutions PowerMaster"});
-			this.comboMeterType.Location = new System.Drawing.Point(9,43);
-			this.comboMeterType.Name = "comboMeterType";
-			this.comboMeterType.Size = new System.Drawing.Size(165,21);
-			this.comboMeterType.TabIndex = 1;
-			this.toolTip1.SetToolTip(this.comboMeterType,"Defines what kind of meter will provide TX information to PowerSDR");
-			this.comboMeterType.SelectedIndexChanged += new System.EventHandler(this.comboMeterType_SelectedIndexChanged);
-			// 
-			// comboMeterPort
-			// 
-			this.comboMeterPort.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboMeterPort.DropDownWidth = 56;
-			this.comboMeterPort.Location = new System.Drawing.Point(60,19);
-			this.comboMeterPort.Name = "comboMeterPort";
-			this.comboMeterPort.Size = new System.Drawing.Size(72,21);
-			this.comboMeterPort.TabIndex = 2;
-			this.toolTip1.SetToolTip(this.comboMeterPort,"Sets the COM port to be used for communicating with the external meter.");
-			this.comboMeterPort.SelectedIndexChanged += new System.EventHandler(this.comboMeterPort_SelectedIndexChanged);
 			// 
 			// grpMeterTimingBox
 			// 
@@ -181,71 +160,282 @@ namespace PowerSDR
 			this.toolTip1.SetToolTip(this.grpMeterTimingBox,"Configurable Timeouts and Intervals used for polling information from the externa" +
 					"l meter");
 			// 
-			// comboMeterTimingInterval
-			// 
-			this.comboMeterTimingInterval.FormattingEnabled = true;
-			this.comboMeterTimingInterval.Items.AddRange(new object[] {
-            "35",
-            "70",
-            "140",
-            "280"});
-			this.comboMeterTimingInterval.Location = new System.Drawing.Point(116,19);
-			this.comboMeterTimingInterval.Name = "comboMeterTimingInterval";
-			this.comboMeterTimingInterval.Size = new System.Drawing.Size(70,21);
-			this.comboMeterTimingInterval.TabIndex = 15;
-			this.comboMeterTimingInterval.Text = "35";
-			this.comboMeterTimingInterval.SelectedIndexChanged += new System.EventHandler(this.comboMeterTimingInterval_SelectedIndexChanged);
-			// 
-			// labelTS8
-			// 
-			this.labelTS8.Image = null;
-			this.labelTS8.Location = new System.Drawing.Point(6,19);
-			this.labelTS8.Name = "labelTS8";
-			this.labelTS8.Size = new System.Drawing.Size(104,20);
-			this.labelTS8.TabIndex = 14;
-			this.labelTS8.Text = "Data Interval:";
-			this.labelTS8.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			// 
-			// comboRigType
-			// 
-			this.comboRigType.FormattingEnabled = true;
-			this.comboRigType.Items.AddRange(new object[] {
-            "Elecraft K3",
-            "Kenwood TS-940S",
-            "Ham Radio Deluxe"});
-			this.comboRigType.Location = new System.Drawing.Point(9,20);
-			this.comboRigType.Name = "comboRigType";
-			this.comboRigType.Size = new System.Drawing.Size(123,21);
-			this.comboRigType.TabIndex = 0;
-			this.toolTip1.SetToolTip(this.comboRigType,"Defines what kind of rig will control PowerSDR");
-			this.comboRigType.SelectedIndexChanged += new System.EventHandler(this.comboRigType_SelectedIndexChanged);
-			// 
-			// comboRigPort
-			// 
-			this.comboRigPort.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboRigPort.DropDownWidth = 56;
-			this.comboRigPort.Location = new System.Drawing.Point(60,19);
-			this.comboRigPort.Name = "comboRigPort";
-			this.comboRigPort.Size = new System.Drawing.Size(72,21);
-			this.comboRigPort.TabIndex = 1;
-			this.toolTip1.SetToolTip(this.comboRigPort,"Sets the COM port to be used for communicating with the Rig.");
-			this.comboRigPort.SelectedIndexChanged += new System.EventHandler(this.comboRigPort_SelectedIndexChanged);
-			// 
 			// grpRigTimingBox
 			// 
+			this.grpRigTimingBox.Controls.Add(this.labelTS6);
+			this.grpRigTimingBox.Controls.Add(this.udRigTuningCATInterval);
 			this.grpRigTimingBox.Controls.Add(this.labelRigTuningPollingInterval);
 			this.grpRigTimingBox.Controls.Add(this.udRigTuningPollingInterval);
 			this.grpRigTimingBox.Controls.Add(this.labelRigPollingLockoutTime);
 			this.grpRigTimingBox.Controls.Add(this.udRigPollingLockoutTime);
 			this.grpRigTimingBox.Controls.Add(this.labelRigPollingInterval);
 			this.grpRigTimingBox.Controls.Add(this.udRigPollingInterval);
-			this.grpRigTimingBox.Location = new System.Drawing.Point(154,67);
+			this.grpRigTimingBox.Location = new System.Drawing.Point(154,6);
 			this.grpRigTimingBox.Name = "grpRigTimingBox";
-			this.grpRigTimingBox.Size = new System.Drawing.Size(194,105);
+			this.grpRigTimingBox.Size = new System.Drawing.Size(194,166);
 			this.grpRigTimingBox.TabIndex = 92;
 			this.grpRigTimingBox.TabStop = false;
 			this.grpRigTimingBox.Text = "Rig Timing (ms)";
 			this.toolTip1.SetToolTip(this.grpRigTimingBox,"Configurable Timeouts and Intervals used for polling information from the Rig");
+			// 
+			// grpOptionalPollingCommandsBox
+			// 
+			this.grpOptionalPollingCommandsBox.Controls.Add(this.chkRigPollIFFreq);
+			this.grpOptionalPollingCommandsBox.Controls.Add(this.chkRigPollVFOB);
+			this.grpOptionalPollingCommandsBox.Location = new System.Drawing.Point(154,178);
+			this.grpOptionalPollingCommandsBox.Name = "grpOptionalPollingCommandsBox";
+			this.grpOptionalPollingCommandsBox.Size = new System.Drawing.Size(194,90);
+			this.grpOptionalPollingCommandsBox.TabIndex = 93;
+			this.grpOptionalPollingCommandsBox.TabStop = false;
+			this.grpOptionalPollingCommandsBox.Text = "Optional Information To Poll";
+			this.toolTip1.SetToolTip(this.grpOptionalPollingCommandsBox,"Additional Commands to polled on the Rig");
+			// 
+			// label8
+			// 
+			this.label8.Location = new System.Drawing.Point(6,45);
+			this.label8.Name = "label8";
+			this.label8.Size = new System.Drawing.Size(97,20);
+			this.label8.TabIndex = 10;
+			this.label8.Text = "LO Center:";
+			this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.toolTip1.SetToolTip(this.label8,"Local Oscillator Center Frequency of External SDR");
+			// 
+			// tabPage3
+			// 
+			this.tabPage3.BackColor = System.Drawing.Color.Transparent;
+			this.tabPage3.Controls.Add(this.grpMeterTimingBox);
+			this.tabPage3.Controls.Add(this.grpMeterTypeBox);
+			this.tabPage3.Controls.Add(this.grpMeterSerialBox);
+			this.tabPage3.Location = new System.Drawing.Point(4,22);
+			this.tabPage3.Name = "tabPage3";
+			this.tabPage3.Size = new System.Drawing.Size(584,275);
+			this.tabPage3.TabIndex = 2;
+			this.tabPage3.Text = "Meter Connection";
+			this.tabPage3.UseVisualStyleBackColor = true;
+			// 
+			// grpMeterTypeBox
+			// 
+			this.grpMeterTypeBox.Controls.Add(this.chkUseMeter);
+			this.grpMeterTypeBox.Controls.Add(this.comboMeterType);
+			this.grpMeterTypeBox.Location = new System.Drawing.Point(6,6);
+			this.grpMeterTypeBox.Name = "grpMeterTypeBox";
+			this.grpMeterTypeBox.Size = new System.Drawing.Size(183,75);
+			this.grpMeterTypeBox.TabIndex = 92;
+			this.grpMeterTypeBox.TabStop = false;
+			this.grpMeterTypeBox.Text = "Meter Type";
+			// 
+			// tabPage2
+			// 
+			this.tabPage2.BackColor = System.Drawing.Color.Transparent;
+			this.tabPage2.Controls.Add(this.groupBox2);
+			this.tabPage2.Controls.Add(this.groupBox1);
+			this.tabPage2.Location = new System.Drawing.Point(4,22);
+			this.tabPage2.Name = "tabPage2";
+			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage2.Size = new System.Drawing.Size(584,275);
+			this.tabPage2.TabIndex = 1;
+			this.tabPage2.Text = "IF Frequencies";
+			this.tabPage2.UseVisualStyleBackColor = true;
+			// 
+			// groupBox2
+			// 
+			this.groupBox2.Controls.Add(this.label8);
+			this.groupBox2.Controls.Add(this.udLOCenterFreq);
+			this.groupBox2.Controls.Add(this.label7);
+			this.groupBox2.Controls.Add(this.udIFGlobalOffset);
+			this.groupBox2.Location = new System.Drawing.Point(148,6);
+			this.groupBox2.Name = "groupBox2";
+			this.groupBox2.Size = new System.Drawing.Size(198,77);
+			this.groupBox2.TabIndex = 1;
+			this.groupBox2.TabStop = false;
+			this.groupBox2.Text = "Global IF Frequency Adjustments (Hz)";
+			// 
+			// label7
+			// 
+			this.label7.Location = new System.Drawing.Point(6,19);
+			this.label7.Name = "label7";
+			this.label7.Size = new System.Drawing.Size(97,20);
+			this.label7.TabIndex = 8;
+			this.label7.Text = "Global Offset:";
+			this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			// 
+			// groupBox1
+			// 
+			this.groupBox1.Controls.Add(this.udIFFSK);
+			this.groupBox1.Controls.Add(this.udIFFM);
+			this.groupBox1.Controls.Add(this.udIFAM);
+			this.groupBox1.Controls.Add(this.udIFCW);
+			this.groupBox1.Controls.Add(this.udIFUSB);
+			this.groupBox1.Controls.Add(this.udIFLSB);
+			this.groupBox1.Controls.Add(this.label6);
+			this.groupBox1.Controls.Add(this.label5);
+			this.groupBox1.Controls.Add(this.label4);
+			this.groupBox1.Controls.Add(this.label3);
+			this.groupBox1.Controls.Add(this.label2);
+			this.groupBox1.Controls.Add(this.label1);
+			this.groupBox1.Location = new System.Drawing.Point(11,6);
+			this.groupBox1.Name = "groupBox1";
+			this.groupBox1.Size = new System.Drawing.Size(131,180);
+			this.groupBox1.TabIndex = 0;
+			this.groupBox1.TabStop = false;
+			this.groupBox1.Text = "IF Frequency (Hz)";
+			// 
+			// label6
+			// 
+			this.label6.Location = new System.Drawing.Point(8,149);
+			this.label6.Name = "label6";
+			this.label6.Size = new System.Drawing.Size(27,20);
+			this.label6.TabIndex = 5;
+			this.label6.Text = "FSK";
+			this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			// 
+			// label5
+			// 
+			this.label5.Location = new System.Drawing.Point(13,123);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(22,20);
+			this.label5.TabIndex = 4;
+			this.label5.Text = "FM";
+			this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			// 
+			// label4
+			// 
+			this.label4.Location = new System.Drawing.Point(12,97);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size(23,20);
+			this.label4.TabIndex = 3;
+			this.label4.Text = "AM";
+			this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			// 
+			// label3
+			// 
+			this.label3.Location = new System.Drawing.Point(10,71);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(25,20);
+			this.label3.TabIndex = 2;
+			this.label3.Text = "CW";
+			this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			// 
+			// label2
+			// 
+			this.label2.Location = new System.Drawing.Point(6,45);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(29,20);
+			this.label2.TabIndex = 1;
+			this.label2.Text = "USB";
+			this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			// 
+			// label1
+			// 
+			this.label1.Location = new System.Drawing.Point(8,19);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(27,20);
+			this.label1.TabIndex = 0;
+			this.label1.Text = "LSB";
+			this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			// 
+			// tabPage1
+			// 
+			this.tabPage1.BackColor = System.Drawing.Color.Transparent;
+			this.tabPage1.Controls.Add(this.grpOptionalPollingCommandsBox);
+			this.tabPage1.Controls.Add(this.grpRigTimingBox);
+			this.tabPage1.Controls.Add(this.grpRigSerialBox);
+			this.tabPage1.Controls.Add(this.grpRigTypeBox);
+			this.tabPage1.Location = new System.Drawing.Point(4,22);
+			this.tabPage1.Name = "tabPage1";
+			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage1.Size = new System.Drawing.Size(584,275);
+			this.tabPage1.TabIndex = 0;
+			this.tabPage1.Text = "Rig Connection";
+			this.tabPage1.UseVisualStyleBackColor = true;
+			// 
+			// grpRigTypeBox
+			// 
+			this.grpRigTypeBox.Controls.Add(this.comboRigType);
+			this.grpRigTypeBox.Location = new System.Drawing.Point(6,6);
+			this.grpRigTypeBox.Name = "grpRigTypeBox";
+			this.grpRigTypeBox.Size = new System.Drawing.Size(141,55);
+			this.grpRigTypeBox.TabIndex = 0;
+			this.grpRigTypeBox.TabStop = false;
+			this.grpRigTypeBox.Text = "Rig Type";
+			// 
+			// tabControl1
+			// 
+			this.tabControl1.Controls.Add(this.tabPage1);
+			this.tabControl1.Controls.Add(this.tabPage2);
+			this.tabControl1.Controls.Add(this.tabPage3);
+			this.tabControl1.Location = new System.Drawing.Point(12,12);
+			this.tabControl1.Name = "tabControl1";
+			this.tabControl1.SelectedIndex = 0;
+			this.tabControl1.Size = new System.Drawing.Size(592,301);
+			this.tabControl1.TabIndex = 27;
+			// 
+			// chkRigPollIFFreq
+			// 
+			this.chkRigPollIFFreq.AutoSize = true;
+			this.chkRigPollIFFreq.Enabled = false;
+			this.chkRigPollIFFreq.Image = null;
+			this.chkRigPollIFFreq.Location = new System.Drawing.Point(9,42);
+			this.chkRigPollIFFreq.Name = "chkRigPollIFFreq";
+			this.chkRigPollIFFreq.Size = new System.Drawing.Size(88,17);
+			this.chkRigPollIFFreq.TabIndex = 10;
+			this.chkRigPollIFFreq.Text = "IF Frequency";
+			this.toolTip1.SetToolTip(this.chkRigPollIFFreq,"Poll for IF Frequency");
+			this.chkRigPollIFFreq.UseVisualStyleBackColor = true;
+			this.chkRigPollIFFreq.CheckedChanged += new System.EventHandler(this.chkRigPollIFFreq_CheckedChanged);
+			// 
+			// chkRigPollVFOB
+			// 
+			this.chkRigPollVFOB.AutoSize = true;
+			this.chkRigPollVFOB.Image = null;
+			this.chkRigPollVFOB.Location = new System.Drawing.Point(9,19);
+			this.chkRigPollVFOB.Name = "chkRigPollVFOB";
+			this.chkRigPollVFOB.Size = new System.Drawing.Size(57,17);
+			this.chkRigPollVFOB.TabIndex = 9;
+			this.chkRigPollVFOB.Text = "VFO-B";
+			this.toolTip1.SetToolTip(this.chkRigPollVFOB,"Poll for VFO-B");
+			this.chkRigPollVFOB.UseVisualStyleBackColor = true;
+			this.chkRigPollVFOB.CheckedChanged += new System.EventHandler(this.chkRigPollVFOB_CheckedChanged);
+			// 
+			// labelTS6
+			// 
+			this.labelTS6.Image = null;
+			this.labelTS6.Location = new System.Drawing.Point(6,71);
+			this.labelTS6.Name = "labelTS6";
+			this.labelTS6.Size = new System.Drawing.Size(120,20);
+			this.labelTS6.TabIndex = 20;
+			this.labelTS6.Text = "Tuning CAT Interval:";
+			this.labelTS6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			// 
+			// udRigTuningCATInterval
+			// 
+			this.udRigTuningCATInterval.Increment = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+			this.udRigTuningCATInterval.Location = new System.Drawing.Point(132,71);
+			this.udRigTuningCATInterval.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+			this.udRigTuningCATInterval.Minimum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+			this.udRigTuningCATInterval.Name = "udRigTuningCATInterval";
+			this.udRigTuningCATInterval.Size = new System.Drawing.Size(51,20);
+			this.udRigTuningCATInterval.TabIndex = 8;
+			this.toolTip1.SetToolTip(this.udRigTuningCATInterval,"Interval at which frequency information is sent to the Rig while tuning in PowerS" +
+					"DR");
+			this.udRigTuningCATInterval.Value = new decimal(new int[] {
+            200,
+            0,
+            0,
+            0});
+			this.udRigTuningCATInterval.ValueChanged += new System.EventHandler(this.udRigTuningCATInterval_ValueChanged);
 			// 
 			// labelRigTuningPollingInterval
 			// 
@@ -290,7 +480,7 @@ namespace PowerSDR
 			// labelRigPollingLockoutTime
 			// 
 			this.labelRigPollingLockoutTime.Image = null;
-			this.labelRigPollingLockoutTime.Location = new System.Drawing.Point(6,72);
+			this.labelRigPollingLockoutTime.Location = new System.Drawing.Point(6,97);
 			this.labelRigPollingLockoutTime.Name = "labelRigPollingLockoutTime";
 			this.labelRigPollingLockoutTime.Size = new System.Drawing.Size(120,20);
 			this.labelRigPollingLockoutTime.TabIndex = 16;
@@ -304,7 +494,7 @@ namespace PowerSDR
             0,
             0,
             0});
-			this.udRigPollingLockoutTime.Location = new System.Drawing.Point(132,72);
+			this.udRigPollingLockoutTime.Location = new System.Drawing.Point(132,97);
 			this.udRigPollingLockoutTime.Maximum = new decimal(new int[] {
             10000,
             0,
@@ -317,7 +507,7 @@ namespace PowerSDR
             0});
 			this.udRigPollingLockoutTime.Name = "udRigPollingLockoutTime";
 			this.udRigPollingLockoutTime.Size = new System.Drawing.Size(51,20);
-			this.udRigPollingLockoutTime.TabIndex = 8;
+			this.udRigPollingLockoutTime.TabIndex = 9;
 			this.toolTip1.SetToolTip(this.udRigPollingLockoutTime,"Amount of time to lockout Rig Polling while Rig commands are executed as a result" +
 					" of UI changes");
 			this.udRigPollingLockoutTime.Value = new decimal(new int[] {
@@ -366,133 +556,41 @@ namespace PowerSDR
             0});
 			this.udRigPollingInterval.ValueChanged += new System.EventHandler(this.udRigPollingInterval_ValueChanged);
 			// 
-			// grpOptionalPollingCommandsBox
+			// grpRigSerialBox
 			// 
-			this.grpOptionalPollingCommandsBox.Controls.Add(this.chkRigPollIFFreq);
-			this.grpOptionalPollingCommandsBox.Controls.Add(this.chkRigPollVFOB);
-			this.grpOptionalPollingCommandsBox.Location = new System.Drawing.Point(154,178);
-			this.grpOptionalPollingCommandsBox.Name = "grpOptionalPollingCommandsBox";
-			this.grpOptionalPollingCommandsBox.Size = new System.Drawing.Size(194,90);
-			this.grpOptionalPollingCommandsBox.TabIndex = 93;
-			this.grpOptionalPollingCommandsBox.TabStop = false;
-			this.grpOptionalPollingCommandsBox.Text = "Optional Information To Poll";
-			this.toolTip1.SetToolTip(this.grpOptionalPollingCommandsBox,"Additional Commands to polled on the Rig");
+			this.grpRigSerialBox.Controls.Add(this.comboRigPort);
+			this.grpRigSerialBox.Controls.Add(this.comboRigBaud);
+			this.grpRigSerialBox.Controls.Add(this.lblCATBaud);
+			this.grpRigSerialBox.Controls.Add(this.lblCATPort);
+			this.grpRigSerialBox.Controls.Add(this.lblCATParity);
+			this.grpRigSerialBox.Controls.Add(this.lblCATData);
+			this.grpRigSerialBox.Controls.Add(this.lblCATStop);
+			this.grpRigSerialBox.Controls.Add(this.comboRigParity);
+			this.grpRigSerialBox.Controls.Add(this.comboRigDataBits);
+			this.grpRigSerialBox.Controls.Add(this.comboRigStopBits);
+			this.grpRigSerialBox.Location = new System.Drawing.Point(6,67);
+			this.grpRigSerialBox.Name = "grpRigSerialBox";
+			this.grpRigSerialBox.Size = new System.Drawing.Size(141,201);
+			this.grpRigSerialBox.TabIndex = 91;
+			this.grpRigSerialBox.TabStop = false;
+			this.grpRigSerialBox.Text = "Rig Serial Connection";
 			// 
-			// chkRigPollIFFreq
+			// comboRigPort
 			// 
-			this.chkRigPollIFFreq.AutoSize = true;
-			this.chkRigPollIFFreq.Enabled = false;
-			this.chkRigPollIFFreq.Image = null;
-			this.chkRigPollIFFreq.Location = new System.Drawing.Point(9,42);
-			this.chkRigPollIFFreq.Name = "chkRigPollIFFreq";
-			this.chkRigPollIFFreq.Size = new System.Drawing.Size(88,17);
-			this.chkRigPollIFFreq.TabIndex = 10;
-			this.chkRigPollIFFreq.Text = "IF Frequency";
-			this.toolTip1.SetToolTip(this.chkRigPollIFFreq,"Poll for IF Frequency");
-			this.chkRigPollIFFreq.UseVisualStyleBackColor = true;
-			this.chkRigPollIFFreq.CheckedChanged += new System.EventHandler(this.chkRigPollIFFreq_CheckedChanged);
+			this.comboRigPort.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboRigPort.DropDownWidth = 56;
+			this.comboRigPort.Location = new System.Drawing.Point(60,19);
+			this.comboRigPort.Name = "comboRigPort";
+			this.comboRigPort.Size = new System.Drawing.Size(72,21);
+			this.comboRigPort.TabIndex = 1;
+			this.toolTip1.SetToolTip(this.comboRigPort,"Sets the COM port to be used for communicating with the Rig.");
+			this.comboRigPort.SelectedIndexChanged += new System.EventHandler(this.comboRigPort_SelectedIndexChanged);
 			// 
-			// chkRigPollVFOB
+			// comboRigBaud
 			// 
-			this.chkRigPollVFOB.AutoSize = true;
-			this.chkRigPollVFOB.Image = null;
-			this.chkRigPollVFOB.Location = new System.Drawing.Point(9,19);
-			this.chkRigPollVFOB.Name = "chkRigPollVFOB";
-			this.chkRigPollVFOB.Size = new System.Drawing.Size(57,17);
-			this.chkRigPollVFOB.TabIndex = 9;
-			this.chkRigPollVFOB.Text = "VFO-B";
-			this.toolTip1.SetToolTip(this.chkRigPollVFOB,"Poll for VFO-B");
-			this.chkRigPollVFOB.UseVisualStyleBackColor = true;
-			this.chkRigPollVFOB.CheckedChanged += new System.EventHandler(this.chkRigPollVFOB_CheckedChanged);
-			// 
-			// btnImportDB
-			// 
-			this.btnImportDB.Image = null;
-			this.btnImportDB.Location = new System.Drawing.Point(143,322);
-			this.btnImportDB.Name = "btnImportDB";
-			this.btnImportDB.Size = new System.Drawing.Size(112,23);
-			this.btnImportDB.TabIndex = 26;
-			this.btnImportDB.Text = "Import Database...";
-			this.btnImportDB.Click += new System.EventHandler(this.btnImportDB_Click);
-			// 
-			// btnResetDB
-			// 
-			this.btnResetDB.Image = null;
-			this.btnResetDB.Location = new System.Drawing.Point(23,322);
-			this.btnResetDB.Name = "btnResetDB";
-			this.btnResetDB.Size = new System.Drawing.Size(96,23);
-			this.btnResetDB.TabIndex = 25;
-			this.btnResetDB.Text = "Reset Database";
-			this.btnResetDB.Click += new System.EventHandler(this.btnResetDB_Click);
-			// 
-			// btnApply
-			// 
-			this.btnApply.Image = null;
-			this.btnApply.Location = new System.Drawing.Point(511,322);
-			this.btnApply.Name = "btnApply";
-			this.btnApply.Size = new System.Drawing.Size(75,23);
-			this.btnApply.TabIndex = 24;
-			this.btnApply.Text = "Apply";
-			this.btnApply.Click += new System.EventHandler(this.btnApply_Click);
-			// 
-			// btnCancel
-			// 
-			this.btnCancel.Image = null;
-			this.btnCancel.Location = new System.Drawing.Point(423,322);
-			this.btnCancel.Name = "btnCancel";
-			this.btnCancel.Size = new System.Drawing.Size(75,23);
-			this.btnCancel.TabIndex = 23;
-			this.btnCancel.Text = "Cancel";
-			this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-			// 
-			// btnOK
-			// 
-			this.btnOK.Image = null;
-			this.btnOK.Location = new System.Drawing.Point(335,322);
-			this.btnOK.Name = "btnOK";
-			this.btnOK.Size = new System.Drawing.Size(75,23);
-			this.btnOK.TabIndex = 22;
-			this.btnOK.Text = "OK";
-			this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
-			// 
-			// tabPage3
-			// 
-			this.tabPage3.BackColor = System.Drawing.Color.Transparent;
-			this.tabPage3.Controls.Add(this.grpMeterTimingBox);
-			this.tabPage3.Controls.Add(this.grpMeterSerialBox);
-			this.tabPage3.Controls.Add(this.grpMeterTypeBox);
-			this.tabPage3.Location = new System.Drawing.Point(4,22);
-			this.tabPage3.Name = "tabPage3";
-			this.tabPage3.Size = new System.Drawing.Size(584,275);
-			this.tabPage3.TabIndex = 2;
-			this.tabPage3.Text = "Meter Connection";
-			this.tabPage3.UseVisualStyleBackColor = true;
-			// 
-			// grpMeterSerialBox
-			// 
-			this.grpMeterSerialBox.Controls.Add(this.comboMeterPort);
-			this.grpMeterSerialBox.Controls.Add(this.comboMeterBaud);
-			this.grpMeterSerialBox.Controls.Add(this.labelTS1);
-			this.grpMeterSerialBox.Controls.Add(this.labelTS2);
-			this.grpMeterSerialBox.Controls.Add(this.labelTS3);
-			this.grpMeterSerialBox.Controls.Add(this.labelTS4);
-			this.grpMeterSerialBox.Controls.Add(this.labelTS5);
-			this.grpMeterSerialBox.Controls.Add(this.comboMeterParity);
-			this.grpMeterSerialBox.Controls.Add(this.comboMeterDataBits);
-			this.grpMeterSerialBox.Controls.Add(this.comboMeterStopBits);
-			this.grpMeterSerialBox.Enabled = false;
-			this.grpMeterSerialBox.Location = new System.Drawing.Point(6,87);
-			this.grpMeterSerialBox.Name = "grpMeterSerialBox";
-			this.grpMeterSerialBox.Size = new System.Drawing.Size(141,181);
-			this.grpMeterSerialBox.TabIndex = 93;
-			this.grpMeterSerialBox.TabStop = false;
-			this.grpMeterSerialBox.Text = "Meter Serial Connection";
-			// 
-			// comboMeterBaud
-			// 
-			this.comboMeterBaud.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboMeterBaud.DropDownWidth = 56;
-			this.comboMeterBaud.Items.AddRange(new object[] {
+			this.comboRigBaud.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboRigBaud.DropDownWidth = 56;
+			this.comboRigBaud.Items.AddRange(new object[] {
             "300",
             "1200",
             "2400",
@@ -501,154 +599,149 @@ namespace PowerSDR
             "19200",
             "38400",
             "57600"});
-			this.comboMeterBaud.Location = new System.Drawing.Point(60,46);
-			this.comboMeterBaud.Name = "comboMeterBaud";
-			this.comboMeterBaud.Size = new System.Drawing.Size(72,21);
-			this.comboMeterBaud.TabIndex = 3;
-			this.comboMeterBaud.SelectedIndexChanged += new System.EventHandler(this.comboMeterBaud_SelectedIndexChanged);
+			this.comboRigBaud.Location = new System.Drawing.Point(60,46);
+			this.comboRigBaud.Name = "comboRigBaud";
+			this.comboRigBaud.Size = new System.Drawing.Size(72,21);
+			this.comboRigBaud.TabIndex = 2;
+			this.comboRigBaud.SelectedIndexChanged += new System.EventHandler(this.comboRigBaud_SelectedIndexChanged);
 			// 
-			// labelTS1
+			// lblCATBaud
 			// 
-			this.labelTS1.Image = null;
-			this.labelTS1.Location = new System.Drawing.Point(14,46);
-			this.labelTS1.Name = "labelTS1";
-			this.labelTS1.Size = new System.Drawing.Size(40,23);
-			this.labelTS1.TabIndex = 5;
-			this.labelTS1.Text = "Baud:";
-			this.labelTS1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.lblCATBaud.Image = null;
+			this.lblCATBaud.Location = new System.Drawing.Point(14,46);
+			this.lblCATBaud.Name = "lblCATBaud";
+			this.lblCATBaud.Size = new System.Drawing.Size(40,23);
+			this.lblCATBaud.TabIndex = 5;
+			this.lblCATBaud.Text = "Baud:";
+			this.lblCATBaud.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
-			// labelTS2
+			// lblCATPort
 			// 
-			this.labelTS2.Image = null;
-			this.labelTS2.Location = new System.Drawing.Point(14,19);
-			this.labelTS2.Name = "labelTS2";
-			this.labelTS2.Size = new System.Drawing.Size(40,23);
-			this.labelTS2.TabIndex = 3;
-			this.labelTS2.Text = "Port:";
-			this.labelTS2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.lblCATPort.Image = null;
+			this.lblCATPort.Location = new System.Drawing.Point(14,19);
+			this.lblCATPort.Name = "lblCATPort";
+			this.lblCATPort.Size = new System.Drawing.Size(40,23);
+			this.lblCATPort.TabIndex = 3;
+			this.lblCATPort.Text = "Port:";
+			this.lblCATPort.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
-			// labelTS3
+			// lblCATParity
 			// 
-			this.labelTS3.Image = null;
-			this.labelTS3.Location = new System.Drawing.Point(6,73);
-			this.labelTS3.Name = "labelTS3";
-			this.labelTS3.Size = new System.Drawing.Size(48,23);
-			this.labelTS3.TabIndex = 92;
-			this.labelTS3.Text = "Parity:";
-			this.labelTS3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.lblCATParity.Image = null;
+			this.lblCATParity.Location = new System.Drawing.Point(6,73);
+			this.lblCATParity.Name = "lblCATParity";
+			this.lblCATParity.Size = new System.Drawing.Size(48,23);
+			this.lblCATParity.TabIndex = 92;
+			this.lblCATParity.Text = "Parity:";
+			this.lblCATParity.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
-			// labelTS4
+			// lblCATData
 			// 
-			this.labelTS4.Image = null;
-			this.labelTS4.Location = new System.Drawing.Point(14,100);
-			this.labelTS4.Name = "labelTS4";
-			this.labelTS4.Size = new System.Drawing.Size(40,23);
-			this.labelTS4.TabIndex = 92;
-			this.labelTS4.Text = "Data:";
-			this.labelTS4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.lblCATData.Image = null;
+			this.lblCATData.Location = new System.Drawing.Point(14,100);
+			this.lblCATData.Name = "lblCATData";
+			this.lblCATData.Size = new System.Drawing.Size(40,23);
+			this.lblCATData.TabIndex = 92;
+			this.lblCATData.Text = "Data:";
+			this.lblCATData.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
-			// labelTS5
+			// lblCATStop
 			// 
-			this.labelTS5.Image = null;
-			this.labelTS5.Location = new System.Drawing.Point(14,127);
-			this.labelTS5.Name = "labelTS5";
-			this.labelTS5.Size = new System.Drawing.Size(40,23);
-			this.labelTS5.TabIndex = 92;
-			this.labelTS5.Text = "Stop:";
-			this.labelTS5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.lblCATStop.Image = null;
+			this.lblCATStop.Location = new System.Drawing.Point(14,127);
+			this.lblCATStop.Name = "lblCATStop";
+			this.lblCATStop.Size = new System.Drawing.Size(40,23);
+			this.lblCATStop.TabIndex = 92;
+			this.lblCATStop.Text = "Stop:";
+			this.lblCATStop.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
-			// comboMeterParity
+			// comboRigParity
 			// 
-			this.comboMeterParity.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboMeterParity.DropDownWidth = 56;
-			this.comboMeterParity.Items.AddRange(new object[] {
+			this.comboRigParity.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboRigParity.DropDownWidth = 56;
+			this.comboRigParity.Items.AddRange(new object[] {
             "none",
             "odd ",
             "even",
             "mark",
             "space"});
-			this.comboMeterParity.Location = new System.Drawing.Point(60,73);
-			this.comboMeterParity.Name = "comboMeterParity";
-			this.comboMeterParity.Size = new System.Drawing.Size(72,21);
-			this.comboMeterParity.TabIndex = 4;
-			this.comboMeterParity.SelectedIndexChanged += new System.EventHandler(this.comboMeterParity_SelectedIndexChanged);
+			this.comboRigParity.Location = new System.Drawing.Point(60,73);
+			this.comboRigParity.Name = "comboRigParity";
+			this.comboRigParity.Size = new System.Drawing.Size(72,21);
+			this.comboRigParity.TabIndex = 3;
+			this.comboRigParity.SelectedIndexChanged += new System.EventHandler(this.comboRigParity_SelectedIndexChanged);
 			// 
-			// comboMeterDataBits
+			// comboRigDataBits
 			// 
-			this.comboMeterDataBits.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboMeterDataBits.DropDownWidth = 56;
-			this.comboMeterDataBits.Items.AddRange(new object[] {
+			this.comboRigDataBits.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboRigDataBits.DropDownWidth = 56;
+			this.comboRigDataBits.Items.AddRange(new object[] {
             "8",
             "7",
             "6"});
-			this.comboMeterDataBits.Location = new System.Drawing.Point(60,100);
-			this.comboMeterDataBits.Name = "comboMeterDataBits";
-			this.comboMeterDataBits.Size = new System.Drawing.Size(72,21);
-			this.comboMeterDataBits.TabIndex = 5;
-			this.comboMeterDataBits.SelectedIndexChanged += new System.EventHandler(this.comboMeterDataBits_SelectedIndexChanged);
+			this.comboRigDataBits.Location = new System.Drawing.Point(60,100);
+			this.comboRigDataBits.Name = "comboRigDataBits";
+			this.comboRigDataBits.Size = new System.Drawing.Size(72,21);
+			this.comboRigDataBits.TabIndex = 4;
+			this.comboRigDataBits.SelectedIndexChanged += new System.EventHandler(this.comboRigDataBits_SelectedIndexChanged);
 			// 
-			// comboMeterStopBits
+			// comboRigStopBits
 			// 
-			this.comboMeterStopBits.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboMeterStopBits.DropDownWidth = 56;
-			this.comboMeterStopBits.Items.AddRange(new object[] {
+			this.comboRigStopBits.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboRigStopBits.DropDownWidth = 56;
+			this.comboRigStopBits.Items.AddRange(new object[] {
             "1",
             "1.5",
             "2"});
-			this.comboMeterStopBits.Location = new System.Drawing.Point(60,127);
-			this.comboMeterStopBits.Name = "comboMeterStopBits";
-			this.comboMeterStopBits.Size = new System.Drawing.Size(72,21);
-			this.comboMeterStopBits.TabIndex = 6;
-			this.comboMeterStopBits.SelectedIndexChanged += new System.EventHandler(this.comboMeterStopBits_SelectedIndexChanged);
+			this.comboRigStopBits.Location = new System.Drawing.Point(60,127);
+			this.comboRigStopBits.Name = "comboRigStopBits";
+			this.comboRigStopBits.Size = new System.Drawing.Size(72,21);
+			this.comboRigStopBits.TabIndex = 5;
+			this.comboRigStopBits.SelectedIndexChanged += new System.EventHandler(this.comboRigStopBits_SelectedIndexChanged);
 			// 
-			// grpMeterTypeBox
+			// comboRigType
 			// 
-			this.grpMeterTypeBox.Controls.Add(this.chkUseMeter);
-			this.grpMeterTypeBox.Controls.Add(this.comboMeterType);
-			this.grpMeterTypeBox.Location = new System.Drawing.Point(6,6);
-			this.grpMeterTypeBox.Name = "grpMeterTypeBox";
-			this.grpMeterTypeBox.Size = new System.Drawing.Size(183,75);
-			this.grpMeterTypeBox.TabIndex = 92;
-			this.grpMeterTypeBox.TabStop = false;
-			this.grpMeterTypeBox.Text = "Meter Type";
+			this.comboRigType.FormattingEnabled = true;
+			this.comboRigType.Items.AddRange(new object[] {
+            "Elecraft K3",
+            "Kenwood TS-940S",
+            "Ham Radio Deluxe"});
+			this.comboRigType.Location = new System.Drawing.Point(9,20);
+			this.comboRigType.Name = "comboRigType";
+			this.comboRigType.Size = new System.Drawing.Size(123,21);
+			this.comboRigType.TabIndex = 0;
+			this.toolTip1.SetToolTip(this.comboRigType,"Defines what kind of rig will control PowerSDR");
+			this.comboRigType.SelectedIndexChanged += new System.EventHandler(this.comboRigType_SelectedIndexChanged);
 			// 
-			// chkUseMeter
+			// udLOCenterFreq
 			// 
-			this.chkUseMeter.AutoSize = true;
-			this.chkUseMeter.Image = null;
-			this.chkUseMeter.Location = new System.Drawing.Point(9,20);
-			this.chkUseMeter.Name = "chkUseMeter";
-			this.chkUseMeter.Size = new System.Drawing.Size(116,17);
-			this.chkUseMeter.TabIndex = 0;
-			this.chkUseMeter.Text = "Use External Meter";
-			this.chkUseMeter.UseVisualStyleBackColor = true;
-			this.chkUseMeter.CheckedChanged += new System.EventHandler(this.chkUseMeter_CheckedChanged);
-			// 
-			// tabPage2
-			// 
-			this.tabPage2.BackColor = System.Drawing.Color.Transparent;
-			this.tabPage2.Controls.Add(this.groupBox2);
-			this.tabPage2.Controls.Add(this.groupBox1);
-			this.tabPage2.Location = new System.Drawing.Point(4,22);
-			this.tabPage2.Name = "tabPage2";
-			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage2.Size = new System.Drawing.Size(584,275);
-			this.tabPage2.TabIndex = 1;
-			this.tabPage2.Text = "IF Frequencies";
-			this.tabPage2.UseVisualStyleBackColor = true;
-			// 
-			// groupBox2
-			// 
-			this.groupBox2.Controls.Add(this.label8);
-			this.groupBox2.Controls.Add(this.udLOCenterFreq);
-			this.groupBox2.Controls.Add(this.label7);
-			this.groupBox2.Controls.Add(this.udIFGlobalOffset);
-			this.groupBox2.Location = new System.Drawing.Point(148,6);
-			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(198,77);
-			this.groupBox2.TabIndex = 1;
-			this.groupBox2.TabStop = false;
-			this.groupBox2.Text = "Global IF Frequency Adjustments (Hz)";
+			this.udLOCenterFreq.Enabled = false;
+			this.udLOCenterFreq.Increment = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+			this.udLOCenterFreq.Location = new System.Drawing.Point(109,45);
+			this.udLOCenterFreq.Maximum = new decimal(new int[] {
+            10000000,
+            0,
+            0,
+            0});
+			this.udLOCenterFreq.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+			this.udLOCenterFreq.Name = "udLOCenterFreq";
+			this.udLOCenterFreq.Size = new System.Drawing.Size(79,20);
+			this.udLOCenterFreq.TabIndex = 8;
+			this.toolTip1.SetToolTip(this.udLOCenterFreq,"Local Oscillator Center Frequency of External SDR");
+			this.udLOCenterFreq.Value = new decimal(new int[] {
+            8215000,
+            0,
+            0,
+            0});
+			this.udLOCenterFreq.ValueChanged += new System.EventHandler(this.udLOCenterFreq_ValueChanged);
 			// 
 			// udIFGlobalOffset
 			// 
@@ -677,27 +770,6 @@ namespace PowerSDR
             0,
             0});
 			this.udIFGlobalOffset.ValueChanged += new System.EventHandler(this.udIFGlobalOffset_ValueChanged);
-			// 
-			// groupBox1
-			// 
-			this.groupBox1.Controls.Add(this.udIFFSK);
-			this.groupBox1.Controls.Add(this.udIFFM);
-			this.groupBox1.Controls.Add(this.udIFAM);
-			this.groupBox1.Controls.Add(this.udIFCW);
-			this.groupBox1.Controls.Add(this.udIFUSB);
-			this.groupBox1.Controls.Add(this.udIFLSB);
-			this.groupBox1.Controls.Add(this.label6);
-			this.groupBox1.Controls.Add(this.label5);
-			this.groupBox1.Controls.Add(this.label4);
-			this.groupBox1.Controls.Add(this.label3);
-			this.groupBox1.Controls.Add(this.label2);
-			this.groupBox1.Controls.Add(this.label1);
-			this.groupBox1.Location = new System.Drawing.Point(11,6);
-			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(131,180);
-			this.groupBox1.TabIndex = 0;
-			this.groupBox1.TabStop = false;
-			this.groupBox1.Text = "IF Frequency (Hz)";
 			// 
 			// udIFFSK
 			// 
@@ -867,99 +939,67 @@ namespace PowerSDR
             0});
 			this.udIFLSB.ValueChanged += new System.EventHandler(this.udIFLSB_ValueChanged);
 			// 
-			// label6
+			// comboMeterTimingInterval
 			// 
-			this.label6.Location = new System.Drawing.Point(8,149);
-			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(27,20);
-			this.label6.TabIndex = 5;
-			this.label6.Text = "FSK";
-			this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.comboMeterTimingInterval.FormattingEnabled = true;
+			this.comboMeterTimingInterval.Items.AddRange(new object[] {
+            "35",
+            "70",
+            "140",
+            "280"});
+			this.comboMeterTimingInterval.Location = new System.Drawing.Point(116,19);
+			this.comboMeterTimingInterval.Name = "comboMeterTimingInterval";
+			this.comboMeterTimingInterval.Size = new System.Drawing.Size(70,21);
+			this.comboMeterTimingInterval.TabIndex = 15;
+			this.comboMeterTimingInterval.Text = "35";
+			this.comboMeterTimingInterval.SelectedIndexChanged += new System.EventHandler(this.comboMeterTimingInterval_SelectedIndexChanged);
 			// 
-			// label5
+			// labelTS8
 			// 
-			this.label5.Location = new System.Drawing.Point(13,123);
-			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(22,20);
-			this.label5.TabIndex = 4;
-			this.label5.Text = "FM";
-			this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.labelTS8.Image = null;
+			this.labelTS8.Location = new System.Drawing.Point(6,19);
+			this.labelTS8.Name = "labelTS8";
+			this.labelTS8.Size = new System.Drawing.Size(104,20);
+			this.labelTS8.TabIndex = 14;
+			this.labelTS8.Text = "Data Interval:";
+			this.labelTS8.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
-			// label4
+			// grpMeterSerialBox
 			// 
-			this.label4.Location = new System.Drawing.Point(12,97);
-			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(23,20);
-			this.label4.TabIndex = 3;
-			this.label4.Text = "AM";
-			this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.grpMeterSerialBox.Controls.Add(this.comboMeterPort);
+			this.grpMeterSerialBox.Controls.Add(this.comboMeterBaud);
+			this.grpMeterSerialBox.Controls.Add(this.labelTS1);
+			this.grpMeterSerialBox.Controls.Add(this.labelTS2);
+			this.grpMeterSerialBox.Controls.Add(this.labelTS3);
+			this.grpMeterSerialBox.Controls.Add(this.labelTS4);
+			this.grpMeterSerialBox.Controls.Add(this.labelTS5);
+			this.grpMeterSerialBox.Controls.Add(this.comboMeterParity);
+			this.grpMeterSerialBox.Controls.Add(this.comboMeterDataBits);
+			this.grpMeterSerialBox.Controls.Add(this.comboMeterStopBits);
+			this.grpMeterSerialBox.Enabled = false;
+			this.grpMeterSerialBox.Location = new System.Drawing.Point(6,87);
+			this.grpMeterSerialBox.Name = "grpMeterSerialBox";
+			this.grpMeterSerialBox.Size = new System.Drawing.Size(141,181);
+			this.grpMeterSerialBox.TabIndex = 93;
+			this.grpMeterSerialBox.TabStop = false;
+			this.grpMeterSerialBox.Text = "Meter Serial Connection";
 			// 
-			// label3
+			// comboMeterPort
 			// 
-			this.label3.Location = new System.Drawing.Point(10,71);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(25,20);
-			this.label3.TabIndex = 2;
-			this.label3.Text = "CW";
-			this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.comboMeterPort.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboMeterPort.DropDownWidth = 56;
+			this.comboMeterPort.Location = new System.Drawing.Point(60,19);
+			this.comboMeterPort.Name = "comboMeterPort";
+			this.comboMeterPort.Size = new System.Drawing.Size(72,21);
+			this.comboMeterPort.TabIndex = 2;
+			this.toolTip1.SetToolTip(this.comboMeterPort,"Sets the COM port to be used for communicating with the external meter.");
+			this.comboMeterPort.SelectedIndexChanged += new System.EventHandler(this.comboMeterPort_SelectedIndexChanged);
 			// 
-			// label2
+			// comboMeterBaud
 			// 
-			this.label2.Location = new System.Drawing.Point(6,45);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(29,20);
-			this.label2.TabIndex = 1;
-			this.label2.Text = "USB";
-			this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			// 
-			// label1
-			// 
-			this.label1.Location = new System.Drawing.Point(8,19);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(27,20);
-			this.label1.TabIndex = 0;
-			this.label1.Text = "LSB";
-			this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			// 
-			// tabPage1
-			// 
-			this.tabPage1.BackColor = System.Drawing.Color.Transparent;
-			this.tabPage1.Controls.Add(this.grpOptionalPollingCommandsBox);
-			this.tabPage1.Controls.Add(this.grpRigTimingBox);
-			this.tabPage1.Controls.Add(this.grpRigSerialBox);
-			this.tabPage1.Controls.Add(this.grpRigTypeBox);
-			this.tabPage1.Location = new System.Drawing.Point(4,22);
-			this.tabPage1.Name = "tabPage1";
-			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage1.Size = new System.Drawing.Size(584,275);
-			this.tabPage1.TabIndex = 0;
-			this.tabPage1.Text = "Rig Connection";
-			this.tabPage1.UseVisualStyleBackColor = true;
-			// 
-			// grpRigSerialBox
-			// 
-			this.grpRigSerialBox.Controls.Add(this.comboRigPort);
-			this.grpRigSerialBox.Controls.Add(this.comboRigBaud);
-			this.grpRigSerialBox.Controls.Add(this.lblCATBaud);
-			this.grpRigSerialBox.Controls.Add(this.lblCATPort);
-			this.grpRigSerialBox.Controls.Add(this.lblCATParity);
-			this.grpRigSerialBox.Controls.Add(this.lblCATData);
-			this.grpRigSerialBox.Controls.Add(this.lblCATStop);
-			this.grpRigSerialBox.Controls.Add(this.comboRigParity);
-			this.grpRigSerialBox.Controls.Add(this.comboRigDataBits);
-			this.grpRigSerialBox.Controls.Add(this.comboRigStopBits);
-			this.grpRigSerialBox.Location = new System.Drawing.Point(6,67);
-			this.grpRigSerialBox.Name = "grpRigSerialBox";
-			this.grpRigSerialBox.Size = new System.Drawing.Size(141,201);
-			this.grpRigSerialBox.TabIndex = 91;
-			this.grpRigSerialBox.TabStop = false;
-			this.grpRigSerialBox.Text = "Rig Serial Connection";
-			// 
-			// comboRigBaud
-			// 
-			this.comboRigBaud.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboRigBaud.DropDownWidth = 56;
-			this.comboRigBaud.Items.AddRange(new object[] {
+			this.comboMeterBaud.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboMeterBaud.DropDownWidth = 56;
+			this.comboMeterBaud.Items.AddRange(new object[] {
             "300",
             "1200",
             "2400",
@@ -968,175 +1008,180 @@ namespace PowerSDR
             "19200",
             "38400",
             "57600"});
-			this.comboRigBaud.Location = new System.Drawing.Point(60,46);
-			this.comboRigBaud.Name = "comboRigBaud";
-			this.comboRigBaud.Size = new System.Drawing.Size(72,21);
-			this.comboRigBaud.TabIndex = 2;
-			this.comboRigBaud.SelectedIndexChanged += new System.EventHandler(this.comboRigBaud_SelectedIndexChanged);
+			this.comboMeterBaud.Location = new System.Drawing.Point(60,46);
+			this.comboMeterBaud.Name = "comboMeterBaud";
+			this.comboMeterBaud.Size = new System.Drawing.Size(72,21);
+			this.comboMeterBaud.TabIndex = 3;
+			this.comboMeterBaud.SelectedIndexChanged += new System.EventHandler(this.comboMeterBaud_SelectedIndexChanged);
 			// 
-			// lblCATBaud
+			// labelTS1
 			// 
-			this.lblCATBaud.Image = null;
-			this.lblCATBaud.Location = new System.Drawing.Point(14,46);
-			this.lblCATBaud.Name = "lblCATBaud";
-			this.lblCATBaud.Size = new System.Drawing.Size(40,23);
-			this.lblCATBaud.TabIndex = 5;
-			this.lblCATBaud.Text = "Baud:";
-			this.lblCATBaud.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.labelTS1.Image = null;
+			this.labelTS1.Location = new System.Drawing.Point(14,46);
+			this.labelTS1.Name = "labelTS1";
+			this.labelTS1.Size = new System.Drawing.Size(40,23);
+			this.labelTS1.TabIndex = 5;
+			this.labelTS1.Text = "Baud:";
+			this.labelTS1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
-			// lblCATPort
+			// labelTS2
 			// 
-			this.lblCATPort.Image = null;
-			this.lblCATPort.Location = new System.Drawing.Point(14,19);
-			this.lblCATPort.Name = "lblCATPort";
-			this.lblCATPort.Size = new System.Drawing.Size(40,23);
-			this.lblCATPort.TabIndex = 3;
-			this.lblCATPort.Text = "Port:";
-			this.lblCATPort.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.labelTS2.Image = null;
+			this.labelTS2.Location = new System.Drawing.Point(14,19);
+			this.labelTS2.Name = "labelTS2";
+			this.labelTS2.Size = new System.Drawing.Size(40,23);
+			this.labelTS2.TabIndex = 3;
+			this.labelTS2.Text = "Port:";
+			this.labelTS2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
-			// lblCATParity
+			// labelTS3
 			// 
-			this.lblCATParity.Image = null;
-			this.lblCATParity.Location = new System.Drawing.Point(6,73);
-			this.lblCATParity.Name = "lblCATParity";
-			this.lblCATParity.Size = new System.Drawing.Size(48,23);
-			this.lblCATParity.TabIndex = 92;
-			this.lblCATParity.Text = "Parity:";
-			this.lblCATParity.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.labelTS3.Image = null;
+			this.labelTS3.Location = new System.Drawing.Point(6,73);
+			this.labelTS3.Name = "labelTS3";
+			this.labelTS3.Size = new System.Drawing.Size(48,23);
+			this.labelTS3.TabIndex = 92;
+			this.labelTS3.Text = "Parity:";
+			this.labelTS3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
-			// lblCATData
+			// labelTS4
 			// 
-			this.lblCATData.Image = null;
-			this.lblCATData.Location = new System.Drawing.Point(14,100);
-			this.lblCATData.Name = "lblCATData";
-			this.lblCATData.Size = new System.Drawing.Size(40,23);
-			this.lblCATData.TabIndex = 92;
-			this.lblCATData.Text = "Data:";
-			this.lblCATData.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.labelTS4.Image = null;
+			this.labelTS4.Location = new System.Drawing.Point(14,100);
+			this.labelTS4.Name = "labelTS4";
+			this.labelTS4.Size = new System.Drawing.Size(40,23);
+			this.labelTS4.TabIndex = 92;
+			this.labelTS4.Text = "Data:";
+			this.labelTS4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
-			// lblCATStop
+			// labelTS5
 			// 
-			this.lblCATStop.Image = null;
-			this.lblCATStop.Location = new System.Drawing.Point(14,127);
-			this.lblCATStop.Name = "lblCATStop";
-			this.lblCATStop.Size = new System.Drawing.Size(40,23);
-			this.lblCATStop.TabIndex = 92;
-			this.lblCATStop.Text = "Stop:";
-			this.lblCATStop.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.labelTS5.Image = null;
+			this.labelTS5.Location = new System.Drawing.Point(14,127);
+			this.labelTS5.Name = "labelTS5";
+			this.labelTS5.Size = new System.Drawing.Size(40,23);
+			this.labelTS5.TabIndex = 92;
+			this.labelTS5.Text = "Stop:";
+			this.labelTS5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
-			// comboRigParity
+			// comboMeterParity
 			// 
-			this.comboRigParity.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboRigParity.DropDownWidth = 56;
-			this.comboRigParity.Items.AddRange(new object[] {
+			this.comboMeterParity.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboMeterParity.DropDownWidth = 56;
+			this.comboMeterParity.Items.AddRange(new object[] {
             "none",
             "odd ",
             "even",
             "mark",
             "space"});
-			this.comboRigParity.Location = new System.Drawing.Point(60,73);
-			this.comboRigParity.Name = "comboRigParity";
-			this.comboRigParity.Size = new System.Drawing.Size(72,21);
-			this.comboRigParity.TabIndex = 3;
-			this.comboRigParity.SelectedIndexChanged += new System.EventHandler(this.comboRigParity_SelectedIndexChanged);
+			this.comboMeterParity.Location = new System.Drawing.Point(60,73);
+			this.comboMeterParity.Name = "comboMeterParity";
+			this.comboMeterParity.Size = new System.Drawing.Size(72,21);
+			this.comboMeterParity.TabIndex = 4;
+			this.comboMeterParity.SelectedIndexChanged += new System.EventHandler(this.comboMeterParity_SelectedIndexChanged);
 			// 
-			// comboRigDataBits
+			// comboMeterDataBits
 			// 
-			this.comboRigDataBits.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboRigDataBits.DropDownWidth = 56;
-			this.comboRigDataBits.Items.AddRange(new object[] {
+			this.comboMeterDataBits.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboMeterDataBits.DropDownWidth = 56;
+			this.comboMeterDataBits.Items.AddRange(new object[] {
             "8",
             "7",
             "6"});
-			this.comboRigDataBits.Location = new System.Drawing.Point(60,100);
-			this.comboRigDataBits.Name = "comboRigDataBits";
-			this.comboRigDataBits.Size = new System.Drawing.Size(72,21);
-			this.comboRigDataBits.TabIndex = 4;
-			this.comboRigDataBits.SelectedIndexChanged += new System.EventHandler(this.comboRigDataBits_SelectedIndexChanged);
+			this.comboMeterDataBits.Location = new System.Drawing.Point(60,100);
+			this.comboMeterDataBits.Name = "comboMeterDataBits";
+			this.comboMeterDataBits.Size = new System.Drawing.Size(72,21);
+			this.comboMeterDataBits.TabIndex = 5;
+			this.comboMeterDataBits.SelectedIndexChanged += new System.EventHandler(this.comboMeterDataBits_SelectedIndexChanged);
 			// 
-			// comboRigStopBits
+			// comboMeterStopBits
 			// 
-			this.comboRigStopBits.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboRigStopBits.DropDownWidth = 56;
-			this.comboRigStopBits.Items.AddRange(new object[] {
+			this.comboMeterStopBits.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboMeterStopBits.DropDownWidth = 56;
+			this.comboMeterStopBits.Items.AddRange(new object[] {
             "1",
             "1.5",
             "2"});
-			this.comboRigStopBits.Location = new System.Drawing.Point(60,127);
-			this.comboRigStopBits.Name = "comboRigStopBits";
-			this.comboRigStopBits.Size = new System.Drawing.Size(72,21);
-			this.comboRigStopBits.TabIndex = 5;
-			this.comboRigStopBits.SelectedIndexChanged += new System.EventHandler(this.comboRigStopBits_SelectedIndexChanged);
+			this.comboMeterStopBits.Location = new System.Drawing.Point(60,127);
+			this.comboMeterStopBits.Name = "comboMeterStopBits";
+			this.comboMeterStopBits.Size = new System.Drawing.Size(72,21);
+			this.comboMeterStopBits.TabIndex = 6;
+			this.comboMeterStopBits.SelectedIndexChanged += new System.EventHandler(this.comboMeterStopBits_SelectedIndexChanged);
 			// 
-			// grpRigTypeBox
+			// chkUseMeter
 			// 
-			this.grpRigTypeBox.Controls.Add(this.comboRigType);
-			this.grpRigTypeBox.Location = new System.Drawing.Point(6,6);
-			this.grpRigTypeBox.Name = "grpRigTypeBox";
-			this.grpRigTypeBox.Size = new System.Drawing.Size(141,55);
-			this.grpRigTypeBox.TabIndex = 0;
-			this.grpRigTypeBox.TabStop = false;
-			this.grpRigTypeBox.Text = "Rig Type";
+			this.chkUseMeter.AutoSize = true;
+			this.chkUseMeter.Image = null;
+			this.chkUseMeter.Location = new System.Drawing.Point(9,20);
+			this.chkUseMeter.Name = "chkUseMeter";
+			this.chkUseMeter.Size = new System.Drawing.Size(116,17);
+			this.chkUseMeter.TabIndex = 0;
+			this.chkUseMeter.Text = "Use External Meter";
+			this.chkUseMeter.UseVisualStyleBackColor = true;
+			this.chkUseMeter.CheckedChanged += new System.EventHandler(this.chkUseMeter_CheckedChanged);
 			// 
-			// tabControl1
+			// comboMeterType
 			// 
-			this.tabControl1.Controls.Add(this.tabPage1);
-			this.tabControl1.Controls.Add(this.tabPage2);
-			this.tabControl1.Controls.Add(this.tabPage3);
-			this.tabControl1.Location = new System.Drawing.Point(12,12);
-			this.tabControl1.Name = "tabControl1";
-			this.tabControl1.SelectedIndex = 0;
-			this.tabControl1.Size = new System.Drawing.Size(592,301);
-			this.tabControl1.TabIndex = 27;
+			this.comboMeterType.Enabled = false;
+			this.comboMeterType.FormattingEnabled = true;
+			this.comboMeterType.Items.AddRange(new object[] {
+            "Array Solutions PowerMaster"});
+			this.comboMeterType.Location = new System.Drawing.Point(9,43);
+			this.comboMeterType.Name = "comboMeterType";
+			this.comboMeterType.Size = new System.Drawing.Size(165,21);
+			this.comboMeterType.TabIndex = 1;
+			this.toolTip1.SetToolTip(this.comboMeterType,"Defines what kind of meter will provide TX information to PowerSDR");
+			this.comboMeterType.SelectedIndexChanged += new System.EventHandler(this.comboMeterType_SelectedIndexChanged);
 			// 
-			// label7
+			// btnImportDB
 			// 
-			this.label7.Location = new System.Drawing.Point(6,19);
-			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(97,20);
-			this.label7.TabIndex = 8;
-			this.label7.Text = "Global Offset:";
-			this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.btnImportDB.Image = null;
+			this.btnImportDB.Location = new System.Drawing.Point(143,322);
+			this.btnImportDB.Name = "btnImportDB";
+			this.btnImportDB.Size = new System.Drawing.Size(112,23);
+			this.btnImportDB.TabIndex = 26;
+			this.btnImportDB.Text = "Import Database...";
+			this.btnImportDB.Click += new System.EventHandler(this.btnImportDB_Click);
 			// 
-			// udLOCenterFreq
+			// btnResetDB
 			// 
-			this.udLOCenterFreq.Enabled = false;
-			this.udLOCenterFreq.Increment = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-			this.udLOCenterFreq.Location = new System.Drawing.Point(109,45);
-			this.udLOCenterFreq.Maximum = new decimal(new int[] {
-            10000000,
-            0,
-            0,
-            0});
-			this.udLOCenterFreq.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-			this.udLOCenterFreq.Name = "udLOCenterFreq";
-			this.udLOCenterFreq.Size = new System.Drawing.Size(79,20);
-			this.udLOCenterFreq.TabIndex = 8;
-			this.toolTip1.SetToolTip(this.udLOCenterFreq,"Local Oscillator Center Frequency of External SDR");
-			this.udLOCenterFreq.Value = new decimal(new int[] {
-            8215000,
-            0,
-            0,
-            0});
-			this.udLOCenterFreq.ValueChanged += new System.EventHandler(this.udLOCenterFreq_ValueChanged);
+			this.btnResetDB.Image = null;
+			this.btnResetDB.Location = new System.Drawing.Point(23,322);
+			this.btnResetDB.Name = "btnResetDB";
+			this.btnResetDB.Size = new System.Drawing.Size(96,23);
+			this.btnResetDB.TabIndex = 25;
+			this.btnResetDB.Text = "Reset Database";
+			this.btnResetDB.Click += new System.EventHandler(this.btnResetDB_Click);
 			// 
-			// label8
+			// btnApply
 			// 
-			this.label8.Location = new System.Drawing.Point(6,45);
-			this.label8.Name = "label8";
-			this.label8.Size = new System.Drawing.Size(97,20);
-			this.label8.TabIndex = 10;
-			this.label8.Text = "LO Center:";
-			this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.toolTip1.SetToolTip(this.label8,"Local Oscillator Center Frequency of External SDR");
+			this.btnApply.Image = null;
+			this.btnApply.Location = new System.Drawing.Point(511,322);
+			this.btnApply.Name = "btnApply";
+			this.btnApply.Size = new System.Drawing.Size(75,23);
+			this.btnApply.TabIndex = 24;
+			this.btnApply.Text = "Apply";
+			this.btnApply.Click += new System.EventHandler(this.btnApply_Click);
+			// 
+			// btnCancel
+			// 
+			this.btnCancel.Image = null;
+			this.btnCancel.Location = new System.Drawing.Point(423,322);
+			this.btnCancel.Name = "btnCancel";
+			this.btnCancel.Size = new System.Drawing.Size(75,23);
+			this.btnCancel.TabIndex = 23;
+			this.btnCancel.Text = "Cancel";
+			this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+			// 
+			// btnOK
+			// 
+			this.btnOK.Image = null;
+			this.btnOK.Location = new System.Drawing.Point(335,322);
+			this.btnOK.Name = "btnOK";
+			this.btnOK.Size = new System.Drawing.Size(75,23);
+			this.btnOK.TabIndex = 22;
+			this.btnOK.Text = "OK";
+			this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
 			// 
 			// SetupIF
 			// 
@@ -1153,30 +1198,31 @@ namespace PowerSDR
 			this.Text = "PowerSDR/IF Stage Setup";
 			this.grpMeterTimingBox.ResumeLayout(false);
 			this.grpRigTimingBox.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize) (this.udRigTuningPollingInterval)).EndInit();
-			((System.ComponentModel.ISupportInitialize) (this.udRigPollingLockoutTime)).EndInit();
-			((System.ComponentModel.ISupportInitialize) (this.udRigPollingInterval)).EndInit();
 			this.grpOptionalPollingCommandsBox.ResumeLayout(false);
 			this.grpOptionalPollingCommandsBox.PerformLayout();
 			this.tabPage3.ResumeLayout(false);
-			this.grpMeterSerialBox.ResumeLayout(false);
 			this.grpMeterTypeBox.ResumeLayout(false);
 			this.grpMeterTypeBox.PerformLayout();
 			this.tabPage2.ResumeLayout(false);
 			this.groupBox2.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize) (this.udIFGlobalOffset)).EndInit();
 			this.groupBox1.ResumeLayout(false);
+			this.tabPage1.ResumeLayout(false);
+			this.grpRigTypeBox.ResumeLayout(false);
+			this.tabControl1.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize) (this.udRigTuningCATInterval)).EndInit();
+			((System.ComponentModel.ISupportInitialize) (this.udRigTuningPollingInterval)).EndInit();
+			((System.ComponentModel.ISupportInitialize) (this.udRigPollingLockoutTime)).EndInit();
+			((System.ComponentModel.ISupportInitialize) (this.udRigPollingInterval)).EndInit();
+			this.grpRigSerialBox.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize) (this.udLOCenterFreq)).EndInit();
+			((System.ComponentModel.ISupportInitialize) (this.udIFGlobalOffset)).EndInit();
 			((System.ComponentModel.ISupportInitialize) (this.udIFFSK)).EndInit();
 			((System.ComponentModel.ISupportInitialize) (this.udIFFM)).EndInit();
 			((System.ComponentModel.ISupportInitialize) (this.udIFAM)).EndInit();
 			((System.ComponentModel.ISupportInitialize) (this.udIFCW)).EndInit();
 			((System.ComponentModel.ISupportInitialize) (this.udIFUSB)).EndInit();
 			((System.ComponentModel.ISupportInitialize) (this.udIFLSB)).EndInit();
-			this.tabPage1.ResumeLayout(false);
-			this.grpRigSerialBox.ResumeLayout(false);
-			this.grpRigTypeBox.ResumeLayout(false);
-			this.tabControl1.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize) (this.udLOCenterFreq)).EndInit();
+			this.grpMeterSerialBox.ResumeLayout(false);
 			this.ResumeLayout(false);
 
         }
@@ -1251,5 +1297,7 @@ namespace PowerSDR
 		private System.Windows.Forms.NumericUpDownTS udLOCenterFreq;
 		private System.Windows.Forms.Label label7;
 		private System.Windows.Forms.Label label8;
+		private System.Windows.Forms.LabelTS labelTS6;
+		private System.Windows.Forms.NumericUpDownTS udRigTuningCATInterval;
     }
 }

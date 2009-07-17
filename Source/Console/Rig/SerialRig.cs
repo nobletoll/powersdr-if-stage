@@ -366,7 +366,7 @@ namespace PowerSDR
 					}
 				}
 
-				Thread.Sleep(100);
+				Thread.Sleep(this.hw.RigTuningCATInterval);
 			}
 
 			RigHW.dbgWriteLine("SerialRig.RigCommandThread(), End.");

@@ -37484,6 +37484,12 @@ namespace PowerSDR
 			set { ((RigHW) this.hw).RigTuningPollingInterval = value; }
 		}
 
+		public int RigTuningCATInterval
+		{
+			get { return ((RigHW) this.hw).RigTuningCATInterval; }
+			set { ((RigHW) this.hw).RigTuningCATInterval = value; }
+		}
+
 		public int RigPollingLockoutTime
 		{
 			get { return ((RigHW) this.hw).RigPollingLockoutTime; }
