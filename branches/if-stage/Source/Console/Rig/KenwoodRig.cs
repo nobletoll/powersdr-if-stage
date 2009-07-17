@@ -257,7 +257,7 @@ namespace PowerSDR
 				}
 			}
 
-			this.enqueueRigCATCommand("SP" + ((splitOn) ? '1' : '0') + ';');
+			this.doRigCATCommand("SP" + ((splitOn) ? '1' : '0') + ';',true,false);
 			this.Split = splitOn;
 		}
 
