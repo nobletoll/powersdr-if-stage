@@ -143,6 +143,13 @@ namespace PowerSDR
 			set { this.rigTuningPollingInterval = value; }
 		}
 
+		private int rigTuningCATInterval = 200;
+		public int RigTuningCATInterval
+		{
+			get { return this.rigTuningCATInterval; }
+			set { this.rigTuningCATInterval = value; }
+		}
+
 		private int rigPollingLockoutTime = 2000;
 		public int RigPollingLockoutTime
 		{
