@@ -42,8 +42,8 @@ namespace PowerSDR
 		// Rig Commands
 		private bool runRigCommands = true;
 		private Thread rigCommandThread;
-		private EventWaitHandle rigCommandWaitHandle = new AutoResetEvent(false);
-		private Queue rigCommandQueue = Queue.Synchronized(new Queue());
+		private string pendingRigCommand = null;
+		private object pendingRigCommandSyncObject = new object();
 
 
 		protected SerialRig(RigHW hw, Console console) : base(hw,console)
@@ -142,13 +142,13 @@ namespace PowerSDR
 					this.SIO.setCommParms(this.hw.COMBaudRate,this.hw.COMParity,
 						this.hw.COMDataBits,this.hw.COMStopBits);
 
-					RigHW.dbgWriteLine("Rig.connect(), Opening COM" +
+					RigHW.dbgWriteLine("SerialRig.connect(), Opening COM" +
 						this.hw.COMPort + "...");
 
 					try
 					{
 						if (this.SIO.Create() == 0)
-							RigHW.dbgWriteLine("Rig.connect(), Opened COM" +
+							RigHW.dbgWriteLine("SerialRig.connect(), Opened COM" +
 								this.hw.COMPort + ".");
 						else
 							throw new Exception();
@@ -192,13 +192,12 @@ namespace PowerSDR
 
 				this.connected = false;
 
-				RigHW.dbgWriteLine("Rig.disconnect(), Shutting down Rig Command Thread.");
+				RigHW.dbgWriteLine("SerialRig.disconnect(), Shutting down Rig Command Thread.");
 				this.runRigCommands = false;
-				this.rigCommandWaitHandle.Set();
 
 				this.rigSerialPoller.disable();
 
-				RigHW.dbgWriteLine("Rig.disconnect(), Waiting for Rig Command Thread to finish...");
+				RigHW.dbgWriteLine("SerialRig.disconnect(), Waiting for Rig Command Thread to finish...");
 				if (this.rigCommandThread != null)
 				{
 					this.rigCommandThread.Join();
@@ -207,7 +206,7 @@ namespace PowerSDR
 
 				if (this.SIO != null && this.SIO.PortIsOpen)
 				{
-					RigHW.dbgWriteLine("Rig.disconnect(), Closing COM" +
+					RigHW.dbgWriteLine("SerialRig.disconnect(), Closing COM" +
 						this.hw.COMPort + "...");
 
 					this.SIO.deregisterEventHandlers();
@@ -217,7 +216,7 @@ namespace PowerSDR
 					this.SIO.Destroy();
 					this.SIO = null;
 
-					RigHW.dbgWriteLine("Rig.disconnect(), Closed COM" +
+					RigHW.dbgWriteLine("SerialRig.disconnect(), Closed COM" +
 						this.hw.COMPort + ".");
 				}
 			}
@@ -293,8 +292,10 @@ namespace PowerSDR
 
 		protected void enqueueRigCATCommand(string command)
 		{
-			this.rigCommandQueue.Enqueue(command);
-			this.rigCommandWaitHandle.Set();
+			lock (this.pendingRigCommandSyncObject)
+			{
+				this.pendingRigCommand = command;
+			}
 		}
 
 		protected void doRigCATCommand(string command)
@@ -347,24 +348,28 @@ namespace PowerSDR
 		 */
 		private void RigCommandThread()
 		{
-			RigHW.dbgWriteLine("Rig.RigCommandThread(), Start.");
+			RigHW.dbgWriteLine("SerialRig.RigCommandThread(), Start.");
 
-			this.rigCommandQueue.Clear();
+			lock (this.pendingRigCommandSyncObject)
+			{
+				this.pendingRigCommand = null;
+			}
 
 			while (this.runRigCommands)
 			{
-				string command = null;
+				lock (this.pendingRigCommandSyncObject)
+				{
+					if (this.pendingRigCommand != null)
+					{
+						this.doRigCATCommand(this.pendingRigCommand,true,false);
+						this.pendingRigCommand = null;
+					}
+				}
 
-				if (this.rigCommandQueue.Count > 0)
-					command = (string) this.rigCommandQueue.Dequeue();
-
-				if (command != null)
-					this.doRigCATCommand(command,true,false);
-				else
-					this.rigCommandWaitHandle.WaitOne();  // No more commands - wait for a signal
+				Thread.Sleep(100);
 			}
 
-			RigHW.dbgWriteLine("Rig.RigCommandThread(), End.");
+			RigHW.dbgWriteLine("SerialRig.RigCommandThread(), End.");
 		}
 
 		#endregion Threads
