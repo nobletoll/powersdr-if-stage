@@ -502,6 +502,10 @@ namespace PowerSDR
 			if (this.rigHW == null)
 				return;
 
+			// Force RigTuningCATInterval down if we go under its value.
+			if ((int) this.udRigPollingInterval.Value < (int) this.udRigTuningCATInterval.Value)
+				this.udRigTuningCATInterval.Value = this.udRigPollingInterval.Value;
+
 			this.console.RigPollingInterval = (int) this.udRigPollingInterval.Value;
 		}
 
@@ -517,6 +521,10 @@ namespace PowerSDR
 		{
 			if (this.rigHW == null)
 				return;
+
+			// Can't be more than the polling interval.
+			if ((int) this.udRigTuningCATInterval.Value > (int) this.udRigPollingInterval.Value)
+				this.udRigPollingInterval.Value = this.udRigTuningCATInterval.Value;
 
 			this.console.RigTuningCATInterval = (int) this.udRigTuningCATInterval.Value;
 		}
