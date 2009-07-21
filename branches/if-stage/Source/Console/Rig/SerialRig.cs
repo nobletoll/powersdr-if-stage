@@ -43,6 +43,7 @@ namespace PowerSDR
 		private bool runRigCommands = true;
 		private Thread rigCommandThread;
 		private string pendingRigCommand = null;
+		private AutoResetEvent pendingRigCommandWaitHandle = new AutoResetEvent(false);
 		private object pendingRigCommandSyncObject = new object();
 
 
@@ -194,6 +195,7 @@ namespace PowerSDR
 
 				RigHW.dbgWriteLine("SerialRig.disconnect(), Shutting down Rig Command Thread.");
 				this.runRigCommands = false;
+				this.pendingRigCommandWaitHandle.Set();
 
 				this.rigSerialPoller.disable();
 
@@ -295,6 +297,7 @@ namespace PowerSDR
 			lock (this.pendingRigCommandSyncObject)
 			{
 				this.pendingRigCommand = command;
+				this.pendingRigCommandWaitHandle.Set();
 			}
 		}
 
@@ -357,6 +360,11 @@ namespace PowerSDR
 
 			while (this.runRigCommands)
 			{
+				this.pendingRigCommandWaitHandle.WaitOne();
+
+				if (!this.runRigCommands)
+					break;
+
 				lock (this.pendingRigCommandSyncObject)
 				{
 					if (this.pendingRigCommand != null)
