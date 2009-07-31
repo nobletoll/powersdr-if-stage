@@ -43,11 +43,21 @@ namespace PowerSDR
         private DDEApplication ddeApplication = new DDEApplication("Ham Radio Deluxe");
         private string rigName;
         private bool muteCache;				                // Mute button state cache
+        private bool warningOpen;
+        private bool lockoutConnectionAttempt;
+        private System.Timers.Timer lockoutConnectTimer = new System.Timers.Timer(); // Timer for update lockout
+
 
 
         public HRDRig(RigHW hw, Console console)
             : base(hw, console)
         {
+
+            // Setup connect lockout timer
+            lockoutConnectTimer.Elapsed += new System.Timers.ElapsedEventHandler(this.LockoutConnectTimeExpiredEvent); //WU2X
+            lockoutConnectTimer.Interval = 5000;  //  Lock for reconnect to rig control program 
+            lockoutConnectTimer.AutoReset = false;
+            lockoutConnectTimer.Enabled = true;    
         }
 
 
@@ -65,7 +75,7 @@ namespace PowerSDR
         {
             // Check to see that we are connected to HRD
             if (!connected)
-            { 
+            {
                 this.connect();
             }
 
@@ -73,7 +83,7 @@ namespace PowerSDR
 
             String frequency = f.ToString("f6");
             String freq = frequency.Replace(".", ""); // Remove the period from the string
- 
+
             byte[] data = Encoding.ASCII.GetBytes("freq " + freq + "\x00");
             // Send frequency update to HRD over DDE Execute
             DDEML.DdeClientTransaction(data, (uint)data.Length, hConv, IntPtr.Zero, 0, DDEML.XTYP_EXECUTE, 60000, ref pwdResult);
@@ -127,7 +137,7 @@ namespace PowerSDR
             Int32 pwdResult = 0;
 
             DDEML.DdeClientTransaction(data, (uint)data.Length, hConv, IntPtr.Zero, 0, DDEML.XTYP_EXECUTE, 60000, ref pwdResult);
- 
+
             // Start or Restart lockout timer to ignore external VFO events
             // for a second or two...
 
@@ -138,7 +148,7 @@ namespace PowerSDR
 
         public override void connect()
         {
-            if (!connected)
+            if ((!connected) && (this.lockoutConnectionAttempt == false))
             {
                 Int32 ulRef = 0;
 
@@ -170,9 +180,20 @@ namespace PowerSDR
                 if (result != 0)
                 {
 
-                    MessageBox.Show("Unable to connect to " + ddeApplication.getProgramName() + ". Please make sure that " + ddeApplication.getProgramName() + " is running and properly controlling your radio. DDE Connection Error: " + result, "Error",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-
+                    if (!this.warningOpen)
+                    {
+                        this.warningOpen = true;
+                        MessageBox.Show("Unable to connect to " + ddeApplication.getProgramName() + ". Please make sure that " + ddeApplication.getProgramName() + " is running and properly controlling your radio. DDE Connection Error: " + result, "Error",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        this.warningOpen = false;
+                        // Will try to connect again next time we need to send something to HRD...
+                        this.lockoutConnectionAttempt = true;
+                        // Start or Restart lockout to not try to reconnect for 5 seconds. 
+                        this.lockoutConnectTimer.Stop();
+                        this.lockoutConnectTimer.Start();
+                      
+                    }
+                    return;
                 }
                 else
                 {
@@ -330,7 +351,7 @@ namespace PowerSDR
                     {
                         // TX_OFF - UNMUTE - Unless mute was already on
                         // Revert to previous state
-                        this.console.MUT =  this.muteCache;
+                        this.console.MUT = this.muteCache;
                     }
 
                     ///////////////////////
@@ -394,7 +415,7 @@ namespace PowerSDR
 
             // Ignore any other transaction type
             return IntPtr.Zero;
-        
+
         }
 
         // Methods not implementable when using HRD
@@ -404,10 +425,10 @@ namespace PowerSDR
         public override void setVFOA() { }
         public override void setVFOB() { }
         public override void setSplit(bool split) { }
-		public override void clearRIT() { }
-		public override void setRIT(bool rit) { }
-		public override void setRIT(int ritOffset) { }
-		public override void getVFOAFreq() { }
+        public override void clearRIT() { }
+        public override void setRIT(bool rit) { }
+        public override void setRIT(int ritOffset) { }
+        public override void getVFOAFreq() { }
         public override void getVFOBFreq() { }
         public override void getIFFreq() { }
         public override void getRigInformation() { }
@@ -421,6 +442,11 @@ namespace PowerSDR
         public override int getModeFromDSPMode(PowerSDR.DSPMode dspMode)
         {
             return 0;
+        }
+
+        private void LockoutConnectTimeExpiredEvent(object source, System.Timers.ElapsedEventArgs e)
+        {
+            this.lockoutConnectionAttempt = false;
         }
     }
 }
