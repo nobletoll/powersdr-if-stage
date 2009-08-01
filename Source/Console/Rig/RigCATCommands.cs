@@ -47,6 +47,14 @@ namespace PowerSDR
 
 		private bool transmittingWithMute = false;
 
+		private bool dspStatesInitialized = false;
+		private int nr = 0;
+		private int anf = 0;
+		private bool nb = false;
+		private bool nb2 = false;
+		private int bin = 0;
+
+
 		#endregion Variable Definitions
 
 
@@ -210,6 +218,49 @@ namespace PowerSDR
 
 			// RX/TX
 			bool tx = (s[26] == '1');
+
+			if (tx)
+			{
+				// If we're coming out of TX, store the state of all DSP Buttons...
+				if (!this.console.MOX)
+				{
+					this.dspStatesInitialized = true;
+					this.nr = this.console.CATNR;
+					this.anf = this.console.CATANF;
+					this.nb = this.console.NB;
+					this.nb2 = this.console.NB2;
+					this.bin = this.console.CATBIN;
+				}
+
+				// Clear all DSP Buttons when TX...
+				if (this.dspStatesInitialized)
+				{
+					if (this.console.CATNR != 0)
+						this.console.CATNR = 0;
+					if (this.console.CATANF != 0)
+						this.console.CATANF = 0;
+					if (this.console.NB)
+						this.console.NB = false;
+					if (this.console.NB2)
+						this.console.NB2 = false;
+					if (this.console.CATBIN != 0)
+						this.console.CATBIN = 0;
+				}
+			}
+			else if (this.dspStatesInitialized && this.console.MOX)
+			{
+				// If we're coming out of TX, reset all DSP Buttons...
+				if (this.console.CATNR != this.nr)
+					this.console.CATNR = this.nr;
+				if (this.console.CATANF != this.anf)
+					this.console.CATANF = this.anf;
+				if (this.console.NB != this.nb)
+					this.console.NB = this.nb;
+				if (this.console.NB2 != this.nb2)
+					this.console.NB2 = this.nb2;
+				if (this.console.CATBIN != this.bin)
+					this.console.CATBIN = this.bin;
+			}
 
 			// This crazy logic sets MUTE on when TXing (when Monitor is turned off)
 			if (!this.console.MON)
