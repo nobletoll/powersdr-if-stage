@@ -622,6 +622,8 @@ namespace PowerSDR
 
         // W1CEG
         private bool control_down;                          // used to turn VFO-B
+        // WU2X
+        private bool swap_iq_cache;                         // Locally stores state of i/q swap
 
         private bool calibrating;							// true if running a calibration routine
         private bool manual_mox;							// True if the MOX button was clicked on (not PTT)		
@@ -29986,6 +29988,18 @@ namespace PowerSDR
                                 {
                                     DDSFreq = freq;
 
+                                    // WU2X: Swap I/Q Channels if necessary
+                                    if ((swap_iq) && (this.VFOAFreq >= this.SwapIQFreq) && (!swap_iq_cache))   
+                                    {
+                                        DttSP.SwapIQChannels(1); // Swap True
+                                        swap_iq_cache = true;
+                                    }
+                                    if ((swap_iq) && (this.VFOAFreq < this.SwapIQFreq) && (swap_iq_cache))
+                                    {
+                                        DttSP.SwapIQChannels(0); // Swap False
+                                        swap_iq_cache = false;
+                                    } 
+
                                     // W1CEG: Update Frequency on Rig
 									if (!(e is RigCATEventArgs) && this.hw is RigHW)
 									{
@@ -37422,6 +37436,36 @@ namespace PowerSDR
             {
                 if_fsk = value;
                 radModeDIGL_CheckedChanged(this, EventArgs.Empty); // WU2X: TODO: ??? Wrong method called?
+            }
+        }
+
+        private bool swap_iq = false;
+        public bool SWAPIQ
+        {
+            get { return swap_iq; }
+            set
+            {
+                swap_iq = value;
+                if (!swap_iq)
+                {
+                    DttSP.SwapIQChannels(0); // Turn Off Swap I/Q
+                    swap_iq_cache = false;
+                }
+                else
+                {
+                    txtVFOAFreq_LostFocus(this, EventArgs.Empty);
+                }
+            }
+        }
+
+        private double swap_iq_freq = 0.0;
+        public double SwapIQFreq
+        {
+            get { return swap_iq_freq; }
+            set
+            {
+                swap_iq_freq = value;
+                txtVFOAFreq_LostFocus(this, EventArgs.Empty);
             }
         }
 
