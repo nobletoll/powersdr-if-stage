@@ -708,5 +708,19 @@ namespace PowerSDR
 
 			this.console.MeterTimingInterval = int.Parse(this.comboMeterTimingInterval.Text);
 		}
+
+        private void swapIQ_CheckedChanged(object sender, EventArgs e)
+        {
+            udSwapFrequency.Enabled = chkSwapIQ.Checked;
+            console.SWAPIQ = chkSwapIQ.Checked;
+
+        }
+
+        private void swapFrequency_ValueChanged(object sender, EventArgs e)
+        {
+            console.SwapIQFreq = (double) udSwapFrequency.Value;
+        }
+
+
 	}
 }

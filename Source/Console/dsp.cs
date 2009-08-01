@@ -504,6 +504,15 @@ namespace PowerSDR
 		[DllImport("DttSP.dll", EntryPoint="SetKeyerHarmonicRemove")]
 		public static extern void SetKeyerHarmonicRemove(double harmonic, double phase, double amplitude);
 
+        // WU2X 
+        [DllImport("DttSP.dll", EntryPoint = "SwapIQChannels")]
+        public static extern void SwapIQChannelsDll(int flag);
+        public static void SwapIQChannels(int flag)
+        {
+            SwapIQChannelsDll(flag);
+            return;
+        }
+
 		#endregion
 	}
 }
