@@ -44,6 +44,8 @@ namespace PowerSDR
 		private Thread rigCommandThread;
 		private string pendingRigCommand = null;
 		private AutoResetEvent pendingRigCommandWaitHandle = new AutoResetEvent(false);
+		private EventWaitHandle noPendingCommandWaitHandle =
+			new EventWaitHandle(true,EventResetMode.ManualReset);
 		private object pendingRigCommandSyncObject = new object();
 
 
@@ -294,9 +296,28 @@ namespace PowerSDR
 
 		protected void enqueueRigCATCommand(string command)
 		{
+			bool waitForPendingRigCommand = false;
+
+			lock (this.pendingRigCommandSyncObject)
+			{
+				/* :Issue 57: If the command is different than the pending
+				 *            command, we need to make sure it happens.
+				 *            
+				 *            For example, a A <> B swap needs to do FA and FB
+				 *            commands right after one another.
+				 */
+				waitForPendingRigCommand = (this.pendingRigCommand != null &&
+					(command[0] != this.pendingRigCommand[0] ||
+					command[1] != this.pendingRigCommand[1]));
+			}
+
+			if (waitForPendingRigCommand)
+				this.noPendingCommandWaitHandle.WaitOne();
+
 			lock (this.pendingRigCommandSyncObject)
 			{
 				this.pendingRigCommand = command;
+				this.noPendingCommandWaitHandle.Reset();
 				this.pendingRigCommandWaitHandle.Set();
 			}
 		}
@@ -371,6 +392,7 @@ namespace PowerSDR
 					{
 						this.doRigCATCommand(this.pendingRigCommand,true,false);
 						this.pendingRigCommand = null;
+						this.noPendingCommandWaitHandle.Set();
 					}
 				}
 
