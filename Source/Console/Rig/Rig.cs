@@ -92,6 +92,9 @@ namespace PowerSDR
 			return -1;
 		}
 
+		public abstract double minFreq();
+		public abstract double maxFreq();
+
 		public abstract int getModeFromDSPMode(DSPMode dspMode);
 
 		#endregion Defaults & Supported Functions
