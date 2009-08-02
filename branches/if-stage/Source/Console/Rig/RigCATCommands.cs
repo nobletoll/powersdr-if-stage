@@ -45,8 +45,6 @@ namespace PowerSDR
 		private RigCATParser rigParser;
 		private CATParser sdrParser;
 
-		private bool transmittingWithMute = false;
-
 		private bool dspStatesInitialized = false;
 		private int nr = 0;
 		private int anf = 0;
@@ -268,13 +266,13 @@ namespace PowerSDR
 				if (!this.console.MOX && tx)
 				{
 					if (this.console.MUT)
-						this.transmittingWithMute = true;
+						this.rig.TXWithMute = true;
 					else
 						this.console.MUT = true;
 				}
 				else if (this.console.MOX && !tx)
 				{
-					if (!this.transmittingWithMute)
+					if (!this.rig.TXWithMute)
 						this.console.MUT = false;
 				}
 			}
