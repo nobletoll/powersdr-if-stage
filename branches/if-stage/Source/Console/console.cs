@@ -1093,6 +1093,7 @@ namespace PowerSDR
         private ToolStripMenuItem toolStripMenuItemRX2FilterConfigure;
         private ToolStripMenuItem toolStripMenuItemRX2FilterReset;
         private MenuItem menuItem1;
+        private MenuItem menuItem2;
         private System.Windows.Forms.CheckBoxTS chkFullDuplex;
 
         #endregion
@@ -1827,6 +1828,7 @@ namespace PowerSDR
             this.radBandVHF0 = new System.Windows.Forms.RadioButtonTS();
             this.panelRX2DSP = new System.Windows.Forms.PanelTS();
             this.ptbSquelch = new PowerSDR.PrettyTrackBar();
+            this.menuItem2 = new System.Windows.Forms.MenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.ptbRX2RF)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ptbCWSpeed)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.udCWPitch)).BeginInit();
@@ -1918,7 +1920,8 @@ namespace PowerSDR
             this.mnuFWC,
             this.mnuReportBug,
             this.mnuProfiles,
-            this.menuItem1});
+            this.menuItem1,
+            this.menuItem2});
             // 
             // mnuSetup
             // 
@@ -5493,6 +5496,12 @@ namespace PowerSDR
             this.ptbSquelch.TabStop = false;
             this.ptbSquelch.Value = -150;
             this.ptbSquelch.Scroll += new PowerSDR.PrettyTrackBar.ScrollHandler(this.ptbSquelch_Scroll);
+            // 
+            // menuItem2
+            // 
+            this.menuItem2.Index = 16;
+            resources.ApplyResources(this.menuItem2, "menuItem2");
+            this.menuItem2.Click += new System.EventHandler(this.menuItem2_Click);
             // 
             // Console
             // 
@@ -37636,5 +37645,24 @@ namespace PowerSDR
 				this.Text = this.Text.Substring(0,index + 1) + rigName + ' ' +
 					this.Text.Substring(index2,this.Text.Length - index2);
 		}
-	}
+        
+        
+        private void menuItem2_Click(object sender, EventArgs e)
+        {
+            Thread t = new Thread(new ThreadStart(LaunchBugLink2));
+            t.Name = "Launch Domate Link Thread";
+            t.IsBackground = true;
+            t.Priority = ThreadPriority.Normal;
+            t.Start();
+        }
+
+        private void LaunchBugLink2()
+        {
+            try
+            {
+                Process.Start("http://www.wu2x.com/sdr.html");
+            }
+            catch (Exception) { }
+        }
+    }
 }
