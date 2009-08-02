@@ -42,6 +42,20 @@ namespace PowerSDR
 			this.parser = new PowerMasterMeterParser(this.console,this);
 		}
 
+		
+		#region Initialization
+
+		public override void disconnect()
+		{
+			// :Issue 58: Tell the PowerMaster to stop sending real-time data
+			//            the Rig is in TX when PowerSDR goes to Standby.
+			this.stopDataReporting();
+
+			base.disconnect();
+		}
+
+		#endregion Initialization
+
 
 		#region Defaults & Supported Functions
 

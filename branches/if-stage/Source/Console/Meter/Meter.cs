@@ -53,7 +53,7 @@ namespace PowerSDR
 
 		#region Initialization
 
-		public void connect()
+		public virtual void connect()
 		{
 			lock (this)
 			{
@@ -105,7 +105,7 @@ namespace PowerSDR
 			}
 		}
 
-		public void disconnect()
+		public virtual void disconnect()
 		{
 			lock (this)
 			{
