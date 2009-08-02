@@ -66,6 +66,11 @@ namespace PowerSDR
 			return true;
 		}
 
+		public override int iqSwapFreq()
+		{
+			return 50;
+		}
+
 		public override int getModeFromDSPMode(DSPMode dspMode)
 		{
 			switch (dspMode)
