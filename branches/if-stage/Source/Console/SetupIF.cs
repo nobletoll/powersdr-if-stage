@@ -604,6 +604,16 @@ namespace PowerSDR
 			}
 
 			this.udLOCenterFreq.Enabled = (this.rigHW.needsLOCenterFreq());
+
+			if (this.rigHW.iqSwapFreq() == -1)
+			{
+				this.chkSwapIQ.Checked = false;
+			}
+			else
+			{
+				this.udSwapFrequency.Value = this.rigHW.iqSwapFreq();
+				this.chkSwapIQ.Checked = true;
+			}
 		}
 
 		private void chkUseMeter_CheckedChanged(object sender, EventArgs e)

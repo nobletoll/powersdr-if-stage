@@ -87,6 +87,11 @@ namespace PowerSDR
 			return false;
 		}
 
+		public virtual int iqSwapFreq()
+		{
+			return -1;
+		}
+
 		public abstract int getModeFromDSPMode(DSPMode dspMode);
 
 		#endregion Defaults & Supported Functions

@@ -283,6 +283,14 @@ namespace PowerSDR
 			return false;
 		}
 
+		public int iqSwapFreq()
+		{
+			if (this.rig != null)
+				return this.rig.iqSwapFreq();
+
+			return -1;
+		}
+
 		public bool hasSerialConnection()
 		{
 			return (this.rig == null || !(this.rig is HRDRig));
