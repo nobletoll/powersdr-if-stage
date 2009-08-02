@@ -121,6 +121,16 @@ namespace PowerSDR
 			return true;
 		}
 
+		public override double minFreq()
+		{
+			return 0.03;
+		}
+
+		public override double maxFreq()
+		{
+			return 30.0;
+		}
+
 		#endregion Defaults & Supported Functions
 
 

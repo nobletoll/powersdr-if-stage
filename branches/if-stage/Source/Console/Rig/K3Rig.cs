@@ -68,7 +68,17 @@ namespace PowerSDR
 
 		public override int iqSwapFreq()
 		{
-			return 50;
+			return 48;
+		}
+
+		public override double minFreq()
+		{
+			return 0.5;
+		}
+
+		public override double maxFreq()
+		{
+			return 54.0;
 		}
 
 		public override int getModeFromDSPMode(DSPMode dspMode)

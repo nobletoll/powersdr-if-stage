@@ -291,6 +291,22 @@ namespace PowerSDR
 			return -1;
 		}
 
+		public double minFreq()
+		{
+			if (this.rig != null)
+				return this.rig.minFreq();
+
+			return 1.0;
+		}
+
+		public double maxFreq()
+		{
+			if (this.rig != null)
+				return this.rig.maxFreq();
+
+			return 30.0;
+		}
+
 		public bool hasSerialConnection()
 		{
 			return (this.rig == null || !(this.rig is HRDRig));
