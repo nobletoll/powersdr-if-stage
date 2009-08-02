@@ -614,6 +614,14 @@ namespace PowerSDR
 				this.udSwapFrequency.Value = this.rigHW.iqSwapFreq();
 				this.chkSwapIQ.Checked = true;
 			}
+
+			// :NOTE: Since console.MinFreq and console.MaxFreq are not part
+			//        of IF-Stage, they are initialized with different values.
+			//        We will just force them to be reinitialized here.
+			this.udMinFrequency.Value = (decimal) this.rigHW.minFreq();
+			this.console.MinFreq = this.rigHW.minFreq();
+			this.udMaxFrequency.Value = (decimal) this.rigHW.maxFreq();
+			this.console.MaxFreq = this.rigHW.maxFreq();
 		}
 
 		private void chkUseMeter_CheckedChanged(object sender, EventArgs e)
@@ -721,16 +729,24 @@ namespace PowerSDR
 
         private void swapIQ_CheckedChanged(object sender, EventArgs e)
         {
-            udSwapFrequency.Enabled = chkSwapIQ.Checked;
-            console.SWAPIQ = chkSwapIQ.Checked;
+            this.udSwapFrequency.Enabled = this.chkSwapIQ.Checked;
+            this.console.SWAPIQ = this.chkSwapIQ.Checked;
 
         }
 
         private void swapFrequency_ValueChanged(object sender, EventArgs e)
         {
-            console.SwapIQFreq = (double) udSwapFrequency.Value;
+            this.console.SwapIQFreq = (double) this.udSwapFrequency.Value;
         }
 
+		private void udMinFrequency_ValueChanged(object sender,EventArgs e)
+		{
+			this.console.MinFreq = (double) this.udMinFrequency.Value;
+		}
 
+		private void udMaxFrequency_ValueChanged(object sender,EventArgs e)
+		{
+			this.console.MaxFreq = (double) this.udMaxFrequency.Value;
+		}
 	}
 }
