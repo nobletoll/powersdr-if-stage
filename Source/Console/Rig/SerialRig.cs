@@ -120,6 +120,13 @@ namespace PowerSDR
 			set { this.split = value; }
 		}
 
+		private bool txWithMute = false;
+		public bool TXWithMute
+		{
+			get { return this.txWithMute; }
+			set { this.txWithMute = value; }
+		}
+
 		#endregion Rig States
 
 
@@ -231,6 +238,7 @@ namespace PowerSDR
 			this.vfoaMode = this.getModeFromDSPMode(this.console.RX1DSPMode);
 			this.split = this.console.VFOSplit;
 			this.ritOffsetInitialized = false;
+			this.txWithMute = false;
 		}
 
 		public void startCommandThread()
