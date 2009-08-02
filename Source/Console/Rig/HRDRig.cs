@@ -444,7 +444,18 @@ namespace PowerSDR
             return 0;
         }
 
-        private void LockoutConnectTimeExpiredEvent(object source, System.Timers.ElapsedEventArgs e)
+		public override double minFreq()
+		{
+			return 1.0;
+		}
+
+		public override double maxFreq()
+		{
+			return 30.0;
+		}
+
+		private void LockoutConnectTimeExpiredEvent(object source,
+			System.Timers.ElapsedEventArgs e)
         {
             this.lockoutConnectionAttempt = false;
         }
