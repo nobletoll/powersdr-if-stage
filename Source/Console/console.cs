@@ -37649,18 +37649,18 @@ namespace PowerSDR
         
         private void menuItem2_Click(object sender, EventArgs e)
         {
-            Thread t = new Thread(new ThreadStart(LaunchBugLink2));
+            Thread t = new Thread(new ThreadStart(LaunchDonateLink));
             t.Name = "Launch Domate Link Thread";
             t.IsBackground = true;
             t.Priority = ThreadPriority.Normal;
             t.Start();
         }
 
-        private void LaunchBugLink2()
+        private void LaunchDonateLink()
         {
             try
             {
-                Process.Start("http://www.wu2x.com/sdr.html");
+                Process.Start("http://www.wu2x.com/sdr.html#donation");
             }
             catch (Exception) { }
         }
