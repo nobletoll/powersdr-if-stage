@@ -78,8 +78,6 @@ namespace PowerSDR
 			this.comboMeterDataBits.Text = "8";
 			this.comboMeterStopBits.Text = "1";
 
-			this.udLOCenterFreq.Value = 8215000;
-
 			// Read from database...
 			this.GetOptions();
 		}
@@ -603,7 +601,13 @@ namespace PowerSDR
 				this.chkRigPollIFFreq.Enabled = false;
 			}
 
-			this.udLOCenterFreq.Enabled = (this.rigHW.needsLOCenterFreq());
+			if (this.rigHW.needsLOCenterFreq())
+			{
+				this.udLOCenterFreq.Enabled = true;
+				this.console.LOCenterFreq = (int) udLOCenterFreq.Value;
+			}
+			else
+				this.udLOCenterFreq.Enabled = false;
 
 			if (this.rigHW.iqSwapFreq() == -1)
 			{
