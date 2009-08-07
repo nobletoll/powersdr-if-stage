@@ -81,17 +81,17 @@ namespace PowerSDR
 			READ_STATUS = 0xCA,		// Read the status byte status back from the UCB
 		}
 
-		public static void KeepAlive(HW hw)
+		public static void KeepAlive(AbstractHW hw)
 		{
 			SendBit(hw, 0);
 		}
 
-		public static byte SendCommand(HW hw, CMD cmd)
+		public static byte SendCommand(AbstractHW hw, CMD cmd)
 		{
 			return SendCommand(hw, (byte)cmd);
 		}
 
-		public static byte SendCommand(HW hw, byte cmd)
+		public static byte SendCommand(AbstractHW hw, byte cmd)
 		{
 			for(int i=0; i<8; i++)
 			{
@@ -122,7 +122,7 @@ namespace PowerSDR
 			return retval;
 		}
 
-		public static void WriteReg(HW hw, byte reg, int val)
+		public static void WriteReg(AbstractHW hw, byte reg, int val)
 		{
 			if(SendCommand(hw, (byte)(0xA0 + (0x0F&reg))) == 0x55) return;
 			if(SendCommand(hw, (byte)(val >> 8)) == 0x55) return;
@@ -135,7 +135,7 @@ namespace PowerSDR
 		/// <param name="hw">A hardware control object.</param>
 		/// <param name="val">An integer representing a 0 or a 1.
 		/// (Anything other than 0 is considered a 1)</param>
-		private static bool SendBit(HW hw, int val)
+		private static bool SendBit(AbstractHW hw, int val)
 		{
 			int count = 0;
 
@@ -191,7 +191,7 @@ namespace PowerSDR
 			return true;
 		}
 
-		private static byte ReceiveBit(HW hw)
+		private static byte ReceiveBit(AbstractHW hw)
 		{
 			int count = 0;
 

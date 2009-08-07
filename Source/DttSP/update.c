@@ -1536,3 +1536,13 @@ DttSP_EXP void SetEerXmit(int on_off)
 {
     EerXmit = on_off;
 }
+
+
+// WU2X
+DttSP_EXP void SwapIQChannels (int flag)
+{
+	top[0].hold.buf.swap = flag;
+	top[1].hold.buf.swap = flag;
+	top[2].hold.buf.swap = flag;
+
+}
