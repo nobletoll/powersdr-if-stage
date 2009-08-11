@@ -35,7 +35,7 @@ namespace PowerSDR
 
 		public override int defaultBaudRate()
 		{
-			return 38400;
+			return 4800;
 		}
 
 		public override bool needsPollVFOB()
