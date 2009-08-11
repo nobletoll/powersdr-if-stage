@@ -443,6 +443,7 @@ namespace PowerSDR
 			this.comboRigType.Items.AddRange(new object[] {
             "Elecraft K3",
             "Kenwood TS-940S",
+            "Kenwood TS-950",
             "Ham Radio Deluxe"});
 			this.comboRigType.Location = new System.Drawing.Point(9,20);
 			this.comboRigType.Name = "comboRigType";

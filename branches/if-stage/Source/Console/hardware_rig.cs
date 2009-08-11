@@ -32,9 +32,10 @@ namespace PowerSDR
 		private Console console;
 		private Rig rig;
 
-		public enum RigTypeEnum
+		private enum RigTypeEnum
 		{
-			Kenwood,
+			Kenwood940,
+			Kenwood950,
 			K3,
 			HRD,
 		}
@@ -73,8 +74,11 @@ namespace PowerSDR
 				{
 					switch (RigHW.getRigType(this.rigType))
 					{
-						case RigTypeEnum.Kenwood:
+						case RigTypeEnum.Kenwood940:
 							this.rig = new KenwoodRig(this,this.console);
+							break;
+						case RigTypeEnum.Kenwood950:
+							this.rig = new Kenwood950Rig(this,this.console);
 							break;
 						case RigTypeEnum.K3:
 							this.rig = new K3Rig(this,this.console);
@@ -322,13 +326,15 @@ namespace PowerSDR
 			switch (rigType)
 			{
 				case "Kenwood TS-940S":
-					return RigTypeEnum.Kenwood;
+					return RigTypeEnum.Kenwood940;
+				case "Kenwood TS-950":
+					return RigTypeEnum.Kenwood950;
 				case "Elecraft K3":
 					return RigTypeEnum.K3;
 				case "Ham Radio Deluxe":
 					return RigTypeEnum.HRD;
 				default:
-					return RigTypeEnum.Kenwood;
+					return RigTypeEnum.Kenwood940;
 			}
 		}
 
