@@ -26287,12 +26287,18 @@ namespace PowerSDR
                         e.Handled = true;
                         break;
                     case Keys.Up:
+						// :W1CEG: Don't tune VFO-B with Keys
+						this.control_down = false;
                         Console_MouseWheel(this, new MouseEventArgs(MouseButtons.None, 0, 0, 0, 120));
-                        e.Handled = true;
+						this.control_down = true;
+						e.Handled = true;
                         break;
                     case Keys.Down:
-                        Console_MouseWheel(this, new MouseEventArgs(MouseButtons.None, 0, 0, 0, -120));
-                        e.Handled = true;
+						// :W1CEG: Don't tune VFO-B with Keys
+						this.control_down = false;
+						Console_MouseWheel(this,new MouseEventArgs(MouseButtons.None,0,0,0,-120));
+						this.control_down = true;
+						e.Handled = true;
                         break;
                     case Keys.A:
                         if (RX1AGCMode == AGCMode.FAST)
