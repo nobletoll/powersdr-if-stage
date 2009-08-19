@@ -36,7 +36,7 @@ using PortTalk;
 
 namespace PowerSDR
 {
-	public class HW
+	public class HW : AbstractHW
 	{
 		#region Structs
 
@@ -204,14 +204,14 @@ namespace PowerSDR
 		#region Configurations
 
 		private ushort lpt_addr;
-		public ushort LPTAddr
+		public override ushort LPTAddr
 		{
 			get { return lpt_addr; }
 			set { lpt_addr = value; }
 		}
 
 		private bool xvtr_present = false;
-		public bool XVTRPresent
+		public override bool XVTRPresent
 		{
 			//get { return xvtr_present; }
 			set
@@ -222,21 +222,21 @@ namespace PowerSDR
 		}
 
 		private bool pa_present = false;
-		public bool PAPresent
+		public override bool PAPresent
 		{
 			//get { return pa_present; }
 			set { pa_present = value; }
 		}
 
 		private bool atu_present = false;
-		public bool ATUPresent
+		public override bool ATUPresent
 		{
 			//get { return atu_present; }
 			set	{ atu_present = value; }
 		}
 
 		private bool usb_present = false;
-		public bool USBPresent 
+		public override bool USBPresent 
 		{
 			//get { return usb_present; }
 			set { usb_present = value; }
@@ -244,13 +244,13 @@ namespace PowerSDR
 
 
 		private bool ozy_control = false;
-		public bool OzyControl 
+		public override bool OzyControl 
 		{			
 			set { ozy_control = value; }
 		}
 
 		private int pll_mult = 1;
-		public int PLLMult
+		public override int PLLMult
 		{
 			//get { return pll_mult; }
 			set { pll_mult = value; }
@@ -260,7 +260,7 @@ namespace PowerSDR
 
 		#region Control
 
-		public BPFBand BPFRelay	// gets or sets the BPF Relay using an integer index
+		public override BPFBand BPFRelay	// gets or sets the BPF Relay using an integer index
 		{
 //			get
 //			{
@@ -361,7 +361,7 @@ namespace PowerSDR
 			}
 		}
 		
-		public bool TransmitRelay	// true means TX mode
+		public override bool TransmitRelay	// true means TX mode
 		{
 //			get { return pio_ic1.GetBit(TR); }
 			set 
@@ -400,7 +400,7 @@ namespace PowerSDR
 		}
 		}
 
-		public bool MuteRelay			// true means the Mute Relay is engaged (muted)
+		public override bool MuteRelay			// true means the Mute Relay is engaged (muted)
 		{
 //			get { return !pio_ic1.GetBit(MUTE); }
 			set
@@ -412,7 +412,7 @@ namespace PowerSDR
 			}
 		}
 
-		public byte X2	// gets or sets the X2 pins 1-7
+		public override byte X2	// gets or sets the X2 pins 1-7
 		{
 			get { return (byte)(pio_ic3.GetData() & (byte)0x7f); }
 			set	
@@ -431,7 +431,7 @@ namespace PowerSDR
 		}
 
 
-		public bool GainRelay			// true means 0dB (40dB for old configs)
+		public override bool GainRelay			// true means 0dB (40dB for old configs)
 		{
 //			get { return !pio_ic3.GetBit(GAIN); }
 			set
@@ -444,7 +444,7 @@ namespace PowerSDR
 		}
 
 		// RFE only properties
-		public RFELPFBand RFE_LPF	// returns an integer index into the LPF switches
+		public override RFELPFBand RFE_LPF	// returns an integer index into the LPF switches
 		{
 //			get
 //			{
@@ -538,7 +538,7 @@ namespace PowerSDR
 			}
 		}
 
-		public bool RFE_TR
+		public override bool RFE_TR
 		{
 //			get
 //			{
@@ -561,7 +561,7 @@ namespace PowerSDR
 			}
 		}
 
-		public bool XVTR_RF		// true means the RF path is active to the XVTR
+		public override bool XVTR_RF		// true means the RF path is active to the XVTR
 		{
 			get
 			{
@@ -576,7 +576,7 @@ namespace PowerSDR
 			}
 		}
 
-		public bool XVTR_TR	// true means the TR relay on the xvtr is active
+		public override bool XVTR_TR	// true means the TR relay on the xvtr is active
 		{
 //			get
 //			{
@@ -591,7 +591,7 @@ namespace PowerSDR
 			}
 		}
 
-		public bool Attn		// true means the 10dB attenuator is switched inline
+		public override bool Attn		// true means the 10dB attenuator is switched inline
 		{
 //			get
 //			{
@@ -606,7 +606,7 @@ namespace PowerSDR
 			}
 		}
 
-		public bool ImpulseEnable
+		public override bool ImpulseEnable
 		{
 //			get
 //			{
@@ -621,7 +621,7 @@ namespace PowerSDR
 			}
 		}
 
-		public bool PABias
+		public override bool PABias
 		{
 //			get
 //			{
@@ -636,7 +636,7 @@ namespace PowerSDR
 			}
 		}
 
-		public PAFBand PA_LPF
+		public override PAFBand PA_LPF
 		{
 //			get
 //			{
@@ -651,7 +651,7 @@ namespace PowerSDR
 			}
 		}
 
-		public bool PA_ADC_CLK
+		public override bool PA_ADC_CLK
 		{
 //			get
 //			{
@@ -666,7 +666,7 @@ namespace PowerSDR
 			}
 		}
 
-		public bool PA_ADC_DI
+		public override bool PA_ADC_DI
 		{
 //			get
 //			{
@@ -681,7 +681,7 @@ namespace PowerSDR
 			}
 		}
 
-		public bool PA_ADC_CS_NOT
+		public override bool PA_ADC_CS_NOT
 		{
 //			get
 //			{
@@ -696,7 +696,7 @@ namespace PowerSDR
 			}
 		}
 
-		public bool PA_TR_Relay
+		public override bool PA_TR_Relay
 		{
 //			get
 //			{
@@ -711,7 +711,7 @@ namespace PowerSDR
 			}
 		}
 
-		public bool ATU_DI
+		public override bool ATU_DI
 		{
 //			get
 //			{
@@ -727,7 +727,7 @@ namespace PowerSDR
 		}
 
 		private long dds_tuning_word = 0;
-		public long DDSTuningWord
+		public override long DDSTuningWord
 		{
 			get { return dds_tuning_word; }
 			set
@@ -763,7 +763,7 @@ namespace PowerSDR
 		}
 
 		private bool update_hardware = false;
-		public bool UpdateHardware
+		public override bool UpdateHardware
 		{
 			get { return update_hardware; }
 			set
@@ -954,7 +954,7 @@ namespace PowerSDR
 
 		#region Public Functions
 
-		public void Init()
+		public override void Init()
 		{
 			UpdateHardware = false;
 			DDSTuningWord = 0;
@@ -971,13 +971,13 @@ namespace PowerSDR
 
 		private bool ignore_ptt = false; 
 
-		public void ignorePTT(bool v) 
+		public override void ignorePTT(bool v) 
 		{ 
 			ignore_ptt = v; 
 			return;
 		}
 
-		public void StandBy()
+		public override void StandBy()
 		{
 			UpdateHardware = false;
 			DDSTuningWord = 0;
@@ -1021,7 +1021,7 @@ namespace PowerSDR
 			rfe_ic11.SetData(rfe_ic11_temp);
 		}
 
-		public void PowerOn()
+		public override void PowerOn()
 		{
 			ResetDDS();
 			DDSTuningWord = dds_tuning_word;
@@ -1037,7 +1037,7 @@ namespace PowerSDR
 			UpdateHardware = true;
 		}
 
-		public byte StatusPort()
+		public override byte StatusPort()
 		{
 			if ( ozy_control ) 
 			{
@@ -1060,13 +1060,13 @@ namespace PowerSDR
 			}
 		}
 
-		public void Impulse()
+		public override void Impulse()
 		{
 			rfe_ic7.SetBit(IMPR);
 			rfe_ic7.ClearBit(IMPR);
 		}
 	
-		public byte PA_GetADC(int chan)
+		public override byte PA_GetADC(int chan)
 		{
 			// get ADC on amplifier
 			// 0 for forward power, 1 for reverse
@@ -1144,7 +1144,7 @@ namespace PowerSDR
 			return (byte)(num);
 		}
 
-		public bool PA_ATUTune(ATUTuneMode mode)
+		public override bool PA_ATUTune(ATUTuneMode mode)
 		{
 			rfe_ic11.ClearBit(ATU_CTL);
 
@@ -1187,7 +1187,7 @@ namespace PowerSDR
 			return true;
 		}
 
-		public void SetDDSDAC(int level)
+		public override void SetDDSDAC(int level)
 		{
 			DDSWrite(96, 32);
 			DDSWrite((byte)(level >> 8), 33);
@@ -1200,7 +1200,7 @@ namespace PowerSDR
 
 		#region Test Functions
 
-		public void TestPIO1()
+		public override void TestPIO1()
 		{
 			for(int i=0; i<8; i++)
 			{
@@ -1212,7 +1212,7 @@ namespace PowerSDR
 			}
 		}
 
-		public void TestPIO2(bool evens)
+		public override void TestPIO2(bool evens)
 		{
 			byte data = 0;
 
@@ -1236,7 +1236,7 @@ namespace PowerSDR
 			LatchRegister(lpt_addr, PIO_IC11, data);
 		}
 
-		public void TestPIO3()
+		public override void TestPIO3()
 		{
 			byte data = 0xFF;
 			LatchRegister(lpt_addr, PIO_IC1, data);
@@ -1253,7 +1253,7 @@ namespace PowerSDR
 			Thread.Sleep(2);
 		}
 
-		public void TestRFEIC11()
+		public override void TestRFEIC11()
 		{
 			for(int i=0; i<8; i++)
 			{

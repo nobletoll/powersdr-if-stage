@@ -34,11 +34,11 @@ using System.Runtime.CompilerServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
-[assembly: AssemblyTitle("PowerSDR")]
+[assembly: AssemblyTitle("PowerSDR/IF Stage")]
 [assembly: AssemblyDescription("Software Defined Radio Application")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("FlexRadio Systems")]
-[assembly: AssemblyProduct("PowerSDR")]
+[assembly: AssemblyCompany("WU2X - W1CEG")]
+[assembly: AssemblyProduct("PowerSDR/IF Stage")]
 [assembly: AssemblyCopyright("2009")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]		
@@ -54,7 +54,7 @@ using System.Runtime.CompilerServices;
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
 
-[assembly: AssemblyVersion("1.19.0")]
+[assembly: AssemblyVersion("1.19.0.2")]
 
 //
 // In order to sign your assembly you must specify a key to use. Refer to the 

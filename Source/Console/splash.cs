@@ -109,64 +109,64 @@ namespace PowerSDR
 
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
-			System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(Splash));
-			this.lblStatus = new System.Windows.Forms.LabelTS();
-			this.lblTimeRemaining = new System.Windows.Forms.LabelTS();
-			this.pnlStatus = new System.Windows.Forms.Panel();
-			this.timer1 = new System.Windows.Forms.Timer(this.components);
-			this.SuspendLayout();
-			// 
-			// lblStatus
-			// 
-			this.lblStatus.BackColor = System.Drawing.Color.Transparent;
-			this.lblStatus.ForeColor = System.Drawing.Color.White;
-			this.lblStatus.Location = new System.Drawing.Point(0, 230);
-			this.lblStatus.Name = "lblStatus";
-			this.lblStatus.Size = new System.Drawing.Size(400, 16);
-			this.lblStatus.TabIndex = 0;
-			this.lblStatus.Text = "Status";
-			this.lblStatus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			// 
-			// lblTimeRemaining
-			// 
-			this.lblTimeRemaining.BackColor = System.Drawing.Color.Transparent;
-			this.lblTimeRemaining.ForeColor = System.Drawing.Color.White;
-			this.lblTimeRemaining.Location = new System.Drawing.Point(296, 232);
-			this.lblTimeRemaining.Name = "lblTimeRemaining";
-			this.lblTimeRemaining.Size = new System.Drawing.Size(100, 16);
-			this.lblTimeRemaining.TabIndex = 1;
-			this.lblTimeRemaining.Text = "Time";
-			// 
-			// pnlStatus
-			// 
-			this.pnlStatus.BackColor = System.Drawing.Color.Transparent;
-			this.pnlStatus.Location = new System.Drawing.Point(50, 190);
-			this.pnlStatus.Name = "pnlStatus";
-			this.pnlStatus.Size = new System.Drawing.Size(300, 24);
-			this.pnlStatus.TabIndex = 2;
-			this.pnlStatus.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlStatus_Paint);
-			// 
-			// timer1
-			// 
-			this.timer1.Enabled = true;
-			this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-			// 
-			// Splash
-			// 
-			this.AutoScale = false;
-			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-			this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
-			this.ClientSize = new System.Drawing.Size(400, 250);
-			this.Controls.Add(this.pnlStatus);
-			this.Controls.Add(this.lblTimeRemaining);
-			this.Controls.Add(this.lblStatus);
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-			this.Name = "Splash";
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-			this.Text = "Splash";
-			this.ResumeLayout(false);
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Splash));
+            this.lblStatus = new System.Windows.Forms.LabelTS();
+            this.lblTimeRemaining = new System.Windows.Forms.LabelTS();
+            this.pnlStatus = new System.Windows.Forms.Panel();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.SuspendLayout();
+            // 
+            // lblStatus
+            // 
+            this.lblStatus.BackColor = System.Drawing.Color.Transparent;
+            this.lblStatus.ForeColor = System.Drawing.Color.White;
+            this.lblStatus.Image = null;
+            this.lblStatus.Location = new System.Drawing.Point(0, 230);
+            this.lblStatus.Name = "lblStatus";
+            this.lblStatus.Size = new System.Drawing.Size(400, 16);
+            this.lblStatus.TabIndex = 0;
+            this.lblStatus.Text = "Status";
+            this.lblStatus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // lblTimeRemaining
+            // 
+            this.lblTimeRemaining.BackColor = System.Drawing.Color.Transparent;
+            this.lblTimeRemaining.ForeColor = System.Drawing.Color.White;
+            this.lblTimeRemaining.Image = null;
+            this.lblTimeRemaining.Location = new System.Drawing.Point(296, 232);
+            this.lblTimeRemaining.Name = "lblTimeRemaining";
+            this.lblTimeRemaining.Size = new System.Drawing.Size(100, 16);
+            this.lblTimeRemaining.TabIndex = 1;
+            this.lblTimeRemaining.Text = "Time";
+            // 
+            // pnlStatus
+            // 
+            this.pnlStatus.BackColor = System.Drawing.Color.Transparent;
+            this.pnlStatus.Location = new System.Drawing.Point(50, 190);
+            this.pnlStatus.Name = "pnlStatus";
+            this.pnlStatus.Size = new System.Drawing.Size(300, 24);
+            this.pnlStatus.TabIndex = 2;
+            this.pnlStatus.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlStatus_Paint);
+            // 
+            // timer1
+            // 
+            this.timer1.Enabled = true;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
+            // Splash
+            // 
+            this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
+            this.ClientSize = new System.Drawing.Size(465, 304);
+            this.Controls.Add(this.pnlStatus);
+            this.Controls.Add(this.lblTimeRemaining);
+            this.Controls.Add(this.lblStatus);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Name = "Splash";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Splash";
+            this.ResumeLayout(false);
 
 		}
 		#endregion
@@ -420,7 +420,7 @@ namespace PowerSDR
 				LinearGradientBrush brBackground = 
 					new LinearGradientBrush(m_rProgress, 
 					Color.FromArgb(100, 100, 100),
-					Color.FromArgb(130, 255, 130), 
+					Color.FromArgb(255,0,0), 
 					LinearGradientMode.Horizontal);
 				e.Graphics.FillRectangle(brBackground, m_rProgress);
 			}
