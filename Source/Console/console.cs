@@ -1515,6 +1515,7 @@ namespace PowerSDR
             this.mnuReportBug = new System.Windows.Forms.MenuItem();
             this.mnuProfiles = new System.Windows.Forms.MenuItem();
             this.menuItem1 = new System.Windows.Forms.MenuItem();
+            this.menuItem2 = new System.Windows.Forms.MenuItem();
             this.timer_cpu_meter = new System.Windows.Forms.Timer(this.components);
             this.timer_peak_text = new System.Windows.Forms.Timer(this.components);
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
@@ -1828,7 +1829,6 @@ namespace PowerSDR
             this.radBandVHF0 = new System.Windows.Forms.RadioButtonTS();
             this.panelRX2DSP = new System.Windows.Forms.PanelTS();
             this.ptbSquelch = new PowerSDR.PrettyTrackBar();
-            this.menuItem2 = new System.Windows.Forms.MenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.ptbRX2RF)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ptbCWSpeed)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.udCWPitch)).BeginInit();
@@ -2030,6 +2030,12 @@ namespace PowerSDR
             this.menuItem1.Index = 15;
             resources.ApplyResources(this.menuItem1, "menuItem1");
             this.menuItem1.Click += new System.EventHandler(this.menu_setup_if_Click);
+            // 
+            // menuItem2
+            // 
+            this.menuItem2.Index = 16;
+            resources.ApplyResources(this.menuItem2, "menuItem2");
+            this.menuItem2.Click += new System.EventHandler(this.menuItem2_Click);
             // 
             // timer_cpu_meter
             // 
@@ -5496,12 +5502,6 @@ namespace PowerSDR
             this.ptbSquelch.TabStop = false;
             this.ptbSquelch.Value = -150;
             this.ptbSquelch.Scroll += new PowerSDR.PrettyTrackBar.ScrollHandler(this.ptbSquelch_Scroll);
-            // 
-            // menuItem2
-            // 
-            this.menuItem2.Index = 16;
-            resources.ApplyResources(this.menuItem2, "menuItem2");
-            this.menuItem2.Click += new System.EventHandler(this.menuItem2_Click);
             // 
             // Console
             // 
