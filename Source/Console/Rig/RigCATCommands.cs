@@ -128,6 +128,19 @@ namespace PowerSDR
 			return null;
 		}
 
+		public string FT(string s)
+		{
+			bool split = (s[0] == '1');
+			
+			if (this.rig.Split != split)
+			{
+				this.rig.Split = split;
+				this.sdrParser.Get("ZZSP" + s + ';');
+			}
+
+			return null;
+		}
+
 		// Reads the transceiver status
 		// needs work in the split area
 		public string IF(string s)
@@ -215,8 +228,101 @@ namespace PowerSDR
 
 
 			// RX/TX
-			bool tx = (s[26] == '1');
+			this.setTX(s[26] == '1');
 
+
+			// Split
+			bool split = (s[30] == '1');
+			if (this.rig.Split != split)
+			{
+				this.rig.Split = split;
+				this.sdrParser.Get("ZZSP" + s[30] + ';');
+			}
+
+			return null;
+		}
+
+		public string MD(string s)
+		{
+			int mode = s[0] - '0';
+
+			if (this.rig.VFOAMode != mode)
+			{
+				this.rig.VFOAMode = mode;
+				this.rig.setConsoleModeFromString(s);
+			}
+
+			return null;
+		}
+
+		public string TQ(string s)
+		{
+			this.setTX(s[0] == '1');
+
+			return null;
+		}
+
+
+		private void changeVFOA(string s)
+		{
+			if (this.console.SetupForm.RttyOffsetEnabledA &&
+				(this.console.RX1DSPMode == DSPMode.DIGU ||
+				this.console.RX1DSPMode == DSPMode.DIGL))
+			{
+				int f = int.Parse(s);
+		
+				if (this.console.RX1DSPMode == DSPMode.DIGU)
+					f = f - Convert.ToInt32(console.SetupForm.RttyOffsetHigh);
+				else if (console.RX1DSPMode == DSPMode.DIGL)
+					f = f + Convert.ToInt32(console.SetupForm.RttyOffsetLow);
+				
+				s = this.AddLeadingZeros(f);
+			}
+
+			if (this.rig.VFO != 0 || s != this.rig.VFOAFrequency)
+			{
+				double freq = double.Parse(s.Insert(5,separator));
+				this.console.txtVFOAFreq.Text = freq.ToString("f6");
+				this.console.txtVFOAFreq_LostFocus(this,new RigCATEventArgs());
+			}
+
+			// Store Frequency Status for RigSerialPoller Performance.
+			this.rig.VFOAFrequencyChanged = (this.rig.VFOAFrequency != s);
+
+			this.rig.VFOAFrequency = s;
+		}
+
+		private void changeVFOB(string s)
+		{
+			if (this.console.SetupForm.RttyOffsetEnabledB &&
+				(this.console.RX1DSPMode == DSPMode.DIGU ||
+				this.console.RX1DSPMode == DSPMode.DIGL))
+			{
+				int f = int.Parse(s);
+
+				if (this.console.RX1DSPMode == DSPMode.DIGU)
+					f = f - Convert.ToInt32(console.SetupForm.RttyOffsetHigh);
+				else if (console.RX1DSPMode == DSPMode.DIGL)
+					f = f + Convert.ToInt32(console.SetupForm.RttyOffsetLow);
+
+				s = this.AddLeadingZeros(f);
+			}
+
+			if (this.rig.VFO != 1 || s != this.rig.VFOBFrequency)
+			{
+				double freq = double.Parse(s.Insert(5,separator));
+				this.console.txtVFOBFreq.Text = freq.ToString("f6");
+				this.console.txtVFOBFreq_LostFocus(this,new RigCATEventArgs());
+			}
+
+			// Store Frequency Status for RigSerialPoller Performance.
+			this.rig.VFOBFrequencyChanged = (this.rig.VFOBFrequency != s);
+
+			this.rig.VFOBFrequency = s;
+		}
+
+		private void setTX(bool tx)
+		{
 			if (tx)
 			{
 				// If we're coming out of TX, store the state of all DSP Buttons...
@@ -280,78 +386,6 @@ namespace PowerSDR
 			// If RX/TX Status is changing, set the console's MOX
 			if (!this.console.MOX && tx || this.console.MOX && !tx)
 				this.console.MOX = tx;
-
-
-			// Split
-			bool split = (s[30] == '1');
-			if (this.rig.Split != split)
-			{
-				this.rig.Split = split;
-				this.sdrParser.Get("ZZSP" + s[30] + ';');
-			}
-
-			return null;
-		}
-
-
-		private void changeVFOA(string s)
-		{
-			if (this.console.SetupForm.RttyOffsetEnabledA &&
-				(this.console.RX1DSPMode == DSPMode.DIGU ||
-				this.console.RX1DSPMode == DSPMode.DIGL))
-			{
-				int f = int.Parse(s);
-		
-				if (this.console.RX1DSPMode == DSPMode.DIGU)
-					f = f - Convert.ToInt32(console.SetupForm.RttyOffsetHigh);
-				else if (console.RX1DSPMode == DSPMode.DIGL)
-					f = f + Convert.ToInt32(console.SetupForm.RttyOffsetLow);
-				
-				s = this.AddLeadingZeros(f);
-			}
-
-			if (this.rig.VFO != 0 || s != this.rig.VFOAFrequency)
-			{
-				double freq = double.Parse(s.Insert(5,separator));
-				this.console.txtVFOAFreq.Text = freq.ToString("f6");
-				this.console.txtVFOAFreq_LostFocus(this,new RigCATEventArgs());
-			}
-
-			// Store Frequency Status for RigSerialPoller Performance.
-			if (this.rig.VFO == 0)
-				this.rig.FrequencyChanged = (this.rig.VFOAFrequency != s);
-
-			this.rig.VFOAFrequency = s;
-		}
-
-		private void changeVFOB(string s)
-		{
-			if (this.console.SetupForm.RttyOffsetEnabledB &&
-				(this.console.RX1DSPMode == DSPMode.DIGU ||
-				this.console.RX1DSPMode == DSPMode.DIGL))
-			{
-				int f = int.Parse(s);
-
-				if (this.console.RX1DSPMode == DSPMode.DIGU)
-					f = f - Convert.ToInt32(console.SetupForm.RttyOffsetHigh);
-				else if (console.RX1DSPMode == DSPMode.DIGL)
-					f = f + Convert.ToInt32(console.SetupForm.RttyOffsetLow);
-
-				s = this.AddLeadingZeros(f);
-			}
-
-			if (this.rig.VFO != 1 || s != this.rig.VFOBFrequency)
-			{
-				double freq = double.Parse(s.Insert(5,separator));
-				this.console.txtVFOBFreq.Text = freq.ToString("f6");
-				this.console.txtVFOBFreq_LostFocus(this,new RigCATEventArgs());
-			}
-
-			// Store Frequency Status for RigSerialPoller Performance.
-			if (this.rig.VFO == 1)
-				this.rig.FrequencyChanged = (this.rig.VFOBFrequency != s);
-
-			this.rig.VFOBFrequency = s;
 		}
 	}
 }

@@ -92,11 +92,18 @@ namespace PowerSDR
 			set { this.vfobFrequency = value; }
 		}
 
-		private bool frequencyChanged = false;
-		public bool FrequencyChanged
+		private bool vfoaFrequencyChanged = false;
+		public bool VFOAFrequencyChanged
 		{
-			get { return this.frequencyChanged; }
-			set { this.frequencyChanged = value; }
+			get { return this.vfoaFrequencyChanged; }
+			set { this.vfoaFrequencyChanged = value; }
+		}
+
+		private bool vfobFrequencyChanged = false;
+		public bool VFOBFrequencyChanged
+		{
+			get { return this.vfobFrequencyChanged; }
+			set { this.vfobFrequencyChanged = value; }
 		}
 
 		private int ritOffset = 0;

@@ -82,6 +82,15 @@ namespace PowerSDR
 				case "IF":
 					rtncmd = this.rigCmdList.IF(suffix);
 					break;
+				case "MD":
+					rtncmd = this.rigCmdList.MD(suffix);
+					break;
+				case "RT":
+					rtncmd = this.rigCmdList.RT(suffix);
+					break;
+				case "TQ":
+					rtncmd = this.rigCmdList.TQ(suffix);
+					break;
 			}
 
 			return rtncmd;	// Read successfully executed

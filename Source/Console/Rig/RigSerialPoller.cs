@@ -56,11 +56,6 @@ namespace PowerSDR
 			this.rig = rig;
 		}
 
-		~RigSerialPoller()
-		{
-			this.disable();
-		}
-
 		#endregion Constructor
 
 
@@ -145,11 +140,11 @@ namespace PowerSDR
 				{
 					// If the operator is tuning the VFO Knob, we'll focus on just
 					// that for maximum performance!
-					if (this.rig.FrequencyChanged)
+					if (this.rig.VFOAFrequencyChanged || this.rig.VFOBFrequencyChanged)
 					{
-						if (this.rig.VFO == 0)
+						if (this.rig.VFOAFrequencyChanged)
 							this.rig.getVFOAFreq();
-						else if (this.rig.VFO == 1)
+						if (this.rig.VFOBFrequencyChanged)
 							this.rig.getVFOBFreq();
 
 						continue;
