@@ -686,6 +686,13 @@
 		<ngetparms>0</ngetparms>
 		<nansparms>1</nansparms>
 	</catstruct>
+	<catstruct code="TQ">
+		<desc>transmit query</desc>
+		<active>true</active>
+		<nsetparms>-1</nsetparms>
+		<ngetparms>0</ngetparms>
+		<nansparms>1</nansparms>
+	</catstruct>
 	<catstruct code="TS">
 		<desc>tf_set function</desc>
 		<active>false</active>
