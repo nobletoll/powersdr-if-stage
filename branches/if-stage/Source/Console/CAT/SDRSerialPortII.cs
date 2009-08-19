@@ -220,9 +220,14 @@ namespace SDRSerialSupportII
 		{ 
 			if ( !isOpen ) return; 
 			commPort.DtrEnable = v; 
-		}	
+		}
 
-		void SerialErrorReceived(object source, SerialErrorReceivedEventArgs e)
+		public void setRTS(bool v)
+		{
+			commPort.RtsEnable = v;
+		}
+
+		void SerialErrorReceived(object source,SerialErrorReceivedEventArgs e)
 		{
 			
 		}
