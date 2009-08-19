@@ -151,6 +151,7 @@ namespace PowerSDR
 				if (this.SIO == null)
 				{
 					this.SIO = new SDRSerialPort(this.hw.COMPort);
+					this.SIO.setRTS(false);
 
 					// Event handler for Serial RX Events
 					this.SIO.serial_rx_event +=
