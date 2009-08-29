@@ -28495,7 +28495,10 @@ namespace PowerSDR
 			// W1CEG: For RigHW, we don't need to do any special MOX processing.
 			//        We're only setting the flag as a status indicator.
 			if (this.hw is RigHW)
+			{
+				ResetMultiMeterPeak();
 				return;
+			}
 
             //Debug.WriteLine("MOX: "+chkMOX.Checked);	
             t1.Start();
