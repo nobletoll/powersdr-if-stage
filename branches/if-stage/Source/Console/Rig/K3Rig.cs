@@ -170,7 +170,7 @@ namespace PowerSDR
 
 		public override void setSplit(bool splitOn)
 		{
-			if (!this.connected || this.Split == splitOn)
+			if (!this.active || this.Split == splitOn)
 				return;
 
 			this.doRigCATCommand("FT" + ((splitOn) ? '1' : '0') + ';',true,false);

@@ -38,7 +38,8 @@ namespace PowerSDR
 
 		protected SDRSerialPort SIO;
 
-		protected bool connected = false;
+		protected bool active = false;
+		private bool connected = false;
 
 		// Serial Read Handler
 		private byte[] commBuffer = null;
@@ -57,7 +58,7 @@ namespace PowerSDR
 		{
 			lock (this)
 			{
-				if (this.connected)
+				if (this.active || this.connected)
 					return;
 
 				if (this.SIO == null)
@@ -102,6 +103,7 @@ namespace PowerSDR
 						new SerialRXEventHandler(this.SerialRXEventHandler);
 				}
 
+				this.active = true;
 				this.connected = true;
 			}
 		}
@@ -110,27 +112,48 @@ namespace PowerSDR
 		{
 			lock (this)
 			{
-				if (!this.connected)
+				if (!this.active || !this.connected)
 					return;
 
-				this.connected = false;
+				this.active = false;
 
 				if (this.SIO != null && this.SIO.PortIsOpen)
 				{
-					MeterHW.dbgWriteLine("Meter.disconnect(), Closing COM" +
-						this.hw.COMPort + "...");
+					MeterHW.dbgWriteLine("Meter.disconnect(), Deregistering COM" +
+						this.hw.COMPort + " Handlers...");
 
 					this.SIO.deregisterEventHandlers();
 					this.SIO.serial_rx_event -=
 						new SerialRXEventHandler(this.SerialRXEventHandler);
 
-					this.SIO.Destroy();
-					this.SIO = null;
-
-					MeterHW.dbgWriteLine("Meter.disconnect(), Closed COM" +
-						this.hw.COMPort + ".");
+					/* :Issue 67: When the app is closing, we don't want to
+					 *            bother closing the serial ports.
+					 *                    
+					 *            This will reduce the likelyhood of a hang
+					 *            on Serial close.  Let the OS clean up the
+					 *            open handles.
+					 *            
+					 *            If we do have to close the serial port, do
+					 *            it in a separate thread so we don't block
+					 *            the main UI thread.
+					 */
+					if (!this.console.ConsoleClosing)
+						new Thread(new ThreadStart(this.destroySIO)).Start();
 				}
 			}
+		}
+
+		private void destroySIO()
+		{
+			MeterHW.dbgWriteLine("Meter.destroySIO(), Closing COM" +
+				this.hw.COMPort + "...");
+
+			this.SIO.Destroy();
+			this.SIO = null;
+			this.connected = false;
+
+			MeterHW.dbgWriteLine("Meter.destroySIO(), Closed COM" +
+				this.hw.COMPort + ".");
 		}
 
 		#endregion Initialization

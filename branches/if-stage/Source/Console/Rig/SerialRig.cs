@@ -38,6 +38,7 @@ namespace PowerSDR
 		private RigSerialPoller rigSerialPoller;
 
 		protected SDRSerialPort SIO;
+		private bool connected = false;
 
 		// Rig Commands
 		private bool runRigCommands = true;
@@ -143,7 +144,7 @@ namespace PowerSDR
 		{
 			lock (this)
 			{
-				if (this.connected)
+				if (this.active || this.connected)
 					return;
 
 				this.initRigStates();
@@ -197,6 +198,7 @@ namespace PowerSDR
 
 				this.rigSerialPoller.enable();
 
+				this.active = true;
 				this.connected = true;
 			}
 		}
@@ -205,10 +207,10 @@ namespace PowerSDR
 		{
 			lock (this)
 			{
-				if (!this.connected)
+				if (!this.active || !this.connected)
 					return;
 
-				this.connected = false;
+				this.active = false;
 
 				RigHW.dbgWriteLine("SerialRig.disconnect(), Shutting down Rig Command Thread.");
 				this.runRigCommands = false;
@@ -225,20 +227,41 @@ namespace PowerSDR
 
 				if (this.SIO != null && this.SIO.PortIsOpen)
 				{
-					RigHW.dbgWriteLine("SerialRig.disconnect(), Closing COM" +
-						this.hw.COMPort + "...");
+					RigHW.dbgWriteLine("SerialRig.disconnect(), Deregistering COM" +
+						this.hw.COMPort + " Handlers...");
 
 					this.SIO.deregisterEventHandlers();
 					this.SIO.serial_rx_event -=
 						new SerialRXEventHandler(this.rigSerialPoller.SerialRXEventHandler);
 
-					this.SIO.Destroy();
-					this.SIO = null;
-
-					RigHW.dbgWriteLine("SerialRig.disconnect(), Closed COM" +
-						this.hw.COMPort + ".");
+					/* :Issue 67: When the app is closing, we don't want to
+					 *            bother closing the serial ports.
+					 *                    
+					 *            This will reduce the likelyhood of a hang
+					 *            on Serial close.  Let the OS clean up the
+					 *            open handles.
+					 *            
+					 *            If we do have to close the serial port, do
+					 *            it in a separate thread so we don't block
+					 *            the main UI thread.
+					 */
+					if (!this.console.ConsoleClosing)
+						new Thread(new ThreadStart(this.destroySIO)).Start();
 				}
 			}
+		}
+
+		private void destroySIO()
+		{
+			RigHW.dbgWriteLine("SerialRig.destroySIO(), Closing COM" +
+				this.hw.COMPort + "...");
+
+			this.SIO.Destroy();
+			this.SIO = null;
+			this.connected = false;
+
+			RigHW.dbgWriteLine("SerialRig.destroySIO(), Closed COM" +
+				this.hw.COMPort + ".");
 		}
 
 		private void initRigStates()
@@ -353,7 +376,7 @@ namespace PowerSDR
 		protected void doRigCATCommand(string command, bool bPollingLockout,
 			int pollingLockoutTime, bool bCheckRigPollingLockout)
 		{
-			if (!this.connected ||
+			if (!this.active ||
 				(bCheckRigPollingLockout && this.rigPollingLockout))
 				return;
 

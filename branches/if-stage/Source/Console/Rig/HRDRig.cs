@@ -74,7 +74,7 @@ namespace PowerSDR
         public override void setVFOAFreq(double f)
         {
             // Check to see that we are connected to HRD
-            if (!connected)
+            if (!active)
             {
                 this.connect();
             }
@@ -110,7 +110,7 @@ namespace PowerSDR
         {
 
             // Check to see that we are connected to HRD
-            if (!connected)
+            if (!active)
             {
                 connect();
             }
@@ -148,7 +148,7 @@ namespace PowerSDR
 
         public override void connect()
         {
-            if ((!connected) && (this.lockoutConnectionAttempt == false))
+            if ((!active) && (this.lockoutConnectionAttempt == false))
             {
                 Int32 ulRef = 0;
 
@@ -197,7 +197,7 @@ namespace PowerSDR
                 }
                 else
                 {
-                    connected = true;
+                    active = true;
                 }
 
                 // Setup hot advise loop on the items of interest - frequency, mode, and TX status
