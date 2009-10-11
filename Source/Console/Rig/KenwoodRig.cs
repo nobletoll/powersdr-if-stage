@@ -76,8 +76,9 @@ namespace PowerSDR
 				case DSPMode.AM:
 					return (int) Mode.AM;
 				case DSPMode.DIGU:
+                    return (int) Mode.USB;
 				case DSPMode.DIGL:
-					return (int) Mode.FSK;
+					return (int) Mode.LSB;
 				default:
 					return (int) Mode.LSB;
 			}
