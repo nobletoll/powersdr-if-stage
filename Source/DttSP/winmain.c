@@ -304,10 +304,25 @@ Audio_Callback (float *input_l, float *input_r, float *output_l,
 		if ((ringb_float_write_space (top[i].jack.ring.i.l) >= nframes)
 			&& (ringb_float_write_space (top[i].jack.ring.i.r) >= nframes))
 		{
-			ringb_float_write (top[i].jack.ring.i.l, (float *) input_l, nframes);
-			ringb_float_write (top[i].jack.ring.i.r, (float *) input_r, nframes);
-			ringb_float_write (top[i].jack.auxr.i.l, (float *) input_l, nframes);
-			ringb_float_write (top[i].jack.auxr.i.r, (float *) input_r, nframes);
+
+			// WU2X
+			// Swap the I/Q Channels if the flag is set
+			if (top[i].hold.buf.swap == 0) 
+			{
+                // Normal
+				ringb_float_write (top[i].jack.ring.i.l, (float *) input_l, nframes);
+				ringb_float_write (top[i].jack.ring.i.r, (float *) input_r, nframes);
+				ringb_float_write (top[i].jack.auxr.i.l, (float *) input_l, nframes);
+				ringb_float_write (top[i].jack.auxr.i.r, (float *) input_r, nframes);
+			} 
+			else
+			{
+				// Swapped
+				ringb_float_write (top[i].jack.ring.i.l, (float *) input_r, nframes);
+				ringb_float_write (top[i].jack.ring.i.r, (float *) input_l, nframes);
+				ringb_float_write (top[i].jack.auxr.i.l, (float *) input_r, nframes);
+				ringb_float_write (top[i].jack.auxr.i.r, (float *) input_l, nframes);
+			}
 		}
 		else
 		{	// rb pathology
@@ -369,10 +384,26 @@ Audio_Callback2 (float **input, float **output, unsigned int nframes)
 		if ((ringb_float_write_space (top[thread].jack.ring.i.l) >= nframes)
 			&& (ringb_float_write_space (top[thread].jack.ring.i.r) >= nframes))
 		{
-			ringb_float_write (top[thread].jack.ring.i.l, input[l], nframes);
-			ringb_float_write (top[thread].jack.ring.i.r, input[r], nframes);
-			ringb_float_write (top[thread].jack.auxr.i.l, input[l], nframes);
-			ringb_float_write (top[thread].jack.auxr.i.r, input[r], nframes);
+			// WU2X
+			// Swap the I/Q Channels if the flag is set
+			if (top[thread].hold.buf.swap == 0) 
+			{
+                // Normal
+				ringb_float_write (top[thread].jack.ring.i.l, input[l], nframes);
+				ringb_float_write (top[thread].jack.ring.i.r, input[r], nframes);
+				ringb_float_write (top[thread].jack.auxr.i.l, input[l], nframes);
+				ringb_float_write (top[thread].jack.auxr.i.r, input[r], nframes);
+			} 
+			else 
+			{
+                // Swapped
+				ringb_float_write (top[thread].jack.ring.i.l, input[r], nframes);
+				ringb_float_write (top[thread].jack.ring.i.r, input[l], nframes);
+				ringb_float_write (top[thread].jack.auxr.i.l, input[r], nframes);
+				ringb_float_write (top[thread].jack.auxr.i.r, input[l], nframes);
+
+			}
+
 		}
 		else
 		{	// rb pathology

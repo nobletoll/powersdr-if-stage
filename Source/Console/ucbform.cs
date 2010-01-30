@@ -45,7 +45,7 @@ namespace PowerSDR
 
 		private Console console;
 		private bool ucb_busy = false;
-		private HW hw;
+		private AbstractHW hw;
 		private byte address;
 		private int val;
 		private UCB.CMD cmd;

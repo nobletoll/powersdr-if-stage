@@ -1,7 +1,7 @@
 ﻿<Project DefaultTargets="Build" ToolsVersion="3.5" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{831AEB2F-CA78-4057-85D7-32B4816ED6AE}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -25,6 +25,9 @@
     <OldToolsVersion>0.0</OldToolsVersion>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <SignManifests>false</SignManifests>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -37,10 +40,8 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>..\..\bin\Debug\</OutputPath>
@@ -158,6 +159,7 @@
     <Compile Include="CAT\CATTester.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="CAT\ICATCommands.cs" />
     <Compile Include="CAT\RemoteProfiles.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -197,6 +199,7 @@
     <Compile Include="database.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DatabaseIF.cs" />
     <Compile Include="deltacp.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -275,6 +278,9 @@
     <Compile Include="FWC\powermaster.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="hardware.cs" />
+    <Compile Include="hardware_meter.cs" />
+    <Compile Include="hardware_rig.cs" />
     <Compile Include="hardware_v2.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -332,6 +338,13 @@
     <Compile Include="memory.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Meter\Meter.cs" />
+    <Compile Include="Meter\MeterSerialPoller.cs" />
+    <Compile Include="Meter\PowerMasterCRC.cs" />
+    <Compile Include="Meter\PowerMasterMeter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Meter\PowerMasterMeterParser.cs" />
     <Compile Include="midi.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -382,6 +395,17 @@
     <Compile Include="release_notes.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Rig\DDEML.cs" />
+    <Compile Include="Rig\HRDRig.cs" />
+    <Compile Include="Rig\K3Rig.cs" />
+    <Compile Include="Rig\Kenwood950Rig.cs" />
+    <Compile Include="Rig\KenwoodRig.cs" />
+    <Compile Include="Rig\Rig.cs" />
+    <Compile Include="Rig\RigCATCommands.cs" />
+    <Compile Include="Rig\RigCATParser.cs" />
+    <Compile Include="Rig\DDEApplication.cs" />
+    <Compile Include="Rig\RigSerialPoller.cs" />
+    <Compile Include="Rig\SerialRig.cs" />
     <Compile Include="ringbuffer.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -390,6 +414,12 @@
     </Compile>
     <Compile Include="setup.cs">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SetupIF.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SetupIF.Designer.cs">
+      <DependentUpon>SetupIF.cs</DependentUpon>
     </Compile>
     <Compile Include="Skin.cs" />
     <Compile Include="splash.cs">
@@ -457,6 +487,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FLEX3000ATUForm.resx">
       <DependentUpon>FLEX3000ATUForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="FWC\FLEX3000MixerForm.resx">
       <DependentUpon>FLEX3000MixerForm.cs</DependentUpon>
@@ -464,6 +495,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FWC\FLEX3000TestForm.resx">
       <DependentUpon>FLEX3000TestForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="FWC\FLEX5000DebugForm.resx">
       <DependentUpon>FLEX5000DebugForm.cs</DependentUpon>
@@ -539,6 +571,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="mobilewarnform.resx">
       <DependentUpon>mobilewarnform.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="paqualify.resx">
       <DependentUpon>paqualify.cs</DependentUpon>
@@ -563,6 +596,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="savemem.resx">
       <DependentUpon>savemem.cs</DependentUpon>
@@ -570,6 +604,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="setup.resx">
       <DependentUpon>setup.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SetupIF.resx">
+      <DependentUpon>SetupIF.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="splash.resx">
@@ -599,6 +637,7 @@
     <Content Include="CAT\CATStructs.xml" />
     <EmbeddedResource Include="images\flex-3000.jpg" />
     <Content Include="images\PowerSDR.ico" />
+    <Content Include="PowerSDR.ico" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
@@ -619,6 +658,9 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

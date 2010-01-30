@@ -30,7 +30,8 @@ namespace SDRSerialSupportII
 {
 	public class SDRSerialPort
 	{
-		public static event SDRSerialSupportII.SerialRXEventHandler serial_rx_event;
+		// W1CEG: Don't use static, because we want to handle multiple SDRSerialPort instances.
+		public event SDRSerialSupportII.SerialRXEventHandler serial_rx_event;
 		
 		private SerialPort commPort; 		
 		private bool isOpen = false; 
@@ -95,9 +96,8 @@ namespace SDRSerialSupportII
 			commPort.Encoding = System.Text.Encoding.ASCII;
 			commPort.RtsEnable = true; // kd5tfd hack for soft rock ptt 
 			commPort.DtrEnable = false; // set dtr off 
-            //commPort.ErrorReceived += new SerialErrorReceivedEventHandler(this.SerialErrorReceived);
-            commPort.DataReceived += new SerialDataReceivedEventHandler(this.SerialReceivedData);
-			commPort.PinChanged += new SerialPinChangedEventHandler(this.SerialPinChanged);
+
+			this.registerEventHandlers();
 
 			commPort.PortName = "COM" + portidx.ToString(); 
 
@@ -109,6 +109,24 @@ namespace SDRSerialSupportII
 			commPort.WriteTimeout = 500;	
 			commPort.ReceivedBytesThreshold = 1;
 		}
+
+		public void registerEventHandlers()
+		{
+			//commPort.ErrorReceived += new SerialErrorReceivedEventHandler(this.SerialErrorReceived);
+			commPort.DataReceived += new SerialDataReceivedEventHandler(this.SerialReceivedData);
+			commPort.PinChanged += new SerialPinChangedEventHandler(this.SerialPinChanged);
+		}
+
+		public void deregisterEventHandlers()
+		{
+			this.commPort.DiscardOutBuffer();
+			this.commPort.DiscardInBuffer();
+
+			//commPort.ErrorReceived -= new SerialErrorReceivedEventHandler(this.SerialErrorReceived);
+			commPort.DataReceived -= new SerialDataReceivedEventHandler(this.SerialReceivedData);
+			commPort.PinChanged -= new SerialPinChangedEventHandler(this.SerialPinChanged);
+		}
+
 		// set the comm parms ... can only be done if port is not open -- silently fails if port is open (fixme -- add some error checking) 
 		// 
 		public void setCommParms(int baudrate, Parity p, DataBits data, StopBits stop)  
@@ -202,9 +220,14 @@ namespace SDRSerialSupportII
 		{ 
 			if ( !isOpen ) return; 
 			commPort.DtrEnable = v; 
-		}	
+		}
 
-		void SerialErrorReceived(object source, SerialErrorReceivedEventArgs e)
+		public void setRTS(bool v)
+		{
+			commPort.RtsEnable = v;
+		}
+
+		void SerialErrorReceived(object source,SerialErrorReceivedEventArgs e)
 		{
 			
 		}
@@ -219,8 +242,11 @@ namespace SDRSerialSupportII
 			int num_to_read = commPort.BytesToRead;
 			byte[] inbuf = new byte[num_to_read];
 			commPort.Read(inbuf, 0, num_to_read);
-			serial_rx_event(this, new SDRSerialSupportII.SerialRXEvent(inbuf, (uint)num_to_read));
-		}
 
+			// W1CEG: Make sure serial_rx_event has really been registered,
+			//        since it is handled outside of this class.
+			if (this.serial_rx_event != null)
+				serial_rx_event(this, new SDRSerialSupportII.SerialRXEvent(inbuf, (uint)num_to_read));
+		}
 	}
 }
