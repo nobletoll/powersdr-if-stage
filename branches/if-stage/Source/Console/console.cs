@@ -1142,7 +1142,7 @@ namespace PowerSDR
                 FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
                 string version = fvi.FileVersion.Substring(0, fvi.FileVersion.LastIndexOf("."));
                 AppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)
-                    + "\\FlexRadio Systems\\PowerSDR v" + version + "\\";
+                    + "\\PowerSDR IF-Stage v" + version + "\\";
             }
 
 #if(DEBUG)

@@ -14991,8 +14991,7 @@ namespace PowerSDR
         {
             string skin = comboAppSkin.Text;
             comboAppSkin.Items.Clear();
-            string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
-                "\\FlexRadio Systems\\PowerSDR\\Skins";
+            string path = Application.StartupPath + "\\Skins";
 
             if (!Directory.Exists(path))
             {
@@ -22375,16 +22374,14 @@ namespace PowerSDR
 
         private void comboAppSkin_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + 
-                "\\FlexRadio Systems\\PowerSDR\\Skins\\";
+            string path = Application.StartupPath + "\\Skins\\";
             if (Directory.Exists(path + comboAppSkin.Text))
                 Skin.Restore(comboAppSkin.Text, path, console);
         }
 
         private void btnSkinExport_Click(object sender, EventArgs e)
         {
-            string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + 
-                "\\FlexRadio Systems\\PowerSDR\\Skins\\";
+            string path = Application.StartupPath + "\\Skins\\";
             if (Directory.Exists(path + comboAppSkin.Text))
                 Skin.Save(comboAppSkin.Text, path, console);
         }
