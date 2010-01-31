@@ -17255,6 +17255,7 @@ namespace PowerSDR
             {
                 app_data_path = value;
                 DB.AppDataPath = value;
+				DatabaseIF.AppDataPath = value;
                 FWCEEPROM.AppDataPath = value;
                 Skin.AppDataPath = value;
             }                

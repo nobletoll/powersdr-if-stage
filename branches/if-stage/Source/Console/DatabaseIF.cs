@@ -44,6 +44,12 @@ namespace PowerSDR
 
         public static DataSet ds;
 
+		private static string app_data_path = "";
+		public static string AppDataPath
+		{
+			set { app_data_path = value; }
+		}
+
         #endregion
 
         #region Private Member Functions
@@ -69,15 +75,14 @@ namespace PowerSDR
         {
             ds = new DataSet("Data");
 
-            string path = Application.StartupPath;
-            if (File.Exists(path + "\\databaseIF.xml"))
-                ds.ReadXml(path + "\\databaseIF.xml");
+            if (File.Exists(app_data_path + "\\databaseIF.xml"))
+				ds.ReadXml(app_data_path + "\\databaseIF.xml");
 
         }
 
         public static void Update()
         {
-            ds.WriteXml("databaseIF.xml", XmlWriteMode.WriteSchema);
+            ds.WriteXml(app_data_path + "\\databaseIF.xml", XmlWriteMode.WriteSchema);
         }
 
         public static void Exit()
