@@ -1382,8 +1382,16 @@ namespace PowerSDR
 		{
 			ds = new DataSet("Data");
 
-            if (File.Exists(app_data_path + "\\database.xml"))
-                ds.ReadXml(app_data_path + "\\database.xml");
+
+
+			// :W1CEG: PowerSDR IF-Stage will copy a default database from
+			//         the install bin directory instead of going through
+			//         the setup wizard.
+			if (!File.Exists(app_data_path + "\\database.xml"))
+				File.Copy(Application.StartupPath + "\\database.xml",
+					app_data_path + "\\database.xml");
+
+			ds.ReadXml(app_data_path + "\\database.xml");
 
 			VerifyTables();
 
