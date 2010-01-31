@@ -143,6 +143,78 @@ namespace PowerSDR
 
 		#region Set CAT Commands
 
+		public override void setVFOAFreq(double freq)
+		{
+			if (!this.active)
+				return;
+
+			string frequency =
+				freq.ToString("f6").Replace(Rig.separator, "").PadLeft(8, '0');
+
+			// Only do this if our Frequency State has changed.
+			// :TODO: Do we need to pay attention to the VFO state?
+			if (frequency == this.VFOAFrequency)
+				return;
+
+			this.enqueueRigCATCommand("FA" + frequency + ';');
+
+			// Set our Frequency State so we don't do this again.
+			this.VFOAFrequency = frequency;
+		}
+
+		public override void setVFOAFreq(string freq)
+		{
+			if (!this.active)
+				return;
+
+			freq = freq.Substring(3);
+
+			// Only do this if our Frequency State has changed.
+			if (freq == this.VFOAFrequency)
+				return;
+
+			this.doRigCATCommand("FA" + freq + ';', false, false);
+
+			// Set our Frequency State so we don't do this again.
+			this.VFOAFrequency = freq;
+		}
+
+		public override void setVFOBFreq(double freq)
+		{
+			if (!this.active)
+				return;
+
+			string frequency =
+				freq.ToString("f6").Replace(Rig.separator, "").PadLeft(8, '0');
+
+			// Only do this if our Frequency State has changed.
+			// :TODO: Do we need to pay attention to the VFO state?
+			if (frequency == this.VFOBFrequency)
+				return;
+
+			this.enqueueRigCATCommand("FB" + frequency + ';');
+
+			// Set our Frequency State so we don't do this again.
+			this.VFOBFrequency = frequency;
+		}
+
+		public override void setVFOBFreq(string freq)
+		{
+			if (!this.active)
+				return;
+
+			freq = freq.Substring(3);
+
+			// Only do this if our Frequency State has changed.
+			if (freq == this.VFOBFrequency)
+				return;
+
+			this.doRigCATCommand("FB" + freq + ';', false, false);
+
+			// Set our Frequency State so we don't do this again.
+			this.VFOBFrequency = freq;
+		}
+
 		public override void setVFOA()
 		{
 			// :TODO:
