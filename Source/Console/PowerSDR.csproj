@@ -16,7 +16,7 @@
     <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
     <DefaultTargetSchema>IE50</DefaultTargetSchema>
     <DelaySign>false</DelaySign>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <RootNamespace>PowerSDR</RootNamespace>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
     <StartupObject>PowerSDR.Console</StartupObject>
@@ -411,6 +411,7 @@
     <Compile Include="Rig\DDEApplication.cs" />
     <Compile Include="Rig\RigSerialPoller.cs" />
     <Compile Include="Rig\SerialRig.cs" />
+    <Compile Include="Rig\YaesuRig.cs" />
     <Compile Include="ringbuffer.cs">
       <SubType>Code</SubType>
     </Compile>
