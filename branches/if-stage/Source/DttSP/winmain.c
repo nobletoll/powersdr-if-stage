@@ -321,10 +321,25 @@ Audio_Callback (float *input_l, float *input_r, float *output_l,
 		if ((ringb_float_write_space (top[i].jack.ring.i.l) >= nframes)
 			&& (ringb_float_write_space (top[i].jack.ring.i.r) >= nframes))
 		{
+
+			// WU2X
+			// Swap the I/Q Channels if the flag is set
+			if (top[i].hold.buf.swap == 0) 
+			{
+                // Normal
 			ringb_float_write (top[i].jack.ring.i.l, (float *) input_l, nframes);
 			ringb_float_write (top[i].jack.ring.i.r, (float *) input_r, nframes);
 			ringb_float_write (top[i].jack.auxr.i.l, (float *) input_l, nframes);
 			ringb_float_write (top[i].jack.auxr.i.r, (float *) input_r, nframes);
+		}
+		else
+			{
+				// Swapped
+				ringb_float_write (top[i].jack.ring.i.l, (float *) input_r, nframes);
+				ringb_float_write (top[i].jack.ring.i.r, (float *) input_l, nframes);
+				ringb_float_write (top[i].jack.auxr.i.l, (float *) input_r, nframes);
+				ringb_float_write (top[i].jack.auxr.i.r, (float *) input_l, nframes);
+			}
 		}
 		else
 		{	// rb pathology
