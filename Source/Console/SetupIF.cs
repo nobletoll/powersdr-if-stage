@@ -42,6 +42,7 @@ namespace PowerSDR
 		private Console console;
 		private RigHW rigHW = null;
 		private MeterHW meterHW = null;
+		private bool getOptions = false;
 
 		public SetupIF(Console c, AbstractHW rigHW, MeterHW meterHW)
 		{
@@ -223,7 +224,7 @@ namespace PowerSDR
 			ArrayList trackbar_list = new ArrayList();
 			ArrayList colorbutton_list = new ArrayList();
 
-			//ArrayList controls = new ArrayList();	// list of controls to restore
+			this.getOptions = true;
 			foreach (Control c in temp)
 			{
 				if (c.GetType() == typeof(CheckBoxTS))			// the control is a CheckBoxTS
@@ -392,6 +393,8 @@ namespace PowerSDR
 
 			foreach (ColorButton c in colorbutton_list)
 				c.Automatic = "";
+
+			this.getOptions = false;
 		}
 
 		private void RefreshCOMPortLists()
@@ -566,57 +569,60 @@ namespace PowerSDR
 			this.console.RigType = this.comboRigType.Text;
 			this.console.updateConsoleTitle();
 
-			if (this.rigHW.hasSerialConnection())
+			if (!this.getOptions)
 			{
-				this.grpRigSerialBox.Enabled = true;
-				this.udRigPollingInterval.Enabled = true;
-				this.udRigTuningPollingInterval.Enabled = true;
-				this.udRigTuningCATInterval.Enabled = true;
-				this.chkRigPollVFOB.Enabled = true;
-				this.chkRigPollIFFreq.Enabled = true;
-
-				this.comboRigBaud.Text = this.rigHW.defaultBaudRate().ToString();
-				this.chkRigPollVFOB.Checked = this.rigHW.needsPollVFOB();
-
-				if (this.rigHW.supportsIFFreq())
+				if (this.rigHW.hasSerialConnection())
 				{
+					this.grpRigSerialBox.Enabled = true;
+					this.udRigPollingInterval.Enabled = true;
+					this.udRigTuningPollingInterval.Enabled = true;
+					this.udRigTuningCATInterval.Enabled = true;
+					this.chkRigPollVFOB.Enabled = true;
 					this.chkRigPollIFFreq.Enabled = true;
-					this.chkRigPollIFFreq.Checked = true;
+
+					this.comboRigBaud.Text = this.rigHW.defaultBaudRate().ToString();
+					this.chkRigPollVFOB.Checked = this.rigHW.needsPollVFOB();
+
+					if (this.rigHW.supportsIFFreq())
+					{
+						this.chkRigPollIFFreq.Enabled = true;
+						this.chkRigPollIFFreq.Checked = true;
+					}
+					else
+					{
+						this.chkRigPollIFFreq.Enabled = false;
+						this.chkRigPollIFFreq.Checked = false;
+					}
 				}
 				else
 				{
-					this.chkRigPollIFFreq.Enabled = false;
+					this.grpRigSerialBox.Enabled = false;
+					this.udRigPollingInterval.Enabled = false;
+					this.udRigTuningPollingInterval.Enabled = false;
+					this.udRigTuningCATInterval.Enabled = false;
+					this.chkRigPollVFOB.Checked = false;
+					this.chkRigPollVFOB.Enabled = false;
 					this.chkRigPollIFFreq.Checked = false;
+					this.chkRigPollIFFreq.Enabled = false;
 				}
-			}
-			else
-			{
-				this.grpRigSerialBox.Enabled = false;
-				this.udRigPollingInterval.Enabled = false;
-				this.udRigTuningPollingInterval.Enabled = false;
-				this.udRigTuningCATInterval.Enabled = false;
-				this.chkRigPollVFOB.Checked = false;
-				this.chkRigPollVFOB.Enabled = false;
-				this.chkRigPollIFFreq.Checked = false;
-				this.chkRigPollIFFreq.Enabled = false;
-			}
 
-			if (this.rigHW.needsLOCenterFreq())
-			{
-				this.udLOCenterFreq.Enabled = true;
-				this.console.LOCenterFreq = (int) udLOCenterFreq.Value;
-			}
-			else
-				this.udLOCenterFreq.Enabled = false;
+				if (this.rigHW.needsLOCenterFreq())
+				{
+					this.udLOCenterFreq.Enabled = true;
+					this.console.LOCenterFreq = (int) udLOCenterFreq.Value;
+				}
+				else
+					this.udLOCenterFreq.Enabled = false;
 
-			if (this.rigHW.iqSwapFreq() == -1)
-			{
-				this.chkSwapIQ.Checked = false;
-			}
-			else
-			{
-				this.udSwapFrequency.Value = this.rigHW.iqSwapFreq();
-				this.chkSwapIQ.Checked = true;
+				if (this.rigHW.iqSwapFreq() == -1)
+				{
+					this.chkSwapIQ.Checked = false;
+				}
+				else
+				{
+					this.udSwapFrequency.Value = this.rigHW.iqSwapFreq();
+					this.chkSwapIQ.Checked = true;
+				}
 			}
 
 			// :NOTE: Since console.MinFreq and console.MaxFreq are not part
@@ -672,7 +678,7 @@ namespace PowerSDR
 
 			this.console.MeterType = this.comboMeterType.Text;
 
-			if (this.meterHW != null)
+			if (!this.getOptions && this.meterHW != null)
 				this.comboMeterBaud.Text = this.meterHW.defaultBaudRate().ToString();
 		}
 
@@ -735,7 +741,6 @@ namespace PowerSDR
         {
             this.udSwapFrequency.Enabled = this.chkSwapIQ.Checked;
             this.console.SWAPIQ = this.chkSwapIQ.Checked;
-
         }
 
         private void swapFrequency_ValueChanged(object sender, EventArgs e)

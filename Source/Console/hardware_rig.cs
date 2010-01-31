@@ -37,6 +37,7 @@ namespace PowerSDR
 			Kenwood940,
 			Kenwood950,
 			K3,
+			YAESU,
 			HRD,
 		}
 
@@ -81,7 +82,10 @@ namespace PowerSDR
 							this.rig = new Kenwood950Rig(this,this.console);
 							break;
 						case RigTypeEnum.K3:
-							this.rig = new K3Rig(this,this.console);
+							this.rig = new K3Rig(this, this.console);
+							break;
+						case RigTypeEnum.YAESU:
+							this.rig = new YaesuRig(this, this.console);
 							break;
 						case RigTypeEnum.HRD:
 							this.rig = new HRDRig(this,this.console);
@@ -331,6 +335,8 @@ namespace PowerSDR
 					return RigTypeEnum.Kenwood950;
 				case "Elecraft K3":
 					return RigTypeEnum.K3;
+				case "Yaesu":
+					return RigTypeEnum.YAESU;
 				case "Ham Radio Deluxe":
 					return RigTypeEnum.HRD;
 				default:

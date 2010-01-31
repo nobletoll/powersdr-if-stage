@@ -152,7 +152,7 @@ namespace PowerSDR
 				if (this.SIO == null)
 				{
 					this.SIO = new SDRSerialPort(this.hw.COMPort);
-					this.SIO.setRTS(false);
+//					this.SIO.setRTS(false);
 
 					// Event handler for Serial RX Events
 					this.SIO.serial_rx_event +=
@@ -272,6 +272,11 @@ namespace PowerSDR
 			this.txWithMute = false;
 		}
 
+		protected virtual void setRTS()
+		{
+			this.SIO.setRTS(true);
+		}
+
 		public void startCommandThread()
 		{
 			if (this.rigCommandThread != null)
@@ -304,6 +309,8 @@ namespace PowerSDR
 		public abstract override void getVFOAFreq();
 		public abstract override void getVFOBFreq();
 		public abstract override void getIFFreq();
+		public abstract void getTX();
+		public abstract void getTXVFO();
 
 		#endregion Get CAT Commands
 

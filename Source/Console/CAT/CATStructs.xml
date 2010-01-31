@@ -173,14 +173,14 @@
 		<active>true</active>
 		<nsetparms>11</nsetparms>
 		<ngetparms>0</ngetparms>
-		<nansparms>11</nansparms>
+		<nansparms>8</nansparms>
 	</catstruct>
 	<catstruct code="FB">
 		<desc>vfo b frequency</desc>
 		<active>true</active>
 		<nsetparms>11</nsetparms>
 		<ngetparms>0</ngetparms>
-		<nansparms>11</nansparms>
+		<nansparms>8</nansparms>
 	</catstruct>
 	<catstruct code="FC">
 		<desc>subreceiver vfo freq</desc>
@@ -250,7 +250,7 @@
 		<active>true</active>
 		<nsetparms>-1</nsetparms>
 		<ngetparms>0</ngetparms>
-		<nansparms>35</nansparms>
+		<nansparms>24</nansparms>
 	</catstruct>
 	<catstruct code="IS">
 		<desc>if shift function</desc>

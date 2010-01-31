@@ -156,6 +156,14 @@ namespace PowerSDR
 		{
 		}
 
+		public override void getTX()
+		{
+		}
+
+		public override void getTXVFO()
+		{
+		}
+
 		#endregion Get CAT Commands
 
 		#region Set CAT Commands
