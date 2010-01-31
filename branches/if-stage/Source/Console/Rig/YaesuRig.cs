@@ -81,6 +81,8 @@ namespace PowerSDR
 					return (int)Mode.FM;
 				case DSPMode.AM:
 					return (int)Mode.AM;
+				case DSPMode.SAM:
+					return (int)Mode.AM;
 				case DSPMode.DIGU:
 					return (int)Mode.FSKU;
 				case DSPMode.DIGL:
