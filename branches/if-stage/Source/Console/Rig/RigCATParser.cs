@@ -91,6 +91,9 @@ namespace PowerSDR
 				case "TQ":
 					rtncmd = this.rigCmdList.TQ(suffix);
 					break;
+				case "TX":
+					rtncmd = this.rigCmdList.TX(suffix);
+					break;
 			}
 
 			return rtncmd;	// Read successfully executed

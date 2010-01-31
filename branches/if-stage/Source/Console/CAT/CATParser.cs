@@ -530,7 +530,7 @@ namespace PowerSDR
 
 			// Check the length against the struct requirements
 			// W1CEG: Check nAns Length, too.
-			if(sfx.Length == nSet || sfx.Length == nGet || sfx.Length == nAns)
+			if(sfx.Length == nSet || sfx.Length == nGet || sfx.Length >= nAns)
 			{
 				suffix = sfx;
 				return true;

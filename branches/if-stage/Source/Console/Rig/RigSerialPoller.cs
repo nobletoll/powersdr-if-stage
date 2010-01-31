@@ -156,6 +156,20 @@ namespace PowerSDR
 						sleep = true;
 					}
 
+
+					// :TODO: Query from RigHW...
+					// :TODO: Do this for K3Rig (and other supporting rigs) as well...
+					if (this.rig is YaesuRig)
+					{
+						if (sleep)
+							Thread.Sleep(10);
+
+						this.rig.getTX();
+						Thread.Sleep(10);
+						this.rig.getTXVFO();
+						sleep = true;
+					}
+
 					if (this.hw.RigPollIFFreq)
 					{
 						if (sleep)

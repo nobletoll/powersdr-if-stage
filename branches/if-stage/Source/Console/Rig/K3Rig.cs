@@ -44,6 +44,16 @@ namespace PowerSDR
 		}
 
 
+		#region Initialization
+		
+		protected override void setRTS()
+		{
+			this.SIO.setRTS(false);
+		}
+		
+		#endregion Initialization
+
+
 		#region Defaults & Supported Functions
 
 		public override int defaultBaudRate()

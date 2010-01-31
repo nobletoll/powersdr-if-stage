@@ -73,6 +73,9 @@ namespace PowerSDR
 		// Sets or reads the frequency of VFO A
 		public string FA(string s)
 		{
+			if (this.rig is YaesuRig)
+				s = s.PadLeft(11,'0');
+
 			this.changeVFOA(s);
 			return null;
 		}
@@ -80,6 +83,9 @@ namespace PowerSDR
 		// Sets or reads the frequency of VFO B
 		public string FB(string s)
 		{
+			if (this.rig is YaesuRig)
+				s = s.PadLeft(11, '0');
+
 			this.changeVFOB(s);
 			return null;
 		}
@@ -145,98 +151,145 @@ namespace PowerSDR
 		// needs work in the split area
 		public string IF(string s)
 		{
-			bool rit = (s[21] == '1');
-			int ritOffset = int.Parse(s.Substring(16,5));
-			char vfo = s[28];
-			int mode = s[27] - '0';
-
-			// Frequency
-			// :NOTE: Store Frequency Status for RigSerialPoller Performance.
-			// :TODO: Deal with vfo = 2 or 3
-			string frequency = s.Substring(0,11);
-
-			// :NOTE: When RIT is on, some rigts return Current VFO Frequency + RIT.
-			//        We need to revert the RIT Offset from the Frequency.
-			if (this.rig.ritAppliedInIFCATCommand() && rit)
-				frequency = (int.Parse(frequency) - ritOffset).ToString().PadLeft(11,'0');
-
-			if (vfo == '0')
+			if (this.rig is YaesuRig)
 			{
-				this.rig.VFO = 0;
-				this.changeVFOA(frequency);
+				bool rit = (s[16] == '1');
+				int ritOffset = int.Parse(s.Substring(11, 5));
+				char vfo = s[19];
+				int mode = s[18] - '0';
 
-				// Mode
-				if (this.rig.VFOAMode != mode)
+				// Frequency
+				// :NOTE: Store Frequency Status for RigSerialPoller Performance.
+				string frequency = s.Substring(3, 8).PadLeft(11, '0');
+
+				// :NOTE: When RIT is on, some rigs return Current VFO Frequency + RIT.
+				//        We need to revert the RIT Offset from the Frequency.
+				if (this.rig.ritAppliedInIFCATCommand() && rit)
+					frequency = (int.Parse(frequency) - ritOffset).ToString().PadLeft(11, '0');
+
+				if (vfo == '0')
 				{
-					this.rig.VFOAMode = mode;
-					this.rig.setConsoleModeFromString(s[27].ToString());
+					this.rig.VFO = 0;
+					this.changeVFOA(frequency);
+
+					// Mode
+					if (this.rig.VFOAMode != mode)
+					{
+						this.rig.VFOAMode = mode;
+						this.rig.setConsoleModeFromString(s[18].ToString());
+					}
 				}
-			}
-			else if (vfo == '1')
-			{
-				// Force the Rig on VFO-A to conform to the way PowerSDR handles RX1
-				this.rig.setVFOA();
-				this.rig.VFO = 1;
-				this.changeVFOB(frequency);
-				this.rig.VFO = 0;
 
-				// Mode
-				this.rig.VFOBMode = mode;
-			}
+				// RIT
+				if (this.console.RITOn != rit)
+					this.console.RITOn = rit;
 
+				bool changeRIT = false;
+				if (this.rig.RITOffset != ritOffset)
+					changeRIT = true;
 
-			// RIT
-			if (this.console.RITOn != rit)
-				this.console.RITOn = rit;
-
-			bool changeRIT = false;
-			if (this.rig.RITOffset != ritOffset)
-				changeRIT = true;
-
-			// Control VFO-B when RIT and XIT are off
-#if RIT_FOR_VFOB
-			if (!rit && s[22] == '0')
-			{
-				int offsetDiff = ritOffset - this.rig.RITOffset;
 				this.rig.RITOffset = ritOffset;
 
-				if (offsetDiff != 0)
-				{
-					frequency = (int.Parse(this.rig.VFOBFrequency) +
-						offsetDiff).ToString().PadLeft(11,'0');
+				if (changeRIT)
+					this.sdrParser.Get("ZZRF" + s.Substring(12, 4).PadRight(5, '0') + ';');
 
-					this.rig.setVFOBFreq(frequency);
-					this.changeVFOB(frequency);
-				}
-
-				// Reset RIT when it gets close to 9.990 max.
-				if (Math.Abs(ritOffset) > 8000)
-				{
-					this.rig.clearRIT();
-					this.rig.RITOffset = 0;
-				}
+				this.rig.RITOffsetInitialized = true;
 			}
 			else
-				this.rig.RITOffset = ritOffset;
-#else
-			this.rig.RITOffset = ritOffset;
-#endif
-			if (changeRIT)
-				this.sdrParser.Get("ZZRF" + s.Substring(16,5) + ';');
-
-			this.rig.RITOffsetInitialized = true;
-
-
-			// RX/TX
-			this.setTX(s[26] == '1');
-
-
-			// Split
-			bool split = (s[30] == '1');
-			if (this.rig.Split != split)
 			{
-				this.rig.Split = split;
-				this.sdrParser.Get("ZZSP" + s[30] + ';');
+				bool rit = (s[21] == '1');
+				int ritOffset = int.Parse(s.Substring(16, 5));
+				char vfo = s[28];
+				int mode = s[27] - '0';
+
+				// Frequency
+				// :NOTE: Store Frequency Status for RigSerialPoller Performance.
+				// :TODO: Deal with vfo = 2 or 3
+				string frequency = s.Substring(0, 11);
+
+				// :NOTE: When RIT is on, some rigts return Current VFO Frequency + RIT.
+				//        We need to revert the RIT Offset from the Frequency.
+				if (this.rig.ritAppliedInIFCATCommand() && rit)
+					frequency = (int.Parse(frequency) - ritOffset).ToString().PadLeft(11, '0');
+
+				if (vfo == '0')
+				{
+					this.rig.VFO = 0;
+					this.changeVFOA(frequency);
+
+					// Mode
+					if (this.rig.VFOAMode != mode)
+					{
+						this.rig.VFOAMode = mode;
+						this.rig.setConsoleModeFromString(s[27].ToString());
+					}
+				}
+				else if (vfo == '1')
+				{
+					// Force the Rig on VFO-A to conform to the way PowerSDR handles RX1
+					this.rig.setVFOA();
+					this.rig.VFO = 1;
+					this.changeVFOB(frequency);
+					this.rig.VFO = 0;
+
+					// Mode
+					this.rig.VFOBMode = mode;
+				}
+
+
+				// RIT
+				if (this.console.RITOn != rit)
+					this.console.RITOn = rit;
+
+				bool changeRIT = false;
+				if (this.rig.RITOffset != ritOffset)
+					changeRIT = true;
+
+				// Control VFO-B when RIT and XIT are off
+#if RIT_FOR_VFOB
+				if (!rit && s[22] == '0')
+				{
+					int offsetDiff = ritOffset - this.rig.RITOffset;
+					this.rig.RITOffset = ritOffset;
+
+					if (offsetDiff != 0)
+					{
+						frequency = (int.Parse(this.rig.VFOBFrequency) +
+							offsetDiff).ToString().PadLeft(11, '0');
+
+						this.rig.setVFOBFreq(frequency);
+						this.changeVFOB(frequency);
+					}
+
+					// Reset RIT when it gets close to 9.990 max.
+					if (Math.Abs(ritOffset) > 8000)
+					{
+						this.rig.clearRIT();
+						this.rig.RITOffset = 0;
+					}
+				}
+				else
+					this.rig.RITOffset = ritOffset;
+#else
+				this.rig.RITOffset = ritOffset;
+#endif
+				if (changeRIT)
+					this.sdrParser.Get("ZZRF" + s.Substring(16, 5) + ';');
+
+				this.rig.RITOffsetInitialized = true;
+
+
+				// RX/TX
+				this.setTX(s[26] == '1');
+
+
+				// Split
+				bool split = (s[30] == '1');
+				if (this.rig.Split != split)
+				{
+					this.rig.Split = split;
+					this.sdrParser.Get("ZZSP" + s[30] + ';');
+				}
 			}
 
 			return null;
@@ -244,7 +297,7 @@ namespace PowerSDR
 
 		public string MD(string s)
 		{
-			int mode = s[0] - '0';
+			int mode = ((this.rig is YaesuRig) ? s[1] : s[0]) - '0';
 
 			if (this.rig.VFOAMode != mode)
 			{
@@ -258,6 +311,13 @@ namespace PowerSDR
 		public string TQ(string s)
 		{
 			this.setTX(s[0] == '1');
+
+			return null;
+		}
+
+		public string TX(string s)
+		{
+			this.setTX(s[0] != '0');
 
 			return null;
 		}
