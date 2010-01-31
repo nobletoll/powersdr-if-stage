@@ -362,9 +362,12 @@ namespace PowerSDR
 
 			lock (this.pendingRigCommandSyncObject)
 			{
-				this.pendingRigCommand = command;
-				this.noPendingCommandWaitHandle.Reset();
-				this.pendingRigCommandWaitHandle.Set();
+				if (this.rigCommandThread != null)
+				{
+					this.pendingRigCommand = command;
+					this.noPendingCommandWaitHandle.Reset();
+					this.pendingRigCommandWaitHandle.Set();
+				}
 			}
 		}
 
