@@ -18,8 +18,6 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //=============================================================================
 
-#define RIT_FOR_VFOB
-
 using System;
 using System.Reflection;
 using System.Diagnostics;
@@ -246,33 +244,35 @@ namespace PowerSDR
 					changeRIT = true;
 
 				// Control VFO-B when RIT and XIT are off
-#if RIT_FOR_VFOB
-				if (!rit && s[22] == '0')
+				if (this.rig.useRITForVFOB())
 				{
-					int offsetDiff = ritOffset - this.rig.RITOffset;
-					this.rig.RITOffset = ritOffset;
-
-					if (offsetDiff != 0)
+					if (!rit && s[22] == '0')
 					{
-						frequency = (int.Parse(this.rig.VFOBFrequency) +
-							offsetDiff).ToString().PadLeft(11, '0');
+						int offsetDiff = ritOffset - this.rig.RITOffset;
+						this.rig.RITOffset = ritOffset;
 
-						this.rig.setVFOBFreq(frequency);
-						this.changeVFOB(frequency);
-					}
+						if (offsetDiff != 0)
+						{
+							frequency = (int.Parse(this.rig.VFOBFrequency) +
+								offsetDiff).ToString().PadLeft(11, '0');
 
-					// Reset RIT when it gets close to 9.990 max.
-					if (Math.Abs(ritOffset) > 8000)
-					{
-						this.rig.clearRIT();
-						this.rig.RITOffset = 0;
+							this.rig.setVFOBFreq(frequency);
+							this.changeVFOB(frequency);
+						}
+
+						// Reset RIT when it gets close to 9.990 max.
+						if (Math.Abs(ritOffset) > 8000)
+						{
+							this.rig.clearRIT();
+							this.rig.RITOffset = 0;
+						}
 					}
+					else
+						this.rig.RITOffset = ritOffset;
 				}
 				else
 					this.rig.RITOffset = ritOffset;
-#else
-				this.rig.RITOffset = ritOffset;
-#endif
+
 				if (changeRIT)
 					this.sdrParser.Get("ZZRF" + s.Substring(16, 5) + ';');
 

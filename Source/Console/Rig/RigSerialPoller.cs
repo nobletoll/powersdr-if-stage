@@ -108,6 +108,8 @@ namespace PowerSDR
 
 		private void poll()
 		{
+			int lastVFOBPoll = System.Environment.TickCount;
+
 			RigHW.dbgWriteLine("RigSerialPoller.poll(), Start.");
 
 			while (this.keepPolling)
@@ -152,8 +154,33 @@ namespace PowerSDR
 
 					if (this.hw.RigPollVFOB)
 					{
-						this.rig.getVFOBFreq();
-						sleep = true;
+						/* Special Case for TS-950.  It seems to be sensitive
+						 * to excessive VFO-B polling, so we are going to keep
+						 * it to a minimum.
+						 * 
+						 * :NOTE: On the TS-950, you can only change VFO-B
+						 *        when SPLIT is on (assuming we enforce RX only
+						 *        on VFO-A.
+						 */
+						if (this.rig is Kenwood950Rig)
+						{
+							if (this.rig.Split)
+							{
+								int tick = System.Environment.TickCount;
+
+								if ((tick - lastVFOBPoll) > (this.hw.RigPollingInterval * 5))
+								{
+									this.rig.getVFOBFreq();
+									lastVFOBPoll = tick;
+									sleep = true;
+								}
+							}
+						}
+						else
+						{
+							this.rig.getVFOBFreq();
+							sleep = true;
+						}
 					}
 
 
@@ -210,16 +237,24 @@ namespace PowerSDR
 					if (!this.vfoBInitialized && m.Value.StartsWith("FB"))
 						this.vfoBInitialized = true;
 
-					// Don't process the Rig's Answer if we're in a lockout state.
-					if (this.enabled && !this.rig.rigPollingLockout)
+					try
 					{
-						RigHW.dbgWriteLine("<== " + m.Value);
+						// Don't process the Rig's Answer if we're in a lockout state.
+						if (this.enabled && !this.rig.rigPollingLockout)
+						{
+							RigHW.dbgWriteLine("<== " + m.Value);
 
-						// Send the match to the Rig Parser
-						this.rig.handleRigAnswer(m.Value);
+							// Send the match to the Rig Parser
+							this.rig.handleRigAnswer(m.Value);
+						}
+						else
+							RigHW.dbgWriteLine("<=| " + m.Value);
 					}
-					else
-						RigHW.dbgWriteLine("<=| " + m.Value);
+					catch (Exception ex)
+					{
+						RigHW.dbgWriteLine("SerialRXEventHandler Exception: " + ex.Message);
+						RigHW.dbgWriteLine(ex.StackTrace);
+					}
 
 					// Remove the match from the buffer
 					this.commBuffer = this.commBuffer.Replace(m.Value,"");

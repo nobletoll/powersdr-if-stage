@@ -48,6 +48,11 @@ namespace PowerSDR
 			return false;
 		}
 
+		public override bool useRITForVFOB()
+		{
+			return false;
+		}
+
 		#endregion Defaults & Supported Functions
 
 
@@ -60,12 +65,12 @@ namespace PowerSDR
 
 		public override void setVFOA()
 		{
-			// :TODO:
+			this.doRigCATCommand("FR0;",false,false);
 		}
 
 		public override void setVFOB()
 		{
-			// :TODO:
+			this.doRigCATCommand("FR1;",false,false);
 		}
 
 		public override void setSplit(bool splitOn)
