@@ -156,6 +156,11 @@ namespace PowerSDR
 			return false;
 		}
 
+		public override bool useRITForVFOB()
+		{
+			return false;
+		}
+
 		#endregion Defaults & Supported Functions
 
 
@@ -170,6 +175,15 @@ namespace PowerSDR
 
 		#region Set CAT Commands
 
+		public override void setSplit(bool splitOn)
+		{
+			if (!this.active || this.Split == splitOn)
+				return;
+
+			this.doRigCATCommand("FT" + ((splitOn) ? '1' : '0') + ';',true,false);
+			this.Split = splitOn;
+		}
+
 		public override void setVFOA()
 		{
 			// :TODO:
@@ -178,15 +192,6 @@ namespace PowerSDR
 		public override void setVFOB()
 		{
 			// :TODO:
-		}
-
-		public override void setSplit(bool splitOn)
-		{
-			if (!this.active || this.Split == splitOn)
-				return;
-
-			this.doRigCATCommand("FT" + ((splitOn) ? '1' : '0') + ';',true,false);
-			this.Split = splitOn;
 		}
 
 		#endregion Set CAT Commands

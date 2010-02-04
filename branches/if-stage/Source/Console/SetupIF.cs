@@ -535,7 +535,7 @@ namespace PowerSDR
 			if (this.rigHW == null)
 				return;
 
-			this.console.RigPollingInterval = (int) this.udRigPollingLockoutTime.Value;
+			this.console.RigPollingLockoutTime = (int) this.udRigPollingLockoutTime.Value;
 		}
 
 		private void chkRigPollVFOB_CheckedChanged(object sender, EventArgs e)

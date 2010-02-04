@@ -299,6 +299,7 @@ namespace PowerSDR
 		public abstract override int getModeFromDSPMode(DSPMode dspMode);
 		public abstract void setConsoleModeFromString(string mode);
 		public abstract bool ritAppliedInIFCATCommand();
+		public abstract bool useRITForVFOB();
 
 		#endregion Defaults & Supported Functions
 

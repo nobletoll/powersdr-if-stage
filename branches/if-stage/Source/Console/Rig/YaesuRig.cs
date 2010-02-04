@@ -125,6 +125,11 @@ namespace PowerSDR
 			}
 		}
 
+		public override bool useRITForVFOB()
+		{
+			return false;
+		}
+
 		#endregion Defaults & Supported Functions
 
 
@@ -217,16 +222,6 @@ namespace PowerSDR
 			this.VFOBFrequency = freq;
 		}
 
-		public override void setVFOA()
-		{
-			// :TODO:
-		}
-
-		public override void setVFOB()
-		{
-			// :TODO:
-		}
-
 		public override void setSplit(bool splitOn)
 		{
 			if (!this.active || this.Split == splitOn)
@@ -245,6 +240,16 @@ namespace PowerSDR
 
 			this.VFOAMode = setMode;
 			this.doRigCATCommand("MD0" + setMode + ';', true, false);
+		}
+
+		public override void setVFOA()
+		{
+			// :TODO:
+		}
+
+		public override void setVFOB()
+		{
+			// :TODO:
 		}
 
 		#endregion Set CAT Commands

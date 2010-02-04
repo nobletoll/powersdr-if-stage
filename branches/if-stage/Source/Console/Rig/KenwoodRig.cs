@@ -122,6 +122,11 @@ namespace PowerSDR
 			return true;
 		}
 
+		public override bool useRITForVFOB()
+		{
+			return true;
+		}
+
 		public override double minFreq()
 		{
 			return 0.03;
