@@ -348,6 +348,8 @@
     <Compile Include="memory.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Meter\Alpha8100Meter.cs" />
+    <Compile Include="Meter\Alpha8100MeterParser.cs" />
     <Compile Include="Meter\Meter.cs" />
     <Compile Include="Meter\MeterSerialPoller.cs" />
     <Compile Include="Meter\PowerMasterCRC.cs" />
