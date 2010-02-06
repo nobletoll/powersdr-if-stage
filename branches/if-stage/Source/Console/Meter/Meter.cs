@@ -161,6 +161,10 @@ namespace PowerSDR
 		#region Meter Status
 
 		protected bool mox = false;
+		public bool MOX
+		{
+			get { return this.mox;  }
+		}
 
 		private double fwdPower = 0;
 		public double FwdPower
@@ -194,6 +198,8 @@ namespace PowerSDR
 
 
 		#region Get Commands
+
+		public abstract void getMeterInformation();
 
 		#endregion Get Commands
 

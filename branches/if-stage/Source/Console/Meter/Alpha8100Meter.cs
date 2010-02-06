@@ -32,6 +32,7 @@ namespace PowerSDR
 {
 	public class Alpha8100Meter : Meter
 	{
+		private MeterSerialPoller meterSerialPoller;
 		private Alpha8100MeterParser parser;
 
 		private ASCIIEncoding AE = new ASCIIEncoding();
@@ -39,14 +40,24 @@ namespace PowerSDR
 
 		public Alpha8100Meter(MeterHW hw, Console console) : base(hw,console)
 		{
+			this.meterSerialPoller = new MeterSerialPoller(this.console,this.hw,this);
 			this.parser = new Alpha8100MeterParser(this.console,this);
 		}
 
 		
 		#region Initialization
 
+		public override void connect()
+		{
+			base.connect();
+
+			this.meterSerialPoller.enable();
+		}
+
 		public override void disconnect()
 		{
+			this.meterSerialPoller.disable();
+
 			base.disconnect();
 		}
 
@@ -64,6 +75,11 @@ namespace PowerSDR
 
 
 		#region Get Commands
+
+		public override void getMeterInformation()
+		{
+			this.doCommand("v");
+		}
 
 		#endregion Get Commands
 
