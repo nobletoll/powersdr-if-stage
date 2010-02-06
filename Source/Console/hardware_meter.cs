@@ -38,6 +38,7 @@ namespace PowerSDR
 		public enum MeterTypeEnum
 		{
 			PowerMaster,
+			Alpha8100,
 		}
 
 		#endregion Variable Declarations
@@ -331,6 +332,8 @@ namespace PowerSDR
 			{
 				case "Array Solutions PowerMaster":
 					return MeterTypeEnum.PowerMaster;
+				case "Alpha 8100":
+					return MeterTypeEnum.Alpha8100;
 				default:
 					return MeterTypeEnum.PowerMaster;
 			}

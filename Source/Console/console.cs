@@ -10286,7 +10286,7 @@ namespace PowerSDR
 			return (double)108/num;
 		}
 
-		private double SWR(int adc_fwd, int adc_rev)
+		public double SWR(int adc_fwd, int adc_rev)
 		{
 			if(adc_fwd == 0 && adc_rev == 0)
 				return 1.0;

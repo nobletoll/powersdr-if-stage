@@ -49,57 +49,36 @@ namespace PowerSDR
 
 		#region Answer
 
-		// Overloaded Get method accepts either byte or string
 		public void Answer(byte[] answer)
 		{
-			// :TODO: Check magic numbers...
+			/* Format:
+			 * 
+			 * MagicNumber,FwdPower,RevPower,InputRF (10th Watt),PlateVoltage,AmpGain (10th unit),V on Grid 1 (- 10th V),GridCurrent (10th mA),Band,Mode (0:off 1:warmup 2:standby 3:on 4:keyed up),FaultCode,Fletcher checksum
+			 * $APA01,01536,00002,0595,2654,0867,260,0519,008,3,4,00,0*8DA3
+			 */
+			string data = this.AE.GetString(answer);
 
-			// Format:  STX Command Data ETX CRC1 CRC2
-/*
-			string data = this.AE.GetString(answer,2,answer.Length - 5);
+			// Check magic numbers...
+			if (answer.Length < 7 || !data.Substring(0,7).Equals("$APA01,"))
+				return;
 
-			switch ((char) answer[1])
-			{
-				case 'D':
-					this.DataAnswer(data);
-					break;
-			}
- */
-		}
+			int fwdPowerIdx = 7;
+			int fwdPowerEnd = data.IndexOf(',',fwdPowerIdx);
+			int fwdPowerLen = fwdPowerEnd - fwdPowerIdx;
+			int revPowerIdx = fwdPowerEnd + 1;
+			int revPowerLen = data.IndexOf(',',revPowerIdx) - revPowerIdx;
 
-		#endregion Answer
+			int fwdPower = int.Parse(data.Substring(fwdPowerIdx,fwdPowerLen));
+			int revPower = int.Parse(data.Substring(revPowerIdx,revPowerLen));
+			this.meter.FwdPower = fwdPower;
+			this.meter.RevPower = revPower;
 
-
-		#region Answer Commands
-
-		/**
-		 * ,forward power,reflected power,VSWR,status1;status2;status3;status4;status5
-		 *
-		 * :NOTE: 'D' command has been stripped off at this point.
-		 * 
-		 * Powers are ints from 0 to 20200. VSWR is float from 1.00 to 99.99 or  0.00 in idle mode.
-		 *     Status1 - VSWR Alarm
-		 *     Status2 - Low Power Alarm.
-		 *     Status3 – High Power Alarm
-		 *     Status4 – Red LED On
-		 *     Status5 – Yellow LED On
-		 */
-		private void DataAnswer(string data)
-		{
-			// +----------------------------------+
-			// | 00000000001111111111222222222233 |
-			// | 01234567890123456789012345678901 |
-			// |----------------------------------|
-			// | ,    0.0,    0.0, 0.00,0;0;0;0;0 |
-			// +----------------------------------+
-
-			this.meter.FwdPower = double.Parse(data.Substring(1,7).TrimStart(' '));
-			this.meter.RevPower = double.Parse(data.Substring(9,7).TrimStart(' '));
-			this.meter.VSWR = double.Parse(data.Substring(17,5).TrimStart(' '));
+			// :TODO: Is it save/accurate to use this SWR function??
+			this.meter.VSWR = this.console.SWR(fwdPower,revPower);
 
 			MeterHW.dbgWriteLine("Forward: " + this.meter.FwdPower + "W  Reflected: " + this.meter.RevPower + "W  VSWR: " + this.meter.VSWR);
 		}
 
-		#endregion Answer Commands
+		#endregion Answer
 	}
 }

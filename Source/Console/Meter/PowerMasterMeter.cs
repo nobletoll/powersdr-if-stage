@@ -69,6 +69,11 @@ namespace PowerSDR
 
 		#region Get Commands
 
+		public override void getMeterInformation()
+		{
+			// :TODO:
+		}
+
 		#endregion Get Commands
 
 

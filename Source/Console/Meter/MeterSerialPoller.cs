@@ -113,11 +113,11 @@ namespace PowerSDR
 
 			while (this.keepPolling)
 			{
-				bool sleep = false;
-
 				Thread.Sleep(this.hw.MeterTimingInterval);
 
-//				this.meter.getMeterInformation();
+				// :NOTE: Only poll when in TX
+				if (this.meter.MOX)
+					this.meter.getMeterInformation();
 			}
 
 			MeterHW.dbgWriteLine("MeterSerialPoller.poll(), End.");
