@@ -569,51 +569,73 @@ namespace PowerSDR
 			this.console.RigType = this.comboRigType.Text;
 			this.console.updateConsoleTitle();
 
-			if (!this.getOptions)
-			{
-				if (this.rigHW.hasSerialConnection())
-				{
-					this.grpRigSerialBox.Enabled = true;
-					this.udRigPollingInterval.Enabled = true;
-					this.udRigTuningPollingInterval.Enabled = true;
-					this.udRigTuningCATInterval.Enabled = true;
-					this.chkRigPollVFOB.Enabled = true;
-					this.chkRigPollIFFreq.Enabled = true;
+			/* :NOTE: If we are getting options from the databaseIF.xml, we
+			 *        want to make sure we don't reset control settings that
+			 *        may have already been read in before the RigType.
+			 *        That is why we have several if conditions on getOptions
+			 *        throughout this code.
+			 *        
+			 * :NOTE: Control Enabled is not stored in databaseIF.xml.
+			 */
 
+			if (this.rigHW.hasSerialConnection())
+			{
+				this.grpRigSerialBox.Enabled = true;
+				this.udRigPollingInterval.Enabled = true;
+				this.udRigTuningPollingInterval.Enabled = true;
+				this.udRigTuningCATInterval.Enabled = true;
+				this.chkRigPollVFOB.Enabled = true;
+				this.chkRigPollIFFreq.Enabled = true;
+
+				if (!this.getOptions)
+				{
 					this.comboRigBaud.Text = this.rigHW.defaultBaudRate().ToString();
 					this.chkRigPollVFOB.Checked = this.rigHW.needsPollVFOB();
+				}
 
-					if (this.rigHW.supportsIFFreq())
-					{
-						this.chkRigPollIFFreq.Enabled = true;
+				if (this.rigHW.supportsIFFreq())
+				{
+					this.chkRigPollIFFreq.Enabled = true;
+
+					if (!this.getOptions)
 						this.chkRigPollIFFreq.Checked = true;
-					}
-					else
-					{
-						this.chkRigPollIFFreq.Enabled = false;
-						this.chkRigPollIFFreq.Checked = false;
-					}
 				}
 				else
 				{
-					this.grpRigSerialBox.Enabled = false;
-					this.udRigPollingInterval.Enabled = false;
-					this.udRigTuningPollingInterval.Enabled = false;
-					this.udRigTuningCATInterval.Enabled = false;
-					this.chkRigPollVFOB.Checked = false;
-					this.chkRigPollVFOB.Enabled = false;
-					this.chkRigPollIFFreq.Checked = false;
 					this.chkRigPollIFFreq.Enabled = false;
-				}
 
-				if (this.rigHW.needsLOCenterFreq())
+					if (!this.getOptions)
+						this.chkRigPollIFFreq.Checked = false;
+				}
+			}
+			else
+			{
+				this.grpRigSerialBox.Enabled = false;
+				this.udRigPollingInterval.Enabled = false;
+				this.udRigTuningPollingInterval.Enabled = false;
+				this.udRigTuningCATInterval.Enabled = false;
+				this.chkRigPollVFOB.Enabled = false;
+				this.chkRigPollIFFreq.Enabled = false;
+
+				if (!this.getOptions)
 				{
-					this.udLOCenterFreq.Enabled = true;
-					this.console.LOCenterFreq = (int) udLOCenterFreq.Value;
+					this.chkRigPollVFOB.Checked = false;
+					this.chkRigPollIFFreq.Checked = false;
 				}
-				else
-					this.udLOCenterFreq.Enabled = false;
+			}
 
+			if (this.rigHW.needsLOCenterFreq())
+			{
+				this.udLOCenterFreq.Enabled = true;
+
+				if (!this.getOptions)
+					this.console.LOCenterFreq = (int) udLOCenterFreq.Value;
+			}
+			else
+				this.udLOCenterFreq.Enabled = false;
+
+			if (!this.getOptions)
+			{
 				if (this.rigHW.iqSwapFreq() == -1)
 				{
 					this.chkSwapIQ.Checked = false;
@@ -623,15 +645,15 @@ namespace PowerSDR
 					this.udSwapFrequency.Value = this.rigHW.iqSwapFreq();
 					this.chkSwapIQ.Checked = true;
 				}
-			}
 
-			// :NOTE: Since console.MinFreq and console.MaxFreq are not part
-			//        of IF-Stage, they are initialized with different values.
-			//        We will just force them to be reinitialized here.
-			this.udMinFrequency.Value = (decimal) this.rigHW.minFreq();
-			this.console.MinFreq = this.rigHW.minFreq();
-			this.udMaxFrequency.Value = (decimal) this.rigHW.maxFreq();
-			this.console.MaxFreq = this.rigHW.maxFreq();
+				// :NOTE: Since console.MinFreq and console.MaxFreq are not part
+				//        of IF-Stage, they are initialized with different values.
+				//        We will just force them to be reinitialized here.
+				this.udMinFrequency.Value = (decimal) this.rigHW.minFreq();
+				this.console.MinFreq = this.rigHW.minFreq();
+				this.udMaxFrequency.Value = (decimal) this.rigHW.maxFreq();
+				this.console.MaxFreq = this.rigHW.maxFreq();
+			}
 		}
 
 		private void chkUseMeter_CheckedChanged(object sender, EventArgs e)
