@@ -31,7 +31,7 @@
 using System;
 using System.Diagnostics;
 using System.Threading;
-using PortTalk;
+// WU2X using PortTalk;
 
 namespace PowerSDR
 {
@@ -174,7 +174,7 @@ namespace PowerSDR
 
 		public HW(int addr)
 		{
-			Parallel.InitPortTalk();
+			// WU2X Parallel.InitPortTalk();
 			lpt_addr = (ushort)addr;
 			write_reg = new Register8WriteDel(UpdateRegister8);
 
@@ -192,7 +192,7 @@ namespace PowerSDR
 
 		~HW()
 		{
-			Parallel.ExitPortTalk();
+			// WU2X Parallel.ExitPortTalk();
 		}
 
 
@@ -744,9 +744,9 @@ namespace PowerSDR
 
 		private void LatchRegister(ushort lpt, byte addr, byte data)
 		{
-			Parallel.outport(lpt, data);
-			Parallel.outport((ushort)(lpt+2), addr);
-			Parallel.outport((ushort)(lpt+2), PIO_NONE);
+			// WU2X Parallel.outport(lpt, data);
+            // WU2X Parallel.outport((ushort)(lpt+2), addr);
+            // WU2X Parallel.outport((ushort)(lpt+2), PIO_NONE);
 		}
 
 		private void UpdateRegister8(byte data, object user_data)
@@ -947,7 +947,7 @@ namespace PowerSDR
 			if(usb_present) 
 				return (byte)USB.Sdr1kGetStatusPort();
             else
-				return Parallel.inport((ushort)(lpt_addr+1));
+                return (byte) '0';   // WU2X  Parallel.inport((ushort)(lpt_addr + 1));
 		}
 
 		public override void Impulse()
