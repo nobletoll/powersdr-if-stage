@@ -21083,13 +21083,13 @@ namespace PowerSDR
 			console.GetState();				
 			if(console.EQForm != null) Common.RestoreForm(console.EQForm, "EQForm", false);
 			if(console.XVTRForm != null) Common.RestoreForm(console.XVTRForm, "XVTR", false);
-			if(console.ProdTestForm != null) Common.RestoreForm(console.ProdTestForm, "ProdTest", false);
+			// WU2X if(console.ProdTestForm != null) Common.RestoreForm(console.ProdTestForm, "ProdTest", false);
 
 			SaveOptions();					// save all database values
 			console.SaveState();
 			if(console.EQForm != null) Common.SaveForm(console.EQForm, "EQForm");
 			if(console.XVTRForm != null) Common.SaveForm(console.XVTRForm, "XVTR");
-			if(console.ProdTestForm != null) Common.SaveForm(console.ProdTestForm, "ProdTest");
+			// WU2X if(console.ProdTestForm != null) Common.SaveForm(console.ProdTestForm, "ProdTest");
 
 			udTransmitTunePower_ValueChanged(this, EventArgs.Empty);
 			console.ResetMemForm();

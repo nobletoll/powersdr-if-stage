@@ -132,12 +132,6 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ad9854.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ad9854_v2.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="alphawarnform.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -369,7 +363,6 @@
     <Compile Include="paqualify.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="parallel.cs" />
     <Compile Include="portaudio.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -383,9 +376,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="production_debug.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="production_test.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="progress.cs">
@@ -487,9 +477,11 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DiversityForm.resx">
       <DependentUpon>DiversityForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="DSPTestForm.resx">
       <DependentUpon>DSPTestForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="eqform.resx">
       <DependentUpon>eqform.cs</DependentUpon>
@@ -561,9 +553,11 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FWC\PreSelForm.resx">
       <DependentUpon>PreSelForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="FWC\VUForm.resx">
       <DependentUpon>VUForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="images\clock.jpg" />
     <EmbeddedResource Include="images\demi144-28frs.jpg" />
@@ -603,10 +597,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="production_debug.resx">
       <DependentUpon>production_debug.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="production_test.resx">
-      <DependentUpon>production_test.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="progress.resx">

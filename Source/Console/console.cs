@@ -52,7 +52,6 @@ using System.Threading;
 using System.Text;
 using System.Windows.Forms;
 using SDRSerialSupportII;
-using PortTalk;
 
 namespace PowerSDR
 {
@@ -496,7 +495,7 @@ namespace PowerSDR
 
 		public WaveControl WaveForm;
 		public PAQualify PAQualForm;
-		public ProductionTest ProdTestForm;
+		// WU2X public ProductionTest ProdTestForm;
 
 		private bool run_setup_wizard;						// Used to run the wizard the first time the software comes up
 		private bool show_alpha_warning = true;
@@ -26549,10 +26548,12 @@ namespace PowerSDR
 						}
 						else
 						{
+                            /* WU2X
 							if(ProdTestForm == null || ProdTestForm.IsDisposed)
 								ProdTestForm = new ProductionTest(this);
 							ProdTestForm.Show();
 							ProdTestForm.Focus();
+                             */
 						}
 						break;
 					case Keys.R:
@@ -28202,7 +28203,7 @@ namespace PowerSDR
 			if(EQForm != null) EQForm.Hide();
 			if(UCBForm != null) UCBForm.Hide();
 			if(XVTRForm != null) XVTRForm.Hide();
-			if(ProdTestForm != null) ProdTestForm.Hide();
+			// WU2X if(ProdTestForm != null) ProdTestForm.Hide();
 			if(fwcMixForm != null) fwcMixForm.Hide();
 			if(flex3000MixerForm != null) flex3000MixerForm.Hide();
 			if(flex5000LLHWForm != null) flex5000LLHWForm.Hide();
@@ -28252,7 +28253,7 @@ namespace PowerSDR
 			if(EQForm != null) EQForm.Close();
 			if(UCBForm != null) UCBForm.Close();
 			if(XVTRForm != null) XVTRForm.Close();
-			if(ProdTestForm != null) ProdTestForm.Close();
+			// WU2X if(ProdTestForm != null) ProdTestForm.Close();
 			if(fwcMixForm != null) fwcMixForm.Close();
 			if(flex3000MixerForm != null) flex3000MixerForm.Close();
 			if(flex5000LLHWForm != null) flex5000LLHWForm.Close();
