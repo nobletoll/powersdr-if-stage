@@ -391,6 +391,8 @@ namespace PowerSDR
 				(bCheckRigPollingLockout && this.rigPollingLockout))
 				return;
 
+			this.rigSerialPoller.checkConnectionEstablished();
+
 			byte[] cmd = this.AE.GetBytes(command);
 
 			RigHW.dbgWriteLine("==> " + command);
