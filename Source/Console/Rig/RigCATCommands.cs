@@ -91,7 +91,12 @@ namespace PowerSDR
 		public string FI(string s)
 		{
 			// :NOTE: K3 Center Frequency is 8.210 MHz
-			int freq = 8210000 + int.Parse(s);
+			int fi = int.Parse(s);
+
+			if (this.console.SWAPIQ)
+				fi = -fi;
+
+			int freq = 8210000 + fi;
 			freq = this.hw.LOCenterFreq - freq;
 			double ifFreq = ((double) freq) / 1000000 + this.console.globalIFOffset;
 
