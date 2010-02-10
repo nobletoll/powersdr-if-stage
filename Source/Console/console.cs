@@ -37822,6 +37822,8 @@ namespace PowerSDR
 				if (!chkVFOBTX.Focused) chkVFOBTX.Focus();
 				if(chkVFOATX.Checked) chkVFOATX.Checked = false;
 				chkVFOBTX.BackColor = Color.Red;//button_selected_color;
+                chkVFOBTX.ForeColor = Color.Black; // WU2X
+
                 swap_vfo_ab_tx = true;
                 if (KWAutoInformation)
                     BroadcastVFOChange("1");
@@ -37849,6 +37851,8 @@ namespace PowerSDR
 			else
 			{
 				chkVFOBTX.BackColor = SystemColors.Control;
+                chkVFOBTX.ForeColor = Color.White; // WU2X
+
 				if(fwc_init && current_model == Model.FLEX5000 && FWCEEPROM.RX2OK && chkRX2.Checked)
 				{
 					if(mute_rx1_on_vfob_tx)
