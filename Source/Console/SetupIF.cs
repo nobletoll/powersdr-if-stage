@@ -42,7 +42,6 @@ namespace PowerSDR
 		private Console console;
 		private RigHW rigHW = null;
 		private MeterHW meterHW = null;
-		private bool getOptions = false;
 
 		public SetupIF(Console c, AbstractHW rigHW, MeterHW meterHW)
 		{
@@ -224,7 +223,6 @@ namespace PowerSDR
 			ArrayList trackbar_list = new ArrayList();
 			ArrayList colorbutton_list = new ArrayList();
 
-			this.getOptions = true;
 			foreach (Control c in temp)
 			{
 				if (c.GetType() == typeof(CheckBoxTS))			// the control is a CheckBoxTS
@@ -252,8 +250,48 @@ namespace PowerSDR
 				colorbutton_list.Count;
 
 
+			// First go through and set RigType & MeterType before all other controls...
+			foreach (string s in a)				// string is in the format "name/value"
+			{
+				string[] vals = s.Split('/');
+				if (vals.Length > 2)
+				{
+					for (int i = 2; i < vals.Length; i++)
+						vals[1] += "/" + vals[i];
+				}
+
+				string name = vals[0];
+				string val = vals[1];
+
+				if (s.StartsWith("comboRigType/") || s.StartsWith("comboMeterType/"))
+				{
+					for (int i = 0; i < combobox_list.Count; i++)
+					{	// look through each control to find the matching name
+						ComboBoxTS c = (ComboBoxTS) combobox_list[i];
+						if (c.Name.Equals(name))		// name found
+						{
+							if (c.Items.Count > 0 && c.Items[0].GetType() == typeof(string))
+							{
+								c.Text = val;
+							}
+							else
+							{
+								foreach (object o in c.Items)
+								{
+									if (o.ToString() == val)
+										c.Text = val;	// restore value
+								}
+							}
+							i = combobox_list.Count + 1;
+						}
+						if (i == combobox_list.Count)
+							MessageBox.Show("Control not found: " + name);
+					}
+				}
+			}
+
 			// restore saved values to the controls
-			foreach (string s in a)				// string is in the format "name,value"
+			foreach (string s in a)				// string is in the format "name/value"
 			{
 				string[] vals = s.Split('/');
 				if (vals.Length > 2)
@@ -279,7 +317,9 @@ namespace PowerSDR
 							MessageBox.Show("Control not found: " + name);
 					}
 				}
-				else if (s.StartsWith("combo"))	// control is a ComboBox
+					// :NOTE: Don't read in RigType & MeterType again.
+				else if (s.StartsWith("combo") &&
+					!s.StartsWith("comboRigType/") && !s.StartsWith("comboMeterType/"))	// control is a ComboBox
 				{
 					for (int i = 0; i < combobox_list.Count; i++)
 					{	// look through each control to find the matching name
@@ -393,8 +433,6 @@ namespace PowerSDR
 
 			foreach (ColorButton c in colorbutton_list)
 				c.Automatic = "";
-
-			this.getOptions = false;
 		}
 
 		private void RefreshCOMPortLists()
@@ -569,15 +607,6 @@ namespace PowerSDR
 			this.console.RigType = this.comboRigType.Text;
 			this.console.updateConsoleTitle();
 
-			/* :NOTE: If we are getting options from the databaseIF.xml, we
-			 *        want to make sure we don't reset control settings that
-			 *        may have already been read in before the RigType.
-			 *        That is why we have several if conditions on getOptions
-			 *        throughout this code.
-			 *        
-			 * :NOTE: Control Enabled is not stored in databaseIF.xml.
-			 */
-
 			if (this.rigHW.hasSerialConnection())
 			{
 				this.grpRigSerialBox.Enabled = true;
@@ -587,25 +616,18 @@ namespace PowerSDR
 				this.chkRigPollVFOB.Enabled = true;
 				this.chkRigPollIFFreq.Enabled = true;
 
-				if (!this.getOptions)
-				{
-					this.comboRigBaud.Text = this.rigHW.defaultBaudRate().ToString();
-					this.chkRigPollVFOB.Checked = this.rigHW.needsPollVFOB();
-				}
+				this.comboRigBaud.Text = this.rigHW.defaultBaudRate().ToString();
+				this.chkRigPollVFOB.Checked = this.rigHW.needsPollVFOB();
 
 				if (this.rigHW.supportsIFFreq())
 				{
 					this.chkRigPollIFFreq.Enabled = true;
-
-					if (!this.getOptions)
-						this.chkRigPollIFFreq.Checked = true;
+					this.chkRigPollIFFreq.Checked = true;
 				}
 				else
 				{
 					this.chkRigPollIFFreq.Enabled = false;
-
-					if (!this.getOptions)
-						this.chkRigPollIFFreq.Checked = false;
+					this.chkRigPollIFFreq.Checked = false;
 				}
 			}
 			else
@@ -617,43 +639,35 @@ namespace PowerSDR
 				this.chkRigPollVFOB.Enabled = false;
 				this.chkRigPollIFFreq.Enabled = false;
 
-				if (!this.getOptions)
-				{
-					this.chkRigPollVFOB.Checked = false;
-					this.chkRigPollIFFreq.Checked = false;
-				}
+				this.chkRigPollVFOB.Checked = false;
+				this.chkRigPollIFFreq.Checked = false;
 			}
 
 			if (this.rigHW.needsLOCenterFreq())
 			{
 				this.udLOCenterFreq.Enabled = true;
-
-				if (!this.getOptions)
-					this.console.LOCenterFreq = (int) udLOCenterFreq.Value;
+				this.console.LOCenterFreq = (int) udLOCenterFreq.Value;
 			}
 			else
 				this.udLOCenterFreq.Enabled = false;
 
-			if (!this.getOptions)
+			if (this.rigHW.iqSwapFreq() == -1)
 			{
-				if (this.rigHW.iqSwapFreq() == -1)
-				{
-					this.chkSwapIQ.Checked = false;
-				}
-				else
-				{
-					this.udSwapFrequency.Value = this.rigHW.iqSwapFreq();
-					this.chkSwapIQ.Checked = true;
-				}
-
-				// :NOTE: Since console.MinFreq and console.MaxFreq are not part
-				//        of IF-Stage, they are initialized with different values.
-				//        We will just force them to be reinitialized here.
-				this.udMinFrequency.Value = (decimal) this.rigHW.minFreq();
-				this.console.MinFreq = this.rigHW.minFreq();
-				this.udMaxFrequency.Value = (decimal) this.rigHW.maxFreq();
-				this.console.MaxFreq = this.rigHW.maxFreq();
+				this.chkSwapIQ.Checked = false;
 			}
+			else
+			{
+				this.udSwapFrequency.Value = this.rigHW.iqSwapFreq();
+				this.chkSwapIQ.Checked = true;
+			}
+
+			// :NOTE: Since console.MinFreq and console.MaxFreq are not part
+			//        of IF-Stage, they are initialized with different values.
+			//        We will just force them to be reinitialized here.
+			this.udMinFrequency.Value = (decimal) this.rigHW.minFreq();
+			this.console.MinFreq = this.rigHW.minFreq();
+			this.udMaxFrequency.Value = (decimal) this.rigHW.maxFreq();
+			this.console.MaxFreq = this.rigHW.maxFreq();
 		}
 
 		private void chkUseMeter_CheckedChanged(object sender, EventArgs e)
@@ -700,7 +714,7 @@ namespace PowerSDR
 
 			this.console.MeterType = this.comboMeterType.Text;
 
-			if (!this.getOptions && this.meterHW != null)
+			if (this.meterHW != null)
 				this.comboMeterBaud.Text = this.meterHW.defaultBaudRate().ToString();
 		}
 
