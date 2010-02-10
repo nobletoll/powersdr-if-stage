@@ -9134,9 +9134,6 @@ namespace PowerSDR
 
 		private void SetBand(string mode, string filter, double freq)
 		{
-			// Set mode, filter, and frequency according to passed parameters
-			RX1DSPMode = (DSPMode)Enum.Parse(typeof(DSPMode), mode, true);
-
 			if(rx1_dsp_mode != DSPMode.DRM &&
 				rx1_dsp_mode != DSPMode.SPEC)
 			{
@@ -9144,6 +9141,15 @@ namespace PowerSDR
 			}
 
 			VFOAFreq = freq;
+
+			/* :Issue 66: :W1CEG: The mode change used to be first in this
+			 *                    method.  I had to move it after the frequency
+			 *                    change, because the K3 will use it's internal
+			 *                    band stack to change mode after the frequency
+			 *                    change.
+			 */
+			// Set mode, filter, and frequency according to passed parameters
+			RX1DSPMode = (DSPMode) Enum.Parse(typeof(DSPMode),mode,true);
 		}
 
 		public void MemoryRecall(int mode, int filter, double freq, int step, int agc, int squelch)
