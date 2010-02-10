@@ -25,6 +25,7 @@ using System.Text;
 
 using SDRSerialSupportII;
 using System;
+using System.Windows.Forms;
 
 
 namespace PowerSDR
@@ -40,8 +41,12 @@ namespace PowerSDR
 
 		private Thread pollingThread;
 		private bool keepPolling = true;
+		private bool initializing = false;
+		private bool pollError = false;
 		private bool vfoAInitialized = false;
 		private bool vfoBInitialized = false;
+		private EventWaitHandle communicationEstablishedWaitHandle =
+			new EventWaitHandle(true,EventResetMode.ManualReset);
 
 		// Serial Read Handler
 		private string commBuffer = "";
@@ -68,8 +73,11 @@ namespace PowerSDR
 				if (this.enabled)
 					return;
 
+				this.initializing = true;
+				this.pollError = false;
 				this.vfoAInitialized = false;
 				this.vfoBInitialized = false;
+				this.communicationEstablishedWaitHandle.Reset();
 
 				this.keepPolling = true;
 				this.pollingThread = new Thread(new ThreadStart(this.poll));
@@ -101,6 +109,15 @@ namespace PowerSDR
 			}
 		}
 
+		public void checkConnectionEstablished()
+		{
+			if (!this.initializing &&
+				!this.communicationEstablishedWaitHandle.WaitOne(1))
+				MessageBox.Show("Unable to connect to the " + this.hw.getRigName() + " on COM" +
+					this.hw.COMPort + ".  Please make sure that it is connected and turned on.","Error",
+					MessageBoxButtons.OK,MessageBoxIcon.Error);
+		}
+
 		#endregion Initialization
 
 
@@ -121,7 +138,21 @@ namespace PowerSDR
 					if (!this.vfoAInitialized)
 					{
 						Thread.Sleep(this.hw.RigTuningPollingInterval);
+						this.initializing = true;
 						this.rig.getVFOAFreq();
+						this.initializing = false;
+						if (!this.communicationEstablishedWaitHandle.WaitOne(5000))
+						{
+							if (!this.pollError)
+							{
+								this.pollError = true;
+								MessageBox.Show("Unable to connect to the " + this.hw.getRigName() + " on COM" +
+									this.hw.COMPort + ".  Please make sure that it is connected and turned on.","Error",
+									MessageBoxButtons.OK,MessageBoxIcon.Error);
+							}
+
+							continue;
+						}
 					}
 
 					if (!this.vfoBInitialized)
@@ -242,6 +273,7 @@ namespace PowerSDR
 						// Don't process the Rig's Answer if we're in a lockout state.
 						if (this.enabled && !this.rig.rigPollingLockout)
 						{
+							this.communicationEstablishedWaitHandle.Set();
 							RigHW.dbgWriteLine("<== " + m.Value);
 
 							// Send the match to the Rig Parser
