@@ -37,7 +37,6 @@ namespace PowerSDR
 		private Meter meter;
 
 		private bool enabled = false;
-		private ASCIIEncoding AE = new ASCIIEncoding();
 
 		private Thread pollingThread;
 		private bool keepPolling = true;

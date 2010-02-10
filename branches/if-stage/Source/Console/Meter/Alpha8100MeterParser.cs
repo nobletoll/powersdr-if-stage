@@ -31,8 +31,6 @@ namespace PowerSDR
 		private Console console;
 		private Alpha8100Meter meter;
 
-		private ASCIIEncoding AE = new ASCIIEncoding();
-
 		#endregion Variables
 
 
@@ -56,7 +54,7 @@ namespace PowerSDR
 			 * MagicNumber,FwdPower,RevPower,InputRF (10th Watt),PlateVoltage,AmpGain (10th unit),V on Grid 1 (- 10th V),GridCurrent (10th mA),Band,Mode (0:off 1:warmup 2:standby 3:on 4:keyed up),FaultCode,Fletcher checksum
 			 * $APA01,01536,00002,0595,2654,0867,260,0519,008,3,4,00,0*8DA3
 			 */
-			string data = this.AE.GetString(answer);
+			string data = this.meter.AE.GetString(answer);
 
 			// Check magic numbers...
 			if (answer.Length < 7 || !data.Substring(0,7).Equals("$APA01,"))
