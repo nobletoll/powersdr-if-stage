@@ -35,8 +35,6 @@ namespace PowerSDR
 		private MeterSerialPoller meterSerialPoller;
 		private Alpha8100MeterParser parser;
 
-		private ASCIIEncoding AE = new ASCIIEncoding();
-
 
 		public Alpha8100Meter(MeterHW hw, Console console) : base(hw,console)
 		{
@@ -113,7 +111,10 @@ namespace PowerSDR
 
 		private void doCommand(string command)
 		{
-			byte[] bCmd = this.AE.GetBytes(command);
+			byte[] bCmd = new byte[command.Length + 1];
+
+			Array.Copy(this.AE.GetBytes(command),0,bCmd,0,command.Length);
+			bCmd[command.Length] = (byte) '\r';
 
 			MeterHW.dbgWriteLine("--> " + command);
 
@@ -121,5 +122,58 @@ namespace PowerSDR
 		}
 
 		#endregion Commands
+
+	
+		#region Event Handlers
+
+		public override void SerialRXEventHandler(object source, SerialRXEvent e)
+		{
+			byte[] answer = new byte[60];
+
+			// Resize the commBuffer as needed...
+			int commBufferLen = 0;
+			if (this.commBuffer != null)
+			{
+				commBufferLen = this.commBuffer.Length;
+				Array.Resize<byte>(ref this.commBuffer,commBufferLen + e.buffer.Length);
+			}
+			else
+				this.commBuffer = new byte[e.buffer.Length];
+
+			// Append the incoming buffer into commBuffer
+			Array.Copy(e.buffer,0,this.commBuffer,commBufferLen,e.buffer.Length);
+
+			// Search for first $
+			int iStart = 0;
+			for (iStart = 0; iStart < this.commBuffer.Length; iStart++)
+				if (this.commBuffer[iStart] == '$')
+					break;
+
+			if (iStart == this.commBuffer.Length) {
+				this.commBuffer = null;
+				return;
+			}
+
+			if (this.commBuffer.Length - iStart < 60)
+				return;
+
+
+			Array.Copy(this.commBuffer,iStart,answer,0,60);
+			MeterHW.dbgWriteLine("<-- " + Meter.PrintBuffer(answer));
+			this.handleMeterAnswer(answer);
+
+
+			// Save the left over data for next read...
+			if (this.commBuffer.Length - iStart > 60)
+			{
+				byte[] buf = new byte[this.commBuffer.Length - iStart];
+				Array.Copy(this.commBuffer,0,buf,0,this.commBuffer.Length - iStart);
+				this.commBuffer = buf;
+			}
+			else
+				this.commBuffer = null;
+		}
+
+		#endregion Event Handlers
 	}
 }

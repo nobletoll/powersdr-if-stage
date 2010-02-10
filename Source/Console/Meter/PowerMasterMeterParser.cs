@@ -31,8 +31,6 @@ namespace PowerSDR
 		private Console console;
 		private PowerMasterMeter meter;
 
-		private ASCIIEncoding AE = new ASCIIEncoding();
-
 		#endregion Variables
 
 
@@ -57,7 +55,7 @@ namespace PowerSDR
 
 			// Remove STX, Command, ETX, and CRC from answer.
 			// Format:  STX Command Data ETX CRC1 CRC2
-			string data = this.AE.GetString(answer,2,answer.Length - 5);
+			string data = this.meter.AE.GetString(answer,2,answer.Length - 5);
 
 			switch ((char) answer[1])
 			{
