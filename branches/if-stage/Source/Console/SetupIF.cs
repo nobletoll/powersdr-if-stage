@@ -30,6 +30,7 @@ using System.Collections;
 using System.Threading;
 using System.IO.Ports;
 using SDRSerialSupportII;
+using System.IO;
 
 
 namespace PowerSDR
@@ -37,8 +38,6 @@ namespace PowerSDR
 
 	public partial class SetupIF : Form
 	{
-
-		private System.Windows.Forms.OpenFileDialog openFileDialog1;
 		private Console console;
 		private RigHW rigHW = null;
 		private MeterHW meterHW = null;
@@ -53,6 +52,8 @@ namespace PowerSDR
 			this.meterHW = meterHW;
 
 			this.InitializeComponent();
+
+			this.openFileDialog1.InitialDirectory = this.console.AppDataPath;
 
 			this.RefreshCOMPortLists();
 
@@ -105,7 +106,7 @@ namespace PowerSDR
 		{
 			if (saving) return;
 			SaveOptions();
-			DB.Update();
+			DatabaseIF.Update();
 		}
 
 		private void btnOK_Click(object sender,System.EventArgs e)
@@ -140,27 +141,84 @@ namespace PowerSDR
 
 		private void btnImportDB_Click(object sender,System.EventArgs e)
 		{
-			string path = Application.StartupPath;
-			path = path.Substring(0,path.LastIndexOf("\\"));
-			openFileDialog1.InitialDirectory = path;
+			if (this.console.PowerOn)
+			{
+				DialogResult dr = MessageBox.Show("PowerSDR/IF Stage must be powered off to import a database.\n" +
+					"Would you like to power it off, now?",
+					"Power off PowerSDR/IF Stage?",
+					MessageBoxButtons.YesNo,
+					MessageBoxIcon.Warning);
+
+				if (dr == DialogResult.No)
+					return;
+				else
+					this.console.PowerOn = false;
+			}
+
+			openFileDialog1.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 			openFileDialog1.ShowDialog();
 		}
 
-		private void btnResetDB_Click(object sender,System.EventArgs e)
+		private void openFileDialog1_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
 		{
-			DialogResult dr = MessageBox.Show("This will close the program, make a copy of the current\n" +
-				"database to your desktop, and reset the active database\n" +
-				"the next time PowerSDR is launched.\n\n" +
+			this.CompleteImport();
+		}
+
+		private void CompleteImport()
+		{
+			if (!DatabaseIF.ImportDatabase(openFileDialog1.FileName))
+				MessageBox.Show("Failed to import Database!");
+
+			this.GetOptions();
+			this.SaveOptions();
+		}
+
+		private void btnExportDB_Click(object sender, EventArgs e)
+		{
+			string desktop = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+			string datetime = DateTime.Now.ToShortDateString().Replace("/", "-") + "_" +
+					DateTime.Now.ToShortTimeString().Replace(":", ".");
+			saveFileDialog1.FileName = desktop + "\\PowerSDR_databaseIF_" + datetime + ".xml";
+			saveFileDialog1.ShowDialog();
+		}
+
+		private void saveFileDialog1_FileOk(object sender, CancelEventArgs e)
+		{
+			DatabaseIF.ExportDatabase(saveFileDialog1.FileName);
+		}
+
+		private void btnResetDB_Click(object sender, System.EventArgs e)
+		{
+			if (this.console.PowerOn)
+			{
+				DialogResult dr = MessageBox.Show("PowerSDR/IF Stage must be powered off to reset the database.\n" +
+					"Would you like to power it off, now?",
+					"Power off PowerSDR/IF Stage?",
+					MessageBoxButtons.YesNo,
+					MessageBoxIcon.Warning);
+
+				if (dr == DialogResult.No)
+					return;
+				else
+					this.console.PowerOn = false;
+			}
+
+			DialogResult dr2 = MessageBox.Show("This will close the program, make a copy of the current\n" +
+				"SetupIF database to your desktop, and reset the active\n" +
+				"SetupIF database the next time PowerSDR/IF Stage is launched.\n\n" +
 				"Are you sure you want to reset the database?",
 				"Reset Database?",
 				MessageBoxButtons.YesNo,
 				MessageBoxIcon.Warning);
 
-			if (dr == DialogResult.No) return;
+			if (dr2 == DialogResult.No)
+				return;
 
-			// WU2X: TODO: ??? This is probably reseting the wrong database ..
-			console.reset_db = true;
-			console.Close();
+			if (File.Exists(this.console.AppDataPath + "\\databaseIF.xml"))
+				File.Delete(this.console.AppDataPath + "\\databaseIF.xml");
+
+			this.console.reset_dbIF = true;
+			this.console.Close();
 		}
 
 		public void SaveOptions()
@@ -608,11 +666,21 @@ namespace PowerSDR
 			if (this.rigHW == null)
 				return;
 
-			// :TODO: Give the option to power off PowerSDR to make this change.
 			if (this.console.PowerOn)
 			{
-				this.comboRigType.Text = this.console.RigType;
-				return;
+				DialogResult dr = MessageBox.Show("PowerSDR/IF Stage must be powered off to change the Rig Type.\n" +
+					"Would you like to power it off, now?",
+					"Power off PowerSDR/IF Stage?",
+					MessageBoxButtons.YesNo,
+					MessageBoxIcon.Warning);
+
+				if (dr == DialogResult.No)
+				{
+					this.comboRigType.Text = this.console.RigType;
+					return;
+				}
+				else
+					this.console.PowerOn = false;
 			}
 
 			this.console.RigType = this.comboRigType.Text;
@@ -691,11 +759,21 @@ namespace PowerSDR
 			if (this.meterHW == null)
 				return;
 
-			// :TODO: Give the option to power off PowerSDR to make this change.
 			if (this.console.PowerOn)
 			{
-				this.chkUseMeter.Checked = this.console.UseMeter;
-				return;
+				DialogResult dr = MessageBox.Show("PowerSDR/IF Stage must be powered off to enable or disable the Meter.\n" +
+					"Would you like to power it off, now?",
+					"Power off PowerSDR/IF Stage?",
+					MessageBoxButtons.YesNo,
+					MessageBoxIcon.Warning);
+
+				if (dr == DialogResult.No)
+				{
+					this.chkUseMeter.Checked = this.console.UseMeter;
+					return;
+				}
+				else
+					this.console.PowerOn = false;
 			}
 
 			this.console.UseMeter = this.chkUseMeter.Checked;
@@ -721,11 +799,21 @@ namespace PowerSDR
 			if (this.meterHW == null)
 				return;
 
-			// :TODO: Give the option to power off PowerSDR to make this change.
 			if (this.console.PowerOn)
 			{
-				this.comboMeterType.Text = this.console.MeterType;
-				return;
+				DialogResult dr = MessageBox.Show("PowerSDR/IF Stage must be powered off to change the Meter Type.\n" +
+					"Would you like to power it off, now?",
+					"Power off PowerSDR/IF Stage?",
+					MessageBoxButtons.YesNo,
+					MessageBoxIcon.Warning);
+
+				if (dr == DialogResult.No)
+				{
+					this.comboMeterType.Text = this.console.MeterType;
+					return;
+				}
+				else
+					this.console.PowerOn = false;
 			}
 
 			this.console.MeterType = this.comboMeterType.Text;

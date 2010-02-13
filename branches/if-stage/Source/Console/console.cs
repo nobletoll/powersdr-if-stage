@@ -1546,6 +1546,7 @@ namespace PowerSDR
 
         private int dispose_count = 0;
 		public bool reset_db = false;
+		public bool reset_dbIF = false;
 		protected override void Dispose( bool disposing )
 		{
             dispose_count++;
@@ -1567,6 +1568,16 @@ namespace PowerSDR
 
                 File.Copy(app_data_path + "\\database.xml", desktop + "\\PowerSDR_database_" + datetime + ".xml");
                 File.Delete(app_data_path + "\\database.xml");
+			}
+
+			if (reset_dbIF)
+			{
+				string desktop = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+				string datetime = DateTime.Now.ToShortDateString().Replace("/", "-") + "_" +
+					DateTime.Now.ToShortTimeString().Replace(":", ".");
+
+				File.Copy(app_data_path + "\\databaseIF.xml", desktop + "\\PowerSDR_databaseIF_" + datetime + ".xml");
+				File.Delete(app_data_path + "\\databaseIF.xml");
 			}
 		}
 
