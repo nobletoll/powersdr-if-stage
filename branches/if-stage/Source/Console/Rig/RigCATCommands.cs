@@ -110,10 +110,10 @@ namespace PowerSDR
 					ifMode = this.console.IFUSB;
 					break;
 				case K3Rig.Mode.CWL:
-					ifMode = this.console.IFCW + (double) this.console.CWPitch * 0.0000010;
+					ifMode = this.console.IFCWL + (double) this.console.CWPitch * 0.0000010;
 					break;
 				case K3Rig.Mode.CWU:
-					ifMode = this.console.IFCW - (double) this.console.CWPitch * 0.0000010;
+					ifMode = this.console.IFCWU - (double) this.console.CWPitch * 0.0000010;
 					break;
 				case K3Rig.Mode.FM:
 					ifMode = this.console.IFFM;
@@ -122,10 +122,10 @@ namespace PowerSDR
 					ifMode = this.console.IFAM;
 					break;
 				case K3Rig.Mode.DIGU:
-					ifMode = this.console.IFFSK;
+					ifMode = this.console.IFFSKU;
 					break;
 				case K3Rig.Mode.DIGL:
-					ifMode = this.console.IFFSK;
+					ifMode = this.console.IFFSKL;
 					break;
 			}
 

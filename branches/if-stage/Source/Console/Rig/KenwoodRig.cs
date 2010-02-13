@@ -137,6 +137,26 @@ namespace PowerSDR
 			return 30.0;
 		}
 
+		public override bool hasCWL()
+		{
+			return true;
+		}
+
+		public override bool hasCWU()
+		{
+			return false;
+		}
+
+		public override bool hasFSKL()
+		{
+			return true;
+		}
+
+		public override bool hasFSKU()
+		{
+			return false;
+		}
+
 		#endregion Defaults & Supported Functions
 
 
