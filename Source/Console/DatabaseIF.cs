@@ -42,7 +42,7 @@ namespace PowerSDR
     {
         #region Variable Declaration
 
-        public static DataSet ds;
+        private static DataSet ds;
 
 		private static string app_data_path = "";
 		public static string AppDataPath
@@ -77,7 +77,6 @@ namespace PowerSDR
 
             if (File.Exists(app_data_path + "\\databaseIF.xml"))
 				ds.ReadXml(app_data_path + "\\databaseIF.xml");
-
         }
 
         public static void Update()
@@ -85,7 +84,7 @@ namespace PowerSDR
             ds.WriteXml(app_data_path + "\\databaseIF.xml", XmlWriteMode.WriteSchema);
         }
 
-        public static void Exit()
+		public static void Exit()
         {
             Update();
             ds = null;
@@ -136,6 +135,31 @@ namespace PowerSDR
             return list;
         }
 
-        #endregion
-    }
+		public static bool ImportDatabase(string filename)
+		{
+			if (!File.Exists(filename))
+				return false;
+
+			DataSet file = new DataSet();
+
+			try
+			{
+				file.ReadXml(filename);
+			}
+			catch (Exception)
+			{
+				return false;
+			}
+
+			ds = file;
+			return true;
+		}
+
+		public static void ExportDatabase(string filename)
+		{
+			ds.WriteXml(filename,XmlWriteMode.WriteSchema);
+		}
+
+		#endregion
+	}
 }
