@@ -93,7 +93,7 @@ namespace PowerSDR
 			// :NOTE: K3 Center Frequency is 8.210 MHz
 			int fi = int.Parse(s);
 
-			if (this.console.SWAPIQ)
+			if (this.console.SWAPIQ && this.console.VFOAFreq >= this.console.SwapIQFreq)
 				fi = -fi;
 
 			int freq = 8210000 + fi;
@@ -130,7 +130,9 @@ namespace PowerSDR
 
 			if (this.console.IFFreq != ifFreq)
 			{
-				RigHW.dbgWriteLine("FI: " + ifFreq);
+				RigHW.dbgWriteLine("FI: " +
+					this.hw.LOCenterFreq + " - " + "(8210000 + " + fi + ") + " +
+					this.console.globalIFOffset + " = " + ifFreq);
 				this.console.IFFreq = ifFreq;
 			}
 
