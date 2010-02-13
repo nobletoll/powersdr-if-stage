@@ -228,19 +228,15 @@ namespace PowerSDR
 						sleep = true;
 					}
 
-					if (this.hw.RigPollIFFreq)
-					{
-						if (sleep)
-							Thread.Sleep(this.hw.RigTuningPollingInterval);
-
-						this.rig.getIFFreq();
-					}
-
 					if (this.hw.RigPollingInterval > this.hw.RigTuningPollingInterval)
 						Thread.Sleep(this.hw.RigPollingInterval - this.hw.RigTuningPollingInterval);
 
 					this.rig.getRigInformation();
 				}
+
+				// :NOTE: We want to still poll for the IFFreq during poll lockout.
+				if (this.hw.RigPollIFFreq)
+					this.rig.getIFFreq();
 			}
 
 			RigHW.dbgWriteLine("RigSerialPoller.poll(), End.");
@@ -271,7 +267,8 @@ namespace PowerSDR
 					try
 					{
 						// Don't process the Rig's Answer if we're in a lockout state.
-						if (this.enabled && !this.rig.rigPollingLockout)
+						// :NOTE: Allow FI during Polling Lockout
+						if ((this.enabled && !this.rig.rigPollingLockout) || m.Value.StartsWith("FI"))
 						{
 							this.communicationEstablishedWaitHandle.Set();
 							RigHW.dbgWriteLine("<== " + m.Value);
