@@ -99,40 +99,43 @@ namespace PowerSDR
 			int freq = 8210000 + fi;
 			freq = this.hw.LOCenterFreq - freq;
 			double ifFreq = ((double) freq) / 1000000 + this.console.globalIFOffset;
+			double ifMode = 0;
 
 			switch ((K3Rig.Mode) this.rig.VFOAMode)
 			{
 				case K3Rig.Mode.LSB:
-					ifFreq += this.console.IFLSB;
+					ifMode = this.console.IFLSB;
 					break;
 				case K3Rig.Mode.USB:
-					ifFreq += this.console.IFUSB;
+					ifMode = this.console.IFUSB;
 					break;
 				case K3Rig.Mode.CWL:
-					ifFreq += this.console.IFCW;
+					ifMode = this.console.IFCW + (double) this.console.CWPitch * 0.0000010;
 					break;
 				case K3Rig.Mode.CWU:
-					ifFreq += this.console.IFCW;
+					ifMode = this.console.IFCW - (double) this.console.CWPitch * 0.0000010;
 					break;
 				case K3Rig.Mode.FM:
-					ifFreq += this.console.IFFM;
+					ifMode = this.console.IFFM;
 					break;
 				case K3Rig.Mode.AM:
-					ifFreq += this.console.IFAM;
+					ifMode = this.console.IFAM;
 					break;
 				case K3Rig.Mode.DIGU:
-					ifFreq += this.console.IFFSK;
+					ifMode = this.console.IFFSK;
 					break;
 				case K3Rig.Mode.DIGL:
-					ifFreq += this.console.IFFSK;
+					ifMode = this.console.IFFSK;
 					break;
 			}
+
+			ifFreq += ifMode;
 
 			if (this.console.IFFreq != ifFreq)
 			{
 				RigHW.dbgWriteLine("FI: " +
 					this.hw.LOCenterFreq + " - " + "(8210000 + " + fi + ") + " +
-					this.console.globalIFOffset + " = " + ifFreq);
+					this.console.globalIFOffset + " + " + ifMode + " = " + ifFreq);
 				this.console.IFFreq = ifFreq;
 			}
 
