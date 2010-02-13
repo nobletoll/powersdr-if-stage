@@ -469,12 +469,18 @@ namespace PowerSDR
 			console.IFUSB = (double) udIFUSB.Value * 1e-6;
 		}
 
-		private void udIFCW_ValueChanged(object sender,System.EventArgs e)
+
+		private void udIFCWL_ValueChanged(object sender, EventArgs e)
 		{
-			console.IFCW = (double) udIFCW.Value * 1e-6;
+			console.IFCWL = (double)udIFCWL.Value * 1e-6;
 		}
 
-		private void udIFAM_ValueChanged(object sender,System.EventArgs e)
+		private void udIFCWU_ValueChanged(object sender, EventArgs e)
+		{
+			console.IFCWU = (double)udIFCWU.Value * 1e-6;
+		}
+
+		private void udIFAM_ValueChanged(object sender, System.EventArgs e)
 		{
 			console.IFAM = (double) udIFAM.Value * 1e-6;
 		}
@@ -484,9 +490,14 @@ namespace PowerSDR
 			console.IFFM = (double) udIFFM.Value * 1e-6;
 		}
 
-		private void udIFFSK_ValueChanged(object sender,System.EventArgs e)
+		private void udIFFSKL_ValueChanged(object sender, EventArgs e)
 		{
-			console.IFFSK = (double) udIFFSK.Value * 1e-6;
+			console.IFFSKL = (double)udIFFSKL.Value * 1e-6;
+		}
+
+		private void udIFFSKU_ValueChanged(object sender, EventArgs e)
+		{
+			console.IFFSKU = (double)udIFFSKU.Value * 1e-6;
 		}
 
 		private void comboRigPort_SelectedIndexChanged(object sender, System.EventArgs e)
@@ -668,6 +679,11 @@ namespace PowerSDR
 			this.console.MinFreq = this.rigHW.minFreq();
 			this.udMaxFrequency.Value = (decimal) this.rigHW.maxFreq();
 			this.console.MaxFreq = this.rigHW.maxFreq();
+
+			this.udIFCWL.Enabled = this.rigHW.hasCWL();
+			this.udIFCWU.Enabled = this.rigHW.hasCWU();
+			this.udIFFSKL.Enabled = this.rigHW.hasFSKL();
+			this.udIFFSKU.Enabled = this.rigHW.hasFSKU();
 		}
 
 		private void chkUseMeter_CheckedChanged(object sender, EventArgs e)

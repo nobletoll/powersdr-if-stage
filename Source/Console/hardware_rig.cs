@@ -320,6 +320,38 @@ namespace PowerSDR
 			return (this.rig == null || !(this.rig is HRDRig));
 		}
 
+		public bool hasCWL()
+		{
+			if (this.rig == null)
+				return true;
+
+			return this.rig.hasCWL();
+		}
+
+		public bool hasCWU()
+		{
+			if (this.rig == null)
+				return true;
+
+			return this.rig.hasCWU();
+		}
+
+		public bool hasFSKL()
+		{
+			if (this.rig == null)
+				return true;
+
+			return this.rig.hasFSKL();
+		}
+
+		public bool hasFSKU()
+		{
+			if (this.rig == null)
+				return true;
+
+			return this.rig.hasFSKU();
+		}
+
 		#endregion Public Functions
 
 

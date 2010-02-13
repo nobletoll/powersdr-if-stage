@@ -454,6 +454,26 @@ namespace PowerSDR
 			return 30.0;
 		}
 
+		public override bool hasCWL()
+		{
+			return true;
+		}
+
+		public override bool hasCWU()
+		{
+			return true;
+		}
+
+		public override bool hasFSKL()
+		{
+			return true;
+		}
+
+		public override bool hasFSKU()
+		{
+			return true;
+		}
+
 		private void LockoutConnectTimeExpiredEvent(object source,
 			System.Timers.ElapsedEventArgs e)
         {

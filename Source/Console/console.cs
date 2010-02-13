@@ -33525,7 +33525,7 @@ namespace PowerSDR
                 if (this.hw is RigHW)
                 {
 					((RigHW) this.hw).setMode(DSPMode.CWL);
-                    if_freq = if_cw + global_if_offset;
+                    if_freq = if_cwl + global_if_offset;
                 }
 
 				SetRX1Mode(DSPMode.CWL);
@@ -33541,7 +33541,7 @@ namespace PowerSDR
                 // WU2X: Set IF Freq
                 if (this.hw is RigHW) {
 					((RigHW) this.hw).setMode(DSPMode.CWU);
-                    if_freq = if_cw + global_if_offset;
+                    if_freq = if_cwu + global_if_offset;
                 }
 
 				SetRX1Mode(DSPMode.CWU);
@@ -33594,7 +33594,7 @@ namespace PowerSDR
                 // WU2X: Set IF Freq
                 if (this.hw is RigHW) {
 					((RigHW) this.hw).setMode(DSPMode.DIGU);
-                    if_freq = if_fsk + global_if_offset;
+                    if_freq = if_fsku + global_if_offset;
                 }
 
 				SetRX1Mode(DSPMode.DIGU);
@@ -33617,7 +33617,7 @@ namespace PowerSDR
                 // WU2X: Set IF Freq
                 if (this.hw is RigHW) {
 					((RigHW) this.hw).setMode(DSPMode.DIGL);
-                    if_freq = if_fsk + global_if_offset;
+                    if_freq = if_fskl + global_if_offset;
                 }
 
 				SetRX1Mode(DSPMode.DIGL);
@@ -38038,20 +38038,29 @@ namespace PowerSDR
             }
         }
 
-        private double if_cw = 0.0;
-        public double IFCW
+        private double if_cwl = 0.0;
+        public double IFCWL
         {
-            get { return if_cw; }
+            get { return if_cwl; }
             set
             {
-                if_cw = value;
+                if_cwl = value;
                 radModeCWL_CheckedChanged(this, EventArgs.Empty); 
-                radModeCWU_CheckedChanged(this, EventArgs.Empty); 
-
             }
         }
 
-        private double if_am = 0.0;
+		private double if_cwu = 0.0;
+		public double IFCWU
+		{
+			get { return if_cwu; }
+			set
+			{
+				if_cwu = value;
+				radModeCWU_CheckedChanged(this, EventArgs.Empty);
+			}
+		}
+
+		private double if_am = 0.0;
         public double IFAM
         {
             get { return if_am; }
@@ -38061,7 +38070,8 @@ namespace PowerSDR
                 radModeAM_CheckedChanged(this, EventArgs.Empty); 
             }
         }
-        private double if_fm = 0.0;
+
+		private double if_fm = 0.0;
         public double IFFM
         {
             get { return if_fm; }
@@ -38071,18 +38081,30 @@ namespace PowerSDR
                 radModeFMN_CheckedChanged(this, EventArgs.Empty);
             }
         }
-        private double if_fsk = 0.0;
-        public double IFFSK
-        {
-            get { return if_fsk; }
-            set
-            {
-                if_fsk = value;
-                radModeDIGL_CheckedChanged(this, EventArgs.Empty); // WU2X: TODO: ??? Wrong method called?
-            }
-        }
 
-        private bool swap_iq = false;
+		private double if_fskl = 0.0;
+		public double IFFSKL
+		{
+			get { return if_fskl; }
+			set
+			{
+				if_fskl = value;
+				radModeDIGL_CheckedChanged(this, EventArgs.Empty);
+			}
+		}
+
+		private double if_fsku = 0.0;
+		public double IFFSKU
+		{
+			get { return if_fsku; }
+			set
+			{
+				if_fsku = value;
+				radModeDIGU_CheckedChanged(this, EventArgs.Empty);
+			}
+		}
+
+		private bool swap_iq = false;
         public bool SWAPIQ
         {
             get { return swap_iq; }

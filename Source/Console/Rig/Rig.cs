@@ -95,6 +95,11 @@ namespace PowerSDR
 		public abstract double minFreq();
 		public abstract double maxFreq();
 
+		public abstract bool hasCWL();
+		public abstract bool hasCWU();
+		public abstract bool hasFSKL();
+		public abstract bool hasFSKU();
+
 		public abstract int getModeFromDSPMode(DSPMode dspMode);
 
 		#endregion Defaults & Supported Functions
