@@ -168,7 +168,7 @@ namespace PowerSDR
 
 		public override void getIFFreq()
 		{
-			this.doRigCATCommand("FI;");
+			this.doRigCATCommand("FI;",false,false);
 		}
 
 		#endregion Get CAT Commands
