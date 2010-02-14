@@ -199,7 +199,7 @@ namespace PowerSDR
 				this.rig.RITOffset = ritOffset;
 
 				if (changeRIT)
-					this.sdrParser.Get("ZZRF" + s.Substring(12, 4).PadRight(5, '0') + ';');
+					this.sdrParser.Get("ZZRF" + s.Substring(11, 5 ).PadRight(5, '0') + ';');
 
 				this.rig.RITOffsetInitialized = true;
 			}
