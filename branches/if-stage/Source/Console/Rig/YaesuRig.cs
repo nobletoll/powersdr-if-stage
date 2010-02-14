@@ -262,15 +262,30 @@ namespace PowerSDR
 			this.doRigCATCommand("MD0" + setMode + ';', true, false);
 		}
 
-		public override void setVFOA()
-		{
-			// :TODO:
-		}
+        public override void setVFOA()
+        {
+            // :TODO:
+        }
 
-		public override void setVFOB()
-		{
-			// :TODO:
-		}
+        public override void setRIT(int ritOffset)
+        {
+            if (!this.RITOffsetInitialized || ritOffset == this.RITOffset)
+                return;
+
+            int deltaOffset = ritOffset - this.RITOffset;
+
+            if (deltaOffset > 0)
+            {
+                this.doRigCATCommand("RU" + deltaOffset.ToString().PadLeft(4, '0') + ';', true, false);
+            }
+            else if (deltaOffset < 0)
+            {
+                deltaOffset = deltaOffset * -1;  // Its negative, make it positive. 
+                this.doRigCATCommand("RD" + deltaOffset.ToString().PadLeft(4, '0') + ';', true, false);
+            }
+
+            this.RITOffset = ritOffset;
+        }
 
 		#endregion Set CAT Commands
 	}
