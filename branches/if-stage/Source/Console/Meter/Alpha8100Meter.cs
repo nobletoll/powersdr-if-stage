@@ -39,7 +39,7 @@ namespace PowerSDR
 		public Alpha8100Meter(MeterHW hw, Console console) : base(hw,console)
 		{
 			this.meterSerialPoller = new MeterSerialPoller(this.console,this.hw,this);
-			this.parser = new Alpha8100MeterParser(this.console,this);
+			this.parser = new Alpha8100MeterParser(console,hw,this);
 		}
 
 		
@@ -116,7 +116,7 @@ namespace PowerSDR
 			Array.Copy(this.AE.GetBytes(command),0,bCmd,0,command.Length);
 			bCmd[command.Length] = (byte) '\r';
 
-			MeterHW.dbgWriteLine("--> " + command);
+			this.hw.logOutgoingCAT("-> " + command);
 
 			this.SIO.put(bCmd,(uint) bCmd.Length);
 		}
@@ -159,7 +159,7 @@ namespace PowerSDR
 
 
 			Array.Copy(this.commBuffer,iStart,answer,0,60);
-			MeterHW.dbgWriteLine("<-- " + Meter.PrintBuffer(answer));
+			this.hw.logIncomingCAT("<- " + Meter.PrintBuffer(answer));
 			this.handleMeterAnswer(answer);
 
 

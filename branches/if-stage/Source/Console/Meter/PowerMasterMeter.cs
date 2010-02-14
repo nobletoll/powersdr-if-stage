@@ -37,7 +37,7 @@ namespace PowerSDR
 
 		public PowerMasterMeter(MeterHW hw, Console console) : base(hw,console)
 		{
-			this.parser = new PowerMasterMeterParser(this.console,this);
+			this.parser = new PowerMasterMeterParser(console,hw,this);
 		}
 
 		
@@ -139,7 +139,7 @@ namespace PowerSDR
 			bData[bCmd.Length + 3] = PowerMasterCRC.MakeASCIIHexFromBinary((byte) (crc.CRC & 0x0F));
 			bData[bCmd.Length + 4] = (byte) '\r';
 
-			MeterHW.dbgWriteLine("--> " + Meter.PrintBuffer(bData));
+			this.hw.logOutgoingCAT("-> " + Meter.PrintBuffer(bData));
 
 			PowerMasterCRC.CheckCRC(bData);
 
@@ -179,7 +179,7 @@ namespace PowerSDR
 					byte[] answer = new byte[iCR - iStart];
 					Array.Copy(e.buffer,iStart,answer,0,iCR - iStart);
 
-					MeterHW.dbgWriteLine("<-- " + Meter.PrintBuffer(answer));
+					this.hw.logIncomingCAT("<- " + Meter.PrintBuffer(answer));
 
 					this.handleMeterAnswer(answer);
 

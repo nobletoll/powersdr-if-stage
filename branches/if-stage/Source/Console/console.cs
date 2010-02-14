@@ -6166,7 +6166,7 @@ namespace PowerSDR
 
             SetupIFForm = new SetupIF(this,this.hw,this.meterHW);   // WU2X: Menu for IF Stage setup 
 			SetupForm.StartPosition = FormStartPosition.Manual;
-			
+
 			switch(current_model)
 			{
 				case Model.SDR1000:

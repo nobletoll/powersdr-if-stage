@@ -35,12 +35,12 @@ using System.IO;
 
 namespace PowerSDR
 {
-
 	public partial class SetupIF : Form
 	{
 		private Console console;
 		private RigHW rigHW = null;
 		private MeterHW meterHW = null;
+		private int maxLogLines = 1000;
 
 		public SetupIF(Console c, AbstractHW rigHW, MeterHW meterHW)
 		{
@@ -83,7 +83,113 @@ namespace PowerSDR
 			this.GetOptions();
 		}
 
-		private void btnCancel_Click(object sender,System.EventArgs e)
+		public void logGeneral(string msg)
+		{
+			if (!this.checkBoxGeneral.Checked)
+				return;
+
+			if (this.tbGeneral.Lines.Length == this.maxLogLines)
+			{
+				string[] lines = new string[this.maxLogLines];
+				Array.Copy(this.tbGeneral.Lines, 1, lines, 0, this.maxLogLines - 1);
+				lines[this.maxLogLines - 1] = msg;
+				this.tbGeneral.Lines = lines;
+			}
+			else
+			{
+				if (this.tbGeneral.Text.Length > 0)
+					msg = "\r\n" + msg;
+				this.tbGeneral.AppendText(msg);
+			}
+
+			if (this.tbGeneral.Text.Length - msg.Length + 2 >= 0)
+			{
+				this.tbGeneral.SelectionStart = this.tbGeneral.Text.Length - msg.Length + 2;
+				this.tbGeneral.ScrollToCaret();
+			}
+		}
+
+		public void logOutgoingCAT(string msg)
+		{
+			if (this.checkBoxGeneral.Checked && this.chkIncludeCATLogging.Checked)
+				this.logGeneral(msg);
+
+			if (!this.checkBoxOutgoingCAT.Checked)
+				return;
+
+			// Strip off the directional text since we don't need it
+/*
+			int idx = msg.IndexOf(' ');
+			if (idx != -1)
+				msg = msg.Substring(idx + 1);
+*/
+
+			if (this.tbOutgoingCAT.Lines.Length == this.maxLogLines)
+			{
+				string[] lines = new string[this.maxLogLines];
+				Array.Copy(this.tbOutgoingCAT.Lines, 1, lines, 0, this.maxLogLines - 1);
+				lines[this.maxLogLines - 1] = msg;
+				this.tbOutgoingCAT.Lines = lines;
+			}
+			else
+			{
+				if (this.tbOutgoingCAT.Text.Length > 0)
+					msg = "\r\n" + msg;
+				this.tbOutgoingCAT.AppendText(msg);
+			}
+
+			if (this.tbOutgoingCAT.Text.Length - msg.Length + 2 >= 0)
+			{
+				this.tbOutgoingCAT.SelectionStart = this.tbOutgoingCAT.Text.Length - msg.Length + 2;
+				this.tbOutgoingCAT.ScrollToCaret();
+			}
+		}
+
+		public void logIncomingCAT(string msg)
+		{
+			if (this.checkBoxGeneral.Checked && this.chkIncludeCATLogging.Checked)
+				this.logGeneral(msg);
+
+			if (!this.checkBoxIncomingCAT.Checked)
+				return;
+
+			// Strip off the directional text since we don't need it
+/*
+			int idx = msg.IndexOf(' ');
+			if (idx != -1)
+				msg = msg.Substring(idx + 1);
+*/
+
+			if (this.tbIncomingCAT.Lines.Length == this.maxLogLines)
+			{
+				string[] lines = new string[this.maxLogLines];
+				Array.Copy(this.tbIncomingCAT.Lines, 1, lines, 0, this.maxLogLines - 1);
+				lines[this.maxLogLines - 1] = msg;
+				this.tbIncomingCAT.Lines = lines;
+			}
+			else
+			{
+				if (this.tbIncomingCAT.Text.Length > 0)
+					msg = "\r\n" + msg;
+				this.tbIncomingCAT.AppendText(msg);
+			}
+
+			if (this.tbIncomingCAT.Text.Length - msg.Length + 2 >= 0)
+			{
+				this.tbIncomingCAT.SelectionStart = this.tbIncomingCAT.Text.Length - msg.Length + 2;
+				this.tbIncomingCAT.ScrollToCaret();
+			}
+		}
+
+
+		private void SetupIF_FormClosed(Object sender, FormClosedEventArgs e)
+		{
+			this.checkBoxGeneral.Checked = false;
+			this.checkBoxOutgoingCAT.Checked = false;
+			this.checkBoxIncomingCAT.Checked = false;
+		}
+
+		private void btnCancel_Click(object sender, System.EventArgs e)
 		{
 			Thread t = new Thread(new ThreadStart(GetOptions));
 			t.Name = "Save Options Thread";
@@ -91,6 +197,10 @@ namespace PowerSDR
 			t.Priority = ThreadPriority.Lowest;
 			t.Start();
 			this.Hide();
+
+			this.checkBoxGeneral.Checked = false;
+			this.checkBoxOutgoingCAT.Checked = false;
+			this.checkBoxIncomingCAT.Checked = false;
 		}
 
 		private void btnApply_Click(object sender,System.EventArgs e)
@@ -100,6 +210,10 @@ namespace PowerSDR
 			t.IsBackground = true;
 			t.Priority = ThreadPriority.Lowest;
 			t.Start();
+
+			this.checkBoxGeneral.Checked = false;
+			this.checkBoxOutgoingCAT.Checked = false;
+			this.checkBoxIncomingCAT.Checked = false;
 		}
 
 		private void ApplyOptions()
@@ -107,6 +221,10 @@ namespace PowerSDR
 			if (saving) return;
 			SaveOptions();
 			DatabaseIF.Update();
+
+			this.checkBoxGeneral.Checked = false;
+			this.checkBoxOutgoingCAT.Checked = false;
+			this.checkBoxIncomingCAT.Checked = false;
 		}
 
 		private void btnOK_Click(object sender,System.EventArgs e)
@@ -117,6 +235,10 @@ namespace PowerSDR
 			t.Priority = ThreadPriority.Lowest;
 			t.Start();
 			this.Hide();
+
+			this.checkBoxGeneral.Checked = false;
+			this.checkBoxOutgoingCAT.Checked = false;
+			this.checkBoxIncomingCAT.Checked = false;
 		}
 
 		private static bool saving = false;
@@ -896,6 +1018,15 @@ namespace PowerSDR
 		private void udMaxFrequency_ValueChanged(object sender,EventArgs e)
 		{
 			this.console.MaxFreq = (double) this.udMaxFrequency.Value;
+		}
+
+		private void chkBoxIncludeCATLogging_CheckedChanged(object sender, EventArgs e)
+		{
+			if (this.chkIncludeCATLogging.Checked)
+			{
+				this.checkBoxOutgoingCAT.Checked = false;
+				this.checkBoxIncomingCAT.Checked = false;
+			}
 		}
 	}
 }

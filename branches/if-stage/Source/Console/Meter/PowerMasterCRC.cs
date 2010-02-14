@@ -107,9 +107,9 @@ namespace PowerSDR
 						byte bCRC = (byte) (MakeByteFromASCIIHex(*++pData) << 4);
 						bCRC += MakeByteFromASCIIHex(*++pData);
 
-						MeterHW.dbgWriteLine("Calc CRC: " +
-							Convert.ToString(crc.CRC,16).PadLeft(2,'0') +
-							"  CRC: " + Convert.ToString(bCRC,16).PadLeft(2,'0'));
+//						this.hw.logGeneral("Calc CRC: " +
+//							Convert.ToString(crc.CRC,16).PadLeft(2,'0') +
+//							"  CRC: " + Convert.ToString(bCRC,16).PadLeft(2,'0'));
 
 						return (bCRC == crc.CRC);
 					}

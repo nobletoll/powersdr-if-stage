@@ -133,7 +133,7 @@ namespace PowerSDR
 
 			if (this.console.IFFreq != ifFreq)
 			{
-				RigHW.dbgWriteLine("FI: " +
+				this.hw.logGeneral("FI: " +
 					this.hw.LOCenterFreq + " - " + "(8210000 + " + fi + ") + " +
 					this.console.globalIFOffset + " + " + ifMode + " = " + ifFreq);
 				this.console.IFFreq = ifFreq;

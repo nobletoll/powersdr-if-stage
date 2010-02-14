@@ -97,10 +97,10 @@ namespace PowerSDR
 
 				this.enabled = false;
 
-				RigHW.dbgWriteLine("RigSerialPoller.disable(), Shutting down Rig Polling Thread.");
+				this.hw.logGeneral("RigSerialPoller.disable(), Shutting down Rig Polling Thread.");
 				this.keepPolling = false;
 
-				RigHW.dbgWriteLine("RigSerialPoller.disable(), Waiting for Rig Polling Thread to finish...");
+				this.hw.logGeneral("RigSerialPoller.disable(), Waiting for Rig Polling Thread to finish...");
 				if (this.pollingThread != null)
 				{
 					this.pollingThread.Join();
@@ -127,7 +127,7 @@ namespace PowerSDR
 		{
 			int lastVFOBPoll = System.Environment.TickCount;
 
-			RigHW.dbgWriteLine("RigSerialPoller.poll(), Start.");
+			this.hw.logGeneral("RigSerialPoller.poll(), Start.");
 
 			while (this.keepPolling)
 			{
@@ -239,7 +239,7 @@ namespace PowerSDR
 					this.rig.getIFFreq();
 			}
 
-			RigHW.dbgWriteLine("RigSerialPoller.poll(), End.");
+			this.hw.logGeneral("RigSerialPoller.poll(), End.");
 		}
 
 		#endregion CAT Polling
@@ -271,18 +271,18 @@ namespace PowerSDR
 						if ((this.enabled && !this.rig.rigPollingLockout) || m.Value.StartsWith("FI"))
 						{
 							this.communicationEstablishedWaitHandle.Set();
-							RigHW.dbgWriteLine("<== " + m.Value);
+							this.hw.logIncomingCAT("<- " + m.Value);
 
 							// Send the match to the Rig Parser
 							this.rig.handleRigAnswer(m.Value);
 						}
 						else
-							RigHW.dbgWriteLine("<=| " + m.Value);
+							this.hw.logIncomingCAT("|<- " + m.Value);
 					}
 					catch (Exception ex)
 					{
-						RigHW.dbgWriteLine("SerialRXEventHandler Exception: " + ex.Message);
-						RigHW.dbgWriteLine(ex.StackTrace);
+						this.hw.logGeneral("SerialRXEventHandler Exception: " + ex.Message);
+						this.hw.logGeneral(ex.StackTrace);
 					}
 
 					// Remove the match from the buffer
@@ -291,8 +291,8 @@ namespace PowerSDR
 			}
 			catch (Exception ex)
 			{
-				RigHW.dbgWriteLine("SerialRXEventHandler Exception: " + ex.Message);
-				RigHW.dbgWriteLine(ex.StackTrace);
+				this.hw.logGeneral("SerialRXEventHandler Exception: " + ex.Message);
+				this.hw.logGeneral(ex.StackTrace);
 			}
 		}
 

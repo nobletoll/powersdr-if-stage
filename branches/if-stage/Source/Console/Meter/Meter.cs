@@ -73,13 +73,13 @@ namespace PowerSDR
 					this.SIO.setCommParms(this.hw.COMBaudRate,this.hw.COMParity,
 						this.hw.COMDataBits,this.hw.COMStopBits);
 
-					MeterHW.dbgWriteLine("Meter.connect(), Opening COM" +
+					this.hw.logGeneral("Meter.connect(), Opening COM" +
 						this.hw.COMPort + "...");
 
 					try
 					{
 						if (this.SIO.Create() == 0)
-							MeterHW.dbgWriteLine("Meter.connect(), Opened COM" +
+							this.hw.logGeneral("Meter.connect(), Opened COM" +
 								this.hw.COMPort + ".");
 						else
 							throw new Exception();
@@ -119,7 +119,7 @@ namespace PowerSDR
 
 				if (this.SIO != null && this.SIO.PortIsOpen)
 				{
-					MeterHW.dbgWriteLine("Meter.disconnect(), Deregistering COM" +
+					this.hw.logGeneral("Meter.disconnect(), Deregistering COM" +
 						this.hw.COMPort + " Handlers...");
 
 					this.SIO.deregisterEventHandlers();
@@ -145,14 +145,14 @@ namespace PowerSDR
 
 		private void destroySIO()
 		{
-			MeterHW.dbgWriteLine("Meter.destroySIO(), Closing COM" +
+			this.hw.logGeneral("Meter.destroySIO(), Closing COM" +
 				this.hw.COMPort + "...");
 
 			this.SIO.Destroy();
 			this.SIO = null;
 			this.connected = false;
 
-			MeterHW.dbgWriteLine("Meter.destroySIO(), Closed COM" +
+			this.hw.logGeneral("Meter.destroySIO(), Closed COM" +
 				this.hw.COMPort + ".");
 		}
 
