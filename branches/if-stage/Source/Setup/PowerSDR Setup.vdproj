@@ -15,12 +15,6 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_01E9D5BAEC5C29DB2D69F4110FFCDC53"
-        "OwnerKey" = "8:_13AD2D6E1EE04F3094D7D373DBE7AE10"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_08162A10BB044F6B977FD90C338C61E8"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -58,6 +52,12 @@
         "Entry"
         {
         "MsmKey" = "8:_78D7E69A5CC249039EE0BDE7018D9E9D"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_819C4DCE807D424A90342894E356D062"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -105,7 +105,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_FF02FD35505245858EF2BBE77B71A29C"
+        "MsmKey" = "8:_FC4573ABD9AD43D6B1287152AC850002"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -113,12 +113,6 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_13AD2D6E1EE04F3094D7D373DBE7AE10"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_01E9D5BAEC5C29DB2D69F4110FFCDC53"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -227,37 +221,6 @@
         }
         "File"
         {
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_01E9D5BAEC5C29DB2D69F4110FFCDC53"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Interop.TDxInput, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_01E9D5BAEC5C29DB2D69F4110FFCDC53"
-                    {
-                    "Name" = "8:Interop.TDxInput.DLL"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:Interop.TDxInput.DLL"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_25D0B75A0D034BC793456BD6A7FF8277"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_08162A10BB044F6B977FD90C338C61E8"
             {
             "SourcePath" = "8:..\\..\\bin\\Release\\fftw_wisdom.exe"
@@ -409,6 +372,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_819C4DCE807D424A90342894E356D062"
+            {
+            "SourcePath" = "8:..\\..\\bin\\Release\\database-europe.xml"
+            "TargetName" = "8:database-europe.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_25D0B75A0D034BC793456BD6A7FF8277"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8CD6888230D04AF980F9D2A59B1424AD"
             {
             "SourcePath" = "8:..\\..\\bin\\Release\\pthreadVC.dll"
@@ -531,7 +514,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F52C92DC3A154862A760BC7BA1EA9485"
             {
-            "SourcePath" = "8:..\\..\\..\\..\\lib\\PortTalk\\porttalk.sys"
+            "SourcePath" = "8:C:\\lib\\PortTalk\\porttalk.sys"
             "TargetName" = "8:porttalk.sys"
             "Tag" = "8:"
             "Folder" = "8:_D6D71D2A890A4E57873DD2F3EBF2CEA1"
@@ -549,10 +532,10 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_FF02FD35505245858EF2BBE77B71A29C"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_FC4573ABD9AD43D6B1287152AC850002"
             {
-            "SourcePath" = "8:..\\..\\bin\\Release\\PortTalk.dll"
-            "TargetName" = "8:PortTalk.dll"
+            "SourcePath" = "8:..\\..\\bin\\Release\\database.xml"
+            "TargetName" = "8:database.xml"
             "Tag" = "8:"
             "Folder" = "8:_25D0B75A0D034BC793456BD6A7FF8277"
             "Condition" = "8:"
@@ -585,17 +568,6 @@
             "Property" = "8:TARGETDIR"
                 "Folders"
                 {
-                    "{9EF0B969-E518-4E46-987F-47570745A589}:_A9F564070FAB45C4BC0434DBB0E08C53"
-                    {
-                    "Name" = "8:Skins"
-                    "AlwaysCreate" = "11:FALSE"
-                    "Condition" = "8:"
-                    "Transitive" = "11:FALSE"
-                    "Property" = "8:_5F04CEA83A40462FA35826A24E1A8851"
-                        "Folders"
-                        {
-                        }
-                    }
                 }
             }
             "{1525181F-901A-416C-8A58-119130FE478E}:_52D0261C1C4B404AAF61D65B574DE0C9"
