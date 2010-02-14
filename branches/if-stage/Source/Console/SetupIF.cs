@@ -1028,5 +1028,23 @@ namespace PowerSDR
 				this.checkBoxIncomingCAT.Checked = false;
 			}
 		}
+
+		private void checkBoxGeneral_CheckedChanged(object sender, EventArgs e)
+		{
+			if (this.checkBoxGeneral.Checked && this.tbGeneral.Text.Length > 0)
+				this.tbGeneral.AppendText("\r\n");
+		}
+
+		private void checkBoxOutgoingCAT_CheckedChanged(object sender, EventArgs e)
+		{
+			if (this.checkBoxOutgoingCAT.Checked && this.tbOutgoingCAT.Text.Length > 0)
+				this.tbOutgoingCAT.AppendText("\r\n");
+		}
+
+		private void checkBoxIncomingCAT_CheckedChanged(object sender, EventArgs e)
+		{
+			if (this.checkBoxIncomingCAT.Checked && this.tbIncomingCAT.Text.Length > 0)
+				this.tbIncomingCAT.AppendText("\r\n");
+		}
 	}
 }
