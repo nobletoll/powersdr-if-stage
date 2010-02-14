@@ -29,6 +29,7 @@ namespace PowerSDR
 		#region Variables
 
 		private Console console;
+		private MeterHW hw;
 		private Alpha8100Meter meter;
 
 		#endregion Variables
@@ -36,9 +37,10 @@ namespace PowerSDR
 
 		#region Constructor
 
-		public Alpha8100MeterParser(Console console, Alpha8100Meter meter)
+		public Alpha8100MeterParser(Console console, MeterHW hw, Alpha8100Meter meter)
 		{
 			this.console = console;
+			this.hw = hw;
 			this.meter = meter;
 		}
 
@@ -74,7 +76,7 @@ namespace PowerSDR
 			// :TODO: Is it save/accurate to use this SWR function??
 			this.meter.VSWR = this.console.SWR(fwdPower,revPower);
 
-			MeterHW.dbgWriteLine("Forward: " + this.meter.FwdPower + "W  Reflected: " + this.meter.RevPower + "W  VSWR: " + this.meter.VSWR);
+			this.hw.logGeneral("Forward: " + this.meter.FwdPower + "W  Reflected: " + this.meter.RevPower + "W  VSWR: " + this.meter.VSWR);
 		}
 
 		#endregion Answer

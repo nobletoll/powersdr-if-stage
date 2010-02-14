@@ -121,10 +121,22 @@ namespace PowerSDR
 
 		#region Public Functions
 
-		[Conditional("DEBUG")]
-		public static void dbgWriteLine(string s)
+		public void logGeneral(string msg)
 		{
-			System.Console.Error.WriteLine(s);
+			if (this.console.SetupIFForm != null)
+				this.console.SetupIFForm.logGeneral(msg);
+		}
+
+		public void logIncomingCAT(string msg)
+		{
+			if (this.console.SetupIFForm != null)
+				this.console.SetupIFForm.logIncomingCAT(msg);
+		}
+
+		public void logOutgoingCAT(string msg)
+		{
+			if (this.console.SetupIFForm != null)
+				this.console.SetupIFForm.logOutgoingCAT(msg);
 		}
 
 		public void StandBy()

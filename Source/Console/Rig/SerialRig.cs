@@ -161,13 +161,13 @@ namespace PowerSDR
 					this.SIO.setCommParms(this.hw.COMBaudRate,this.hw.COMParity,
 						this.hw.COMDataBits,this.hw.COMStopBits);
 
-					RigHW.dbgWriteLine("SerialRig.connect(), Opening COM" +
+					this.hw.logGeneral("SerialRig.connect(), Opening COM" +
 						this.hw.COMPort + "...");
 
 					try
 					{
 						if (this.SIO.Create() == 0)
-							RigHW.dbgWriteLine("SerialRig.connect(), Opened COM" +
+							this.hw.logGeneral("SerialRig.connect(), Opened COM" +
 								this.hw.COMPort + ".");
 						else
 							throw new Exception();
@@ -212,13 +212,13 @@ namespace PowerSDR
 
 				this.active = false;
 
-				RigHW.dbgWriteLine("SerialRig.disconnect(), Shutting down Rig Command Thread.");
+				this.hw.logGeneral("SerialRig.disconnect(), Shutting down Rig Command Thread.");
 				this.runRigCommands = false;
 				this.pendingRigCommandWaitHandle.Set();
 
 				this.rigSerialPoller.disable();
 
-				RigHW.dbgWriteLine("SerialRig.disconnect(), Waiting for Rig Command Thread to finish...");
+				this.hw.logGeneral("SerialRig.disconnect(), Waiting for Rig Command Thread to finish...");
 				if (this.rigCommandThread != null)
 				{
 					this.rigCommandThread.Join();
@@ -227,7 +227,7 @@ namespace PowerSDR
 
 				if (this.SIO != null && this.SIO.PortIsOpen)
 				{
-					RigHW.dbgWriteLine("SerialRig.disconnect(), Deregistering COM" +
+					this.hw.logGeneral("SerialRig.disconnect(), Deregistering COM" +
 						this.hw.COMPort + " Handlers...");
 
 					this.SIO.deregisterEventHandlers();
@@ -253,14 +253,14 @@ namespace PowerSDR
 
 		private void destroySIO()
 		{
-			RigHW.dbgWriteLine("SerialRig.destroySIO(), Closing COM" +
+			this.hw.logGeneral("SerialRig.destroySIO(), Closing COM" +
 				this.hw.COMPort + "...");
 
 			this.SIO.Destroy();
 			this.SIO = null;
 			this.connected = false;
 
-			RigHW.dbgWriteLine("SerialRig.destroySIO(), Closed COM" +
+			this.hw.logGeneral("SerialRig.destroySIO(), Closed COM" +
 				this.hw.COMPort + ".");
 		}
 
@@ -395,7 +395,7 @@ namespace PowerSDR
 
 			byte[] cmd = this.AE.GetBytes(command);
 
-			RigHW.dbgWriteLine("==> " + command);
+			this.hw.logOutgoingCAT("-> " + command);
 			this.SIO.put(cmd,(uint) cmd.Length);
 
 			// Start or Restart lockout timer to ignore incoming Rig CAT Answers.
@@ -424,7 +424,7 @@ namespace PowerSDR
 		 */
 		private void RigCommandThread()
 		{
-			RigHW.dbgWriteLine("SerialRig.RigCommandThread(), Start.");
+			this.hw.logGeneral("SerialRig.RigCommandThread(), Start.");
 
 			lock (this.pendingRigCommandSyncObject)
 			{
@@ -451,7 +451,7 @@ namespace PowerSDR
 				Thread.Sleep(this.hw.RigTuningCATInterval);
 			}
 
-			RigHW.dbgWriteLine("SerialRig.RigCommandThread(), End.");
+			this.hw.logGeneral("SerialRig.RigCommandThread(), End.");
 		}
 
 		#endregion Threads

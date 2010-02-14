@@ -29,6 +29,7 @@ namespace PowerSDR
 		#region Variables
 
 		private Console console;
+		private MeterHW hw;
 		private PowerMasterMeter meter;
 
 		#endregion Variables
@@ -36,9 +37,10 @@ namespace PowerSDR
 
 		#region Constructor
 
-		public PowerMasterMeterParser(Console console, PowerMasterMeter meter)
+		public PowerMasterMeterParser(Console console, MeterHW hw, PowerMasterMeter meter)
 		{
 			this.console = console;
+			this.hw = hw;
 			this.meter = meter;
 		}
 
@@ -95,7 +97,7 @@ namespace PowerSDR
 			this.meter.RevPower = double.Parse(data.Substring(9,7).TrimStart(' '));
 			this.meter.VSWR = double.Parse(data.Substring(17,5).TrimStart(' '));
 
-			MeterHW.dbgWriteLine("Forward: " + this.meter.FwdPower + "W  Reflected: " + this.meter.RevPower + "W  VSWR: " + this.meter.VSWR);
+			this.hw.logGeneral("Forward: " + this.meter.FwdPower + "W  Reflected: " + this.meter.RevPower + "W  VSWR: " + this.meter.VSWR);
 		}
 
 		#endregion Answer Commands

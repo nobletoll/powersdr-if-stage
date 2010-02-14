@@ -89,10 +89,10 @@ namespace PowerSDR
 
 				this.enabled = false;
 
-				MeterHW.dbgWriteLine("MeterSerialPoller.disable(), Shutting down Meter Polling Thread.");
+				this.hw.logGeneral("MeterSerialPoller.disable(), Shutting down Meter Polling Thread.");
 				this.keepPolling = false;
 
-				MeterHW.dbgWriteLine("MeterSerialPoller.disable(), Waiting for Meter Polling Thread to finish...");
+				this.hw.logGeneral("MeterSerialPoller.disable(), Waiting for Meter Polling Thread to finish...");
 				if (this.pollingThread != null)
 				{
 					this.pollingThread.Join();
@@ -108,7 +108,7 @@ namespace PowerSDR
 
 		private void poll()
 		{
-			MeterHW.dbgWriteLine("MeterSerialPoller.poll(), Start.");
+			this.hw.logGeneral("MeterSerialPoller.poll(), Start.");
 
 			while (this.keepPolling)
 			{
@@ -119,7 +119,7 @@ namespace PowerSDR
 					this.meter.getMeterInformation();
 			}
 
-			MeterHW.dbgWriteLine("MeterSerialPoller.poll(), End.");
+			this.hw.logGeneral("MeterSerialPoller.poll(), End.");
 		}
 
 		#endregion CAT Polling
