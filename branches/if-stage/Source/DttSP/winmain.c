@@ -554,7 +554,7 @@ setup_threading (unsigned int thread)
 // hard defaults, then environment
 
 PRIVATE void
-setup_defaults (unsigned int thread)
+setup_defaults (LPSTR *app_data_path, unsigned int thread)
 {
 	//fprintf(stderr,"I am inside setup defaults thread: %0u\n",thread),fflush(stderr);
 	loc[thread].name[0] = 0;		// no default name for jack client
@@ -562,7 +562,7 @@ setup_defaults (unsigned int thread)
 	sprintf (loc[thread].path.parm, "%s%0lu_%0u", PARMPATH, top[thread].pid,thread);
 	sprintf (loc[thread].path.meter, "%s%0lu_%0u", METERPATH, top[thread].pid,thread);
 	sprintf (loc[thread].path.spec, "%s%0lu_%0u", SPECPATH, top[thread].pid,thread);
-	sprintf (loc[thread].path.wisdom, "%s%0lu_%0u", WISDOMPATH, top[thread].pid,thread);
+	sprintf (loc[thread].path.wisdom, "%s%s%0lu_%0u", app_data_path, WISDOMPATH, top[thread].pid,thread);
 	loc[thread].def.rate = DEFRATE;
 	loc[thread].def.size = DEFSIZE;
 	loc[thread].def.nrx = MAXRX;
@@ -574,7 +574,7 @@ setup_defaults (unsigned int thread)
 
 //========================================================================
 void
-setup ()
+setup (LPSTR *app_data_path)
 {
 	unsigned int thread;
 	//fprintf(stderr,"I am inside setup\n"),fflush(stderr);
@@ -599,7 +599,7 @@ setup ()
 		top[thread].offset = 0;
 		top[thread].jack.reset_size = 2048;
 		reset_em =TRUE;
-		setup_defaults (thread);
+		setup_defaults (app_data_path,thread);
 		
 		//fprintf(stderr,"setup: defaults done thread %u\n", thread),fflush(stderr);
 		uni[thread].meter.flag = TRUE;

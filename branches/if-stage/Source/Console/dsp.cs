@@ -77,7 +77,7 @@ namespace PowerSDR
 			/// This function sets up the SDR functions and data structures
 			/// </summary>
 			/// <returns></returns>
-		public static extern void SetupSDR();
+		public static extern void SetupSDR(string app_data_path);
 
 		[DllImport("DttSP.dll", EntryPoint="SetDSPBuflen")]
 		public static extern void ResizeSDR(uint thread, int DSPsize);
