@@ -71,6 +71,23 @@ namespace SDRSerialSupportII
 			return Parity.None;  // error -- default to none
 		}
 
+		public static string parityToString(Parity parity)
+		{
+			switch (parity)
+			{
+				case Parity.Even:
+					return "even";
+				case Parity.Mark:
+					return "mark";
+				case Parity.None:
+					return "none";
+				case Parity.Odd:
+					return "odd";
+				default:
+					return "none";
+			}
+		}
+
 		public static StopBits stringToStopBits(string s) 
 		{
             if (s == "0") return StopBits.None;
@@ -78,6 +95,23 @@ namespace SDRSerialSupportII
 			if (s == "1.5") return StopBits.OnePointFive; 
 			if (s == "2") return StopBits.Two; 
 			return StopBits.One; // error -- default 
+		}
+
+		public static string stopBitsToString(StopBits stopBits)
+		{
+			switch (stopBits)
+			{
+				case StopBits.None:
+					return "0";
+				case StopBits.One:
+					return "1";
+				case StopBits.OnePointFive:
+					return "1.5";
+				case StopBits.Two:
+					return "2";
+				default:
+					return "1";
+			}
 		}
 
 		public enum DataBits { FIRST=-1, EIGHT, SEVEN, SIX } 
@@ -88,6 +122,23 @@ namespace SDRSerialSupportII
 			if ( s == "7" ) return DataBits.SEVEN; 
 			if ( s == "6" ) return DataBits.SIX; 
 			return DataBits.EIGHT; 
+		}
+
+		public static string dataBitsToString(DataBits dataBits)
+		{
+			switch (dataBits)
+			{
+				case DataBits.EIGHT:
+					return "8";
+				case DataBits.FIRST:
+					return "8";
+				case DataBits.SEVEN:
+					return "7";
+				case DataBits.SIX:
+					return "6";
+				default:
+					return "8";
+			}
 		}
 
 		public SDRSerialPort(int portidx)

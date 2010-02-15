@@ -667,6 +667,23 @@ namespace PowerSDR
 			if (this.rigHW == null)
 				return;
 
+			if (this.console.PowerOn && this.comboRigPort.Text.Substring(3).CompareTo(this.console.RigCOMPort.ToString()) != 0)
+			{
+				DialogResult dr = MessageBox.Show("PowerSDR/IF Stage must be powered off to change the this setting.\n" +
+					"Would you like to power it off, now?",
+					"Power off PowerSDR/IF Stage?",
+					MessageBoxButtons.YesNo,
+					MessageBoxIcon.Warning);
+
+				if (dr == DialogResult.No)
+				{
+					this.comboRigPort.Text = "COM" + this.console.RigCOMPort.ToString();
+					return;
+				}
+				else
+					this.console.PowerOn = false;
+			}
+
 			if (this.comboRigPort.Text.StartsWith("COM"))
 				this.console.RigCOMPort = Int32.Parse(this.comboRigPort.Text.Substring(3));
 		}
@@ -675,6 +692,23 @@ namespace PowerSDR
 		{
 			if (this.rigHW == null)
 				return;
+
+			if (this.console.PowerOn && this.comboRigParity.Text.CompareTo(SDRSerialPort.parityToString(this.console.RigCOMParity)) != 0)
+			{
+				DialogResult dr = MessageBox.Show("PowerSDR/IF Stage must be powered off to change the this setting.\n" +
+					"Would you like to power it off, now?",
+					"Power off PowerSDR/IF Stage?",
+					MessageBoxButtons.YesNo,
+					MessageBoxIcon.Warning);
+
+				if (dr == DialogResult.No)
+				{
+					this.comboRigParity.Text = SDRSerialPort.parityToString(this.console.RigCOMParity);
+					return;
+				}
+				else
+					this.console.PowerOn = false;
+			}
 
 			string selection = this.comboRigParity.SelectedText;
 
@@ -687,6 +721,23 @@ namespace PowerSDR
 			if (this.rigHW == null)
 				return;
 
+			if (this.console.PowerOn && this.comboRigBaud.Text.CompareTo(this.console.RigCOMBaudRate.ToString()) != 0)
+			{
+				DialogResult dr = MessageBox.Show("PowerSDR/IF Stage must be powered off to change the this setting.\n" +
+					"Would you like to power it off, now?",
+					"Power off PowerSDR/IF Stage?",
+					MessageBoxButtons.YesNo,
+					MessageBoxIcon.Warning);
+
+				if (dr == DialogResult.No)
+				{
+					this.comboRigBaud.Text = this.console.RigCOMBaudRate.ToString();
+					return;
+				}
+				else
+					this.console.PowerOn = false;
+			}
+
 			if (this.comboRigBaud.SelectedIndex >= 0)
 				this.console.RigCOMBaudRate = Int32.Parse(this.comboRigBaud.Text);
 		}
@@ -696,6 +747,23 @@ namespace PowerSDR
 			if (this.rigHW == null)
 				return;
 
+			if (this.console.PowerOn && this.comboRigDataBits.Text.CompareTo(SDRSerialPort.dataBitsToString(this.console.RigCOMDataBits)) != 0)
+			{
+				DialogResult dr = MessageBox.Show("PowerSDR/IF Stage must be powered off to change the this setting.\n" +
+					"Would you like to power it off, now?",
+					"Power off PowerSDR/IF Stage?",
+					MessageBoxButtons.YesNo,
+					MessageBoxIcon.Warning);
+
+				if (dr == DialogResult.No)
+				{
+					this.comboRigDataBits.Text = SDRSerialPort.dataBitsToString(this.console.RigCOMDataBits);
+					return;
+				}
+				else
+					this.console.PowerOn = false;
+			}
+
 			if (this.comboRigDataBits.SelectedIndex >= 0)
 				this.console.RigCOMDataBits = SDRSerialPort.stringToDataBits(this.comboRigDataBits.Text);
 		}
@@ -704,6 +772,23 @@ namespace PowerSDR
 		{
 			if (this.rigHW == null)
 				return;
+
+			if (this.console.PowerOn && this.comboRigStopBits.Text.CompareTo(SDRSerialPort.stopBitsToString(this.console.RigCOMStopBits)) != 0)
+			{
+				DialogResult dr = MessageBox.Show("PowerSDR/IF Stage must be powered off to change the this setting.\n" +
+					"Would you like to power it off, now?",
+					"Power off PowerSDR/IF Stage?",
+					MessageBoxButtons.YesNo,
+					MessageBoxIcon.Warning);
+
+				if (dr == DialogResult.No)
+				{
+					this.comboRigStopBits.Text = SDRSerialPort.stopBitsToString(this.console.RigCOMStopBits);
+					return;
+				}
+				else
+					this.console.PowerOn = false;
+			}
 
 			if (this.comboRigStopBits.SelectedIndex >= 0)
 				this.console.RigCOMStopBits = SDRSerialPort.stringToStopBits(this.comboRigStopBits.Text);
@@ -770,7 +855,7 @@ namespace PowerSDR
 			if (this.rigHW == null)
 				return;
 
-			if (this.console.PowerOn)
+			if (this.console.PowerOn && this.comboRigType.Text.CompareTo(this.console.RigType) != 0)
 			{
 				DialogResult dr = MessageBox.Show("PowerSDR/IF Stage must be powered off to change the Rig Type.\n" +
 					"Would you like to power it off, now?",
@@ -863,7 +948,7 @@ namespace PowerSDR
 			if (this.meterHW == null)
 				return;
 
-			if (this.console.PowerOn)
+			if (this.console.PowerOn && this.console.UseMeter != this.chkUseMeter.Checked)
 			{
 				DialogResult dr = MessageBox.Show("PowerSDR/IF Stage must be powered off to enable or disable the Meter.\n" +
 					"Would you like to power it off, now?",
@@ -903,7 +988,7 @@ namespace PowerSDR
 			if (this.meterHW == null)
 				return;
 
-			if (this.console.PowerOn)
+			if (this.console.PowerOn && this.console.MeterType.CompareTo(this.comboMeterType.Text) != 0)
 			{
 				DialogResult dr = MessageBox.Show("PowerSDR/IF Stage must be powered off to change the Meter Type.\n" +
 					"Would you like to power it off, now?",
@@ -931,6 +1016,23 @@ namespace PowerSDR
 			if (this.meterHW == null)
 				return;
 
+			if (this.console.PowerOn && this.comboMeterPort.Text.Substring(3).CompareTo(this.console.MeterCOMPort.ToString()) != 0)
+			{
+				DialogResult dr = MessageBox.Show("PowerSDR/IF Stage must be powered off to change the this setting.\n" +
+					"Would you like to power it off, now?",
+					"Power off PowerSDR/IF Stage?",
+					MessageBoxButtons.YesNo,
+					MessageBoxIcon.Warning);
+
+				if (dr == DialogResult.No)
+				{
+					this.comboMeterPort.Text = "COM" + this.console.MeterCOMPort.ToString();
+					return;
+				}
+				else
+					this.console.PowerOn = false;
+			}
+
 			if (this.comboMeterPort.Text.StartsWith("COM"))
 				this.console.MeterCOMPort = Int32.Parse(this.comboMeterPort.Text.Substring(3));
 		}
@@ -939,6 +1041,23 @@ namespace PowerSDR
 		{
 			if (this.meterHW == null)
 				return;
+
+			if (this.console.PowerOn && this.comboMeterParity.Text.CompareTo(SDRSerialPort.parityToString(this.console.MeterCOMParity)) != 0)
+			{
+				DialogResult dr = MessageBox.Show("PowerSDR/IF Stage must be powered off to change the this setting.\n" +
+					"Would you like to power it off, now?",
+					"Power off PowerSDR/IF Stage?",
+					MessageBoxButtons.YesNo,
+					MessageBoxIcon.Warning);
+
+				if (dr == DialogResult.No)
+				{
+					this.comboMeterParity.Text = SDRSerialPort.parityToString(this.console.MeterCOMParity);
+					return;
+				}
+				else
+					this.console.PowerOn = false;
+			}
 
 			string selection = this.comboMeterParity.SelectedText;
 
@@ -951,6 +1070,23 @@ namespace PowerSDR
 			if (this.meterHW == null)
 				return;
 
+			if (this.console.PowerOn && this.comboMeterBaud.Text.CompareTo(this.console.MeterCOMBaudRate.ToString()) != 0)
+			{
+				DialogResult dr = MessageBox.Show("PowerSDR/IF Stage must be powered off to change the this setting.\n" +
+					"Would you like to power it off, now?",
+					"Power off PowerSDR/IF Stage?",
+					MessageBoxButtons.YesNo,
+					MessageBoxIcon.Warning);
+
+				if (dr == DialogResult.No)
+				{
+					this.comboMeterBaud.Text = this.console.MeterCOMBaudRate.ToString();
+					return;
+				}
+				else
+					this.console.PowerOn = false;
+			}
+
 			if (this.comboMeterBaud.SelectedIndex >= 0)
 				this.console.MeterCOMBaudRate = Int32.Parse(this.comboMeterBaud.Text);
 		}
@@ -960,6 +1096,23 @@ namespace PowerSDR
 			if (this.meterHW == null)
 				return;
 
+			if (this.console.PowerOn && this.comboMeterDataBits.Text.CompareTo(SDRSerialPort.dataBitsToString(this.console.MeterCOMDataBits)) != 0)
+			{
+				DialogResult dr = MessageBox.Show("PowerSDR/IF Stage must be powered off to change the this setting.\n" +
+					"Would you like to power it off, now?",
+					"Power off PowerSDR/IF Stage?",
+					MessageBoxButtons.YesNo,
+					MessageBoxIcon.Warning);
+
+				if (dr == DialogResult.No)
+				{
+					this.comboMeterDataBits.Text = SDRSerialPort.dataBitsToString(this.console.MeterCOMDataBits);
+					return;
+				}
+				else
+					this.console.PowerOn = false;
+			}
+
 			if (this.comboMeterDataBits.SelectedIndex >= 0)
 				this.console.MeterCOMDataBits = SDRSerialPort.stringToDataBits(this.comboMeterDataBits.Text);
 		}
@@ -968,6 +1121,23 @@ namespace PowerSDR
 		{
 			if (this.meterHW == null)
 				return;
+
+			if (this.console.PowerOn && this.comboMeterStopBits.Text.CompareTo(SDRSerialPort.stopBitsToString(this.console.MeterCOMStopBits)) != 0)
+			{
+				DialogResult dr = MessageBox.Show("PowerSDR/IF Stage must be powered off to change the this setting.\n" +
+					"Would you like to power it off, now?",
+					"Power off PowerSDR/IF Stage?",
+					MessageBoxButtons.YesNo,
+					MessageBoxIcon.Warning);
+
+				if (dr == DialogResult.No)
+				{
+					this.comboMeterStopBits.Text = SDRSerialPort.stopBitsToString(this.console.MeterCOMStopBits);
+					return;
+				}
+				else
+					this.console.PowerOn = false;
+			}
 
 			if (this.comboMeterStopBits.SelectedIndex >= 0)
 				this.console.MeterCOMStopBits = SDRSerialPort.stringToStopBits(this.comboMeterStopBits.Text);
