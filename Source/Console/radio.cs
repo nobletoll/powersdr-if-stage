@@ -41,9 +41,9 @@ namespace PowerSDR
 		private RadioDSPRX[][] dsp_rx;
 		private RadioDSPTX[] dsp_tx;
 
-		public Radio()
+		public Radio(string app_data_path)
 		{
-			RadioDSP.CreateDSP();
+			RadioDSP.CreateDSP(app_data_path);
             Thread.Sleep(100);
 			DttSP.ReleaseUpdate();
 
@@ -100,9 +100,9 @@ namespace PowerSDR
 
 		#region Static Properties and Routines
 
-		public static void CreateDSP()
+		public static void CreateDSP(string app_data_path)
 		{
-			DttSP.SetupSDR();
+			DttSP.SetupSDR(app_data_path);
 		}
 
 		public static void DestroyDSP()

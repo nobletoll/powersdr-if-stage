@@ -57,10 +57,10 @@ gmean (REAL x, REAL y)
 }
 
 DttSP_EXP void
-Setup_SDR ()
+Setup_SDR (LPSTR *app_data_path)
 {
-	extern void setup ();
-	setup ();
+	extern void setup (LPSTR *app_data_path);
+	setup(app_data_path);
 }
 
 DttSP_EXP void

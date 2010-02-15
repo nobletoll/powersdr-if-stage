@@ -1303,7 +1303,7 @@ namespace PowerSDR
             }
 
 			Splash.SetStatus("Initializing Radio");				// Set progress point
-			radio = new Radio();								// Initialize the Radio processor
+			radio = new Radio(this.AppDataPath);				// Initialize the Radio processor
 
 			Splash.SetStatus("Initializing PortAudio");			// Set progress point
 			PA19.PA_Initialize();								// Initialize the audio interface
@@ -5775,16 +5775,49 @@ namespace PowerSDR
 		{
 			try 
 			{
-				if(!File.Exists(Application.StartupPath+"\\wisdom"))
+				// :W1CEG: Duplicate the -datapath parsing code that is done in the Console constructor,
+				//         as we need it here, too.
+				string appDataPath = "";
+	            foreach (string s in args)
 				{
-					Process p = Process.Start(Application.StartupPath+"\\fftw_wisdom.exe");
-					MessageBox.Show("Running one time optimization.  Please wait patiently for "+
+					if (s.StartsWith("-datapath:"))
+					{
+						appDataPath = s.Trim().Substring(s.Trim().IndexOf(":") + 1);
+						if (appDataPath.EndsWith("\""))
+							appDataPath = appDataPath.Substring(0,appDataPath.Length - 1);
+						if(!appDataPath.EndsWith("\\"))
+							appDataPath += "\\";
+						if (!Directory.Exists(appDataPath))
+							appDataPath = "";
+					}
+				}
+
+				if (appDataPath == "")
+				{
+					Assembly assembly = Assembly.GetExecutingAssembly();
+					FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
+					string version = fvi.FileVersion.Substring(0, fvi.FileVersion.LastIndexOf("."));
+					appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)
+						+ "\\PowerSDR IF-Stage v" + version + "\\";
+				}
+
+#if(DEBUG)
+				appDataPath += "Debug\\";
+#endif
+
+				if (!File.Exists(appDataPath + "wisdom"))
+				{
+					ProcessStartInfo psi = new ProcessStartInfo(Application.StartupPath + "\\fftw_wisdom.exe");
+					psi.WorkingDirectory = appDataPath;
+
+					Process p = Process.Start(psi);
+					MessageBox.Show("Running one time optimization.  Please wait patiently for " +
 						"this process to finish.\nTypically the optimization takes no more than 3-5 minutes.",
 						"Optimizing...",
 						MessageBoxButtons.OK,
 						MessageBoxIcon.Information);
 					p.WaitForExit();
-				} 
+				}
 /*				else 
 				{
 					string path = "wisdom";
