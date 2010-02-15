@@ -40,7 +40,7 @@ namespace PowerSDR
 		private Console console;
 		private RigHW rigHW = null;
 		private MeterHW meterHW = null;
-		private int maxLogLines = 1000;
+		private int maxLogLines = 5000;
 
 		public SetupIF(Console c, AbstractHW rigHW, MeterHW meterHW)
 		{
@@ -88,19 +88,13 @@ namespace PowerSDR
 			if (!this.checkBoxGeneral.Checked)
 				return;
 
+			if (this.tbGeneral.Text.Length > 0)
+				msg = "\r\n" + msg;
+
 			if (this.tbGeneral.Lines.Length == this.maxLogLines)
-			{
-				string[] lines = new string[this.maxLogLines];
-				Array.Copy(this.tbGeneral.Lines, 1, lines, 0, this.maxLogLines - 1);
-				lines[this.maxLogLines - 1] = msg;
-				this.tbGeneral.Lines = lines;
-			}
-			else
-			{
-				if (this.tbGeneral.Text.Length > 0)
-					msg = "\r\n" + msg;
-				this.tbGeneral.AppendText(msg);
-			}
+				tbGeneral.Text = tbGeneral.Text.Substring(this.tbGeneral.GetFirstCharIndexFromLine(1));
+
+			this.tbGeneral.AppendText(msg);
 
 			if (this.tbGeneral.Text.Length - msg.Length + 2 >= 0)
 			{
@@ -124,19 +118,13 @@ namespace PowerSDR
 				msg = msg.Substring(idx + 1);
 */
 
+			if (this.tbOutgoingCAT.Text.Length > 0)
+				msg = "\r\n" + msg;
+
 			if (this.tbOutgoingCAT.Lines.Length == this.maxLogLines)
-			{
-				string[] lines = new string[this.maxLogLines];
-				Array.Copy(this.tbOutgoingCAT.Lines, 1, lines, 0, this.maxLogLines - 1);
-				lines[this.maxLogLines - 1] = msg;
-				this.tbOutgoingCAT.Lines = lines;
-			}
-			else
-			{
-				if (this.tbOutgoingCAT.Text.Length > 0)
-					msg = "\r\n" + msg;
-				this.tbOutgoingCAT.AppendText(msg);
-			}
+				tbOutgoingCAT.Text = tbOutgoingCAT.Text.Substring(this.tbOutgoingCAT.GetFirstCharIndexFromLine(1));
+
+			this.tbOutgoingCAT.AppendText(msg);
 
 			if (this.tbOutgoingCAT.Text.Length - msg.Length + 2 >= 0)
 			{
@@ -160,19 +148,13 @@ namespace PowerSDR
 				msg = msg.Substring(idx + 1);
 */
 
+			if (this.tbIncomingCAT.Text.Length > 0)
+				msg = "\r\n" + msg;
+
 			if (this.tbIncomingCAT.Lines.Length == this.maxLogLines)
-			{
-				string[] lines = new string[this.maxLogLines];
-				Array.Copy(this.tbIncomingCAT.Lines, 1, lines, 0, this.maxLogLines - 1);
-				lines[this.maxLogLines - 1] = msg;
-				this.tbIncomingCAT.Lines = lines;
-			}
-			else
-			{
-				if (this.tbIncomingCAT.Text.Length > 0)
-					msg = "\r\n" + msg;
-				this.tbIncomingCAT.AppendText(msg);
-			}
+				tbIncomingCAT.Text = tbIncomingCAT.Text.Substring(this.tbIncomingCAT.GetFirstCharIndexFromLine(1));
+
+			this.tbIncomingCAT.AppendText(msg);
 
 			if (this.tbIncomingCAT.Text.Length - msg.Length + 2 >= 0)
 			{
