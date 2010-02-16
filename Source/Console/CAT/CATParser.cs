@@ -41,23 +41,32 @@ namespace PowerSDR
 
 		#region Variable declarations
 
-		private string current_cat;
-		private string prefix;
-		private string suffix;
-		private string extension;
+		// W1CEG: Make visible for derived RigCATParser.
+		protected string current_cat;
+		protected string prefix;
+		protected string suffix;
+		protected string extension;
 		private char[] term = new char[1]{';'};
 		public int nSet;
 		public int nGet;
 		public int nAns;
 		public bool IsActive;
 		private XmlDocument doc;
-		private CATCommands cmdlist;
-		private Console console;
+
+		// W1CEG: Make visible for derived RigCATParser.
+		protected CATCommands cmdlist;
+
+		protected Console console;
 		public string Error1 = "?;";
 		public string Error2 = "E;";
 		public string Error3 = "O;";
 		private bool IsExtended;
-		private ASCIIEncoding AE = new ASCIIEncoding();
+
+		// W1CEG: Make visible for derived RigCATParser.
+		protected ASCIIEncoding AE = new ASCIIEncoding();
+
+		// W1CEG: Move sfxpattern as a member to be overriden by RigCATParser.
+		protected Regex sfxpattern = new Regex("^[+-]?[Vv0-9]*$");
 
 		#endregion Variable declarations
 
@@ -378,7 +387,8 @@ namespace PowerSDR
 			return rtncmd;	// Read successfully executed
 		}
 
-		private bool CheckFormat()
+		// W1CEG: Make visible for derived RigCATParser.
+		protected bool CheckFormat()
 		{
 			bool goodprefix,goodsuffix;
 			// If there is no terminator, or the prefix or suffix
@@ -502,8 +512,8 @@ namespace PowerSDR
 					(prefix+extension != "ZZFX" && prefix+extension != "ZZFY") &&
 					(prefix+extension != "ZZFV" && prefix+extension != "ZZFW"))
 				{
-					Regex sfxpattern = new Regex("^[+-]?[Vv0-9]*$");
-					if(!sfxpattern.IsMatch(sfx))
+					// W1CEG: Use new sfxpattern member.
+					if(!this.sfxpattern.IsMatch(sfx))
 						return false;
 				}
 //modified 3/17/07 BT to correct bug in reading parameters with plus or minus sign
@@ -519,7 +529,8 @@ namespace PowerSDR
 			}
 
 			// Check the length against the struct requirements
-			if(sfx.Length == nSet || sfx.Length == nGet)
+			// W1CEG: Check nAns Length, too.
+			if(sfx.Length == nSet || sfx.Length == nGet || sfx.Length >= nAns)
 			{
 				suffix = sfx;
 				return true;

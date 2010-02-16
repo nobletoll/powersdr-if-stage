@@ -30,7 +30,8 @@ namespace SDRSerialSupportII
 {
 	public class SDRSerialPort
 	{
-		public static event SDRSerialSupportII.SerialRXEventHandler serial_rx_event;
+		// W1CEG: Don't use static, because we want to handle multiple SDRSerialPort instances.
+		public event SDRSerialSupportII.SerialRXEventHandler serial_rx_event;
 		
 		private SerialPort commPort; 		
 		private bool isOpen = false; 
@@ -70,6 +71,23 @@ namespace SDRSerialSupportII
 			return Parity.None;  // error -- default to none
 		}
 
+		public static string parityToString(Parity parity)
+		{
+			switch (parity)
+			{
+				case Parity.Even:
+					return "even";
+				case Parity.Mark:
+					return "mark";
+				case Parity.None:
+					return "none";
+				case Parity.Odd:
+					return "odd";
+				default:
+					return "none";
+			}
+		}
+
 		public static StopBits stringToStopBits(string s) 
 		{
             if (s == "0") return StopBits.None;
@@ -77,6 +95,23 @@ namespace SDRSerialSupportII
 			if (s == "1.5") return StopBits.OnePointFive; 
 			if (s == "2") return StopBits.Two; 
 			return StopBits.One; // error -- default 
+		}
+
+		public static string stopBitsToString(StopBits stopBits)
+		{
+			switch (stopBits)
+			{
+				case StopBits.None:
+					return "0";
+				case StopBits.One:
+					return "1";
+				case StopBits.OnePointFive:
+					return "1.5";
+				case StopBits.Two:
+					return "2";
+				default:
+					return "1";
+			}
 		}
 
 		public enum DataBits { FIRST=-1, EIGHT, SEVEN, SIX } 
@@ -89,15 +124,31 @@ namespace SDRSerialSupportII
 			return DataBits.EIGHT; 
 		}
 
+		public static string dataBitsToString(DataBits dataBits)
+		{
+			switch (dataBits)
+			{
+				case DataBits.EIGHT:
+					return "8";
+				case DataBits.FIRST:
+					return "8";
+				case DataBits.SEVEN:
+					return "7";
+				case DataBits.SIX:
+					return "6";
+				default:
+					return "8";
+			}
+		}
+
 		public SDRSerialPort(int portidx)
 		{
 			commPort = new SerialPort();
 			commPort.Encoding = System.Text.Encoding.ASCII;
 			commPort.RtsEnable = true; // kd5tfd hack for soft rock ptt 
 			commPort.DtrEnable = false; // set dtr off 
-            //commPort.ErrorReceived += new SerialErrorReceivedEventHandler(this.SerialErrorReceived);
-            commPort.DataReceived += new SerialDataReceivedEventHandler(this.SerialReceivedData);
-			commPort.PinChanged += new SerialPinChangedEventHandler(this.SerialPinChanged);
+
+			this.registerEventHandlers();
 
 			commPort.PortName = "COM" + portidx.ToString(); 
 
@@ -109,6 +160,24 @@ namespace SDRSerialSupportII
 			commPort.WriteTimeout = 500;	
 			commPort.ReceivedBytesThreshold = 1;
 		}
+
+		public void registerEventHandlers()
+		{
+			//commPort.ErrorReceived += new SerialErrorReceivedEventHandler(this.SerialErrorReceived);
+			commPort.DataReceived += new SerialDataReceivedEventHandler(this.SerialReceivedData);
+			commPort.PinChanged += new SerialPinChangedEventHandler(this.SerialPinChanged);
+		}
+
+		public void deregisterEventHandlers()
+		{
+			this.commPort.DiscardOutBuffer();
+			this.commPort.DiscardInBuffer();
+
+			//commPort.ErrorReceived -= new SerialErrorReceivedEventHandler(this.SerialErrorReceived);
+			commPort.DataReceived -= new SerialDataReceivedEventHandler(this.SerialReceivedData);
+			commPort.PinChanged -= new SerialPinChangedEventHandler(this.SerialPinChanged);
+		}
+
 		// set the comm parms ... can only be done if port is not open -- silently fails if port is open (fixme -- add some error checking) 
 		// 
 		public void setCommParms(int baudrate, Parity p, DataBits data, StopBits stop)  
@@ -204,6 +273,11 @@ namespace SDRSerialSupportII
 			commPort.DtrEnable = v; 
 		}	
 
+		public void setRTS(bool v)
+		{
+			commPort.RtsEnable = v;
+		}
+
 		void SerialErrorReceived(object source, SerialErrorReceivedEventArgs e)
 		{
 			
@@ -219,6 +293,10 @@ namespace SDRSerialSupportII
 			int num_to_read = commPort.BytesToRead;
 			byte[] inbuf = new byte[num_to_read];
 			commPort.Read(inbuf, 0, num_to_read);
+
+			// W1CEG: Make sure serial_rx_event has really been registered,
+			//        since it is handled outside of this class.
+			if (this.serial_rx_event != null)
 			serial_rx_event(this, new SDRSerialSupportII.SerialRXEvent(inbuf, (uint)num_to_read));
 		}
 
