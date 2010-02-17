@@ -58,11 +58,6 @@ namespace PowerSDR
 
 		#region Rig States
 
-		private virtual bool RTS
-		{
-			get { return false;  }
-		}
-
 		private int vfo = 99;
 		public int VFO
 		{
