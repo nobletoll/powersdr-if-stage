@@ -58,6 +58,11 @@ namespace PowerSDR
 
 		#region Rig States
 
+		private virtual bool RTS
+		{
+			get { return false;  }
+		}
+
 		private int vfo = 99;
 		public int VFO
 		{
@@ -152,7 +157,7 @@ namespace PowerSDR
 				if (this.SIO == null)
 				{
 					this.SIO = new SDRSerialPort(this.hw.COMPort);
-//					this.SIO.setRTS(false);
+					this.setRTS();
 
 					// Event handler for Serial RX Events
 					this.SIO.serial_rx_event +=
