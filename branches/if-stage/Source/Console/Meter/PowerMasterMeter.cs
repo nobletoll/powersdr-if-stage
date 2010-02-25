@@ -170,30 +170,38 @@ namespace PowerSDR
 			int iCR;
 			int iStart = 0;
 			bool leftovers = false;
-			for (iCR = 0; iCR < e.buffer.Length; iCR++)
+			for (iCR = 0; iCR < this.commBuffer.Length; iCR++)
 			{
 				leftovers = true;
 
-				if (e.buffer[iCR] == '\r')
+				if (this.commBuffer[iCR] == '\r')
 				{
 					byte[] answer = new byte[iCR - iStart];
-					Array.Copy(e.buffer,iStart,answer,0,iCR - iStart);
+					Array.Copy(this.commBuffer,iStart,answer,0,iCR - iStart);
 
 					this.hw.logIncomingCAT("<- " + Meter.PrintBuffer(answer));
 
 					this.handleMeterAnswer(answer);
 
 					iStart = iCR + 1;
+
+					if (iStart < this.commBuffer.Length && this.commBuffer[iStart] == '\n')
+						iStart = ++iCR + 1;
+
 					leftovers = false;
 				}
+
 			}
 
 			// Save the left over data for next read...
-			if (leftovers)
+			if (leftovers && iStart < this.commBuffer.Length)
 			{
-				this.commBuffer = new byte[iCR - iStart];
-				Array.Copy(e.buffer,iStart,this.commBuffer,0,iCR - iStart);
+				byte[] buf = new byte[this.commBuffer.Length - iStart];
+				Array.Copy(this.commBuffer,iStart,buf,0,this.commBuffer.Length - iStart);
+				this.commBuffer = buf;
 			}
+			else
+				this.commBuffer = null;
 		}
 
 		#endregion Event Handlers
