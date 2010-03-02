@@ -275,7 +275,8 @@ namespace PowerSDR
 			{
 #if (DEBUG)
 				string cmd = this.console.txtRigAnsInjection.Text;
-				if (this.console.txtRigAnsInjection.Text.Length > 0)
+				if (source == this.console && e.buffer.Length == 0 &&
+					this.console.txtRigAnsInjection.Text.Length > 0)
 				{
 					this.console.txtRigAnsInjection.Text = "";
 
