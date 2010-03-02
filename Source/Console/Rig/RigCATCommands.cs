@@ -72,7 +72,7 @@ namespace PowerSDR
 		{
 			int width = int.Parse(s) * 10;
 
-//			this.hw.logGeneral("BW: " + width + "Hz  RX1: " + this.rig.RX1FilterWidth + "Hz");
+			this.hw.logGeneral("BW: " + width + "Hz  RX1: " + this.rig.RX1FilterWidth + "Hz");
 
 			// :NOTE: VAR2 Overrides Syncing
 			if (width == this.rig.RX1FilterWidth || this.console.RX1Filter == Filter.VAR2)
@@ -86,7 +86,7 @@ namespace PowerSDR
 			FilterPreset preset = this.console.rx1_filters[(int) this.console.RX1DSPMode];
 			Filter filter = this.findRX1Filter(preset,width);
 
-//			this.hw.logGeneral("BW Filter: " + filter);
+			this.hw.logGeneral("BW Filter: " + filter);
 
 			if (filter != Filter.NONE)
 			{
@@ -166,10 +166,17 @@ namespace PowerSDR
 					break;
 			}
 
-//			this.hw.logGeneral("BW Low/High: " + low + "/" + high);
+			this.hw.logGeneral("BW Low/High: " + low + "/" + high);
 
-			this.console.radFilterVar1.Checked = true;
-			this.console.UpdateRX1Filters(low,high);
+			if (this.console.RX1Filter == Filter.VAR1)
+				this.console.UpdateRX1Filters(low,high);
+			else
+			{
+				preset.SetLow(Filter.VAR1,low);
+				preset.SetHigh(Filter.VAR1,high);
+				this.console.radFilterVar1.Checked = true;
+			}
+
 			return null;
 		}
 
