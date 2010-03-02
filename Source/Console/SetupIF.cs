@@ -163,9 +163,37 @@ namespace PowerSDR
 			}
 		}
 
-
-		private void SetupIF_FormClosed(Object sender, FormClosedEventArgs e)
+		public int CollapsedWidth
 		{
+			get { return int.Parse(this.txtCollapsedWidth.Text); }
+			set
+			{
+				this.txtCollapsedWidth.Text = value.ToString();
+//				if (!saving)
+//					SaveOptions();
+			}
+		}
+
+		public int CollapsedHeight
+		{
+			get { return int.Parse(this.txtCollapsedHeight.Text); }
+			set
+			{
+				this.txtCollapsedHeight.Text = value.ToString();
+//				if (!saving)
+//					SaveOptions();
+			}
+		}
+
+ 		private void SetupIF_FormClosed(Object sender, FormClosedEventArgs e)
+		{
+			Thread t = new Thread(new ThreadStart(GetOptions));
+			t.Name = "Save Options Thread";
+			t.IsBackground = true;
+			t.Priority = ThreadPriority.Lowest;
+			t.Start();
+			this.Hide();
+
 			this.checkBoxGeneral.Checked = false;
 			this.checkBoxOutgoingCAT.Checked = false;
 			this.checkBoxIncomingCAT.Checked = false;
@@ -857,7 +885,8 @@ namespace PowerSDR
 
 			if (this.console.PowerOn && this.comboRigType.Text.CompareTo(this.console.RigType) != 0)
 			{
-				DialogResult dr = MessageBox.Show("PowerSDR/IF Stage must be powered off to change the Rig Type.\n" +
+				DialogResult dr = MessageBox.Show("PowerSDR/IF Stage must be powered off to change the Rig Type from '" +
+					this.console.RigType + "' to '" + this.comboRigType.Text + "'.\n" +
 					"Would you like to power it off, now?",
 					"Power off PowerSDR/IF Stage?",
 					MessageBoxButtons.YesNo,
@@ -1197,6 +1226,30 @@ namespace PowerSDR
 		{
 			if (this.checkBoxIncomingCAT.Checked && this.tbIncomingCAT.Text.Length > 0)
 				this.tbIncomingCAT.AppendText("\r\n");
+		}
+
+		private void chkShowTopControls_CheckedChanged(object sender, EventArgs e)
+		{
+			this.console.ShowTopControls = chkShowTopControls.Checked;
+
+			if (this.console.CollapsedDisplay)
+				this.console.CollapseDisplay();
+		}
+
+		private void chkShowBandControls_CheckedChanged(object sender, EventArgs e)
+		{
+			this.console.ShowBandControls = chkShowBandControls.Checked;
+
+			if (this.console.CollapsedDisplay)
+				this.console.CollapseDisplay();
+		}
+
+		private void chkModeControls_CheckedChanged(object sender, EventArgs e)
+		{
+			this.console.ShowModeControls = chkShowModeControls.Checked;
+
+			if (this.console.CollapsedDisplay)
+				this.console.CollapseDisplay();
 		}
 	}
 }
