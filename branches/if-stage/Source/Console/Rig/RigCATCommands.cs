@@ -70,7 +70,7 @@ namespace PowerSDR
 
 		public string BW(string s)
 		{
-			int width = int.Parse(s);
+			int width = int.Parse(s) * 10;
 
 			// :NOTE: VAR2 Overrides Syncing
 			if (width == this.rig.RX1FilterWidth || this.console.RX1Filter == Filter.VAR2)
