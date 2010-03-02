@@ -821,10 +821,10 @@ namespace PowerSDR
         private System.Windows.Forms.CheckBoxTS chkPower;
 		private System.Windows.Forms.LabelTS lblCPUMeter;
 		private System.Windows.Forms.ComboBoxTS comboDisplayMode;
-		private System.Windows.Forms.NumericUpDownTS udFilterLow;
-		private System.Windows.Forms.NumericUpDownTS udFilterHigh;
-		private System.Windows.Forms.RadioButtonTS radFilterVar1;
-		private System.Windows.Forms.RadioButtonTS radFilterVar2;
+		public System.Windows.Forms.NumericUpDownTS udFilterLow;
+		public System.Windows.Forms.NumericUpDownTS udFilterHigh;
+		public System.Windows.Forms.RadioButtonTS radFilterVar1;
+		public System.Windows.Forms.RadioButtonTS radFilterVar2;
 		private System.Windows.Forms.RadioButtonTS radModeSPEC;
 		private System.Windows.Forms.RadioButtonTS radModeLSB;
 		private System.Windows.Forms.RadioButtonTS radModeDIGL;
@@ -904,16 +904,16 @@ namespace PowerSDR
 		private System.Windows.Forms.MenuItem mnuMemory;
 		private System.Windows.Forms.MenuItem mnuMemRecall;
 		private System.Windows.Forms.MenuItem mnuMemSave;
-		private System.Windows.Forms.RadioButtonTS radFilter1;
-		private System.Windows.Forms.RadioButtonTS radFilter2;
-		private System.Windows.Forms.RadioButtonTS radFilter3;
-		private System.Windows.Forms.RadioButtonTS radFilter4;
-		private System.Windows.Forms.RadioButtonTS radFilter5;
-		private System.Windows.Forms.RadioButtonTS radFilter6;
-		private System.Windows.Forms.RadioButtonTS radFilter7;
-		private System.Windows.Forms.RadioButtonTS radFilter8;
-		private System.Windows.Forms.RadioButtonTS radFilter9;
-        private System.Windows.Forms.RadioButtonTS radFilter10;
+		public System.Windows.Forms.RadioButtonTS radFilter1;
+		public System.Windows.Forms.RadioButtonTS radFilter2;
+		public System.Windows.Forms.RadioButtonTS radFilter3;
+		public System.Windows.Forms.RadioButtonTS radFilter4;
+		public System.Windows.Forms.RadioButtonTS radFilter5;
+		public System.Windows.Forms.RadioButtonTS radFilter6;
+		public System.Windows.Forms.RadioButtonTS radFilter7;
+		public System.Windows.Forms.RadioButtonTS radFilter8;
+		public System.Windows.Forms.RadioButtonTS radFilter9;
+		public System.Windows.Forms.RadioButtonTS radFilter10;
         private System.Windows.Forms.LabelTS lblRF;
 		private System.Windows.Forms.LabelTS lblTuneStep;
         private System.Windows.Forms.GroupBoxTS grpVFOBetween;
@@ -1146,6 +1146,7 @@ namespace PowerSDR
         private MenuItem menuItem2;
 		private MenuItem mnuCollapse;
 		private System.Windows.Forms.CheckBoxTS chkFullDuplex;
+		public TextBoxTS txtRigAnsInjection = null;
 
 		#endregion
 
@@ -1578,6 +1579,15 @@ namespace PowerSDR
 
 #if(DEBUG)
 			button1.Visible = true;
+
+			this.txtRigAnsInjection = new TextBoxTS();
+			this.txtRigAnsInjection.Parent = this;
+			this.txtRigAnsInjection.Location = new System.Drawing.Point(5,this.button1.Location.Y);
+			this.txtRigAnsInjection.MaxLength = 50;
+			this.txtRigAnsInjection.Name = "txtRigAnsInjection";
+			this.txtRigAnsInjection.Size = new Size(100,20);
+			this.txtRigAnsInjection.KeyPress += new KeyPressEventHandler(this.txtRigAnsInjection_KeyPress);
+			button1.Visible = false;
 #endif
 			initializing = false;
 		}
@@ -11458,6 +11468,9 @@ namespace PowerSDR
 				if(filterRX1Form.DSPMode == rx1_dsp_mode)
 					filterRX1Form.CurrentFilter = rx1_filter;
 			}
+
+			if (this.hw is RigHW)
+				((RigHW) this.hw).setRX1FilterWidth(Math.Abs(high - low));
 		}
 
 		public void UpdateRX2Filters(int low, int high)
@@ -36033,7 +36046,7 @@ namespace PowerSDR
                 panelAntenna.Location = new Point(gr_antenna_basis.X, gr_antenna_basis.Y + (v_delta / 8) + (v_delta / 2));
 				chkBCI.Location = new Point(chk_bci_basis.X,chk_bci_basis.Y+(v_delta/8)+(v_delta/2));
 				button1.Location = new Point(button1_basis.X,button1_basis.Y+(v_delta/8)+(v_delta/2));
-                panelDateTime.Location = new Point(gr_date_time_basis.X, gr_date_time_basis.Y + (v_delta / 2) + (v_delta / 4));
+				panelDateTime.Location = new Point(gr_date_time_basis.X,gr_date_time_basis.Y + (v_delta / 2) + (v_delta / 4));
 				//lblCPUMeter.Location = new Point(lbl_cpu_meter_basis.X,lbl_cpu_meter_basis.Y+(v_delta/8)+(v_delta/2)+(v_delta/4));
 			
 				//panelRX2Divider.Location = new Point(pan_rx2_divider_basis.X, pan_rx2_divider_basis.Y+v_delta);
@@ -36059,6 +36072,9 @@ namespace PowerSDR
 				comboRX2Band.Location = new Point(combo_rx2_band_basis.X, combo_rx2_band_basis.Y+v_delta);
 			}
 			previous_delta = h_delta+v_delta; //we'll check this next time through...
+
+			if (this.txtRigAnsInjection != null)
+				this.txtRigAnsInjection.Location = new Point(5,this.button1.Location.Y);
 
 			if (this.collapsedDisplay)
 				this.RepositionControlsForCollapsedlDisplay();
@@ -38380,6 +38396,12 @@ namespace PowerSDR
 			set { ((RigHW) this.hw).RigPollIFFreq = value; }
 		}
 
+		public bool RigPollFilterWidth
+		{
+			get { return ((RigHW) this.hw).RigPollFilterWidth; }
+			set { ((RigHW) this.hw).RigPollFilterWidth = value; }
+		}
+
 
 		/////////////////////////////////////////////////////////
 		// Meter Connection                                      //
@@ -38648,7 +38670,7 @@ namespace PowerSDR
 			panelMode.Show();
 			panelBandHF.Show();
 			panelBandVHF.Show();
-			button1.Show();
+//			button1.Show();
 			chkBCI.Show();
 
 			int h_delta = this.Width - console_basis_size.Width;
@@ -38796,7 +38818,7 @@ namespace PowerSDR
 			panelMode.Hide();
 			panelBandHF.Hide();
 			panelBandVHF.Hide();
-			button1.Hide();
+//			button1.Hide();
 			chkBCI.Hide();
 
 			if (this.showTopControls)
@@ -38994,5 +39016,11 @@ namespace PowerSDR
 
 		// W1CEG:  End
 		#endregion Collapsible Display
+
+		private void txtRigAnsInjection_KeyPress(object sender, KeyPressEventArgs e)
+		{
+			if (this.hw is RigHW && e.KeyChar == (char) Keys.Enter)
+				((RigHW) this.hw).triggerRigAnsInjection();
+		}
 	}
 }

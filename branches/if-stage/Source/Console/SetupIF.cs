@@ -878,7 +878,15 @@ namespace PowerSDR
 			this.console.RigPollIFFreq = this.chkRigPollIFFreq.Checked;
 		}
 
-		private void comboRigType_SelectedIndexChanged(object sender, EventArgs e)
+		private void chkRigPollFilterWidth_CheckedChanged(object sender,EventArgs e)
+		{
+			if (this.rigHW == null)
+				return;
+
+			this.console.RigPollFilterWidth = this.chkRigPollFilterWidth.Checked;
+		}
+
+		private void comboRigType_SelectedIndexChanged(object sender,EventArgs e)
 		{
 			if (this.rigHW == null)
 				return;
@@ -925,6 +933,17 @@ namespace PowerSDR
 				{
 					this.chkRigPollIFFreq.Enabled = false;
 					this.chkRigPollIFFreq.Checked = false;
+				}
+
+				if (this.rigHW.supportsFilterWidth())
+				{
+					this.chkRigPollFilterWidth.Enabled = true;
+					this.chkRigPollFilterWidth.Checked = true;
+				}
+				else
+				{
+					this.chkRigPollFilterWidth.Enabled = false;
+					this.chkRigPollFilterWidth.Checked = false;
 				}
 			}
 			else

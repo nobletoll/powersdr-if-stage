@@ -67,6 +67,9 @@ namespace PowerSDR
 
 			switch (prefix)
 			{
+				case "BW":
+					rtncmd = this.rigCmdList.BW(suffix);
+					break;
 				case "FA":
 					rtncmd = this.rigCmdList.FA(suffix);
 					break;

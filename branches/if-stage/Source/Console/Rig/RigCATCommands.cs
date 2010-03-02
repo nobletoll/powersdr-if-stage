@@ -68,6 +68,105 @@ namespace PowerSDR
 		#endregion Constructors
 
 
+		public string BW(string s)
+		{
+			int width = int.Parse(s);
+
+			// :NOTE: VAR2 Overrides Syncing
+			if (width == this.rig.RX1FilterWidth || this.console.RX1Filter == Filter.VAR2)
+				return null;
+
+			// Set the cache value, first, so that setting the UI filter
+			// doesn't trigger changing it on the rig.
+			this.rig.RX1FilterWidth = width;
+
+			// Find if there is a filter preset at this width.
+			FilterPreset preset = this.console.rx1_filters[(int) this.console.RX1DSPMode];
+			Filter filter = this.findRX1Filter(preset,width);
+
+			if (filter != Filter.NONE)
+			{
+				switch (filter)
+				{
+					case Filter.F1:
+						this.console.radFilter1.Checked = true;
+						return null;
+					case Filter.F2:
+						this.console.radFilter2.Checked = true;
+						return null;
+					case Filter.F3:
+						this.console.radFilter3.Checked = true;
+						return null;
+					case Filter.F4:
+						this.console.radFilter4.Checked = true;
+						return null;
+					case Filter.F5:
+						this.console.radFilter5.Checked = true;
+						return null;
+					case Filter.F6:
+						this.console.radFilter6.Checked = true;
+						return null;
+					case Filter.F7:
+						this.console.radFilter7.Checked = true;
+						return null;
+					case Filter.F8:
+						this.console.radFilter8.Checked = true;
+						return null;
+					case Filter.F9:
+						this.console.radFilter9.Checked = true;
+						return null;
+					case Filter.F10:
+						this.console.radFilter10.Checked = true;
+						return null;
+					case Filter.VAR1:
+						this.console.radFilterVar1.Checked = true;
+						return null;
+					case Filter.VAR2:
+						break;
+				}
+			}
+
+
+			// Use VAR1 to set specific filter width...
+			int low = 0, high = 0;
+			switch (this.console.RX1DSPMode)
+			{
+				case DSPMode.LSB:
+				case DSPMode.DIGL:
+					low = -width - this.console.DefaultLowCut;
+					high = -this.console.DefaultLowCut;
+					break;
+
+				case DSPMode.USB:
+				case DSPMode.DIGU:
+					low = this.console.DefaultLowCut;
+					high = width + this.console.DefaultLowCut;
+					break;
+
+				case DSPMode.CWL:
+					low = -this.console.CWPitch - width / 2;
+					high = -this.console.CWPitch + width / 2;
+					break;
+
+				case DSPMode.CWU:
+					low = this.console.CWPitch - width / 2;
+					high = this.console.CWPitch + width / 2;
+					break;
+
+				case DSPMode.AM:
+				case DSPMode.SAM:
+				case DSPMode.FMN:
+				case DSPMode.DSB:
+					low = -width / 2;
+					high = width / 2;
+					break;
+			}
+
+			this.console.radFilterVar1.Checked = true;
+			this.console.UpdateRX1Filters(low,high);
+			return null;
+		}
+
 		// Sets or reads the frequency of VFO A
 		public string FA(string s)
 		{
@@ -456,6 +555,15 @@ namespace PowerSDR
 			// If RX/TX Status is changing, set the console's MOX
 			if (!this.console.MOX && tx || this.console.MOX && !tx)
 				this.console.MOX = tx;
+		}
+
+		private Filter findRX1Filter(FilterPreset preset, int width)
+		{
+			for (Filter filter = Filter.F1; filter != Filter.LAST; filter++)
+				if (Math.Abs(preset.GetHigh(filter) - preset.GetLow(filter)) == width)
+					return filter;
+
+			return Filter.NONE;
 		}
 	}
 }

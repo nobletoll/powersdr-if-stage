@@ -156,6 +156,7 @@ namespace PowerSDR
 			this.btnApply = new System.Windows.Forms.ButtonTS();
 			this.btnCancel = new System.Windows.Forms.ButtonTS();
 			this.btnOK = new System.Windows.Forms.ButtonTS();
+			this.chkRigPollFilterWidth = new System.Windows.Forms.CheckBoxTS();
 			this.grpMeterTimingBox.SuspendLayout();
 			this.grpRigTimingBox.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.udRigTuningCATInterval)).BeginInit();
@@ -414,6 +415,7 @@ namespace PowerSDR
 			// 
 			// grpOptionalPollingCommandsBox
 			// 
+			this.grpOptionalPollingCommandsBox.Controls.Add(this.chkRigPollFilterWidth);
 			this.grpOptionalPollingCommandsBox.Controls.Add(this.chkRigPollIFFreq);
 			this.grpOptionalPollingCommandsBox.Controls.Add(this.chkRigPollVFOB);
 			this.grpOptionalPollingCommandsBox.Location = new System.Drawing.Point(154, 178);
@@ -1710,6 +1712,20 @@ namespace PowerSDR
 			this.btnOK.Text = "OK";
 			this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
 			// 
+			// chkRigPollFilterWidth
+			// 
+			this.chkRigPollFilterWidth.AutoSize = true;
+			this.chkRigPollFilterWidth.Enabled = false;
+			this.chkRigPollFilterWidth.Image = null;
+			this.chkRigPollFilterWidth.Location = new System.Drawing.Point(9,65);
+			this.chkRigPollFilterWidth.Name = "chkRigPollFilterWidth";
+			this.chkRigPollFilterWidth.Size = new System.Drawing.Size(97,17);
+			this.chkRigPollFilterWidth.TabIndex = 11;
+			this.chkRigPollFilterWidth.Text = "RX Filter Width";
+			this.toolTip1.SetToolTip(this.chkRigPollFilterWidth,"Poll for RX Filter Width");
+			this.chkRigPollFilterWidth.UseVisualStyleBackColor = true;
+			this.chkRigPollFilterWidth.CheckedChanged += new System.EventHandler(this.chkRigPollFilterWidth_CheckedChanged);
+			// 
 			// SetupIF
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1881,5 +1897,6 @@ namespace PowerSDR
 		private System.Windows.Forms.TextBoxTS txtCollapsedWidth;
 		private System.Windows.Forms.TextBoxTS txtCollapsedHeight;
 		private System.Windows.Forms.CheckBoxTS chkShowModeControls;
+		private System.Windows.Forms.CheckBoxTS chkRigPollFilterWidth;
     }
 }

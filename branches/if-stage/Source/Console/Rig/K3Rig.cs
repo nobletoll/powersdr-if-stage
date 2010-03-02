@@ -71,6 +71,11 @@ namespace PowerSDR
 			return true;
 		}
 
+		public override bool supportsFilterWidth()
+		{
+			return true;
+		}
+
 		public override bool needsLOFreq()
 		{
 			return true;
@@ -191,6 +196,11 @@ namespace PowerSDR
 			this.doRigCATCommand("FI;",false,false);
 		}
 
+		public override void getRX1FilterWidth()
+		{
+			this.doRigCATCommand("BW;");
+		}
+
 		#endregion Get CAT Commands
 
 		#region Set CAT Commands
@@ -212,6 +222,14 @@ namespace PowerSDR
 		public override void setVFOB()
 		{
 			// :TODO:
+		}
+
+		public override void setRX1FilterWidth(int width)
+		{
+			if (width == this.RX1FilterWidth)
+				return;
+
+			this.doRigCATCommand("BW" + width.ToString().PadLeft(4,'0') + ';');
 		}
 
 		#endregion Set CAT Commands

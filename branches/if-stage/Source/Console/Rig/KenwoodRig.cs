@@ -189,6 +189,10 @@ namespace PowerSDR
 		{
 		}
 
+		public override void getRX1FilterWidth()
+		{
+		}
+
 		#endregion Get CAT Commands
 
 		#region Set CAT Commands
@@ -343,6 +347,12 @@ namespace PowerSDR
 			}
 
 			this.RITOffset = ritOffset;
+		}
+
+		public override void setRX1FilterWidth(int width)
+		{
+			if (width == this.RX1FilterWidth)
+				return;
 		}
 
 		#endregion Set CAT Commands
