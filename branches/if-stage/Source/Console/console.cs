@@ -2165,6 +2165,7 @@ namespace PowerSDR
 			// 
 			this.mnuReportBug.Index = 13;
 			resources.ApplyResources(this.mnuReportBug, "mnuReportBug");
+			this.mnuReportBug.Click += new System.EventHandler(this.mnuReportBug_Click);
 			// 
 			// mnuProfiles
 			// 
@@ -6250,7 +6251,9 @@ namespace PowerSDR
 				this.mnuUCB.Visible = false;
 				this.mnuXVTR.Visible = false;
 				this.mnuCWX.Visible = false;
-				this.mnuReportBug.Visible = false;
+
+				// Bold Donate Menu Item
+				this.menuItem2.DefaultItem = true;
 			}
 
 			// W1CEG:  Moved this call down after RigHW is instantiated so that
@@ -35384,7 +35387,7 @@ namespace PowerSDR
 		{
 			try
 			{
-                Process.Start("http://code.google.com/p/powersdr-if-stage/issues/list");
+				Process.Start("http://code.google.com/p/powersdr-if-stage/issues/entry");
 			}
 			catch(Exception){ }
 		}
