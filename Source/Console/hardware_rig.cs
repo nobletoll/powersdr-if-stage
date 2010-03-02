@@ -180,6 +180,13 @@ namespace PowerSDR
 			set { this.rigPollIFFreq = value; }
 		}
 
+		public bool rigPollFilterWidth = false;
+		public bool RigPollFilterWidth
+		{
+			get { return this.rigPollFilterWidth; }
+			set { this.rigPollFilterWidth = value; }
+		}
+
 		#endregion SetupIF Settings
 
 
@@ -270,6 +277,19 @@ namespace PowerSDR
 				this.rig.setRIT(ritOffset);
 		}
 
+		public void setRX1FilterWidth(int width)
+		{
+			// :NOTE: VAR2 is used as an override and does not sync.
+			if (this.rig != null && this.console.RX1Filter != Filter.VAR2)
+				this.rig.setRX1FilterWidth(width);
+		}
+
+		public void triggerRigAnsInjection()
+		{
+			if (this.rig != null && this.rig is SerialRig)
+				((SerialRig) this.rig).rigSerialPoller.SerialRXEventHandler(this.console,new SerialRXEvent(new byte[0],0));
+		}
+
 
 		public int defaultBaudRate()
 		{
@@ -291,6 +311,14 @@ namespace PowerSDR
 		{
 			if (this.rig != null)
 				return this.rig.supportsIFFreq();
+
+			return false;
+		}
+
+		public bool supportsFilterWidth()
+		{
+			if (this.rig != null)
+				return this.rig.supportsFilterWidth();
 
 			return false;
 		}

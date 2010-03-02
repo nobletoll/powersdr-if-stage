@@ -35,7 +35,7 @@ namespace PowerSDR
 	{
 		private RigCATParser rigParser;
 
-		private RigSerialPoller rigSerialPoller;
+		public RigSerialPoller rigSerialPoller;
 
 		protected SDRSerialPort SIO;
 		private bool connected = false;
@@ -134,6 +134,29 @@ namespace PowerSDR
 			get { return this.txWithMute; }
 			set { this.txWithMute = value; }
 		}
+
+		private int rx1FilterWidth = 0;
+		public int RX1FilterWidth
+		{
+			get { return this.rx1FilterWidth; }
+			set { this.rx1FilterWidth = value; }
+		}
+		
+/*
+		private int rx1FilterLow = 0;
+		public int RX1FilterLow
+		{
+			get { return this.rx1FilterLow; }
+			set { this.rx1FilterLow = value; }
+		}
+
+		private int rx1FilterHigh = 0;
+		public int RX1FilterHigh
+		{
+			get { return this.rx1FilterHigh; }
+			set { this.rx1FilterHigh = value; }
+		}
+*/
 
 		#endregion Rig States
 
@@ -306,12 +329,6 @@ namespace PowerSDR
 
 		#region Get CAT Commands
 
-		public abstract override void getRigInformation();
-		public abstract override void getVFOAFreq();
-		public abstract override void getVFOBFreq();
-		public abstract override void getIFFreq();
-		public abstract void getTX();
-		public abstract void getTXVFO();
 
 		#endregion Get CAT Commands
 

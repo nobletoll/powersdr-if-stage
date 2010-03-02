@@ -132,12 +132,14 @@ namespace PowerSDR
 			while (this.keepPolling)
 			{
 				bool sleep = false;
+				int sleepTime = 0;
 
 				if (!this.vfoAInitialized || !this.vfoBInitialized)
 				{
 					if (!this.vfoAInitialized)
 					{
 						Thread.Sleep(this.hw.RigTuningPollingInterval);
+						sleepTime += this.hw.RigTuningPollingInterval;
 						this.initializing = true;
 						this.rig.getVFOAFreq();
 						this.initializing = false;
@@ -158,6 +160,7 @@ namespace PowerSDR
 					if (!this.vfoBInitialized)
 					{
 						Thread.Sleep(this.hw.RigTuningPollingInterval);
+						sleepTime += this.hw.RigTuningPollingInterval;
 						this.rig.getVFOBFreq();
 					}
 				}
@@ -168,6 +171,7 @@ namespace PowerSDR
 				}
 
 				Thread.Sleep(this.hw.RigTuningPollingInterval);
+				sleepTime += this.hw.RigTuningPollingInterval;
 
 				if (!this.rig.rigPollingLockout)
 				{
@@ -220,16 +224,32 @@ namespace PowerSDR
 					if (this.rig is YaesuRig)
 					{
 						if (sleep)
+						{
 							Thread.Sleep(10);
+							sleepTime += 10;
+						}
 
 						this.rig.getTX();
 						Thread.Sleep(10);
+						sleepTime += 10;
 						this.rig.getTXVFO();
 						sleep = true;
 					}
 
-					if (this.hw.RigPollingInterval > this.hw.RigTuningPollingInterval)
-						Thread.Sleep(this.hw.RigPollingInterval - this.hw.RigTuningPollingInterval);
+					if (this.hw.RigPollFilterWidth)
+					{
+						if (sleep)
+						{
+							Thread.Sleep(10);
+							sleepTime += 0;
+						}
+
+						this.rig.getRX1FilterWidth();
+						sleep = true;
+					}
+
+					Thread.Sleep(Math.Max(this.hw.RigTuningPollingInterval,
+						this.hw.RigPollingInterval - sleepTime));
 
 					this.rig.getRigInformation();
 				}
@@ -253,6 +273,22 @@ namespace PowerSDR
 
 			try
 			{
+#if (DEBUG)
+				string cmd = this.console.txtRigAnsInjection.Text;
+				if (this.console.txtRigAnsInjection.Text.Length > 0)
+				{
+					this.console.txtRigAnsInjection.Text = "";
+
+					if (!cmd.EndsWith(";"))
+						cmd += ";";
+
+					this.hw.logIncomingCAT("<- " + cmd);
+
+					// Send the match to the Rig Parser
+					this.rig.handleRigAnswer(cmd);
+				}
+#endif
+
 				// Accept any string ending in ;
 				Regex rex = new Regex(".*?;");
 

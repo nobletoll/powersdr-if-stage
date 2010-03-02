@@ -432,6 +432,10 @@ namespace PowerSDR
         public override void getVFOBFreq() { }
         public override void getIFFreq() { }
         public override void getRigInformation() { }
+		public override void getTX() { }
+		public override void getTXVFO() { }
+		public override void getRX1FilterWidth() { }
+		public override void setRX1FilterWidth(int width) { }
 
 
         public override int defaultBaudRate()

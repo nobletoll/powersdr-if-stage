@@ -84,6 +84,13 @@
 		<ngetparms>-1</ngetparms>
 		<nansparms>-1</nansparms>
 	</catstruct>
+	<catstruct code="BW">
+		<desc>filter bandwidth</desc>
+		<active>true</active>
+		<nsetparms>4</nsetparms>
+		<ngetparms>0</ngetparms>
+		<nansparms>4</nansparms>
+	</catstruct>
 	<catstruct code="BY">
 		<desc>read busy signal status</desc>
 		<active>false</active>

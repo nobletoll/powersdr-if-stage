@@ -81,7 +81,12 @@ namespace PowerSDR
 		{
 			return false;
 		}
-		
+
+		public virtual bool supportsFilterWidth()
+		{
+			return false;
+		}
+
 		public virtual bool needsLOFreq()
 		{
 			return false;
@@ -111,6 +116,9 @@ namespace PowerSDR
 		public abstract void getVFOAFreq();
 		public abstract void getVFOBFreq();
 		public abstract void getIFFreq();
+		public abstract void getTX();
+		public abstract void getTXVFO();
+		public abstract void getRX1FilterWidth();
 
 		#endregion Get CAT Commands
 
@@ -127,6 +135,7 @@ namespace PowerSDR
 		public abstract void clearRIT();
 		public abstract void setRIT(bool rit);
 		public abstract void setRIT(int ritOffset);
+		public abstract void setRX1FilterWidth(int width);
 		
 		#endregion Set CAT Commands
 
