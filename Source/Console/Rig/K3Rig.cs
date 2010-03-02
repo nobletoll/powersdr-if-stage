@@ -229,6 +229,8 @@ namespace PowerSDR
 			if (width == this.RX1FilterWidth)
 				return;
 
+			// :NOTE: BW value is in 10Hz.
+			width /= 10;
 			this.doRigCATCommand("BW" + width.ToString().PadLeft(4,'0') + ';');
 		}
 
