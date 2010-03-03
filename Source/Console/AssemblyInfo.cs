@@ -39,7 +39,7 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("WU2X - W1CEG")]
 [assembly: AssemblyProduct("PowerSDR/IF Stage")]
-[assembly: AssemblyCopyright("2009")]
+[assembly: AssemblyCopyright("2010")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]		
 
@@ -54,7 +54,7 @@ using System.Runtime.CompilerServices;
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
 
-[assembly: AssemblyVersion("1.19.3.4")]
+[assembly: AssemblyVersion("1.19.3.5")]
 
 //
 // In order to sign your assembly you must specify a key to use. Refer to the 
