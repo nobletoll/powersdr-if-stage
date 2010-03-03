@@ -9242,7 +9242,14 @@ namespace PowerSDR
 
 		private void SetBand(string mode, string filter, double freq)
 		{
-			if(rx1_dsp_mode != DSPMode.DRM &&
+			// Set mode, filter, and frequency according to passed parameters
+			/* :Issue 140: If the rig applies band stack settings on VFO change,
+			 *             then we can't change frequency before changing band.
+			 */
+//			if (!(this.hw is RigHW) || !(((RigHW) this.hw).VFOChangeAppliesBandStack))
+//				RX1DSPMode = (DSPMode) Enum.Parse(typeof(DSPMode),mode,true);
+
+			if (rx1_dsp_mode != DSPMode.DRM &&
 				rx1_dsp_mode != DSPMode.SPEC)
 			{
 				RX1Filter = (Filter)Enum.Parse(typeof(Filter), filter, true);
@@ -33173,12 +33180,14 @@ namespace PowerSDR
 					switch(new_mode)
 					{
 						case DSPMode.USB:
-							rx1_freq -= (cw_pitch*0.0000010);
+							if (this.SetupIFForm.chkAutoCWVFOOffset.Checked)
+								rx1_freq -= (cw_pitch * 0.0000010);
 							break;
 						case DSPMode.CWU:
 							break;
 						default:
-							rx1_freq += (cw_pitch*0.0000010);
+							if (this.SetupIFForm.chkAutoCWVFOOffset.Checked)
+								rx1_freq += (cw_pitch * 0.0000010);
 							break;
 					}
 					txtVFOAFreq.Text = rx1_freq.ToString("f6");
@@ -33193,12 +33202,14 @@ namespace PowerSDR
 					switch(new_mode)
 					{
 						case DSPMode.LSB:
-							rx1_freq += (cw_pitch*0.0000010);
+							if (this.SetupIFForm.chkAutoCWVFOOffset.Checked)
+								rx1_freq += (cw_pitch * 0.0000010);
 							break;
 						case DSPMode.CWL:
 							break;
 						default:
-							rx1_freq -= (cw_pitch*0.0000010);
+							if (this.SetupIFForm.chkAutoCWVFOOffset.Checked)
+								rx1_freq -= (cw_pitch * 0.0000010);
 							break;
 					}
 					txtVFOAFreq.Text = rx1_freq.ToString("f6");
@@ -33368,12 +33379,14 @@ namespace PowerSDR
 					switch(rx1_dsp_mode)
 					{
 						case DSPMode.USB:
-							rx1_freq += (cw_pitch*0.0000010);
+							if (this.SetupIFForm.chkAutoCWVFOOffset.Checked)
+								rx1_freq += (cw_pitch * 0.0000010);
 							break;
 						case DSPMode.CWU:
 							break;
 						default:
-							rx1_freq -= (cw_pitch*0.0000010);
+							if (this.SetupIFForm.chkAutoCWVFOOffset.Checked)
+								rx1_freq -= (cw_pitch * 0.0000010);
 							break;
 					}
 					txtVFOAFreq.Text = rx1_freq.ToString("f6");
@@ -33400,12 +33413,14 @@ namespace PowerSDR
 					switch(rx1_dsp_mode)
 					{
 						case DSPMode.LSB:
-							rx1_freq -= (cw_pitch*0.0000010);
+							if (this.SetupIFForm.chkAutoCWVFOOffset.Checked)
+								rx1_freq -= (cw_pitch * 0.0000010);
 							break;
 						case DSPMode.CWL:
 							break;
 						default:
-							rx1_freq += (cw_pitch*0.0000010);
+							if (this.SetupIFForm.chkAutoCWVFOOffset.Checked)
+								rx1_freq += (cw_pitch * 0.0000010);
 							break;
 					}
 					txtVFOAFreq.Text = rx1_freq.ToString("f6");
@@ -36476,12 +36491,14 @@ namespace PowerSDR
 					switch(new_mode)
 					{
 						case DSPMode.USB:
-							rx2_freq -= (cw_pitch*0.0000010);
+							if (this.SetupIFForm.chkAutoCWVFOOffset.Checked)
+								rx2_freq -= (cw_pitch * 0.0000010);
 							break;
 						case DSPMode.CWU:
 							break;
 						default:
-							rx2_freq += (cw_pitch*0.0000010);
+							if (this.SetupIFForm.chkAutoCWVFOOffset.Checked)
+								rx2_freq += (cw_pitch * 0.0000010);
 							break;
 					}
 					txtVFOBFreq.Text = rx2_freq.ToString("f6");
@@ -36496,12 +36513,14 @@ namespace PowerSDR
 					switch(new_mode)
 					{
 						case DSPMode.LSB:
-							rx2_freq += (cw_pitch*0.0000010);
+							if (this.SetupIFForm.chkAutoCWVFOOffset.Checked)
+								rx2_freq += (cw_pitch * 0.0000010);
 							break;
 						case DSPMode.CWL:
 							break;
 						default:
-							rx2_freq -= (cw_pitch*0.0000010);
+							if (this.SetupIFForm.chkAutoCWVFOOffset.Checked)
+								rx2_freq -= (cw_pitch * 0.0000010);
 							break;
 					}
 					txtVFOBFreq.Text = rx2_freq.ToString("f6");
@@ -36634,12 +36653,14 @@ namespace PowerSDR
 					switch(rx2_dsp_mode)
 					{
 						case DSPMode.USB:
-							rx2_freq += (cw_pitch*0.0000010);
+							if (this.SetupIFForm.chkAutoCWVFOOffset.Checked)
+								rx2_freq += (cw_pitch * 0.0000010);
 							break;
 						case DSPMode.CWU:
 							break;
 						default:
-							rx2_freq -= (cw_pitch*0.0000010);
+							if (this.SetupIFForm.chkAutoCWVFOOffset.Checked)
+								rx2_freq -= (cw_pitch * 0.0000010);
 							break;
 					}
 					txtVFOBFreq.Text = rx2_freq.ToString("f6");
@@ -36665,12 +36686,14 @@ namespace PowerSDR
 					switch(rx1_dsp_mode)
 					{
 						case DSPMode.LSB:
-							rx2_freq -= (cw_pitch*0.0000010);
+							if (this.SetupIFForm.chkAutoCWVFOOffset.Checked)
+								rx2_freq -= (cw_pitch * 0.0000010);
 							break;
 						case DSPMode.CWL:
 							break;
 						default:
-							rx2_freq += (cw_pitch*0.0000010);
+							if (this.SetupIFForm.chkAutoCWVFOOffset.Checked)
+								rx2_freq += (cw_pitch * 0.0000010);
 							break;
 					}
 					txtVFOBFreq.Text = rx2_freq.ToString("f6");
