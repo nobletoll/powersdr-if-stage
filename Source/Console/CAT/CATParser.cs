@@ -372,7 +372,7 @@ namespace PowerSDR
 					if(rtncmd != Error1 && rtncmd != Error2 && rtncmd != Error3)
 					{													
 						// if it has the correct length
-						if(rtncmd.Length == nAns && nAns > 0)
+						if(rtncmd.Length >= nAns && nAns > 0)
 								rtncmd = prefix+rtncmd+";";	// return the formatted CAT answer
 							else if(nAns == -1 || rtncmd == "")	// no answer is required
 								rtncmd = "";
