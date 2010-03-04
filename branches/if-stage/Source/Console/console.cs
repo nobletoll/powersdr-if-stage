@@ -780,6 +780,9 @@ namespace PowerSDR
 		private Point pic_display_basis = new Point(100, 100);
 		private Point combo_display_mode_basis = new Point(100, 100);
 		private Size tb_display_zoom_size_basis = new Size(100, 100);
+		private Size gr_BandHF_basis_size = new Size(100, 100);
+		private Size gr_BandVHF_basis_size = new Size(100, 100);
+		private Size gr_Mode_basis_size = new Size(100, 100);
 		private Point rad_band160_basis = new Point(100, 100);
 		private Point rad_band80_basis = new Point(100, 100);
 		private Point rad_band40_basis = new Point(100, 100);
@@ -36205,6 +36208,9 @@ namespace PowerSDR
 			pic_display_basis = this.picDisplay.Location;
 			combo_display_mode_basis = this.comboDisplayMode.Location;
 			tb_display_zoom_size_basis = this.ptbDisplayZoom.Size;
+			gr_BandHF_basis_size = panelBandHF.Size;
+			gr_BandVHF_basis_size = panelBandVHF.Size;
+			gr_Mode_basis_size = panelMode.Size;
 			rad_band160_basis = radBand160.Location;
 			rad_band80_basis = radBand80.Location;
 			rad_band40_basis = radBand40.Location;
@@ -38696,8 +38702,8 @@ namespace PowerSDR
 			panelMode.Show();
 			panelBandHF.Show();
 			panelBandVHF.Show();
-//			button1.Show();
 			chkBCI.Show();
+			txtRigAnsInjection.Show();
 
 			int h_delta = this.Width - console_basis_size.Width;
 			int v_delta = Math.Max(this.Height - console_basis_size.Height, 0);
@@ -38746,55 +38752,34 @@ namespace PowerSDR
 			txtDisplayCursorPower.Location = new Point(txt_display_cursor_power_basis.X, txt_display_cursor_power_basis.Y + v_delta);
 			txtDisplayCursorOffset.Location = new Point(txt_display_cursor_offset_basis.X, txt_display_cursor_offset_basis.Y + v_delta);
 
-
-			radBand160.Parent = panelBandHF;
+			panelBandHF.Location = gr_BandHF_basis_location;
+			panelBandHF.Size = gr_BandHF_basis_size;
 			radBand160.Location = rad_band160_basis;
-			radBand80.Parent = panelBandHF;
 			radBand80.Location = rad_band80_basis;
-			radBand40.Parent = panelBandHF;
 			radBand40.Location = rad_band40_basis;
-			radBand20.Parent = panelBandHF;
 			radBand20.Location = rad_band20_basis;
-			radBand17.Parent = panelBandHF;
 			radBand17.Location = rad_band17_basis;
-			radBand15.Parent = panelBandHF;
 			radBand15.Location = rad_band15_basis;
-			radBand12.Parent = panelBandHF;
 			radBand12.Location = rad_band12_basis;
-			radBand10.Parent = panelBandHF;
 			radBand10.Location = rad_band10_basis;
-			radBand6.Parent = panelBandHF;
 			radBand6.Location = rad_band6_basis;
-			radBand2.Parent = panelBandHF;
 			radBand2.Location = rad_band2_basis;
-			radBandWWV.Parent = panelBandHF;
 			radBandWWV.Location = rad_bandwwv_basis;
-			radBandGEN.Parent = panelBandHF;
 			radBandGEN.Location = rad_bandgen_basis;
 
-			radModeLSB.Parent = panelMode;
+			panelMode.Location = gr_Mode_basis_location;
+			panelMode.Size = gr_Mode_basis_size;
 			radModeLSB.Location = rad_mode_lsb_basis;
-			radModeUSB.Parent = panelMode;
 			radModeUSB.Location = rad_mode_usb_basis;
-			radModeDSB.Parent = panelMode;
 			radModeDSB.Location = rad_mode_dsb_basis;
-			radModeCWL.Parent = panelMode;
 			radModeCWL.Location = rad_mode_cwl_basis;
-			radModeCWU.Parent = panelMode;
 			radModeCWU.Location = rad_mode_cwu_basis;
-			radModeFMN.Parent = panelMode;
 			radModeFMN.Location = rad_mode_fmn_basis;
-			radModeAM.Parent = panelMode;
 			radModeAM.Location = rad_mode_am_basis;
-			radModeSAM.Parent = panelMode;
 			radModeSAM.Location = rad_mode_sam_basis;
-			radModeSPEC.Parent = panelMode;
 			radModeSPEC.Location = rad_mode_spec_basis;
-			radModeDIGL.Parent = panelMode;
 			radModeDIGL.Location = rad_mode_digl_basis;
-			radModeDIGU.Parent = panelMode;
 			radModeDIGU.Location = rad_mode_digu_basis;
-			radModeDRM.Parent = panelMode;
 			radModeDRM.Location = rad_mode_drm_basis;
 		}
 
@@ -38841,11 +38826,9 @@ namespace PowerSDR
 			panelModeSpecificPhone.Hide();
 			panelModeSpecificDigital.Hide();
 			panelFilter.Hide();
-			panelMode.Hide();
-			panelBandHF.Hide();
 			panelBandVHF.Hide();
-//			button1.Hide();
 			chkBCI.Hide();
+			txtRigAnsInjection.Hide();
 
 			if (this.showTopControls)
 			{
@@ -38877,60 +38860,16 @@ namespace PowerSDR
 			}
 
 			if (this.showBandControls)
-			{
-				radBand160.Parent = this;
-				radBand160.Show();
-				radBand80.Parent = this;
-				radBand80.Show();
-				radBand40.Parent = this;
-				radBand40.Show();
-				radBand20.Parent = this;
-				radBand20.Show();
-				radBand17.Parent = this;
-				radBand17.Show();
-				radBand15.Parent = this;
-				radBand15.Show();
-				radBand12.Parent = this;
-				radBand12.Show();
-				radBand10.Parent = this;
-				radBand10.Show();
-				radBand6.Parent = this;
-				radBand6.Show();
-				radBand2.Parent = this;
-				radBand2.Show();
-				radBandWWV.Parent = this;
-				radBandWWV.Show();
-				radBandGEN.Parent = this;
-				radBandGEN.Show();
-			}
+				panelBandHF.Show();
+			else
+				panelBandHF.Hide();
+
 
 			if (this.showModeControls)
-			{
-				radModeLSB.Parent = this;
-				radModeLSB.Show();
-				radModeUSB.Parent = this;
-				radModeUSB.Show();
-				radModeDSB.Parent = this;
-				radModeDSB.Show();
-				radModeCWL.Parent = this;
-				radModeCWL.Show();
-				radModeCWU.Parent = this;
-				radModeCWU.Show();
-				radModeFMN.Parent = this;
-				radModeFMN.Show();
-				radModeAM.Parent = this;
-				radModeAM.Show();
-				radModeSAM.Parent = this;
-				radModeSAM.Show();
-				radModeSPEC.Parent = this;
-				radModeSPEC.Show();
-				radModeDIGL.Parent = this;
-				radModeDIGL.Show();
-				radModeDIGU.Parent = this;
-				radModeDIGU.Show();
-				radModeDRM.Parent = this;
-				radModeDRM.Show();
-			}
+				panelMode.Show();
+			else
+				panelMode.Hide();
+
 
 			this.RepositionControlsForCollapsedlDisplay();
 
@@ -39007,36 +38946,42 @@ namespace PowerSDR
 
 			if (this.showBandControls)
 			{
-				radBand160.Location = new Point(this.ClientSize.Width / 2 - radBand160.Width * 6, top);
-				radBand80.Location = new Point(radBand160.Location.X + radBand160.Width, top);
-				radBand40.Location = new Point(radBand80.Location.X + radBand80.Width, top);
-				radBand20.Location = new Point(radBand40.Location.X + radBand40.Width, top);
-				radBand17.Location = new Point(radBand20.Location.X + radBand20.Width, top);
-				radBand15.Location = new Point(radBand17.Location.X + radBand17.Width, top);
-				radBand12.Location = new Point(radBand15.Location.X + radBand15.Width, top);
-				radBand10.Location = new Point(radBand12.Location.X + radBand12.Width, top);
-				radBand6.Location = new Point(radBand10.Location.X + radBand10.Width, top);
-				radBand2.Location = new Point(radBand6.Location.X + radBand6.Width, top);
-				radBandWWV.Location = new Point(radBand2.Location.X + radBand2.Width, top);
-				radBandGEN.Location = new Point(radBandWWV.Location.X + radBandWWV.Width, top);
+				panelBandHF.Location = new Point(this.ClientSize.Width / 2 - radBand160.Width * 6, top);
+				panelBandHF.Size = new Size(radBand160.Width * 12,radBand160.Height);
 
-				top = radBand160.Location.Y + radBand160.Height;
+				radBand160.Location = new Point(0, 0);
+				radBand80.Location = new Point(radBand160.Location.X + radBand160.Width, 0);
+				radBand40.Location = new Point(radBand80.Location.X + radBand80.Width, 0);
+				radBand20.Location = new Point(radBand40.Location.X + radBand40.Width, 0);
+				radBand17.Location = new Point(radBand20.Location.X + radBand20.Width, 0);
+				radBand15.Location = new Point(radBand17.Location.X + radBand17.Width, 0);
+				radBand12.Location = new Point(radBand15.Location.X + radBand15.Width, 0);
+				radBand10.Location = new Point(radBand12.Location.X + radBand12.Width, 0);
+				radBand6.Location = new Point(radBand10.Location.X + radBand10.Width, 0);
+				radBand2.Location = new Point(radBand6.Location.X + radBand6.Width, 0);
+				radBandWWV.Location = new Point(radBand2.Location.X + radBand2.Width, 0);
+				radBandGEN.Location = new Point(radBandWWV.Location.X + radBandWWV.Width, 0);
+
+				top = panelBandHF.Location.Y + panelBandHF.Height;
 			}
 
 			if (this.showModeControls)
 			{
-				radModeLSB.Location = new Point(this.ClientSize.Width / 2 - radModeLSB.Width * 6, top);
-				radModeUSB.Location = new Point(radModeLSB.Location.X + radModeLSB.Width, top);
-				radModeDSB.Location = new Point(radModeUSB.Location.X + radModeUSB.Width, top);
-				radModeCWL.Location = new Point(radModeDSB.Location.X + radModeDSB.Width, top);
-				radModeCWU.Location = new Point(radModeCWL.Location.X + radModeCWL.Width, top);
-				radModeFMN.Location = new Point(radModeCWU.Location.X + radModeCWU.Width, top);
-				radModeAM.Location = new Point(radModeFMN.Location.X + radModeFMN.Width, top);
-				radModeSAM.Location = new Point(radModeAM.Location.X + radModeAM.Width, top);
-				radModeSPEC.Location = new Point(radModeSAM.Location.X + radModeSAM.Width, top);
-				radModeDIGL.Location = new Point(radModeSPEC.Location.X + radModeSPEC.Width, top);
-				radModeDIGU.Location = new Point(radModeDIGL.Location.X + radModeDIGL.Width, top);
-				radModeDRM.Location = new Point(radModeDIGU.Location.X + radModeDIGU.Width, top);
+				panelMode.Location = new Point(this.ClientSize.Width / 2 - radModeLSB.Width * 6, top);
+				panelMode.Size = new Size(radModeLSB.Width * 12, radModeLSB.Height);
+
+				radModeLSB.Location = new Point(0, 0);
+				radModeUSB.Location = new Point(radModeLSB.Location.X + radModeLSB.Width, 0);
+				radModeDSB.Location = new Point(radModeUSB.Location.X + radModeUSB.Width, 0);
+				radModeCWL.Location = new Point(radModeDSB.Location.X + radModeDSB.Width, 0);
+				radModeCWU.Location = new Point(radModeCWL.Location.X + radModeCWL.Width, 0);
+				radModeFMN.Location = new Point(radModeCWU.Location.X + radModeCWU.Width, 0);
+				radModeAM.Location = new Point(radModeFMN.Location.X + radModeFMN.Width, 0);
+				radModeSAM.Location = new Point(radModeAM.Location.X + radModeAM.Width, 0);
+				radModeSPEC.Location = new Point(radModeSAM.Location.X + radModeSAM.Width, 0);
+				radModeDIGL.Location = new Point(radModeSPEC.Location.X + radModeSPEC.Width, 0);
+				radModeDIGU.Location = new Point(radModeDIGL.Location.X + radModeDIGL.Width, 0);
+				radModeDRM.Location = new Point(radModeDIGU.Location.X + radModeDIGU.Width, 0);
 			}
 		}
 
