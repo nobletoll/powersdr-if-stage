@@ -173,6 +173,11 @@ namespace PowerSDR
 				Thread.Sleep(this.hw.RigTuningPollingInterval);
 				sleepTime += this.hw.RigTuningPollingInterval;
 
+
+				// :NOTE: We want to still poll for the IFFreq during poll lockout.
+				if (this.hw.RigPollIFFreq)
+					this.rig.getIFFreq();
+
 				if (!this.rig.rigPollingLockout)
 				{
 					// If the operator is tuning the VFO Knob, we'll focus on just
@@ -184,6 +189,15 @@ namespace PowerSDR
 						if (this.rig.VFOBFrequencyChanged)
 							this.rig.getVFOBFreq();
 
+						continue;
+					}
+
+					// If the operator is adjusting the filter width on the rig,
+					// we'll focus on just that for better performance on the
+					// change.
+					if (this.hw.RigPollFilterWidth && this.rig.RX1FilterWidthChanged)
+					{
+						this.rig.getRX1FilterWidth();
 						continue;
 					}
 
@@ -253,10 +267,6 @@ namespace PowerSDR
 
 					this.rig.getRigInformation();
 				}
-
-				// :NOTE: We want to still poll for the IFFreq during poll lockout.
-				if (this.hw.RigPollIFFreq)
-					this.rig.getIFFreq();
 			}
 
 			this.hw.logGeneral("RigSerialPoller.poll(), End.");

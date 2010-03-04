@@ -74,6 +74,9 @@ namespace PowerSDR
 
 			this.hw.logGeneral("BW: " + width + "Hz  RX1: " + this.rig.RX1FilterWidth + "Hz");
 
+			// Store Filter Width Status for RigSerialPoller Performance.
+			this.rig.RX1FilterWidthChanged = (width != this.rig.RX1FilterWidth);
+
 			// :NOTE: VAR2 Overrides Syncing
 			if (width == this.rig.RX1FilterWidth || this.console.RX1Filter == Filter.VAR2)
 				return null;
