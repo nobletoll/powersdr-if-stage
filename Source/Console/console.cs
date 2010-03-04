@@ -6252,7 +6252,6 @@ namespace PowerSDR
 				// Force Defaults
 				this.SpurReduction = false;
 				this.mnuUCB.Visible = false;
-				this.mnuXVTR.Visible = false;
 				this.mnuCWX.Visible = false;
 
 				// Bold Donate Menu Item
