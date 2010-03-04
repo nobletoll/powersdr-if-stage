@@ -36025,8 +36025,6 @@ namespace PowerSDR
                 panelBandHF.Location = new Point(gr_BandHF_basis_location.X + h_delta, gr_BandHF_basis_location.Y + (v_delta / 4));
                 panelBandVHF.Location = new Point(gr_BandVHF_basis_location.X + h_delta, gr_BandVHF_basis_location.Y + (v_delta / 4));
 				panelMode.Location = new Point(gr_Mode_basis_location.X+h_delta,gr_Mode_basis_location.Y+(v_delta/2));
-				grpVFOB.Location = new Point(gr_VFOB_basis_location.X+h_delta-(h_delta/4),gr_VFOB_basis_location.Y);
-				grpVFOA.Location = new Point(gr_VFOA_basis_location.X+(h_delta/4),gr_VFOA_basis_location.Y);
                 panelModeSpecificPhone.Location = new Point(gr_ModePhone_basis_location.X + h_delta - (h_delta / 4), gr_ModePhone_basis_location.Y + v_delta);
                 panelModeSpecificCW.Location = new Point(gr_ModeCW_basis_location.X + h_delta - (h_delta / 4), gr_ModeCW_basis_location.Y + v_delta);
                 panelModeSpecificDigital.Location = new Point(gr_ModeDig_basis_location.X + h_delta - (h_delta / 4), gr_ModeDig_basis_location.Y + v_delta);
@@ -36036,7 +36034,10 @@ namespace PowerSDR
 
 				if (!this.collapsedDisplay)
 				{
-					btnDisplayPanCenter.Location = new Point(btn_display_pan_center_basis.X + (h_delta), btn_display_pan_center_basis.Y + v_delta);
+					grpVFOB.Location = new Point(gr_VFOB_basis_location.X + h_delta - (h_delta / 4),gr_VFOB_basis_location.Y);
+					grpVFOA.Location = new Point(gr_VFOA_basis_location.X + (h_delta / 4),gr_VFOA_basis_location.Y);
+
+					btnDisplayPanCenter.Location = new Point(btn_display_pan_center_basis.X + (h_delta),btn_display_pan_center_basis.Y + v_delta);
 					ptbDisplayPan.Size = new Size(tb_display_pan_size_basis.Width + (h_delta), tb_display_pan_size_basis.Height);
 					radDisplayZoom4x.Location = new Point(btn_display_zoom_4x_basis.X + h_delta, btn_display_zoom_4x_basis.Y + v_delta);
 					radDisplayZoom2x.Location = new Point(btn_display_zoom_2x_basis.X + h_delta, btn_display_zoom_2x_basis.Y + v_delta);
@@ -38691,9 +38692,7 @@ namespace PowerSDR
 			this.MinimumSize = new Size(minWidth, minHeight);
 
 			chkPower.Show();
-			grpVFOA.Show();
 			grpVFOBetween.Show();
-			grpVFOB.Show();
 			grpMultimeter.Show();
 			panelOptions.Show();
 			panelSoundControls.Show();
@@ -38720,6 +38719,8 @@ namespace PowerSDR
 			int h_delta = this.Width - console_basis_size.Width;
 			int v_delta = Math.Max(this.Height - console_basis_size.Height, 0);
 
+			grpVFOA.Location = new Point(gr_VFOA_basis_location.X + (h_delta / 4),gr_VFOA_basis_location.Y);
+			grpVFOB.Location = new Point(gr_VFOB_basis_location.X + h_delta - (h_delta / 4),gr_VFOB_basis_location.Y);
 			grpMultimeter.Size = gr_multi_meter_size_basis;
 			picMultiMeterDigital.Location = pic_multi_meter_digital_basis;
 			txtMultiText.Show();
@@ -38849,9 +38850,7 @@ namespace PowerSDR
 			if (this.showTopControls)
 			{
 				chkPower.Show();
-				grpVFOA.Show();
 				grpVFOBetween.Show();
-				grpVFOB.Show();
 				grpMultimeter.Show();
 
 				txtMultiText.Hide();
@@ -38869,9 +38868,7 @@ namespace PowerSDR
 			{
 				comboDisplayMode.Show();
 				chkPower.Hide();
-				grpVFOA.Hide();
 				grpVFOBetween.Hide();
-				grpVFOB.Hide();
 				grpMultimeter.Hide();
 			}
 
@@ -38895,8 +38892,15 @@ namespace PowerSDR
 
 		private void RepositionControlsForCollapsedlDisplay()
 		{
+			int top = 0;
+			int h_delta = this.Width - console_basis_size.Width;
+			int v_delta = Math.Max(this.Height - console_basis_size.Height,0);
+
 			if (this.showTopControls)
 			{
+				top = grpMultimeter.Location.Y + grpMultimeter.Size.Height + 5;
+				grpVFOA.Location = new Point(gr_VFOA_basis_location.X + (h_delta / 4),gr_VFOA_basis_location.Y);
+				grpVFOB.Location = new Point(gr_VFOB_basis_location.X + h_delta - (h_delta / 4),gr_VFOB_basis_location.Y);
 				picMultiMeterDigital.Location = txtMultiText.Location;
 				grpMultimeter.Size = new Size(grpMultimeter.Width, grpVFOB.Height);
 
@@ -38905,9 +38909,6 @@ namespace PowerSDR
 				ptbAF.Location = new Point(10, chkPower.Location.Y + chkPower.Height + 2);
 				ptbRF.Location = new Point(10, ptbAF.Location.Y + ptbAF.Height + 2);
 			}
-
-			int top = (this.showTopControls) ?
-				grpMultimeter.Location.Y + grpMultimeter.Size.Height + 5 : 0;
 
 			panelDisplay.Location = new Point(0, top);
 
@@ -39000,6 +39001,14 @@ namespace PowerSDR
 				radModeDIGL.Location = new Point(radModeSPEC.Location.X + radModeSPEC.Width, 0);
 				radModeDIGU.Location = new Point(radModeDIGL.Location.X + radModeDIGL.Width, 0);
 				radModeDRM.Location = new Point(radModeDIGU.Location.X + radModeDIGU.Width, 0);
+
+				top = panelMode.Location.Y + panelMode.Height;
+			}
+
+			if (!this.showTopControls)
+			{
+				grpVFOA.Location = new Point(grpVFOA.Location.X, -200);
+				grpVFOB.Location = new Point(grpVFOB.Location.X, -200);
 			}
 		}
 
