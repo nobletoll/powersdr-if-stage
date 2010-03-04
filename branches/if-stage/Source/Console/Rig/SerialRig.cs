@@ -107,6 +107,13 @@ namespace PowerSDR
 			set { this.vfobFrequencyChanged = value; }
 		}
 
+		private bool rx1FilterWidthChanged = false;
+		public bool RX1FilterWidthChanged
+		{
+			get { return this.rx1FilterWidthChanged; }
+			set { this.rx1FilterWidthChanged = value; }
+		}
+
 		private int ritOffset = 0;
 		public int RITOffset
 		{
