@@ -785,7 +785,9 @@ namespace PowerSDR
 		private Size gr_Mode_basis_size = new Size(100, 100);
 		private Point rad_band160_basis = new Point(100, 100);
 		private Point rad_band80_basis = new Point(100, 100);
+		private Point rad_band60_basis = new Point(100, 100);
 		private Point rad_band40_basis = new Point(100, 100);
+		private Point rad_band30_basis = new Point(100, 100);
 		private Point rad_band20_basis = new Point(100, 100);
 		private Point rad_band17_basis = new Point(100, 100);
 		private Point rad_band15_basis = new Point(100, 100);
@@ -18842,7 +18844,7 @@ namespace PowerSDR
 			set { quick_qsy = value; }
 		}
 
-                public AbstractHW Hdw
+		public AbstractHW Hdw
 		{
 			set 
 			{ 
@@ -23164,7 +23166,10 @@ namespace PowerSDR
 			{
 				xvtr_present = value;
 				radBand2.Enabled = value;
-				Hdw.XVTRPresent = value;
+
+				if (Hdw != null)
+					Hdw.XVTRPresent = value;
+
 				if(value)
 					MaxFreq = 146.0;
 				else
@@ -36212,7 +36217,9 @@ namespace PowerSDR
 			gr_Mode_basis_size = panelMode.Size;
 			rad_band160_basis = radBand160.Location;
 			rad_band80_basis = radBand80.Location;
+			rad_band60_basis = radBand60.Location;
 			rad_band40_basis = radBand40.Location;
+			rad_band30_basis = radBand30.Location;
 			rad_band20_basis = radBand20.Location;
 			rad_band17_basis = radBand17.Location;
 			rad_band15_basis = radBand15.Location;
@@ -38755,7 +38762,9 @@ namespace PowerSDR
 			panelBandHF.Size = gr_BandHF_basis_size;
 			radBand160.Location = rad_band160_basis;
 			radBand80.Location = rad_band80_basis;
+			radBand60.Location = rad_band60_basis;
 			radBand40.Location = rad_band40_basis;
+			radBand30.Location = rad_band30_basis;
 			radBand20.Location = rad_band20_basis;
 			radBand17.Location = rad_band17_basis;
 			radBand15.Location = rad_band15_basis;
@@ -38799,7 +38808,7 @@ namespace PowerSDR
 
 			if (this.showBandControls)
 			{
-				minWidth = Math.Max(minWidth, radBand160.Width * 12 + this.Width - this.ClientSize.Width);
+				minWidth = Math.Max(minWidth, radBand160.Width * 14 + this.Width - this.ClientSize.Width);
 				minHeight += 5 + radBand160.Height;
 			}
 
@@ -38945,13 +38954,15 @@ namespace PowerSDR
 
 			if (this.showBandControls)
 			{
-				panelBandHF.Location = new Point(this.ClientSize.Width / 2 - radBand160.Width * 6, top);
-				panelBandHF.Size = new Size(radBand160.Width * 12,radBand160.Height);
+				panelBandHF.Location = new Point(this.ClientSize.Width / 2 - radBand160.Width * 7, top);
+				panelBandHF.Size = new Size(radBand160.Width * 14,radBand160.Height);
 
 				radBand160.Location = new Point(0, 0);
 				radBand80.Location = new Point(radBand160.Location.X + radBand160.Width, 0);
-				radBand40.Location = new Point(radBand80.Location.X + radBand80.Width, 0);
-				radBand20.Location = new Point(radBand40.Location.X + radBand40.Width, 0);
+				radBand60.Location = new Point(radBand80.Location.X + radBand80.Width, 0);
+				radBand40.Location = new Point(radBand60.Location.X + radBand60.Width, 0);
+				radBand30.Location = new Point(radBand40.Location.X + radBand40.Width, 0);
+				radBand20.Location = new Point(radBand30.Location.X + radBand30.Width, 0);
 				radBand17.Location = new Point(radBand20.Location.X + radBand20.Width, 0);
 				radBand15.Location = new Point(radBand17.Location.X + radBand17.Width, 0);
 				radBand12.Location = new Point(radBand15.Location.X + radBand15.Width, 0);
