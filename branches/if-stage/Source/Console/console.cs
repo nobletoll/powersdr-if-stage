@@ -1151,7 +1151,9 @@ namespace PowerSDR
         private MenuItem menuItem2;
 		private MenuItem mnuCollapse;
 		private System.Windows.Forms.CheckBoxTS chkFullDuplex;
+#if (DEBUG)
 		public TextBoxTS txtRigAnsInjection = null;
+#endif
 
 		#endregion
 
@@ -36098,8 +36100,10 @@ namespace PowerSDR
 			}
 			previous_delta = h_delta+v_delta; //we'll check this next time through...
 
+#if (DEBUG)
 			if (this.txtRigAnsInjection != null)
 				this.txtRigAnsInjection.Location = new Point(5,this.button1.Location.Y);
+#endif
 
 			if (this.collapsedDisplay)
 				this.RepositionControlsForCollapsedlDisplay();
@@ -38709,7 +38713,9 @@ namespace PowerSDR
 			panelBandHF.Show();
 			panelBandVHF.Show();
 			chkBCI.Show();
+#if (DEBUG)
 			txtRigAnsInjection.Show();
+#endif
 
 			int h_delta = this.Width - console_basis_size.Width;
 			int v_delta = Math.Max(this.Height - console_basis_size.Height, 0);
@@ -38836,7 +38842,9 @@ namespace PowerSDR
 			panelFilter.Hide();
 			panelBandVHF.Hide();
 			chkBCI.Hide();
+#if (DEBUG)
 			txtRigAnsInjection.Hide();
+#endif
 
 			if (this.showTopControls)
 			{
