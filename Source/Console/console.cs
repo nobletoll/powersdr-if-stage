@@ -38764,7 +38764,7 @@ namespace PowerSDR
 			txtDisplayCursorPower.Location = new Point(txt_display_cursor_power_basis.X, txt_display_cursor_power_basis.Y + v_delta);
 			txtDisplayCursorOffset.Location = new Point(txt_display_cursor_offset_basis.X, txt_display_cursor_offset_basis.Y + v_delta);
 
-			panelBandHF.Location = gr_BandHF_basis_location;
+			panelBandHF.Location = new Point(gr_BandHF_basis_location.X + h_delta, gr_BandHF_basis_location.Y + (v_delta / 4));
 			panelBandHF.Size = gr_BandHF_basis_size;
 			radBand160.Location = rad_band160_basis;
 			radBand80.Location = rad_band80_basis;
@@ -38781,7 +38781,7 @@ namespace PowerSDR
 			radBandWWV.Location = rad_bandwwv_basis;
 			radBandGEN.Location = rad_bandgen_basis;
 
-			panelMode.Location = gr_Mode_basis_location;
+			panelMode.Location = new Point(gr_Mode_basis_location.X + h_delta, gr_Mode_basis_location.Y + (v_delta / 2));
 			panelMode.Size = gr_Mode_basis_size;
 			radModeLSB.Location = rad_mode_lsb_basis;
 			radModeUSB.Location = rad_mode_usb_basis;
