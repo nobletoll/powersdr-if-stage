@@ -232,6 +232,7 @@ namespace PowerSDR
 			// :NOTE: BW value is in 10Hz.
 			width /= 10;
 			this.doRigCATCommand("BW" + width.ToString().PadLeft(4,'0') + ';');
+			this.RX1FilterWidth = width * 10;
 		}
 
 		#endregion Set CAT Commands
