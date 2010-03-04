@@ -280,7 +280,8 @@ namespace PowerSDR
 		public void setRX1FilterWidth(int width)
 		{
 			// :NOTE: VAR2 is used as an override and does not sync.
-			if (this.rig != null && this.console.RX1Filter != Filter.VAR2)
+			if (this.rig != null && this.RigPollFilterWidth &&
+				this.console.RX1Filter != Filter.VAR2)
 				this.rig.setRX1FilterWidth(width);
 		}
 
