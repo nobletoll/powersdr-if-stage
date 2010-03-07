@@ -226,13 +226,14 @@ namespace PowerSDR
 
 		public override void setRX1FilterWidth(int width)
 		{
-			if (width == this.RX1FilterWidth)
+			if (width/10 == this.RX1FilterWidth/10)
 				return;
+
+			this.RX1FilterWidth = width;
 
 			// :NOTE: BW value is in 10Hz.
 			width /= 10;
 			this.doRigCATCommand("BW" + width.ToString().PadLeft(4,'0') + ';');
-			this.RX1FilterWidth = width * 10;
 		}
 
 		#endregion Set CAT Commands
