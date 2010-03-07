@@ -70,16 +70,18 @@ namespace PowerSDR
 
 		public string BW(string s)
 		{
-			int width = int.Parse(s) * 10;
+			int width = int.Parse(s);
 
-			this.hw.logGeneral("BW: " + width + "Hz  RX1: " + this.rig.RX1FilterWidth + "Hz");
+			this.hw.logGeneral("BW: " + width*10 + "Hz  RX1: " + this.rig.RX1FilterWidth + "Hz");
 
 			// Store Filter Width Status for RigSerialPoller Performance.
-			this.rig.RX1FilterWidthChanged = (width != this.rig.RX1FilterWidth);
+			this.rig.RX1FilterWidthChanged = (width != this.rig.RX1FilterWidth/10);
 
 			// :NOTE: VAR2 Overrides Syncing
-			if (width == this.rig.RX1FilterWidth || this.console.RX1Filter == Filter.VAR2)
+			if (width == this.rig.RX1FilterWidth/10 || this.console.RX1Filter == Filter.VAR2)
 				return null;
+
+			width *= 10;
 
 			// Set the cache value, first, so that setting the UI filter
 			// doesn't trigger changing it on the rig.
