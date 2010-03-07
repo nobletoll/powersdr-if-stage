@@ -38765,8 +38765,12 @@ namespace PowerSDR
 			txtDisplayCursorPower.Location = new Point(txt_display_cursor_power_basis.X, txt_display_cursor_power_basis.Y + v_delta);
 			txtDisplayCursorOffset.Location = new Point(txt_display_cursor_offset_basis.X, txt_display_cursor_offset_basis.Y + v_delta);
 
-			double zoom_factor = 1.0 / ((ptbDisplayZoom.Maximum + ptbDisplayZoom.Minimum - ptbDisplayZoom.Value) * 0.01);
-			ptbDisplayZoom.Value = ptbDisplayZoom.Maximum + ptbDisplayZoom.Minimum - (int)(100.0 / zoom_factor);
+			// :NOTE: Force update on pan control
+			ptbDisplayPan.Value = ptbDisplayPan.Value;
+			ptbDisplayPan_Scroll(this, EventArgs.Empty);
+
+			// :NOTE: Force update on zoom control
+			ptbDisplayZoom.Value = ptbDisplayZoom.Value;
 			ptbDisplayZoom_Scroll(this, EventArgs.Empty);
 
 	
@@ -38948,7 +38952,11 @@ namespace PowerSDR
 			ptbDisplayPan.Location = new Point(lblDisplayPan.Location.X + lblDisplayPan.Width, top);
 			ptbDisplayPan.Size = new Size(dynamicWidth / 2, tb_display_pan_size_basis.Height);
 			btnDisplayPanCenter.Location = new Point(ptbDisplayPan.Location.X + ptbDisplayPan.Width, top);
-			btnDisplayPanCenter_Click(this, EventArgs.Empty);
+//			btnDisplayPanCenter_Click(this, EventArgs.Empty);
+
+			// :NOTE: Force update on pan control
+			ptbDisplayPan.Value = ptbDisplayPan.Value;
+			ptbDisplayPan_Scroll(this, EventArgs.Empty);
 
 			comboDisplayMode.Parent = panelDisplay;
 			comboDisplayMode.Location = new Point(btnDisplayPanCenter.Location.X + btnDisplayPanCenter.Width + 5, top);
@@ -38957,8 +38965,8 @@ namespace PowerSDR
 			ptbDisplayZoom.Location = new Point(lblDisplayZoom.Location.X + lblDisplayZoom.Width, top);
 			ptbDisplayZoom.Size = new Size(dynamicWidth / 2, tb_display_zoom_size_basis.Height);
 
-			double zoom_factor = 1.0 / ((ptbDisplayZoom.Maximum + ptbDisplayZoom.Minimum - ptbDisplayZoom.Value) * 0.01);
-			ptbDisplayZoom.Value = ptbDisplayZoom.Maximum + ptbDisplayZoom.Minimum - (int)(100.0 / zoom_factor);
+			// :NOTE: Force update on zoom control
+			ptbDisplayZoom.Value = ptbDisplayZoom.Value;
 			ptbDisplayZoom_Scroll(this, EventArgs.Empty);
 
 			radDisplayZoom05.Location = new Point(ptbDisplayZoom.Location.X + ptbDisplayZoom.Width, top);
