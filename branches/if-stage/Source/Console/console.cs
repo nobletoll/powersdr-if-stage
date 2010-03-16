@@ -35411,7 +35411,7 @@ namespace PowerSDR
 		{
 			try
 			{
-				Process.Start("http://code.google.com/p/powersdr-if-stage/issues/entry");
+				Process.Start("http://code.google.com/p/powersdr-if-stage/issues/list");
 			}
 			catch(Exception){ }
 		}
