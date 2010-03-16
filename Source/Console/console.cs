@@ -38809,9 +38809,12 @@ namespace PowerSDR
 
 		public void CollapseDisplay()
 		{
+			// Save expanded display size
+			if (!this.collapsedDisplay)
+				this.expandedSize = this.Size;
+
 			this.mnuCollapse.Text = "Expand";
 			this.collapsedDisplay = true;
-			this.expandedSize = this.Size;
 
 			int minWidth = 600;
 			int minHeight = 200;
