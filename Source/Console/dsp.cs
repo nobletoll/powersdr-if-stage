@@ -77,7 +77,7 @@ namespace PowerSDR
 			/// This function sets up the SDR functions and data structures
 			/// </summary>
 			/// <returns></returns>
-		public static extern void SetupSDR();
+		public static extern void SetupSDR(string app_data_path);
 
 		[DllImport("DttSP.dll", EntryPoint="SetDSPBuflen")]
 		public static extern void ResizeSDR(uint thread, int DSPsize);
@@ -523,8 +523,16 @@ namespace PowerSDR
         [DllImport("DttSP.dll", EntryPoint = "SetDiversityGain")]
         unsafe public static extern int SetDiversityGain(float gain); // valid 0.0 - 1.0
 
-        #endregion
+        // WU2X 
+        [DllImport("DttSP.dll", EntryPoint = "SwapIQChannels")]
+        public static extern void SwapIQChannelsDll(int flag);
+        public static void SwapIQChannels(int flag)
+        {
+            SwapIQChannelsDll(flag);
+            return;
+        }
 
 		#endregion
+	    #endregion
 	}
 }

@@ -37,7 +37,7 @@ using System.Windows.Forms;
 using SDRSerialSupportII;
 using System.IO;
 using System.IO.Ports;
-using TDxInput;
+// using TDxInput;
 
 namespace PowerSDR
 {
@@ -4452,7 +4452,9 @@ namespace PowerSDR
             "256",
             "512",
             "1024",
-            "2048"});
+            "2048",
+            "3072",
+            "4096"});
             this.comboAudioBuffer1.Location = new System.Drawing.Point(16, 24);
             this.comboAudioBuffer1.Name = "comboAudioBuffer1";
             this.comboAudioBuffer1.Size = new System.Drawing.Size(56, 21);
@@ -14989,8 +14991,7 @@ namespace PowerSDR
         {
             string skin = comboAppSkin.Text;
             comboAppSkin.Items.Clear();
-            string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
-                "\\FlexRadio Systems\\PowerSDR\\Skins";
+            string path = Application.StartupPath + "\\Skins";
 
             if (!Directory.Exists(path))
             {
@@ -21082,13 +21083,13 @@ namespace PowerSDR
 			console.GetState();				
 			if(console.EQForm != null) Common.RestoreForm(console.EQForm, "EQForm", false);
 			if(console.XVTRForm != null) Common.RestoreForm(console.XVTRForm, "XVTR", false);
-			if(console.ProdTestForm != null) Common.RestoreForm(console.ProdTestForm, "ProdTest", false);
+			// WU2X if(console.ProdTestForm != null) Common.RestoreForm(console.ProdTestForm, "ProdTest", false);
 
 			SaveOptions();					// save all database values
 			console.SaveState();
 			if(console.EQForm != null) Common.SaveForm(console.EQForm, "EQForm");
 			if(console.XVTRForm != null) Common.SaveForm(console.XVTRForm, "XVTR");
-			if(console.ProdTestForm != null) Common.SaveForm(console.ProdTestForm, "ProdTest");
+			// WU2X if(console.ProdTestForm != null) Common.SaveForm(console.ProdTestForm, "ProdTest");
 
 			udTransmitTunePower_ValueChanged(this, EventArgs.Empty);
 			console.ResetMemForm();
@@ -22373,16 +22374,14 @@ namespace PowerSDR
 
         private void comboAppSkin_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + 
-                "\\FlexRadio Systems\\PowerSDR\\Skins\\";
+            string path = Application.StartupPath + "\\Skins\\";
             if (Directory.Exists(path + comboAppSkin.Text))
                 Skin.Restore(comboAppSkin.Text, path, console);
         }
 
         private void btnSkinExport_Click(object sender, EventArgs e)
         {
-            string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + 
-                "\\FlexRadio Systems\\PowerSDR\\Skins\\";
+            string path = Application.StartupPath + "\\Skins\\";
             if (Directory.Exists(path + comboAppSkin.Text))
                 Skin.Save(comboAppSkin.Text, path, console);
         }

@@ -84,6 +84,13 @@
 		<ngetparms>-1</ngetparms>
 		<nansparms>-1</nansparms>
 	</catstruct>
+	<catstruct code="BW">
+		<desc>filter bandwidth</desc>
+		<active>true</active>
+		<nsetparms>4</nsetparms>
+		<ngetparms>0</ngetparms>
+		<nansparms>4</nansparms>
+	</catstruct>
 	<catstruct code="BY">
 		<desc>read busy signal status</desc>
 		<active>false</active>
@@ -173,14 +180,14 @@
 		<active>true</active>
 		<nsetparms>11</nsetparms>
 		<ngetparms>0</ngetparms>
-		<nansparms>11</nansparms>
+		<nansparms>8</nansparms>
 	</catstruct>
 	<catstruct code="FB">
 		<desc>vfo b frequency</desc>
 		<active>true</active>
 		<nsetparms>11</nsetparms>
 		<ngetparms>0</ngetparms>
-		<nansparms>11</nansparms>
+		<nansparms>8</nansparms>
 	</catstruct>
 	<catstruct code="FC">
 		<desc>subreceiver vfo freq</desc>
@@ -195,6 +202,13 @@
 		<nsetparms>-1</nsetparms>
 		<ngetparms>0</ngetparms>
 		<nansparms>8</nansparms>
+	</catstruct>
+	<catstruct code="FI">
+		<desc>if center frequency</desc>
+		<active>true</active>
+		<nsetparms>-1</nsetparms>
+		<ngetparms>0</ngetparms>
+		<nansparms>4</nansparms>
 	</catstruct>
 	<catstruct code="FR">
 		<desc>selects rx vfo mem or call</desc>
@@ -243,7 +257,7 @@
 		<active>true</active>
 		<nsetparms>-1</nsetparms>
 		<ngetparms>0</ngetparms>
-		<nansparms>35</nansparms>
+		<nansparms>24</nansparms>
 	</catstruct>
 	<catstruct code="IS">
 		<desc>if shift function</desc>
@@ -676,6 +690,13 @@
 		<desc>tone function on_off</desc>
 		<active>false</active>
 		<nsetparms>1</nsetparms>
+		<ngetparms>0</ngetparms>
+		<nansparms>1</nansparms>
+	</catstruct>
+	<catstruct code="TQ">
+		<desc>transmit query</desc>
+		<active>true</active>
+		<nsetparms>-1</nsetparms>
 		<ngetparms>0</ngetparms>
 		<nansparms>1</nansparms>
 	</catstruct>

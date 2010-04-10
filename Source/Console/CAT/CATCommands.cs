@@ -38,9 +38,9 @@ namespace PowerSDR
 	{
 		#region Variable Definitions
 
-		private Console console;
+		protected Console console;
 		private CATParser parser;
-		private string separator = System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+		protected string separator = System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
 		private Band[] BandList;
 		private int LastBandIndex;
 		private ASCIIEncoding AE = new ASCIIEncoding();
@@ -5023,7 +5023,7 @@ namespace PowerSDR
 
 		#region General Helpers
 
-		private string AddLeadingZeros(int n)
+		protected string AddLeadingZeros(int n)
 		{
 			string num = n.ToString();
 

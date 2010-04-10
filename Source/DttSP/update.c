@@ -57,10 +57,10 @@ gmean (REAL x, REAL y)
 }
 
 DttSP_EXP void
-Setup_SDR ()
+Setup_SDR (LPSTR *app_data_path)
 {
-	extern void setup ();
-	setup ();
+	extern void setup (LPSTR *app_data_path);
+	setup(app_data_path);
 }
 
 DttSP_EXP void
@@ -1700,5 +1700,13 @@ SetDiversityGain(REAL gain)
 	sem_wait(&top[2].sync.upd.sem);
 	diversity.gain = gain;
 	sem_post(&top[2].sync.upd.sem);
+}
+
+// WU2X
+DttSP_EXP void SwapIQChannels (int flag)
+{
+	top[0].hold.buf.swap = flag;
+	top[1].hold.buf.swap = flag;
+	top[2].hold.buf.swap = flag;
 }
 

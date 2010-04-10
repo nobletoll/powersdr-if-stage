@@ -331,6 +331,7 @@ extern struct _top
     struct
     {
       float *l, *r;
+	  int swap; // WU2X
     } aux, buf;
     struct
     {

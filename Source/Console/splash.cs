@@ -110,7 +110,7 @@ namespace PowerSDR
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(Splash));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Splash));
 			this.lblStatus = new System.Windows.Forms.LabelTS();
 			this.lblTimeRemaining = new System.Windows.Forms.LabelTS();
 			this.pnlStatus = new System.Windows.Forms.Panel();
@@ -121,6 +121,7 @@ namespace PowerSDR
 			// 
 			this.lblStatus.BackColor = System.Drawing.Color.Transparent;
 			this.lblStatus.ForeColor = System.Drawing.Color.White;
+            this.lblStatus.Image = null;
 			this.lblStatus.Location = new System.Drawing.Point(0, 230);
 			this.lblStatus.Name = "lblStatus";
 			this.lblStatus.Size = new System.Drawing.Size(400, 16);
@@ -132,6 +133,7 @@ namespace PowerSDR
 			// 
 			this.lblTimeRemaining.BackColor = System.Drawing.Color.Transparent;
 			this.lblTimeRemaining.ForeColor = System.Drawing.Color.White;
+            this.lblTimeRemaining.Image = null;
 			this.lblTimeRemaining.Location = new System.Drawing.Point(296, 232);
 			this.lblTimeRemaining.Name = "lblTimeRemaining";
 			this.lblTimeRemaining.Size = new System.Drawing.Size(100, 16);
@@ -154,10 +156,8 @@ namespace PowerSDR
 			// 
 			// Splash
 			// 
-			this.AutoScaleMode = AutoScaleMode.None;
-			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
 			this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
-			this.ClientSize = new System.Drawing.Size(400, 250);
+            this.ClientSize = new System.Drawing.Size(465, 304);
 			this.Controls.Add(this.pnlStatus);
 			this.Controls.Add(this.lblTimeRemaining);
 			this.Controls.Add(this.lblStatus);
@@ -420,7 +420,7 @@ namespace PowerSDR
 				LinearGradientBrush brBackground = 
 					new LinearGradientBrush(m_rProgress, 
 					Color.FromArgb(100, 100, 100),
-					Color.FromArgb(130, 255, 130), 
+					Color.FromArgb(255,0,0), 
 					LinearGradientMode.Horizontal);
 				e.Graphics.FillRectangle(brBackground, m_rProgress);
 			}
