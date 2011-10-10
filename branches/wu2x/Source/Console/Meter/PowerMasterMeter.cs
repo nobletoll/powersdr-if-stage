@@ -1,0 +1,209 @@
+//=============================================================================
+// PowerMasterMeter.cs
+//=============================================================================
+// Author: Chad Gatesman (W1CEG)
+//=============================================================================
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// as published by the Free Software Foundation; either version 2
+// of the License, or (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+//=============================================================================
+
+using System;
+using System.Collections;
+using System.Globalization;
+using System.Text;
+using System.Threading;
+using System.Timers;
+
+
+
+
+namespace PowerSDR
+{
+	public class PowerMasterMeter : Meter
+	{
+		private PowerMasterMeterParser parser;
+
+
+		public PowerMasterMeter(MeterHW hw, Console console) : base(hw,console)
+		{
+			this.parser = new PowerMasterMeterParser(console,hw,this);
+		}
+
+		
+		#region Initialization
+
+		public override void disconnect()
+		{
+			// :Issue 58: Tell the PowerMaster to stop sending real-time data
+			//            the Rig is in TX when PowerSDR goes to Standby.
+			this.stopDataReporting();
+
+			base.disconnect();
+		}
+
+		#endregion Initialization
+
+
+		#region Defaults & Supported Functions
+
+		public override int defaultBaudRate()
+		{
+			return 38400;
+		}
+
+		#endregion Defaults & Supported Functions
+
+
+		#region Get Commands
+
+		public override void getMeterInformation()
+		{
+			// :TODO:
+		}
+
+		#endregion Get Commands
+
+
+		#region Set Commands
+
+		public override void startDataReporting()
+		{
+			int rate;
+
+			if (this.mox)
+				return;
+
+			if (this.hw.MeterTimingInterval < 70)
+				rate = 1;
+			else if (this.hw.MeterTimingInterval < 140)
+				rate = 2;
+			else if (this.hw.MeterTimingInterval < 280)
+				rate = 3;
+			else
+				rate = 4;
+
+			this.doCommand("D" + rate);
+			this.mox = true;
+		}
+
+		public override void stopDataReporting()
+		{
+			if (!this.mox)
+				return;
+
+			this.doCommand("D0");
+			this.mox = false;
+		}
+
+		#endregion Set Commands
+
+
+		#region Answer Commands
+
+		public override void handleMeterAnswer(byte[] answer)
+		{
+			this.parser.Answer(answer);
+		}
+
+		#endregion Answer Commands
+
+
+		#region Commands
+
+		private void doCommand(string command)
+		{
+			PowerMasterCRC crc = new PowerMasterCRC();
+
+			foreach (char b in command)
+				crc.calculateCRC((byte) b);
+
+			byte[] bCmd = this.AE.GetBytes(command);
+			byte[] bData = new byte[command.Length + 5];
+
+			// Format:  STX Command ETX CRC1 CRC2 CR
+			bData[0] = PowerMasterCRC.STX;
+			Array.Copy(bCmd,0,bData,1,bCmd.Length);
+			bData[bCmd.Length + 1] = PowerMasterCRC.ETX;
+			bData[bCmd.Length + 2] = PowerMasterCRC.MakeASCIIHexFromBinary((byte) (crc.CRC >> 4));
+			bData[bCmd.Length + 3] = PowerMasterCRC.MakeASCIIHexFromBinary((byte) (crc.CRC & 0x0F));
+			bData[bCmd.Length + 4] = (byte) '\r';
+
+			this.hw.logOutgoingCAT("-> " + Meter.PrintBuffer(bData));
+
+			PowerMasterCRC.CheckCRC(bData);
+
+			this.SIO.put(bData,(uint) bData.Length);
+		}
+
+		#endregion Commands
+
+
+		#region Event Handlers
+
+		public override void SerialRXEventHandler(object source, SerialRXEvent e)
+		{
+			// Resize the commBuffer as needed...
+			int commBufferLen = 0;
+			if (this.commBuffer != null)
+			{
+				commBufferLen = this.commBuffer.Length;
+				Array.Resize<byte>(ref this.commBuffer,commBufferLen + e.buffer.Length);
+			}
+			else
+				this.commBuffer = new byte[e.buffer.Length];
+
+			// Append the incoming buffer into commBuffer
+			Array.Copy(e.buffer,0,this.commBuffer,commBufferLen,e.buffer.Length);
+
+			// Find each <CR>
+			int iCR;
+			int iStart = 0;
+			bool leftovers = false;
+			for (iCR = 0; iCR < this.commBuffer.Length; iCR++)
+			{
+				leftovers = true;
+
+				if (this.commBuffer[iCR] == '\r')
+				{
+					byte[] answer = new byte[iCR - iStart];
+					Array.Copy(this.commBuffer,iStart,answer,0,iCR - iStart);
+
+					this.hw.logIncomingCAT("<- " + Meter.PrintBuffer(answer));
+
+					this.handleMeterAnswer(answer);
+
+					iStart = iCR + 1;
+
+					if (iStart < this.commBuffer.Length && this.commBuffer[iStart] == '\n')
+						iStart = ++iCR + 1;
+
+					leftovers = false;
+				}
+
+			}
+
+			// Save the left over data for next read...
+			if (leftovers && iStart < this.commBuffer.Length)
+			{
+				byte[] buf = new byte[this.commBuffer.Length - iStart];
+				Array.Copy(this.commBuffer,iStart,buf,0,this.commBuffer.Length - iStart);
+				this.commBuffer = buf;
+			}
+			else
+				this.commBuffer = null;
+		}
+
+		#endregion Event Handlers
+	}
+}
