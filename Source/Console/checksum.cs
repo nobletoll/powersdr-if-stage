@@ -2,7 +2,7 @@
 // checksum.cs
 //=================================================================
 // PowerSDR is a C# implementation of a Software Defined Radio.
-// Copyright (C) 2004-2009  FlexRadio Systems
+// Copyright (C) 2004-2011  FlexRadio Systems
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -18,15 +18,15 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
-// You may contact us via email at: sales@flex-radio.com.
+// You may contact us via email at: gpl@flexradio.com.
 // Paper mail may be sent to: 
 //    FlexRadio Systems
-//    8900 Marybank Dr.
-//    Austin, TX 78750
+//    4616 W. Howard Lane  Suite 1-150
+//    Austin, TX 78728
 //    USA
 //=================================================================
 using System;
-
+using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 
@@ -37,14 +37,29 @@ namespace PowerSDR
 	/// </summary>
 	public class Checksum
 	{
+        public static bool Match(SortedDictionary<double, uint> dict, byte sum)
+        {
+            return (Calc(dict) == sum);
+        }
+
 		public static bool Match(int[][] table, byte sum, bool only_band_indexes)
 		{
 			return (Calc(table, only_band_indexes) == sum);
 		}
 
-		public static bool Match(float[] table, byte sum)
+        public static bool Match(float[] table1, float[] table2, byte sum)
+        {
+            return ((byte)(Calc(table1, table2)) == sum);
+        }
+
+        public static bool Match(float[] table, byte sum)
+        {
+            return (Calc(table) == sum);
+        }
+
+		public static bool MatchHF(float[] table, byte sum)
 		{
-			return (Calc(table) == sum);
+			return (CalcHF(table) == sum);
 		}
 
 		public static bool Match(float[][] table, byte sum)
@@ -74,8 +89,22 @@ namespace PowerSDR
 				return Calc(data);
 			}
 		}
-		
-		public static byte Calc(float[] table)
+
+        public static byte Calc(float[] table)
+        {
+            byte[] data = new byte[table.Length * 4];
+            for (int i = 0; i < table.Length; i++)
+                Array.Copy(BitConverter.GetBytes(table[i]), 0, data, i * 4, 4);
+
+            return Calc(data);
+        }
+
+        public static byte Calc(float[] table1, float[] table2)
+        {
+            return (byte)(Calc(table1) + Calc(table2));
+        }
+
+		public static byte CalcHF(float[] table)
 		{
 			Band[] bands = { Band.B160M, Band.B80M, Band.B60M, Band.B40M, Band.B30M, Band.B20M,
 							   Band.B17M, Band.B15M, Band.B12M, Band.B10M, Band.B6M };
@@ -119,5 +148,21 @@ namespace PowerSDR
 			}
 			return sum;
 		}
+
+        public static byte Calc(SortedDictionary<double, uint> dict)
+        {
+            byte sum = 0;
+            foreach (KeyValuePair<double, uint> pair in dict)
+            {
+                ulong freq = FWCEEPROM.ToVitaFreq(Math.Round(pair.Key, 3));
+                for (int i = 0; i < 8; i++)
+                    sum += (byte)(freq >> i * 8);
+
+                for (int i = 0; i < 4; i++)
+                    sum += (byte)(pair.Value >> i * 4);
+            }
+
+            return sum;
+        }
 	}
 }

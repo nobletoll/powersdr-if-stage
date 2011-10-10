@@ -5,6 +5,7 @@ common defs and code for parm update
 This file is part of a program that implements a Software-Defined Radio.
 
 Copyright (C) 2004, 2005, 2006, 2007 by Frank Brickle, AB2KT and Bob McGwier, N4HY
+Copyright (C) 2011 FlexRadio Systems - Manual Notch Cardinality
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -41,7 +42,7 @@ unsigned int threadno=2;
 unsigned int thread_com;
 
 #define RL (uni[thread].multirx.lis)
-
+#define asinh(value) (REAL)log(value + sqrt(value * value + 1))
 ////////////////////////////////////////////////////////////////////////////
 
 PRIVATE REAL INLINE
@@ -57,10 +58,10 @@ gmean (REAL x, REAL y)
 }
 
 DttSP_EXP void
-Setup_SDR ()
+Setup_SDR (char *app_data_path) //?????
 {
-	extern void setup ();
-	setup ();
+	extern void setup (app_data_path);
+	setup(app_data_path);
 }
 
 DttSP_EXP void
@@ -98,13 +99,50 @@ SetThreadCom(unsigned int thread)
 	}
 }
 
+DttSP_EXP void 
+SetSwchFlag(unsigned int thread, unsigned int val)
+{
+	//fprintf(stderr, "DttSP: SetSwchFlag(%u, %u)\n", thread, val), fflush(stderr);
+
+	sem_wait(&top[thread].sync.upd.sem);
+	top[thread].swch.flag = val;
+	sem_post(&top[thread].sync.upd.sem);
+}
+
+DttSP_EXP void
+SetSwchRiseThresh(unsigned int thread, REAL val)
+{
+	//fprintf(stderr, "DttSP: SetSwchRiseThresh(%u, %f)\n", thread, val), fflush(stderr);
+
+	sem_wait(&top[thread].sync.upd.sem);
+	top[thread].swch.rise_thresh.threshold = val;
+	sem_post(&top[thread].sync.upd.sem);
+}
+
 DttSP_EXP void
 SetThreadProcessingMode(unsigned int thread, RUNMODE runmode)
 {
 	sem_wait(&top[thread].sync.upd.sem);
-	top[thread].state = runmode;
 
-	if(runmode == RUN_MUTE) // added to clear the filter on TX->RX transitions
+	// this block here to eliminate glitching on 3K due to TR relay impulse
+	if(top[thread].swch.flag && top[thread].state == RUN_MUTE && runmode == RUN_PLAY)
+	{
+		top[thread].swch.env.curr.type = SWCH_RISE;
+		top[thread].swch.env.curr.cnt = 0;
+		top[thread].swch.env.curr.val = 0.0;
+		top[thread].swch.rise_thresh.flag = FALSE;
+		top[thread].swch.rise_thresh.count = 0;
+		top[thread].swch.rise_thresh.count_limit = (int)(uni[thread].samplerate * 0.050);
+		//top[thread].swch.rise_thresh.threshold = 3e-4f;
+		top[thread].swch.run.last = RUN_PLAY;
+		top[thread].state = RUN_SWCH;		
+	}
+	else
+	{
+		top[thread].state = runmode;
+	}
+
+	/*if(runmode == RUN_MUTE) // added to clear the filter on TX->RX transitions
 	{
 		int k;
 
@@ -113,11 +151,12 @@ SetThreadProcessingMode(unsigned int thread, RUNMODE runmode)
 			reset_OvSv (rx[thread][k].filt.ovsv);
 			DttSPAgc_flushbuf(rx[thread][k].dttspagc.gen);
 		}
-	}
+	}*/
 
 	sem_post(&top[thread].sync.upd.sem);
 	//fprintf(stderr,"thread: %0u setting mode to %0d\n", thread, (int)runmode),fflush(stderr);
 }
+
 DttSP_EXP int
 SetMode (unsigned int thread, unsigned int subrx, SDRMODE m)
 {
@@ -142,12 +181,146 @@ AudioReset (void)
 }
 
 DttSP_EXP void
-SetDCBlock (unsigned int thread, BOOLEAN setit)
+SetRXManualNotchEnable(unsigned int thread, unsigned int subrx, unsigned int index, BOOLEAN setit)
+{
+	fprintf(stderr, "DttSP::SetRXManualNotchEnable(%u, %u, %u, %u)\n", thread, subrx, index, setit);
+	fflush(stderr);
+	sem_wait(&top[thread].sync.upd.sem);
+	rx[thread][subrx].notch[index].flag = setit;
+	sem_post(&top[thread].sync.upd.sem);
+}
+
+DttSP_EXP void
+SetRXManualNotchBW(unsigned int thread, unsigned int subrx, unsigned int index, double BW)
+{
+	//REAL w0,sw,cw,alpha;
+	fprintf(stderr, "DttSP::SetRXManualNotchBW(%u, %u, %u, %lf)\n", thread, subrx, index, BW);
+	fflush(stderr);
+
+	/*w0 = (REAL)(2*M_PI*rx[thread][subrx].notch[index].gen->F0/rx[thread][subrx].notch[index].gen->Fs);
+	sw = (REAL)sin(w0);
+	cw = (REAL)cos(w0);
+	rx[thread][subrx].notch[index].gen->BW = (REAL)BW;
+	alpha = (REAL)(sw*sinh(log(2)*0.5*rx[thread][subrx].notch[index].gen->BW*w0/sw));
+	rx[thread][subrx].notch[index].gen->Q = 1/(2*sinh(log(2)/2 * BW*w0/sw));*/
+
+	sem_wait(&top[thread].sync.upd.sem);
+	/*rx[thread][subrx].notch[index].gen->BW = (REAL)(2*sw*asinh(1/(2*rx[thread][subrx].notch[index].gen->Q))/log(2)/w0);
+	rx[thread][subrx].notch[index].gen->B[0] = 1/(1+alpha);
+	rx[thread][subrx].notch[index].gen->B[1] =  -2*cw/(1+alpha);
+	rx[thread][subrx].notch[index].gen->B[2] = 1/(1+alpha);
+	rx[thread][subrx].notch[index].gen->A[0] = 1;
+	rx[thread][subrx].notch[index].gen->A[1] = -2*cw/(1+alpha);
+	rx[thread][subrx].notch[index].gen->A[2] = (1 - alpha)/(1+alpha);*/
+
+	rx[thread][subrx].notch[index].gen->BW = (REAL)BW;
+	
+	sem_post(&top[thread].sync.upd.sem);
+
+}
+DttSP_EXP void
+SetRXManualNotchFreq(unsigned int thread, unsigned int subrx, unsigned int index, double F0)
+{
+	REAL w0,sw,cw,alpha;
+	fprintf(stderr, "DttSP::SetRXManualNotchFreq(%u, %u, %u, %lf)\n", thread, subrx, index, F0);
+	fflush(stderr);
+
+	w0 = (REAL)(2*M_PI*F0/rx[thread][subrx].notch[index].gen->Fs);
+	sw = (REAL)sin(w0);
+	cw = (REAL)cos(w0);
+	//alpha = (REAL)(sw*sinh(log(2)*0.5*rx[thread][subrx].notch[index].gen->BW*w0/sw));
+	alpha = (REAL)(sw/(2*F0/rx[thread][subrx].notch[index].gen->BW));
+
+	sem_wait(&top[thread].sync.upd.sem);
+	//rx[thread][subrx].notch[index].gen->BW = (REAL)(2*sw*asinh(1/(2*rx[thread][subrx].notch[index].gen->Q))/log(2)/w0);
+	rx[thread][subrx].notch[index].gen->B[0] = 1/(1+alpha);
+	rx[thread][subrx].notch[index].gen->B[1] =  -2*cw/(1+alpha);
+	rx[thread][subrx].notch[index].gen->B[2] = 1/(1+alpha);
+	rx[thread][subrx].notch[index].gen->A[0] = 1;
+	rx[thread][subrx].notch[index].gen->A[1] = -2*cw/(1+alpha);
+	rx[thread][subrx].notch[index].gen->A[2] = (1 - alpha)/(1+alpha);
+	
+	sem_post(&top[thread].sync.upd.sem);
+}
+
+DttSP_EXP void
+SetRXDCBlock(unsigned int thread, unsigned int subrx, BOOLEAN setit)
+{
+	//fprintf(stderr, "DttSP: DCBlock(%u, %u)=%u\n", thread, subrx, setit), fflush(stderr);
+	sem_wait(&top[thread].sync.upd.sem);
+	rx[thread][subrx].dcb->flag = setit;
+	sem_post(&top[thread].sync.upd.sem);
+}
+
+DttSP_EXP void
+SetRXDCBlockGain(unsigned int thread, unsigned int subrx, REAL gain)
+{
+	sem_wait(&top[thread].sync.upd.sem);
+	rx[thread][subrx].dcb->gain = gain;
+	sem_post(&top[thread].sync.upd.sem);
+}
+
+DttSP_EXP void
+SetTXDCBlock (unsigned int thread, BOOLEAN setit)
 {
 	sem_wait(&top[thread].sync.upd.sem);
 	tx[thread].dcb.flag = setit;
 	sem_post(&top[thread].sync.upd.sem);
 }
+
+DttSP_EXP void
+SetTXFMDeviation(unsigned int thread, double deviation)
+{
+	sem_wait(&top[thread].sync.upd.sem);
+	tx[thread].fm.cvtmod2freq = (REAL) (deviation * TWOPI / uni[thread].samplerate);
+	sem_post(&top[thread].sync.upd.sem);
+}
+
+DttSP_EXP void
+SetRXFMDeviation(unsigned int thread, unsigned int k, double deviation)
+{
+	sem_wait(&top[thread].sync.upd.sem);
+	rx[thread][k].fm.gen->deviation = (REAL)deviation;
+	rx[thread][k].fm.gen->cvt = (REAL)(uni[thread].samplerate / (deviation * TWOPI));
+	fprintf(stderr, "dttsp SetRXFMDeviation: %f\n", deviation);
+	fflush(stderr);
+	sem_post(&top[thread].sync.upd.sem);
+}
+
+DttSP_EXP void
+SetCTCSSFreq(unsigned int thread, double freq_hz)
+{
+	sem_wait(&top[thread].sync.upd.sem);
+	//tx[thread].fm.ctcss.freq_hz = (REAL)freq_hz;
+	OSCfreq(tx[thread].fm.ctcss.osc) = TWOPI * (REAL)freq_hz / uni[thread].samplerate;
+	sem_post(&top[thread].sync.upd.sem);
+
+}
+
+DttSP_EXP void
+SetCTCSSFlag(unsigned int thread, BOOLEAN flag)
+{
+	sem_wait(&top[thread].sync.upd.sem);
+	//tx[thread].fm.ctcss.freq_hz = (REAL)freq_hz;
+	tx[thread].fm.ctcss.flag = flag;
+	//fprintf(stderr, "dttsp SETCTCSSFlag: %d\n", flag);
+	//fflush(stderr);
+	sem_post(&top[thread].sync.upd.sem);
+
+}
+
+DttSP_EXP void
+SetFMSquelchThreshold(unsigned int thread, unsigned int k, REAL threshold)
+{
+	sem_wait(&top[thread].sync.upd.sem);
+	rx[thread][k].fm.gen->squelch_threshold_weak = threshold;
+	rx[thread][k].fm.gen->squelch_threshold_unmute = threshold*0.9f;
+	rx[thread][k].fm.gen->squelch_threshold_strong = threshold*0.5f;
+	//fprintf(stderr, "dttsp SetFMSquelchThreshold: %f\n", threshold);
+	//fflush(stderr);
+	sem_post(&top[thread].sync.upd.sem);
+}
+
 
 DttSP_EXP int
 SetTXFilter (unsigned int thread, double low_frequency, double high_frequency)
@@ -340,7 +513,19 @@ SetNR (unsigned int thread, unsigned subrx, BOOLEAN setit)
 {
 	sem_wait(&top[thread].sync.upd.sem);
 	rx[thread][subrx].anr.flag = setit;
-	if (!setit) memset(rx[thread][subrx].anr.gen->adaptive_filter,0,sizeof(COMPLEX)*128);
+	if (!setit) 
+	{
+		/*int size = rx[thread][subrx].anr.gen->adaptive_filter_size; // EW: Would it be better to reset this to something other than zero?
+		REAL def = 1.0f / size;
+		int i;*/
+
+		memset(rx[thread][subrx].anr.gen->adaptive_filter, 0, sizeof(COMPLEX)*128);
+		/*for(i=0; i<size; i++)
+		{
+			rx[thread][subrx].anr.gen->adaptive_filter[i].re = def;
+			rx[thread][subrx].anr.gen->adaptive_filter[i].im = 0.0f;
+		}*/
+	}
 	sem_post(&top[thread].sync.upd.sem);
 }
 
@@ -351,7 +536,7 @@ SetNRvals (unsigned int thread, unsigned subrx, int taps, int delay, double gain
 	rx[thread][subrx].anr.gen->adaptive_filter_size = taps;
 	rx[thread][subrx].anr.gen->delay = delay;
 	rx[thread][subrx].anr.gen->adaptation_rate = (REAL)gain;
-	rx[thread][subrx].banr.gen->adaptation_rate = 0.1f*(REAL)gain;
+	rx[thread][subrx].banr.gen->adaptation_rate = (REAL)gain;
 	rx[thread][subrx].anr.gen->leakage = (REAL)leakage;
 	memset(rx[thread][subrx].anr.gen->adaptive_filter,0,sizeof(COMPLEX)*128);
 	sem_post(&top[thread].sync.upd.sem);
@@ -402,7 +587,7 @@ SetANF (unsigned int thread, unsigned subrx, BOOLEAN setit)
 {
 	sem_wait(&top[thread].sync.upd.sem);
 	rx[thread][subrx].anf.flag = setit;
-	if (!setit) memset(rx[thread][subrx].anf.gen->adaptive_filter,0,sizeof(COMPLEX)*128);
+	if (!setit) memset(rx[thread][subrx].anf.gen->adaptive_filter, 0, sizeof(COMPLEX)*128);
 	sem_post(&top[thread].sync.upd.sem);
 }
 
@@ -412,10 +597,10 @@ SetANFvals (unsigned int thread, unsigned subrx, int taps, int delay, double gai
 {
 	sem_wait(&top[thread].sync.upd.sem);
 
-	rx[thread][subrx].anf.gen->size = taps;
+	rx[thread][subrx].anf.gen->adaptive_filter_size = taps;
 	rx[thread][subrx].anf.gen->delay = delay;
 	rx[thread][subrx].anf.gen->adaptation_rate = (REAL)gain;
-	rx[thread][subrx].banf.gen->adaptation_rate = (REAL)gain*0.1f;
+	rx[thread][subrx].banf.gen->adaptation_rate = (REAL)gain;
 	rx[thread][subrx].anf.gen->leakage = (REAL)leakage;
 	memset(rx[thread][subrx].anf.gen->adaptive_filter,0,sizeof(COMPLEX)*128);
 
@@ -482,9 +667,9 @@ SetRXAGC (unsigned int thread, unsigned subrx, AGCMODE setit)
 		(REAL) (1.0 - exp (-1000.0 / (2.0 * uni[thread].samplerate)));
 	rx[thread][subrx].dttspagc.gen->one_m_attack =
 		(REAL) (1.0 - rx[thread][subrx].dttspagc.gen->attack);
-	rx[thread][subrx].dttspagc.gen->hangindex = rx[thread][subrx].dttspagc.gen->indx = 0;
-	rx[thread][subrx].dttspagc.gen->fastindx = (int)(0.003f*uni[thread].samplerate);
-	rx[thread][subrx].dttspagc.gen->sndx = (int)(0.003f*uni[thread].samplerate);
+	rx[thread][subrx].dttspagc.gen->hangindex = rx[thread][subrx].dttspagc.gen->slowindx = 0;
+	rx[thread][subrx].dttspagc.gen->fastindx = (int)(0.0027f*uni[thread].samplerate);
+	rx[thread][subrx].dttspagc.gen->out_indx = (int)(0.003f*uni[thread].samplerate);
 	switch (setit)
 	{
 		case agcOFF:
@@ -542,13 +727,13 @@ SetRXAGCAttack (unsigned int thread, unsigned subrx, int attack)
 	sem_wait(&top[thread].sync.upd.sem);
 	//rx[thread][subrx].dttspagc.gen->mode = 1; this shouldn't be here -- causes change of mode on init
 	rx[thread][subrx].dttspagc.gen->hangindex =
-		rx[thread][subrx].dttspagc.gen->indx = 0;
-	rx[thread][subrx].dttspagc.gen->fastindx = (int)(0.003*uni[thread].samplerate);
+		rx[thread][subrx].dttspagc.gen->slowindx = 0;
+	rx[thread][subrx].dttspagc.gen->fastindx = (int)(0.0027*uni[thread].samplerate);
 	rx[thread][subrx].dttspagc.gen->attack =
 		(REAL) (1.0 - exp (-1000.0 / (tmp * uni[thread].samplerate)));
 	rx[thread][subrx].dttspagc.gen->one_m_attack =
 		(REAL) exp (-1000.0 / (tmp * uni[thread].samplerate));
-	rx[thread][subrx].dttspagc.gen->sndx = (int) (uni[thread].samplerate * tmp * 0.003f);
+	rx[thread][subrx].dttspagc.gen->out_indx = (int) (uni[thread].samplerate * tmp * 0.003f);
 
 	sem_post(&top[thread].sync.upd.sem);
 }
@@ -610,11 +795,20 @@ SetTXALCAttack (unsigned int thread, int attack)
 
 	tx[thread].alc.gen->attack = (REAL) (1.0 - exp (-1000.0 / (tmp * uni[thread].samplerate)));
 	tx[thread].alc.gen->one_m_attack = (REAL) exp (-1000.0 / (tmp * uni[thread].samplerate));
+	tx[thread].alc.gen->slowindx = 0;
+	tx[thread].alc.gen->out_indx = (int) (0.003 * uni[thread].samplerate * tmp);
+	tx[thread].alc.gen->fastindx = (int) (0.0027 * uni[thread].samplerate * tmp);
+
+
+/*
+	tx[thread].alc.gen->attack = (REAL) (1.0 - exp (-1000.0 / (tmp * uni[thread].samplerate)));
+	tx[thread].alc.gen->one_m_attack = (REAL) exp (-1000.0 / (tmp * uni[thread].samplerate));
 	tx[thread].alc.gen->sndx =
 		(tx[thread].alc.gen->indx +
 		(int) (0.003 * uni[thread].samplerate * tmp)) & tx[thread].alc.gen->mask;
 	tx[thread].alc.gen->fastindx =
 		(tx[thread].alc.gen->sndx + FASTLEAD * tx[thread].alc.gen->mask) & tx[thread].alc.gen->mask;
+		*/
 	tx[thread].alc.gen->fasthangtime = (REAL) 0.1;
 
 	sem_post(&top[thread].sync.upd.sem);
@@ -680,7 +874,14 @@ SetTXLevelerAttack (unsigned int thread, int attack)
 {
 	REAL tmp = (REAL) attack;
 	sem_wait(&top[thread].sync.upd.sem);
-	tx[thread].leveler.gen->attack =
+
+	tx[thread].leveler.gen->attack = (REAL) (1.0 - exp (-1000.0 / (tmp * uni[thread].samplerate)));
+	tx[thread].leveler.gen->one_m_attack = (REAL) exp (-1000.0 / (tmp * uni[thread].samplerate));
+	tx[thread].leveler.gen->slowindx = 0;
+	tx[thread].leveler.gen->out_indx = (int) (0.003 * uni[thread].samplerate * tmp);
+	tx[thread].leveler.gen->fastindx = (int) (0.0027 * uni[thread].samplerate * tmp);
+
+/*	tx[thread].leveler.gen->attack =
 		(REAL) (1.0 - exp (-1000.0 / (tmp * uni[thread].samplerate)));
 	tx[thread].leveler.gen->one_m_attack =
 		(REAL) exp (-1000.0 / (tmp * uni[thread].samplerate));
@@ -689,7 +890,7 @@ SetTXLevelerAttack (unsigned int thread, int attack)
 		(int) (0.003 * uni[thread].samplerate * tmp)) & tx[thread].leveler.gen->mask;
 	tx[thread].leveler.gen->fastindx =
 		(tx[thread].leveler.gen->sndx +
-		FASTLEAD * tx[thread].leveler.gen->mask) & tx[thread].leveler.gen->mask;
+		FASTLEAD * tx[thread].leveler.gen->mask) & tx[thread].leveler.gen->mask; */
 	tx[thread].leveler.gen->fasthangtime = (REAL) 0.01;      //n4hy 10 ms
 	sem_post(&top[thread].sync.upd.sem);
 }
@@ -735,7 +936,8 @@ DttSP_EXP void
 SetRXAGCTop (unsigned int thread, unsigned int subrx, double max_agc)
 {
 	sem_wait(&top[thread].sync.upd.sem);
-	rx[thread][subrx].dttspagc.gen->gain.top = dB2lin((REAL)max_agc);
+	rx[thread][subrx].dttspagc.gen->gain.top = 
+		max(rx[thread][subrx].dttspagc.gen->gain.bottom,dB2lin((REAL)max_agc));
 	rx[thread][subrx].dttspagc.gen->hangindex = 0;
 	sem_post(&top[thread].sync.upd.sem);
 }
@@ -810,6 +1012,14 @@ SetCorrectRXIQMu (unsigned int thread, unsigned int subrx, double mu)
 	//memset((void *)rx[thread][subrx].iqfix->w,0,16*sizeof(COMPLEX));
 	//memset((void *)rx[thread][subrx].iqfix->del,0,16*sizeof(COMPLEX));
 	//memset((void *)rx[thread][subrx].iqfix->y,0,16*sizeof(COMPLEX));
+	sem_post(&top[thread].sync.upd.sem);
+}
+
+DttSP_EXP void
+SetCorrectWBIRState(unsigned int thread,WBIR_STATE wbir)
+{
+	sem_wait(&top[thread].sync.upd.sem);
+	uni[thread].wbir_state = wbir;
 	sem_post(&top[thread].sync.upd.sem);
 }
 
@@ -1262,7 +1472,6 @@ SetTRX (unsigned int thread, TRXMODE setit)
 {
 //	int i;
 	sem_wait (&top[thread].sync.upd.sem);
-
 	uni[thread].mode.trx = setit;
 
 #if 0
@@ -1281,6 +1490,7 @@ SetTRX (unsigned int thread, TRXMODE setit)
 DttSP_EXP void
 FlushAllBufs (unsigned int thread, BOOLEAN trx)
 {
+	int i;
 	sem_wait (&top[thread].sync.upd.sem);
 
 	if(trx)
@@ -1291,6 +1501,19 @@ FlushAllBufs (unsigned int thread, BOOLEAN trx)
 		DttSPAgc_flushbuf(tx[thread].leveler.gen);
 		DttSPAgc_flushbuf(tx[thread].alc.gen);
 	}
+	else
+	{
+		//fprintf(stdout, "FlushAllBufs(%u, %u)\n", thread, trx), fflush(stdout);
+		memset(top[thread].hold.buf.l,0,top[thread].hold.size.frames*sizeof(REAL));
+		memset(top[thread].hold.buf.r,0,top[thread].hold.size.frames*sizeof(REAL));
+		for(i=0; i<uni[thread].multirx.nrx; i++)
+		{
+			reset_OvSv(rx[thread][i].filt.ovsv);
+			DttSPAgc_flushbuf(rx[thread][i].dttspagc.gen);
+			resetDCBlocker(rx[thread][i].dcb, DCB_SINGLE_POLE);
+		}
+	}
+
 	sem_post (&top[thread].sync.upd.sem);
 
 	//fprintf(stdout, "DttSP: FlushAllBufs\n"), fflush(stdout);
@@ -1654,19 +1877,38 @@ SetSubRXSt(unsigned int thread, unsigned int subrx, BOOLEAN setit)
 	return rtn;
 }
 
-DttSP_EXP int
+// Determines the left (0.0) to right (1.0) audio field for this RX.
+DttSP_EXP void
 SetRXPan(unsigned int thread, unsigned int subrx, float pos)
 {
-	int rtn = 0;
-	float theta;
+	float theta, gain_l, gain_r;
 	sem_wait(&top[thread].sync.upd.sem);
-	if ((pos < 0.0f) || (pos > 1.0f))
-		rtn = -1;
-	theta = (REAL) ((1.0 - pos) * M_PI / 2.0);
-	rx[thread][subrx].azim = Cmplx ((REAL) cos (theta), (REAL) sin (theta));
+	if (pos < 0.0f) pos = 0.0f; // catch lower limit
+	if (pos > 1.0f) pos = 1.0f; // catch upper limit
+
+	if(pos <= 0.5f) gain_l = 1.0f;
+	else 
+	{
+		// theta runs from 0 to PI/2 as pos goes from 0.5 to 1.0
+		theta = (REAL) ((pos - 0.5) * M_PI);
+		gain_l = (REAL)cos(theta);
+	}
+
+	if(pos >= 0.5f) gain_r = 1.0f;
+	else
+	{	
+		// theta runs from 0 to PI/2 as pos goes from 0.0 to 0.5
+		theta = (REAL) (pos * M_PI);
+		gain_r = (REAL)sin(theta);
+	}
+
+	// Right first because imag is copied to the left channel in process_samples
+	rx[thread][subrx].azim = Cmplx (gain_r, gain_l);
+
+	//theta = (REAL) (pos * M_PI / 2.0);
+	//rx[thread][subrx].azim = Cmplx ((REAL) cos (theta), (REAL) sin (theta));
 
 	sem_post(&top[thread].sync.upd.sem);
-	return rtn;
 }
 
 DttSP_EXP void
@@ -1677,7 +1919,7 @@ SetDiversity (int setit)
 	sem_wait(&top[0].sync.upd.sem);
 	sem_wait(&top[1].sync.upd.sem);
 	sem_wait(&top[2].sync.upd.sem);
-	reset_em=TRUE;
+//	reset_em=TRUE;
 	diversity.flag = setit;
 	sem_post(&top[0].sync.upd.sem);
 	sem_post(&top[1].sync.upd.sem);

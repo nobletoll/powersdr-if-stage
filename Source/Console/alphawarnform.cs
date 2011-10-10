@@ -2,7 +2,7 @@
 // alphawarnform.cs
 //=================================================================
 // PowerSDR is a C# implementation of a Software Defined Radio.
-// Copyright (C) 2004-2009  FlexRadio Systems
+// Copyright (C) 2004-2011  FlexRadio Systems
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -18,11 +18,11 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
-// You may contact us via email at: sales@flex-radio.com.
+// You may contact us via email at: gpl@flexradio.com.
 // Paper mail may be sent to: 
 //    FlexRadio Systems
-//    8900 Marybank Dr.
-//    Austin, TX 78750
+//    4616 W. Howard Lane  Suite 1-150
+//    Austin, TX 78728
 //    USA
 //=================================================================
 
@@ -73,63 +73,66 @@ namespace PowerSDR
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(AlphaWarnForm));
-			this.rtxtWarning = new System.Windows.Forms.RichTextBox();
-			this.chkShowThisOnStartup = new System.Windows.Forms.CheckBox();
-			this.btnContinue = new System.Windows.Forms.Button();
-			this.SuspendLayout();
-			// 
-			// rtxtWarning
-			// 
-			this.rtxtWarning.BackColor = System.Drawing.SystemColors.ControlText;
-			this.rtxtWarning.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
-			this.rtxtWarning.ForeColor = System.Drawing.SystemColors.HighlightText;
-			this.rtxtWarning.Location = new System.Drawing.Point(16, 16);
-			this.rtxtWarning.Name = "rtxtWarning";
-			this.rtxtWarning.ReadOnly = true;
-			this.rtxtWarning.Size = new System.Drawing.Size(384, 216);
-			this.rtxtWarning.TabIndex = 1;
-			this.rtxtWarning.Text = @"Warning: This is alpha software and may contain bugs.  Use at your own risk.  If you are uncomfortable with running software that may contain bugs and thus interrupt normal operation, please use our latest official release which may be found at http://www.flex-radio.com.  Bugs found in this software may be reported at http://support.flex-radio.com on the Bug Tracker.  Please do NOT post bugs on the email reflector or forums.  Thanks and have fun.";
-			this.rtxtWarning.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.rtxtWarning_LinkClicked);
-			// 
-			// chkShowThisOnStartup
-			// 
-			this.chkShowThisOnStartup.BackColor = System.Drawing.Color.Black;
-			this.chkShowThisOnStartup.Checked = true;
-			this.chkShowThisOnStartup.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.chkShowThisOnStartup.ForeColor = System.Drawing.Color.White;
-			this.chkShowThisOnStartup.Location = new System.Drawing.Point(16, 240);
-			this.chkShowThisOnStartup.Name = "chkShowThisOnStartup";
-			this.chkShowThisOnStartup.Size = new System.Drawing.Size(168, 24);
-			this.chkShowThisOnStartup.TabIndex = 2;
-			this.chkShowThisOnStartup.Text = "Show this warning on startup";
-			// 
-			// btnContinue
-			// 
-			this.btnContinue.BackColor = System.Drawing.SystemColors.Control;
-			this.btnContinue.Location = new System.Drawing.Point(256, 240);
-			this.btnContinue.Name = "btnContinue";
-			this.btnContinue.TabIndex = 3;
-			this.btnContinue.Text = "Continue";
-			this.btnContinue.Click += new System.EventHandler(this.btnContinue_Click);
-			// 
-			// AlphaWarnForm
-			// 
-			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-			this.BackColor = System.Drawing.SystemColors.ControlText;
-			this.ClientSize = new System.Drawing.Size(416, 268);
-			this.Controls.Add(this.btnContinue);
-			this.Controls.Add(this.chkShowThisOnStartup);
-			this.Controls.Add(this.rtxtWarning);
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-			this.MaximizeBox = false;
-			this.MinimizeBox = false;
-			this.Name = "AlphaWarnForm";
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-			this.Text = "Alpha Warning";
-			this.Closing += new System.ComponentModel.CancelEventHandler(this.AlphaWarnForm_Closing);
-			this.ResumeLayout(false);
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AlphaWarnForm));
+            this.rtxtWarning = new System.Windows.Forms.RichTextBox();
+            this.chkShowThisOnStartup = new System.Windows.Forms.CheckBox();
+            this.btnContinue = new System.Windows.Forms.Button();
+            this.SuspendLayout();
+            // 
+            // rtxtWarning
+            // 
+            this.rtxtWarning.BackColor = System.Drawing.SystemColors.ControlText;
+            this.rtxtWarning.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rtxtWarning.ForeColor = System.Drawing.SystemColors.HighlightText;
+            this.rtxtWarning.Location = new System.Drawing.Point(16, 16);
+            this.rtxtWarning.Name = "rtxtWarning";
+            this.rtxtWarning.ReadOnly = true;
+            this.rtxtWarning.Size = new System.Drawing.Size(384, 216);
+            this.rtxtWarning.TabIndex = 1;
+            this.rtxtWarning.Text = resources.GetString("rtxtWarning.Text");
+            this.rtxtWarning.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.rtxtWarning_LinkClicked);
+            // 
+            // chkShowThisOnStartup
+            // 
+            this.chkShowThisOnStartup.BackColor = System.Drawing.Color.Black;
+            this.chkShowThisOnStartup.Checked = true;
+            this.chkShowThisOnStartup.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkShowThisOnStartup.ForeColor = System.Drawing.Color.White;
+            this.chkShowThisOnStartup.Location = new System.Drawing.Point(16, 240);
+            this.chkShowThisOnStartup.Name = "chkShowThisOnStartup";
+            this.chkShowThisOnStartup.Size = new System.Drawing.Size(168, 24);
+            this.chkShowThisOnStartup.TabIndex = 2;
+            this.chkShowThisOnStartup.Text = "Show this warning on startup";
+            this.chkShowThisOnStartup.UseVisualStyleBackColor = false;
+            // 
+            // btnContinue
+            // 
+            this.btnContinue.BackColor = System.Drawing.SystemColors.Control;
+            this.btnContinue.Location = new System.Drawing.Point(256, 240);
+            this.btnContinue.Name = "btnContinue";
+            this.btnContinue.Size = new System.Drawing.Size(75, 23);
+            this.btnContinue.TabIndex = 3;
+            this.btnContinue.Text = "Continue";
+            this.btnContinue.UseVisualStyleBackColor = false;
+            this.btnContinue.Click += new System.EventHandler(this.btnContinue_Click);
+            // 
+            // AlphaWarnForm
+            // 
+            this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
+            this.BackColor = System.Drawing.SystemColors.ControlText;
+            this.ClientSize = new System.Drawing.Size(416, 268);
+            this.Controls.Add(this.btnContinue);
+            this.Controls.Add(this.chkShowThisOnStartup);
+            this.Controls.Add(this.rtxtWarning);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
+            this.Name = "AlphaWarnForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Alpha Warning";
+            this.Closing += new System.ComponentModel.CancelEventHandler(this.AlphaWarnForm_Closing);
+            this.ResumeLayout(false);
 
 		}
 		#endregion

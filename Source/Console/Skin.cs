@@ -19,11 +19,11 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
-// You may contact us via email at: sales@flex-radio.com.
+// You may contact us via email at: gpl@flexradio.com.
 // Paper mail may be sent to: 
 //    FlexRadio Systems
-//    8900 Marybank Dr.
-//    Austin, TX 78750
+//    4616 W. Howard Lane  Suite 1-150
+//    Austin, TX 78728
 //    USA
 //=================================================================
 

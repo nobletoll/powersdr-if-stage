@@ -2,7 +2,7 @@
 // database.cs
 //=================================================================
 // PowerSDR is a C# implementation of a Software Defined Radio.
-// Copyright (C) 2004-2009  FlexRadio Systems
+// Copyright (C) 2004-2011  FlexRadio Systems
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -18,11 +18,11 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
-// You may contact us via email at: sales@flex-radio.com.
+// You may contact us via email at: gpl@flexradio.com.
 // Paper mail may be sent to: 
 //    FlexRadio Systems
-//    8900 Marybank Dr.
-//    Austin, TX 78750
+//    4616 W. Howard Lane  Suite 1-150
+//    Austin, TX 78728
 //    USA
 //=================================================================
 
@@ -44,10 +44,13 @@ namespace PowerSDR
 
 		public static DataSet ds;
 
-        private static string app_data_path = "";
-        public static string AppDataPath
+        /// <summary>
+        /// the complete filename of the datbase file to use including the full path
+        /// </summary>
+        private static string file_name = "";
+        public static string FileName
         {
-            set { app_data_path = value; }
+            set { file_name = value; }
         }
 
 		#endregion
@@ -263,21 +266,21 @@ namespace PowerSDR
 								147.390000, 147.599999, "2M FM Simplex",		true,
 								147.600000, 147.999999, "2M FM Repeater",		true,
 
-								222.000000, 222.024999, "1.25M EME/Weak Signal", true,
-								222.025000, 222.049999, "1.25M Weak Signal",	true,
-								222.050000, 222.059999, "1.25M Propagation Beacons", true,
-								222.060000, 222.099999, "1.25M Weak Signal",	true,
-								222.100000, 222.100000, "1.25M SSB/CW Calling",	true,
-								222.100001, 222.149999, "1.25M Weak Signal CW/SSB", true,
-								222.150000, 222.249999, "1.25M Local Option",	true,
-								222.250000, 223.380000, "1.25M FM Repeater Inputs", true,
-								222.380001, 223.399999, "1.25M General", true,
-								223.400000, 223.519999, "1.25M FM Simplex",		true,
-								223.520000, 223.639999, "1.25M Digital/Packet",	true,
-								223.640000, 223.700000, "1.25M Links/Control",	true,
-								223.700001, 223.709999, "1.25M General",	true,
-								223.710000, 223.849999, "1.25M Local Option",	true,
-								223.850000, 224.980000, "1.25M Repeater Outputs", true,
+								222.000000, 222.024999, "1.25M EME/Weak Signal",        true,
+								222.025000, 222.049999, "1.25M Weak Signal",	        true,
+								222.050000, 222.059999, "1.25M Propagation Beacons",    true,
+								222.060000, 222.099999, "1.25M Weak Signal",	        true,
+								222.100000, 222.100000, "1.25M SSB/CW Calling",	        true,
+								222.100001, 222.149999, "1.25M Weak Signal CW/SSB",     true,
+								222.150000, 222.249999, "1.25M Local Option",	        true,
+								222.250000, 223.380000, "1.25M FM Repeater Inputs",     true,
+								223.380001, 223.399999, "1.25M General",                true,
+								223.400000, 223.519999, "1.25M FM Simplex",		        true,
+								223.520000, 223.639999, "1.25M Digital/Packet",	        true,
+								223.640000, 223.700000, "1.25M Links/Control",	        true,
+								223.700001, 223.709999, "1.25M General",	            true,
+								223.710000, 223.849999, "1.25M Local Option",	        true,
+								223.850000, 224.980000, "1.25M Repeater Outputs",       true,
 
 								420.000000, 425.999999, "70CM ATV Repeater",	true,
 								426.000000, 431.999999, "70CM ATV Simplex",		true,
@@ -311,17 +314,17 @@ namespace PowerSDR
 								927.000000, 928.000000, "33CM FM Simplex/Links", true,
 								
 								1240.000000, 1245.999999, "23CM ATV #1",		true,
-								1246.000000, 1251.999999, "23CM FMN Point/Links", true,
+								1246.000000, 1251.999999, "23CM FM Point/Links", true,
 								1252.000000, 1257.999999, "23CM ATV #2, Digital Modes", true,
-								1258.000000, 1259.999999, "23CM FMN Point/Links", true,
+								1258.000000, 1259.999999, "23CM FM Point/Links", true,
 								1260.000000, 1269.999999, "23CM Sat Uplinks/Wideband Exp.", true,
 								1270.000000, 1275.999999, "23CM Repeater Inputs", true,
 								1276.000000, 1281.999999, "23CM ATV #3",		true,
 								1282.000000, 1287.999999, "23CM Repeater Outputs",	true,
 								1288.000000, 1293.999999, "23CM Simplex ATV/Wideband Exp.", true,
-								1294.000000, 1294.499999, "23CM Simplex FMN",		true,
+								1294.000000, 1294.499999, "23CM Simplex FM",		true,
 								1294.500000, 1294.500000, "23CM FM Simplex Calling", true,
-								1294.500001, 1294.999999, "23CM Simplex FMN",		true,
+								1294.500001, 1294.999999, "23CM Simplex FM",		true,
 								1295.000000, 1295.799999, "23CM SSTV/FAX/ACSSB/Exp.", true,
 								1295.800000, 1295.999999, "23CM EME/CW Expansion",	true,
 								1296.000000, 1296.049999, "23CM EME Exclusive",		true,
@@ -1382,8 +1385,23 @@ namespace PowerSDR
 		{
 			ds = new DataSet("Data");
 
-            if (File.Exists(app_data_path + "\\database.xml"))
-                ds.ReadXml(app_data_path + "\\database.xml");
+
+
+			// :W1CEG: PowerSDR IF-Stage will copy a default database from
+			//         the install bin directory instead of going through
+			//         the setup wizard.
+			string separator = System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+			string dbFile = "\\database.xml";
+
+			if (separator.Equals(","))
+				dbFile = "\\database-europe.xml";
+            /* ????
+			if (!File.Exists(app_data_path + "\\database.xml"))
+				File.Copy(Application.StartupPath + dbFile,
+					app_data_path + "\\database.xml");
+
+			ds.ReadXml(app_data_path + "\\database.xml");
+            */
 
 			VerifyTables();
 
@@ -1392,7 +1410,7 @@ namespace PowerSDR
 
 		public static void Update()
 		{
-			ds.WriteXml(app_data_path+"\\database.xml", XmlWriteMode.WriteSchema);
+			ds.WriteXml(file_name, XmlWriteMode.WriteSchema);
 		}
 
 		public static void Exit()
@@ -1513,6 +1531,23 @@ namespace PowerSDR
 			d["Freq"] = freq;
 		}
 
+        // This removes the notches from the state database so we can rewrite all of them without
+        // having one that was previously deleted staying in the database
+        public static void PurgeNotches()
+        {
+            // make sure there is a State table
+            if (!ds.Tables.Contains("State")) return;
+
+            // find all the notches and remove them
+            var rows = ds.Tables["State"].Select("Key like 'notchlist*'");
+            if (rows != null)
+            {
+                foreach (var row in rows)
+                    row.Delete();
+            }
+        }
+
+
 		public static void SaveVars(string tableName, ref ArrayList list)
 		{
 			if(!ds.Tables.Contains(tableName))
@@ -1526,6 +1561,9 @@ namespace PowerSDR
 					for(int i=2; i<vals.Length; i++)
 						vals[1] += "/"+vals[i];
 				}
+
+                if(vals.Length <= 1) // skip it as no data was provided
+                    continue;
 
 				DataRow[] rows = ds.Tables[tableName].Select("Key = '"+vals[0]+"'");
 				if(rows.Length == 0)	// name is not in list
@@ -1574,6 +1612,12 @@ namespace PowerSDR
 			}
 
 			ds = file;
+
+            // Handle change of mode from FMN to just FM
+            DataRow[] rows = ds.Tables["BandStack"].Select("Mode = 'FMN'");
+            foreach(DataRow dr in rows)
+                dr["Mode"] = "FM";
+
 			return true;
 		}
 

@@ -66,7 +66,7 @@ unsigned int SIZEBUF = 768;
 // ring buffer size; > 1 sec at this sr
 //#define RING_SIZE (1<<020)
 //#define RING_SIZE (1<<017)
-#define RING_SIZE 8192
+#define RING_SIZE 4096
 
 
 KeyerState ks;
@@ -83,9 +83,13 @@ static BOOLEAN playing = FALSE, iambic = FALSE, bug = FALSE,
 	cw_ring_reset = FALSE;
 static REAL wpm = 18.0, freq = 600.0, ramp = 5.0, gain = 0.0;
 
+static BOOLEAN mid_element = TRUE;
+static BOOLEAN auto_space_char = FALSE;
+
 
 //------------------------------------------------------------
 
+static int count = 0;
 
 DttSP_EXP void
 CWtoneExchange (float *bufl, float *bufr, int nframes)
@@ -94,7 +98,7 @@ CWtoneExchange (float *bufl, float *bufr, int nframes)
 
 	if (cw_ring_reset)
 	{
-		size_t reset_size = (unsigned)nframes;
+		size_t reset_size = 0;//(unsigned)nframes;
 		cw_ring_reset = FALSE;
 		EnterCriticalSection (cs_cw);
 		ringb_float_restart (lring, reset_size);
@@ -106,26 +110,49 @@ CWtoneExchange (float *bufl, float *bufr, int nframes)
 		LeaveCriticalSection (cs_cw);
 		return;
 	}
-	if ((numsamps = ringb_float_read_space (lring)) < (size_t) nframes)
+
+	if ((numsamps = ringb_float_read_space (lring)) < (size_t) nframes) // underflow condition
 	{
-		memset (bufl, 0, bytesize);
-		memset (bufr, 0, bytesize);
+		if(numsamps < (size_t)nframes/2) // not enough in the buffer, just send zeros and wait for next callback
+		{
+			memset (bufl, 0, bytesize);
+			memset (bufr, 0, bytesize);
+		}
+		else // pad with zeros and leave nframes/2 in the ring buffer, send rest
+		{
+			int num_to_read = numsamps - nframes/2;
+			int num_to_zero = nframes - num_to_read;
+
+			memset(bufl, 0, sizeof(float)*num_to_zero);
+			memset(bufr, 0, sizeof(float)*num_to_zero);
+
+			EnterCriticalSection (cs_cw);
+			ringb_float_read (lring, bufl+num_to_read, num_to_read);
+			ringb_float_read (rring, bufr+num_to_read, num_to_read);
+			LeaveCriticalSection (cs_cw);
+		}
 		//fprintf(stdout, "CWtoneExchange: cw_ring_reset = TRUE\n"), fflush(stdout);
-		cw_ring_reset = TRUE;
+		//cw_ring_reset = TRUE;
 	}
-	else
+	else // normal condition
 	{
 		EnterCriticalSection (cs_cw);
 		ringb_float_read (lring, bufl, nframes);
 		ringb_float_read (rring, bufr, nframes);
 		LeaveCriticalSection (cs_cw);
-	}	
+	}
+
+	if(numsamps > 3.5*nframes) // keep ring buffer from growing too much
+		cw_ring_reset = TRUE;
+
+	/*if(count++ % 100 == 0)
+		fprintf(stdout, "cw buf: %u\n", numsamps), fflush(stdout);*/
 }
 
 // generated tone -> output ringbuffer
 void
 send_tone (void)
-{  
+{
 	if (ringb_float_write_space (lring) < TONE_SIZE)
 	{
 		//fprintf(stdout, "send_tone: cw_ring_reset = TRUE\n"), fflush(stdout);
@@ -334,6 +361,26 @@ SetKeyerIambic (BOOLEAN setit)
 }
 
 DttSP_EXP void
+SetKeyerAutoSpace (BOOLEAN setit)
+{
+	//fprintf(stdout, "SetKeyerAutoSpace(%u)\n",setit), fflush(stdout);
+	EnterCriticalSection(update_ok);
+	auto_space_char = setit;
+	ks->flag.autospace.khar = setit;		
+	LeaveCriticalSection(update_ok);
+}
+
+DttSP_EXP void
+SetKeyerModeBStrict (BOOLEAN setit)
+{
+	//fprintf(stdout, "SetKeyerModeBStrict(%u)\n",setit), fflush(stdout);
+	EnterCriticalSection(update_ok);
+	mid_element = setit;
+	ks->flag.mdlmdB = setit;
+	LeaveCriticalSection(update_ok);
+}
+
+DttSP_EXP void
 SetKeyerFreq (REAL newfreq)
 {
 	EnterCriticalSection(update_ok);
@@ -381,11 +428,11 @@ SetKeyerMode (int newmode)
 	{
 		case 0:
 			ks->mode = MODE_A;
-			ks->flag.mdlmdB = FALSE;
+			//ks->flag.mdlmdB = FALSE;
 			break;
 		case 1:
 			ks->mode = MODE_B;
-			ks->flag.mdlmdB = TRUE;
+			//ks->flag.mdlmdB = TRUE;  //checkbox added
 			break;
 		default:
 			iambic = FALSE;
@@ -471,8 +518,9 @@ NewKeyer (REAL freq, BOOLEAN niambic, REAL gain, REAL ramp, REAL wpm,
 	ks = newKeyerState ();
 	ks->flag.iambic = niambic;
 	ks->flag.revpdl = TRUE;	// depends on port wiring
-	ks->flag.autospace.khar = ks->flag.autospace.word = FALSE;
-	ks->flag.mdlmdB = TRUE;
+	ks->flag.autospace.khar = auto_space_char;	//this option is now selectable
+	ks->flag.autospace.word = FALSE;
+	ks->flag.mdlmdB = mid_element;	//this option is now selectable
 	ks->flag.memory.dah = TRUE;
 	ks->flag.memory.dit = TRUE;
 	ks->debounce = 1;		// could be more if sampled faster

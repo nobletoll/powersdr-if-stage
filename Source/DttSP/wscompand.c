@@ -61,7 +61,7 @@ WSCompand (WSCompander wsc)
 {
 	int i, n = CXBsize (wsc->buff);
 
-	if (wsc->fac != 0.0) 
+	//if (wsc->fac != 0.0) 
 	{
 		for (i = 0; i < n ; i++)
 		{
@@ -77,6 +77,9 @@ WSCReset (WSCompander wsc, REAL fac)
 {
 	int i;
 	REAL *tbl = wsc->tbl;
+
+	//fprintf(stderr, "WSCReset - fac: %f\n", fac);
+	//fflush(stderr);
 
 	if (fac == 0.0)		// just linear
 	{

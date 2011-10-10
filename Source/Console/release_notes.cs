@@ -2,7 +2,7 @@
 // release_notes.cs
 //=================================================================
 // PowerSDR is a C# implementation of a Software Defined Radio.
-// Copyright (C) 2004-2009  FlexRadio Systems
+// Copyright (C) 2004-2011  FlexRadio Systems
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -18,11 +18,11 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
-// You may contact us via email at: sales@flex-radio.com.
+// You may contact us via email at: gpl@flexradio.com.
 // Paper mail may be sent to: 
 //    FlexRadio Systems
-//    8900 Marybank Dr.
-//    Austin, TX 78750
+//    4616 W. Howard Lane  Suite 1-150
+//    Austin, TX 78728
 //    USA
 //=================================================================
 
@@ -91,7 +91,7 @@
 //		Issue:			Keyspan USB Serial Adapter's can't be selected in com port selections.										
 //		Fix:			The Keyspan adapter returns FILE_TYPE_UNKNOWN on a GetFileType call so 
 //                      we now allow that filetype in the serial port opening code (SerialPort)
-//		Reported by:	N4DWK (5/29/2006 on Flex-Radio list) 
+//		Reported by:	N4DWK (5/29/2006 on flexradio list) 
 //		Fixed By:		KD5TFD
 //		SVN:			690
 //
@@ -416,7 +416,7 @@
 //						our compensation.  This is now working as intended.
 //		Reported By:	HB9AJP
 //		Fixed By:		KE5DTO
-//		References:		http://support.flex-radio.com/ReviewBug.aspx?id=312&it=B
+//		References:		http://support.flexradio.com/ReviewBug.aspx?id=312&it=B
 //		SVN Rev:		477
 //
 //		Issue:			The TX Meter reads 3.0dB lower than the analog meter.
@@ -426,7 +426,7 @@
 //						our compensation.  This is now working as intended.
 //		Reported By:	VK6APH, N6SF
 //		Fixed By:		KE5DTO
-//		References:		http://support.flex-radio.com/ReviewBug.aspx?id=311&it=B
+//		References:		http://support.flexradio.com/ReviewBug.aspx?id=311&it=B
 //		SVN Rev:		478
 //
 //  Modifications:
@@ -452,7 +452,7 @@
 //						Hz on the Setup Form.
 //		Requested By:	ES7AAZ
 //		Coded By:		KE5DTO
-//		References:		http://support.flex-radio.com/ReviewBug.aspx?id=242&it=B
+//		References:		http://support.flexradio.com/ReviewBug.aspx?id=242&it=B
 //		SVN Rev:		476
 //
 //	New Features:
@@ -504,7 +504,7 @@
 //		Fix:			The TUN function has been modified to output a tone in
 //						the lower sideband if in LSB, CWL, or DIGL.
 //		Reported By:	K1RQG
-//		References:		http://support.flex-radio.com/ReviewBug.aspx?id=292&it=B
+//		References:		http://support.flexradio.com/ReviewBug.aspx?id=292&it=B
 //		Fixed By:		N4HY, KE5DTO
 //		SVN Rev:		465
 //		
@@ -567,7 +567,7 @@
 //		Fix:			The PollPTT	routine did not handle the SemiBreakin flag
 //						correctly.  This has been fixed.
 //		Reported By:	VE6IB
-//		References:		http://support.flex-radio.com/ReviewBug.aspx?id=280&it=B
+//		References:		http://support.flexradio.com/ReviewBug.aspx?id=280&it=B
 //		Fixed By:		N4HY
 //		SVN Rev:		449
 //
@@ -575,7 +575,7 @@
 //		Fix:			The Tooltip still read "locked to 48000 samples per
 //						second" even though this rate may now be changed.
 //		Reported By:	NJ1H
-//		References:		http://support.flex-radio.com/ReviewBug.aspx?id=251&it=B
+//		References:		http://support.flexradio.com/ReviewBug.aspx?id=251&it=B
 //		Fixed By:		N4HY
 //		SVN Rev:		450
 //
@@ -585,7 +585,7 @@
 //						has been adressed to prevent the memory errors.
 //		Reported By:	WA6AHL
 //		Fixed By:		N4HY
-//		References:		http://support.flex-radio.com/ReviewBug.aspx?id=283&it=B
+//		References:		http://support.flexradio.com/ReviewBug.aspx?id=283&it=B
 //		SVN Rev:		451
 //
 //  Modifications:
@@ -630,7 +630,7 @@
 //						one.
 //      Reported by:	W4TME
 //		Fixed by:		KE5DTO
-//		References:		http://support.flex-radio.com/ReviewBug.aspx?id=117&it=B
+//		References:		http://support.flexradio.com/ReviewBug.aspx?id=117&it=B
 //		SVN Rev:		382 
 //
 //		Issue:			Variable filters sometimes forget the last setting.
@@ -645,7 +645,7 @@
 //						the Shift slider being automatically centered.
 //      Reported by:	W9OY, K5SDR
 //		Fixed by:		KE5DTO
-//		References:		http://support.flex-radio.com/ReviewBug.aspx?id=229&it=B
+//		References:		http://support.flexradio.com/ReviewBug.aspx?id=229&it=B
 //		SVN Rev:		381 
 //
 //		Issue:			Level calibration is not accurate.
@@ -660,7 +660,7 @@
 //						calibration routine.
 //      Reported by:	K5KDN, N4HY
 //		Fixed by:		KE5DTO, N4HY
-//		References:		http://support.flex-radio.com/ReviewBug.aspx?id=232&it=B
+//		References:		http://support.flexradio.com/ReviewBug.aspx?id=232&it=B
 //		SVN Rev:		376 
 //
 //		Issue:			The Old Keyer buffers are lost if the New Keyer is
@@ -671,7 +671,7 @@
 //						new keyer on and off.
 //      Reported by:	K0PFX
 //		Fixed by:		KE5DTO
-//		References:		http://support.flex-radio.com/ReviewBug.aspx?id=230&it=B
+//		References:		http://support.flexradio.com/ReviewBug.aspx?id=230&it=B
 //		SVN Rev:		377 
 #endregion
 
@@ -689,7 +689,7 @@
 //						reset for one buffer length for the transition periods.
 //      Reported by:	W9DR, W5GI
 //		Fixed by:		KE5DTO 
-//		References:		http://support.flex-radio.com/ReviewBug.aspx?id=214&it=B
+//		References:		http://support.flexradio.com/ReviewBug.aspx?id=214&it=B
 //		SVN Rev:		368 
 //
 //		Issue:			With VAC Auto Enable on, switching from DIGU to CWU
@@ -703,14 +703,14 @@
 //						longer an issue.
 //      Reported by:	W0VB
 //		Fixed by:		KE5DTO 
-//		References:		http://support.flex-radio.com/ReviewBug.aspx?id=192&it=B
+//		References:		http://support.flexradio.com/ReviewBug.aspx?id=192&it=B
 //		SVN Rev:		367 
 //
 //		Issue:			Both Rev Pow and Ref Pow show up in TX Meter.
 //		Fix:			This was an oversight and is now fixed. 
 //      Reported by:	NJ1H
 //		Fixed by:		KE5DTO 
-//		References:		http://support.flex-radio.com/ReviewBug.aspx?id=206&it=B
+//		References:		http://support.flexradio.com/ReviewBug.aspx?id=206&it=B
 //		SVN Rev:		354 
 #endregion
 
@@ -750,7 +750,7 @@
 //						should.
 //		Reported By:	N1SG
 //		Fixed By:		KE5DTO
-//		References:		http://support.flex-radio.com/ReviewBug.aspx?id=143&it=B
+//		References:		http://support.flexradio.com/ReviewBug.aspx?id=143&it=B
 //		SVN Rev:		325 
 //
 //		Issue:			DRM panadapter display is incorrect in new sample rates.
@@ -759,7 +759,7 @@
 //						rate. This was one such issue.
 //		Reported By:	NJ1H
 //		Fixed By:		N4HY
-//		References:		http://support.flex-radio.com/AdminEditBug.aspx?id=137&it=B
+//		References:		http://support.flexradio.com/AdminEditBug.aspx?id=137&it=B
 //
 //		Issue:			Gain mangement issues in the transmitter.
 //		Fix:			The DSP core has been returned to operating on signals in the
@@ -792,7 +792,7 @@
 //						to change the gain slope from 0 dB to 10 dB.
 //		Suggested By:	VK6APH
 //		Coded By:		N4HY
-//		Reference:		http://support.flex-radio.com/AdminEditBug.aspx?id=118&it=B
+//		Reference:		http://support.flexradio.com/AdminEditBug.aspx?id=118&it=B
 //		SVN:			319
 #endregion
 
@@ -830,7 +830,7 @@
 //						forgiving.
 //		Reported By:	W0IVJ
 //		Fixed By:		KE5DTO
-//		References:		http://support.flex-radio.com/ReviewBug.aspx?id=97&it=B
+//		References:		http://support.flexradio.com/ReviewBug.aspx?id=97&it=B
 //		SVN Rev:		311
 //
 //		Issue:			ATU + Bypass does not work correctly.
@@ -845,7 +845,7 @@
 //						has been fixed.
 //		Reported By:	ZL1WN, RW3PS
 //		Fixed By:		N4HY, KE5DTO
-//		References:		http://support.flex-radio.com/ReviewBug.aspx?id=91&it=B
+//		References:		http://support.flexradio.com/ReviewBug.aspx?id=91&it=B
 //		SVN Rev:		306
 //
 //		Issue:			FireBox with 1W can overdrive the transmitter.
@@ -2060,7 +2060,7 @@
 //						cards, but has not been tested adaquately.  Use with
 //						any card other than the Delta 44 is at your own risk.
 //		Coded By:		N4HY, KE5DTO
-//		References:		http://www.flex-radio.com/download_files/PowerSDR/Docs/PowerSDR_VAC.pdf
+//		References:		http://www.flexradio.com/download_files/PowerSDR/Docs/PowerSDR_VAC.pdf
 //
 //		Feature:		Integrated support for Soft Rock 40.
 //		Description:	The Soft Rock 40 is now supported in the main console.
@@ -3223,7 +3223,7 @@
 //		Suggested By:	W5ZL, KD5TFD
 //		Fix Coded By:	KE5DTO
 //		References:		Email 06/09/05 Subject: RE: ShuttlePro Pref file
-//						http://www.flex-radio.com/key-map.xls
+//						http://www.flexradio.com/key-map.xls
 //
 //	New Features:
 //
@@ -3234,7 +3234,7 @@
 //						filter (if one is not already selected).
 //		Suggested By:	KD5TFD, K2WS
 //		Coded By:		KD5TFD
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?t=1661
+//		References:		http://www.flexradio.com/forum/viewtopic.php?t=1661
 //
 //		Feature:		DC Blocking Filter.
 //		Description:	A DC blocking filter has been enabled in the DSP
@@ -3311,7 +3311,7 @@
 //						of the speechprocessor buffer.
 //		Reported By:	AB1DO
 //		Fix Coded By:	N4HY
-//		References:		http://mail.flex-radio.biz/pipermail/flexradio_flex-radio.biz/2005-June/000481.html
+//		References:		http://mail.flexradio.biz/pipermail/flexradio_flexradio.biz/2005-June/000481.html
 //
 //		Issue:			Can not use double digit COM port (eg COM10).
 //		Fix:			This was apparently a well known MS bug.  See the
@@ -3337,7 +3337,7 @@
 //						hosts as well.
 //		Reported By:	KC5NRA
 //		Fix Coded By:	KC5NRA
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=7720#7720
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=7720#7720
 //
 //		Issue:			ATU not being bypassed when changing bands.
 //		Fix:			The new hardware code was being exercised and no hardware
@@ -3405,9 +3405,9 @@
 //		Suggested By:	N9VV
 //		Coded By:		KD5TFD
 //		References:		Email 06/05/05 Subject: [Flexradio] do you use VFO-LOCK?
-//						http://www.flex-radio.com/forum/viewtopic.php?p=5135#5135
-//						http://www.flex-radio.com/forum/viewtopic.php?p=4966#4966
-//						http://www.flex-radio.com/forum/viewtopic.php?p=437#437
+//						http://www.flexradio.com/forum/viewtopic.php?p=5135#5135
+//						http://www.flexradio.com/forum/viewtopic.php?p=4966#4966
+//						http://www.flexradio.com/forum/viewtopic.php?p=437#437
 #endregion
 
 #region Beta 1.3.5 Released 05/27/05
@@ -3517,7 +3517,7 @@
 //		Reported By:	W5GI, WA8SRA, AA5XE, G4BBY
 //		Fix Coded By:	KE5DTO
 //		References:		Email 05/07/05 Subject: [Flexradio] 1.3.3
-//						http://www.flex-radio.com/forum/viewtopic.php?p=7602#7602
+//						http://www.flexradio.com/forum/viewtopic.php?p=7602#7602
 //
 //		Issue:			PowerSDR crashes on startup if ASIO4ALL is not installed.
 //		Fix:			More generally, the program would crash if an ASIO driver
@@ -3533,7 +3533,7 @@
 //						to positive logic caused this bug.  This is now fixed.
 //		Reported By:	KD5TFD
 //		Fix Coded By:	KD5TFD
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=7588#7588
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=7588#7588
 //
 //		Issue:			Turning Spur Reduction off while in SPEC mode loses
 //						signals.	
@@ -3609,7 +3609,7 @@
 //						being initialized correctly.  This has been fixed.
 //		Reported By:	DK7XL, EB4APL, WK0J, OH2RZ
 //		Fix Coded By:	KE5DTO
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=7491#7491
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=7491#7491
 //
 //	New Features:
 //
@@ -3695,7 +3695,7 @@
 //						This is now fixed.
 //		Reported By:	KC2LFI, KD5TFD
 //		Fix Coded By:	KE5DTO
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=7433#7433
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=7433#7433
 //
 //	Modifications:
 //
@@ -3719,7 +3719,7 @@
 //						thread safe controls.
 //		Reported By:	W0VB, KD5TFD, OH2RZ, AA5XE
 //		Fix Coded By:	KE5DTO
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=7373#7373
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=7373#7373
 //
 //		Issue:			No receive audio with Delta 44.
 //		Fix:			There was a bug in the audio processing algorithm that
@@ -3736,7 +3736,7 @@
 //						its own tab called CAT Control.
 //		Reported By:	NJ1H
 //		Fix Coded By:	KD5TFD
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=7394#7394
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=7394#7394
 //
 //		Issue:			Keyboard controls are empty.
 //		Fix:			The code to fill the keyboard controls used type sensitive
@@ -3761,14 +3761,14 @@
 //						work with the new thread safe controls.
 //		Reported By:	AA5XE
 //		Fix Coded By:	KE5DTO
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=7380#7380
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=7380#7380
 //
 //		Issue:			Fractional part of Image Reject controls is not restored.
 //		Fix:			A ordering problem (slider before updown) on startup was 
 //						causing this issue.  This is now fixed.
 //		Reported By:	OH2RZ
 //		Fix Coded By:	KE5DTO
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=7408#7408
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=7408#7408
 //
 //	Modifications:
 //
@@ -3933,7 +3933,7 @@
 //						an appropriate label.
 //		Reported By:	W0VB
 //		Fix Coded By:	KE5DTO
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=7179#7179
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=7179#7179
 //
 //		Issue:			Hitting MOX button when out of band powers the software off.
 //		Fix:			While trying to prevent the PTT from putting the software
@@ -3995,7 +3995,7 @@
 //						is now fixed and all of these controls now step +/-1.
 //		Reported By:	I2KBO
 //		Fix Coded By:	KE5DTO
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=7064#7064
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=7064#7064
 //
 //		Issue:			Import Database from Wizard does not load PA Gain by Band
 //						settings.
@@ -4041,8 +4041,8 @@
 //						now 65/50/50 for Taps/Delay/Gain.
 //		Reported by:	WO0Z, WA8SRA
 //		Fix Coded By:	KE5DTO
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=6856#6856
-//						http://www.flex-radio.com/forum/viewtopic.php?p=6696#6696
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=6856#6856
+//						http://www.flexradio.com/forum/viewtopic.php?p=6696#6696
 //
 //		Issue:			Display average is not initialized correctly when buffer
 //						sizes other than 2048 are used.
@@ -4051,7 +4051,7 @@
 //						The calculation is now fixed.
 //		Reported by:	WA8SRA
 //		Fix Coded By:	KE5DTO
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=6696#6696
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=6696#6696
 //
 //		Issue:			ATU Present on startup without PA Present checked.
 //		Fix:			This was an oversight and is now fixed.
@@ -4103,11 +4103,11 @@
 //						longer necessary unless actually using the USB adapter.
 //		Reported by:	N9DG, K3TL, WA2N, AA5XE, N8VB, NJ1H, K3IB, AA8YI, W0VB
 //		Fix Coded By:	KE5DTO
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=6763#6763
-//						http://www.flex-radio.com/forum/viewtopic.php?p=6766#6766
-//						http://www.flex-radio.com/forum/viewtopic.php?p=6776#6776
-//						http://www.flex-radio.com/forum/viewtopic.php?p=6800#6800
-//						http://www.flex-radio.com/forum/viewtopic.php?p=6806#6806
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=6763#6763
+//						http://www.flexradio.com/forum/viewtopic.php?p=6766#6766
+//						http://www.flexradio.com/forum/viewtopic.php?p=6776#6776
+//						http://www.flexradio.com/forum/viewtopic.php?p=6800#6800
+//						http://www.flexradio.com/forum/viewtopic.php?p=6806#6806
 //
 //		Issue:			New snap-to 1kHz tuning gets stuck on 1.001MHz.
 //		Fix:			This problem came as a result of floating point errors
@@ -4115,7 +4115,7 @@
 //						keeps this from happening now.
 //		Reported by:	EB4APL
 //		Fix Coded By:	KE5DTO
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=6802#6802
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=6802#6802
 //
 //		Issue:			Voltage spike on TX -> RX transition.
 //		Fix:			Due to an ordering issue and old code (3 board stack days),
@@ -4167,7 +4167,7 @@
 //						the analog "bar graph" meter.
 //		Reported by:	VK6APH
 //		Fix Coded By:	KE5DTO
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=6668#6668
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=6668#6668
 //
 //		Issue:			Changing Setup controls while in MOX can cause problems.
 //		Fix:			While this is not customary, we have taken precautions to
@@ -4213,7 +4213,7 @@
 //						accuracy down to +/- 0.1dB with respect to the source.
 //		Reported by:	WA8SRA, VK6APH
 //		Fix Coded By:	KE5DTO
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=6547#6547
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=6547#6547
 //
 //		Issue:			ALC meter shows negative numbers.
 //		Fix:			Several meter modes including ALC, Peak Pow, and Fwd Pow
@@ -4222,7 +4222,7 @@
 //						do not make sense).
 //		Reported by:	KC2LFI
 //		Fix Coded By:	KE5DTO
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=6565#6565
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=6565#6565
 //
 //		Issue:			ALC meter shows negative numbers.
 //		Fix:			Several meter modes including ALC, Peak Pow, and Fwd Pow
@@ -4231,14 +4231,14 @@
 //						do not make sense).
 //		Reported by:	KC2LFI
 //		Fix Coded By:	KE5DTO
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=6565#6565
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=6565#6565
 //
 //		Issue:			CW memory buffer carrying over from last transmit.
 //		Fix:			The buffers are now cleared whenever the Send button is
 //						depressed.
 //		Reported by:	WO0Z
 //		Fix Coded By:	KE5DTO
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=6589#6589
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=6589#6589
 //
 //		Issue:			Slow display during busy signal activity.
 //		Fix:			A bug in the display calculation was causing the display
@@ -4247,7 +4247,7 @@
 //						is fixed and now the screen display is more consistent.					
 //		Reported by:	VK6APH
 //		Fix Coded By:	N4HY
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=6546#6546
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=6546#6546
 //
 //		Issue:			Panadapter display looks noisy.
 //		Fix:			The optimized display code did not take into account cases
@@ -4256,7 +4256,7 @@
 //						This is fixed and the display appears as it used to.					
 //		Reported by:	DJ9CS
 //		Fix Coded By:	N4HY
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=6566#6566
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=6566#6566
 //
 //	Modifications:
 //
@@ -4267,7 +4267,7 @@
 //						does not apply to hover tuning over the VFO.
 //		Suggested By:	WA8SRA, WO0Z
 //		Coded By:		KE5DTO
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=6433#6433
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=6433#6433
 //
 //	New Features:
 //
@@ -4310,7 +4310,7 @@
 //						is now fixed. 
 //		Reported by:	KC2LFI, SM6OMH, VE6IV, K5SDR, N9VV, AA5XE, WO0Z, KD5TFD
 //		Fix Coded By:	KE5DTO
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=6292#6292
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=6292#6292
 //
 //		Issue:			CW missing/clipped first dot or dash.
 //		Fix:			This is a classic case of retrogression of code.  The code
@@ -4318,7 +4318,7 @@
 //						is back in commission now.
 //		Reported by:	VE6IV, WO0Z
 //		Fix Coded By:	KE5DTO
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=4973#4973
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=4973#4973
 //
 //	Modifications:
 //
@@ -4448,7 +4448,7 @@
 //						to ring buffer performance under load.
 //		Reported by:	WA8SRA
 //		Fix Coded By:	N4HY
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?t=1339
+//		References:		http://www.flexradio.com/forum/viewtopic.php?t=1339
 //
 //		Issue:			Receive (and Transmit) Filters have different gains.
 //		Fix:			In early days when Phil Harmann, VK6APH reported this, the
@@ -4457,7 +4457,7 @@
 //						N4HY determined it was true with TX filters as well.
 //		Reported By:	VK6APH
 //		Fix Coded By:	AB2KT and N4HY
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?t=630
+//		References:		http://www.flexradio.com/forum/viewtopic.php?t=630
 //
 //	Modifications:
 //
@@ -4470,7 +4470,7 @@
 //						is turned off.
 //		Suggested By:	WO0Z
 //		Coded By:		KE5DTO
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=6201#6201
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=6201#6201
 //
 //		Issue:			Calibration Power Point.
 //		Description:	Due to customer feedback, we have added a control that
@@ -4481,7 +4481,7 @@
 //						less accurate calibration.
 //		Suggested By:	WO0Z
 //		Coded By:		KE5DTO
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=6201#6201
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=6201#6201
 //
 //		Issue:			Analog multimeter peak hold time.
 //		Description:	There is now a control in the Display Tab on the Setup
@@ -4547,7 +4547,7 @@
 //						reported, and helped debug this issue.
 //		Reported By:	Nearly everyone.  :)
 //		Fix Coded By:	N4HY
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=6118#6118
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=6118#6118
 //
 //		Issue:			Trying to playback from a wave file marked as read
 //						only causes the console to crash.
@@ -4573,7 +4573,7 @@
 //						in those modes).
 //		Reported By:	VK3AAW
 //		Fix Coded By:	KE5DTO
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=6051#6051
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=6051#6051
 //
 //		Issue:			When in SPEC or DRM modes, copying from VFO A to B
 //						causes a filter to be set when copying back.
@@ -4583,7 +4583,7 @@
 //						modes.
 //		Reported By:	WA2N
 //		Fix Coded By:	KE5DTO
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=6049#6049
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=6049#6049
 //
 //		Issue:			ATT is left on when going to 2m (even though the control
 //						is disabled.
@@ -4591,7 +4591,7 @@
 //						to 2m.
 //		Reported By:	K7MDL
 //		Fix Coded By:	KE5DTO
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=6002#6002
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=6002#6002
 //
 //		Issue:			Using the PowerMate (or Ctrl + Arrow keys), the step
 //						frequency sometimes does not show 10MHz as it should.
@@ -4600,7 +4600,7 @@
 //						now fixed.
 //		Reported By:	VK3AAW
 //		Fix Coded By:	KE5DTO
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=6007#6007
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=6007#6007
 //
 //		Issue:			CW Speed (WPM) is not being restored on startup.
 //		Fix:			This was simply a this before that issue with the startup
@@ -4608,7 +4608,7 @@
 //						problem went away.
 //		Reported By:	VE6IV
 //		Fix Coded By:	KE5DTO
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=6062#6062
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=6062#6062
 //
 //	Modifications:
 //
@@ -4629,7 +4629,7 @@
 //						when changing filters).
 //		Suggested By:	SM6OMH, VK6APH 
 //		Coded By:		KE5DTO
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?t=1281
+//		References:		http://www.flexradio.com/forum/viewtopic.php?t=1281
 //
 //	New Features:
 //
@@ -4668,7 +4668,7 @@
 //						MP3+ selection.
 //		Reported By:	DJ9CS, DL2JA, N8VB
 //		Fix Coded By:	KE5DTO
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=5356#5356
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=5356#5356
 //
 //		Issue:			When restoring XIT and RIT after being left on, the
 //						background color is not set appropriately.
@@ -4678,15 +4678,15 @@
 //						it should.
 //		Reported By:	KD5TFD, EB4APL
 //		Fix Coded By:	KE5DTO
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=5916#5916
-//						http://www.flex-radio.com/forum/viewtopic.php?p=5865#5865
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=5916#5916
+//						http://www.flexradio.com/forum/viewtopic.php?p=5865#5865
 //
 //		Issue:			CW Max WPM limit is 15 when the buffers are set to 256.
 //		Fix:			This was an oversight as the 256 size buffers were a new
 //						addition.  This has been fixed.
 //		Reported By:	N9VV
 //		Fix Coded By:	KE5DTO
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=5888#5888
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=5888#5888
 //
 //		Issue:			Reset All button on the Setup Form gives an error when
 //						pressed.
@@ -4700,9 +4700,9 @@
 //						made a real signal in the software.
 //		Reported By:	N8VB, K3XF
 //		Fix Coded By:	N4HY
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?t=1280
-//						http://www.flex-radio.com/forum/viewtopic.php?t=1111
-//						http://www.flex-radio.com/forum/viewtopic.php?t=1280
+//		References:		http://www.flexradio.com/forum/viewtopic.php?t=1280
+//						http://www.flexradio.com/forum/viewtopic.php?t=1111
+//						http://www.flexradio.com/forum/viewtopic.php?t=1280
 #endregion
 
 #region Beta 1.1.3 Released 02/10/05
@@ -4724,7 +4724,7 @@
 //						chain.  Moved to the correct place.
 //		Reported By:	K7RSB
 //		Fix Coded By:	N4HY
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=4889#4889
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=4889#4889
 //
 //		Issue:			Changing the TX Filter High Cut while in TX did
 //						not update the display.
@@ -4741,7 +4741,7 @@
 //						0ms that was customary until the last release (Beta 1.1.2).
 //		Reported By:	N9VV, VE3MM, K3IB
 //		Fix Coded By:	Eric Wachsmann
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=5608#5608
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=5608#5608
 //
 //	Modifications:
 //
@@ -4791,14 +4791,14 @@
 //						wrong local variable.  This is fixed.
 //		Reported By:	KD5TFD, DK7XL
 //		Fix Coded By:	Eric Wachsmann
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=5319#5319
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=5319#5319
 //
 //		Issue:			Using ASIO4ALL v1.8 gives a PortAudio Invalid IO error.
 //		Fix:			This was another typo.  AudioInput1 referenced the 
 //						wrong local variable.  This is fixed.
 //		Reported By:	KC9FOL, WA2N
 //		Fix Coded By:	Eric Wachsmann
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=5318#5318
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=5318#5318
 //
 //		Issue:			Channel scanning with the first entry marked Scan = false
 //						locks up Windows XP.
@@ -4807,7 +4807,7 @@
 //						is now fixed.
 //		Reported By:	KC9FOL, WA2N
 //		Fix Coded By:	Eric Wachsmann
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=5318#5318
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=5318#5318
 //
 //	New Features:
 //
@@ -4893,7 +4893,7 @@
 //						resolved.
 //		Reported By:	KD5TFD
 //		Fix Coded By:	Eric Wachsmann
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=5240#5240
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=5240#5240
 //
 //		Issue:			FMN and AM do not work on transmit.
 //		Fix:			Filters and IF offsets had gotten confused over time
@@ -4917,7 +4917,7 @@
 //		Description:	As discussed extensively in the forums, we know have a 
 //						working CW joystick interface thanks to Bob, K5KDN.
 //		Coded By:		Paddle interface by K5KDN, Interface mods by Eric Wachsmann
-//		Reference:		http://www.flex-radio.com/forum/viewtopic.php?p=5402#5402
+//		Reference:		http://www.flexradio.com/forum/viewtopic.php?p=5402#5402
 //
 //	Modifications:
 //
@@ -4959,7 +4959,7 @@
 //						resolved.
 //		Reported By:	KD5TFD
 //		Fix Coded By:	Eric Wachsmann
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=5240#5240
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=5240#5240
 //
 //		Issue:			Setup Form will not save non standard LPT Address (B800).
 //		Fix:			There was a check from way back in Beta to prevent combobox
@@ -4967,7 +4967,7 @@
 //						and tested to work with B800.
 //		Reported By:	KC9FOL
 //		Fix Coded By:	Eric Wachsmann
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=5235#5235
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=5235#5235
 //
 //		Issue:			Sometimes frequency calibration gives an error about
 //						needing a 30dB above noise floor signal when it has one.
@@ -5000,7 +5000,7 @@
 //						version of ASIO4ALL installed on the machine.
 //		Reported By:	AH6JR, AA5XE
 //		Fix Coded By:	Eric Wachsmann
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=5196#5196
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=5196#5196
 #endregion
 
 #region 1.0.3 Released 01/04/05
@@ -5024,7 +5024,7 @@
 //						PA installed.
 //		Reported By:	DL2JA
 //		Fix Coded By:	Eric Wachsmann
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=5090#5090
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=5090#5090
 //
 //		Issue:			Slow machines have trouble running image null calibration.
 //		Fix:			Now the code checks to see if the display mode is set to
@@ -5038,7 +5038,7 @@
 //		Fix:			Fixed logic flaw in code cleanup done in 1.0.2.
 //		Reported By:	N9VV, WA8SRA, VK6APH
 //		Fix Coded By:	Eric Wachsmann
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=5049#5049
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=5049#5049
 //
 //	**Modifications
 //
@@ -5070,14 +5070,14 @@
 //						are in each band from the database. 
 //		Reported By:	W0IQ
 //		Fix Coded By:	Eric Wachsmann
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=4913#4913
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=4913#4913
 //
 //		Issue:			2m Bandstack registers now working.
 //		Fix:			Corrected error in band limit equation from (144-54) to
 //						(144-146).
 //		Reported By:	W0VB
 //		Fix Coded By:	Eric Wachsmann
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=4918#4918
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=4918#4918
 //
 //		Issue:			CW Form Cleanup.
 //		Fix:			Reorganized a few options and changed around some of the
@@ -5111,21 +5111,21 @@
 //						value change that was overlooked.  This has been corrected. 
 //		Reported By:	WA2N, KD5TFD, DJ9CS
 //		Fix Coded By:	Eric Wachsmann
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=4790#4790
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=4790#4790
 //
 //		Issue:			VFO Digit highlight happens even when the form is not focused.
 //		Fix:			The code now checks the forms ContainsFocus property to
 //						prevent this from happening. 
 //		Reported By:	WA2N
 //		Fix Coded By:	Eric Wachsmann
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=4863#4863
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=4863#4863
 //
 //		Issue:			Multimeter sometimes shows wrong scale.
 //		Fix:			Changing the RX/TX meter mode only changes the scale now
 //						when in RX or TX respectively. 
 //		Reported By:	WA8SRA
 //		Fix Coded By:	Eric Wachsmann
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=4877#4877
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=4877#4877
 //
 //		Issue:			Console gives Dynamic Database Creation Failed error after
 //						importing a database.
@@ -5134,14 +5134,14 @@
 //						explicitly. 
 //		Reported By:	WA8SRA
 //		Fix Coded By:	Eric Wachsmann
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=4860#4860
-//						http://www.flex-radio.com/forum/viewtopic.php?p=4879#4879
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=4860#4860
+//						http://www.flexradio.com/forum/viewtopic.php?p=4879#4879
 //
 //		Issue:			Sometimes VFO highlight digit is not the one that is tuned.
 //		Fix:			Corrected an offset miscalculation to take care of this. 
 //		Reported By:	EB4APL
 //		Fix Coded By:	Eric Wachsmann
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=4880#4880
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=4880#4880
 //
 //	**Modifications
 //
@@ -5149,13 +5149,13 @@
 //						Setup Form control when finished with the test.
 //		Suggested By:	DK7XL
 //		Coded By:		Eric Wachsmann
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=4866#4866		
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=4866#4866		
 //
 //		Feature:		Classical Blackman Harris Window
 //		Suggested By:	W3IP
 //		Coded By:		N4HY
 //		References:		http://forum.allaboutcircuits.com/newsgroups/viewtopic.php?t=32630&start=0
-//						http://www.flex-radio.com/forum/viewtopic.php?p=4690#4690
+//						http://www.flexradio.com/forum/viewtopic.php?p=4690#4690
 #endregion
 
 #region 1.0.0 Released 12/13/04
@@ -5169,7 +5169,7 @@
 //						in the 2m band.
 //		Reported By:	DL2JA
 //		Fix Coded By:	Eric Wachsmann
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=4790#4790
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=4790#4790
 //
 //		Issue:			Inadvertant clicking on the Setup Reset button causes
 //						lost settings.		
@@ -5196,14 +5196,14 @@
 //						external key.
 //		Reported By:	WA8SRA
 //		Fix Coded By:	Eric Wachsmann
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=4748#4748
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=4748#4748
 //
 //		Issue:			The Tune button and CW Send button cause problems when
 //						used at the same time.				
 //		Fix:			Each button disables the other while it is active.
 //		Reported By:	WA8SRA
 //		Fix Coded By:	Eric Wachsmann
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=4756#4756
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=4756#4756
 //
 //		Issue:			After doing a Channel Scan, the Recall button no longer
 //						works.					
@@ -5212,7 +5212,7 @@
 //						with scanning if the last entries Scan is set to false.
 //		Reported By:	DJ7MGQ
 //		Fix Coded By:	Eric Wachsmann
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=4708#4708
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=4708#4708
 //
 //		Issue:			Frequency calibration is off if RIT is on during cal.					
 //		Fix:			Freq. cal now forces to 0 and turns the control off
@@ -5220,7 +5220,7 @@
 //						once the calibration is finished).
 //		Reported By:	KC2LFI, W0VB
 //		Fix Coded By:	Eric Wachsmann
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=4612#4612
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=4612#4612
 //
 //		Issue:			Split mode does not work right when in CW mode.					
 //		Fix:			VFO B now uses the CW Pitch offset when in Split mode
@@ -5236,7 +5236,7 @@
 //						to indicate the digit which will be modified.
 //		Suggested By:	N9VV
 //		Coded By:		Eric Wachsmann
-//		Reference:		http://www.flex-radio.com/forum/viewtopic.php?p=4338#4338
+//		Reference:		http://www.flexradio.com/forum/viewtopic.php?p=4338#4338
 //
 //		Feature:		Clicking on the CW Menu option while in SSB modes now 
 //						switches the mode to CW.
@@ -5250,7 +5250,7 @@
 //						at the selected power setting.
 //		Suggested By:	DK7XL
 //		Coded By:		Eric Wachsmann
-//		Reference:		http://www.flex-radio.com/forum/viewtopic.php?p=4727#4727
+//		Reference:		http://www.flexradio.com/forum/viewtopic.php?p=4727#4727
 //
 //		Feature:		RX/TX independant Multimeter selections.
 //		Description:	The meter interface has been modified to have the RX and
@@ -5265,7 +5265,7 @@
 //						greater than or equal to 250Hz.
 //		Suggested By:	SM6OMH
 //		Coded By:		VK6APH
-//		Reference:		http://www.flex-radio.com/forum/viewtopic.php?p=4707#4707
+//		Reference:		http://www.flexradio.com/forum/viewtopic.php?p=4707#4707
 #endregion
 
 #region Beta 0.1.17 Released 12/01/04
@@ -5279,7 +5279,7 @@
 //						the tune rate to be divided by 10 (ie. 100Hz becomes 10Hz).
 //		Suggested By:	WA8SRA
 //		Coded By:		Eric Wachsmann
-//		Reference:		http://www.flex-radio.com/forum/viewtopic.php?p=4592#4592
+//		Reference:		http://www.flexradio.com/forum/viewtopic.php?p=4592#4592
 //
 //		Feature:		External PTT connection separate from Dot/Dash.
 //		Description:	CW operators have complained that there is no way to
@@ -5297,7 +5297,7 @@
 //						restored on startup.
 //		Suggested By:	DK7XL
 //		Coded By:		Eric Wachsmann
-//		Reference:		http://www.flex-radio.com/forum/viewtopic.php?p=3995#3995
+//		Reference:		http://www.flexradio.com/forum/viewtopic.php?p=3995#3995
 //
 //		Feature:		Iambic CW Option.
 //		Description:	The CW Form has always used Iambic B keying when the
@@ -5306,7 +5306,7 @@
 //						iambic keying (default is off).
 //		Suggested By:	W5ZL, N4HY, AC5OG
 //		Coded By:		Eric Wachsmann
-//		Reference:		http://www.flex-radio.com/forum/viewtopic.php?p=3995#3995
+//		Reference:		http://www.flexradio.com/forum/viewtopic.php?p=3995#3995
 //
 //	**Bug Fixes
 //
@@ -5317,7 +5317,7 @@
 //						when DRM or SPEC is selected.
 //		Reported By:	DJ9CS
 //		Fix Coded By:	Eric Wachsmann
-//		Reference:		http://www.flex-radio.com/forum/viewtopic.php?p=4620#4620
+//		Reference:		http://www.flexradio.com/forum/viewtopic.php?p=4620#4620
 //
 //		Issue:			After using the Semi Break In option in the Ext Key
 //						mode, you can not do a "manual" Send.						
@@ -5341,7 +5341,7 @@
 //						and causing this issue.
 //		Reported By:	DJ7MGQ
 //		Fix Coded By:	Eric Wachsmann
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=4624#4624
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=4624#4624
 //
 //		Issue:			The CW Form attempts to respond to Mic key in LSB mode
 //						after having used semi break in. 
@@ -5350,15 +5350,15 @@
 //						it stops polling and waits for the CW form to reopen.
 //		Reported By:	SM6OMH
 //		Fix Coded By:	Eric Wachsmann
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=4611#4611
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=4611#4611
 //
 //		Issue:			Multimeter thread terminates when in CW TX.
 //		Fix:			Changed code that handles the non-DSP cases to simply
 //						wait rather than terminate the thread.
 //		Reported By:	DJ9CS, K3IB
 //		Fix Coded By:	Eric Wachsmann
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=4607#4607
-//						http://www.flex-radio.com/forum/viewtopic.php?p=4619#4619
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=4607#4607
+//						http://www.flexradio.com/forum/viewtopic.php?p=4619#4619
 //
 //		Issue:			TXEQ is enabled on startup (despite Enable checkbox not
 //						being checked.
@@ -5366,7 +5366,7 @@
 //						to just after the TX Low/High filter controls.
 //		Reported By:	WA8SRA
 //		Fix Coded By:	Eric Wachsmann
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=4586#4586
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=4586#4586
 //
 //		Issue:			Bandstack registers do not save 1Hz digit if the frequency
 //						is larger than 10MHz.
@@ -5374,15 +5374,15 @@
 //						casting a double as a float (now using doubles).
 //		Reported By:	SM6OMH
 //		Fix Coded By:	Eric Wachsmann
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=4596#4596
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=4596#4596
 //
 //		Issue:			Clock minutes do not advance.
 //		Fix:			Corrected ToString() function to use "m" for minutes 
 //						instead of "M" for month.  :)
 //		Reported By:	W0IQ, DJ9CS, LA6XJ, WB0SOK, K3IB
 //		Fix Coded By:	Eric Wachsmann
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=4579#4579
-//						http://www.flex-radio.com/forum/viewtopic.php?p=4595#4595
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=4579#4579
+//						http://www.flexradio.com/forum/viewtopic.php?p=4595#4595
 //
 //		Issue:			If you click the Power button while the CW Send button is
 //						engaged, the console crashes.
@@ -5403,14 +5403,14 @@
 //						cut on DSB Var1 default.
 //		Reported By:	WK0J
 //		Fix Coded By:	Eric Wachsmann
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=4519#4519
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=4519#4519
 //
 //		Issue:			Panadapter display mode is messed up when in DRM mode.
 //		Fix:			Made adjustment to panadapter to use 0-20kHz limits for
 //						DRM mode to correct display.
 //		Reported By:	Phil Harman VK6APH
 //		Fix Coded By:	Eric Wachsmann
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=4522#4522
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=4522#4522
 //
 //		Issue:			Scrolling to tune the VFO after using the Filter Shift
 //						control causes both tuning and the Filter Shift to change.
@@ -5457,15 +5457,15 @@
 //						soft release for CW, this was added.
 //		Reported By:	SM6OMH, AB2KT
 //		Fix Coded By:	Bob N4HY
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?t=850
+//		References:		http://www.flexradio.com/forum/viewtopic.php?t=850
 //
 //		Issue:			Filter display is offset after using IF Shift control.
 //		Fix:			Fixed the background redraw to occur after the filter
 //						values have been changed instead of before.
 //		Reported By:	AA1VG, SM6OMH
 //		Fix Coded By:	Eric Wachsmann
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=4422#4422
-//						http://www.flex-radio.com/forum/viewtopic.php?p=4399#4399
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=4422#4422
+//						http://www.flexradio.com/forum/viewtopic.php?p=4399#4399
 //
 //		Issue:			Changing filter from a Var filter to a predefined one
 //						causes unexpected results.
@@ -5473,7 +5473,7 @@
 //						If using a Var filter, the pre-shifted values are saved.
 //		Reported By:	Phil Harman VK6APH
 //		Fix Coded By:	Eric Wachsmann
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=4470#4470
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=4470#4470
 //
 //		Issue:			SPEC and DRM modes do not display correctly on startup.
 //		Fix:			Since the Filter Shift control doesn't apply to these 
@@ -5485,7 +5485,7 @@
 //		Fix:			Rebuilt handler connections in the VS2003 IDE.
 //		Reported By:	VK6APH, DK7XL
 //		Fix Coded By:	Eric Wachsmann
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=4410#4410
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=4410#4410
 //
 //	**New Features:
 //
@@ -5494,14 +5494,14 @@
 //						turned off and is restored from the database on startup.
 //		Suggested By:	Phil Harman VK6APH
 //		Coded By:		Eric Wachsmann
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=4411#4411
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=4411#4411
 //
 //		Feature:		CW Semi Break-In Variable Delay.
 //		Description:	The delay between when the key is released and when the
 //						console returns to RX is now variable.
 //		Suggested By:	W1CG, AC5OG
 //		Coded By:		Eric Wachsmann
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=4262#4262
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=4262#4262
 //
 //	**Modifications:
 //
@@ -5511,7 +5511,7 @@
 //						are set using the Buffers control in Setup->Audio.
 //		Suggested By:	K3IB
 //		Coded By:		Eric Wachsmann
-//		References:		http://www.flex-radio.com/forum/viewtopic.php?p=4442#4442
+//		References:		http://www.flexradio.com/forum/viewtopic.php?p=4442#4442
 //
 //		Feature:		PortAudio build updated.
 //		Description:	The PortAudio v19 build we were using was over 6 mos. out 
@@ -5530,7 +5530,7 @@
 //		Fix:			Smoothed squelch transitions using 1ms growth/decay.
 //		Reported By:	SM6OMH
 //		Fix Coded By:	Bob McGwier N4HY
-//		Reference:		http://www.flex-radio.com/forum/viewtopic.php?t=850
+//		Reference:		http://www.flexradio.com/forum/viewtopic.php?t=850
 //
 //		Issue:			Transmit drive output low due to multithreading issues.
 //		Fix:			Added Mutexes to hardware code to prevent the ADC
@@ -5543,7 +5543,7 @@
 //						routines.
 //		Reported By:	Clint Herron / HCJB
 //		Fix Coded By:	Eric Wachsmann
-//		Reference:		http://www.flex-radio.com/forum/viewtopic.php?p=4240#4240
+//		Reference:		http://www.flexradio.com/forum/viewtopic.php?p=4240#4240
 //
 //		Issue:			CW speed limited to 15WPM using software keyer.
 //		Fix:			Corrected cw buffer size after changing from 2048.  Note
@@ -5623,7 +5623,7 @@
 //			sound card doesn't have 2 or more Mux lines.
 //		- Added X2 Enable and Delay controls.
 //		- Modified sequencing to match Phil's suggestion.
-//			Link: www.flex-radio.com/forum/viewtopic.php?p=4285
+//			Link: www.flexradio.com/forum/viewtopic.php?p=4285
 //		- Prevented PA Bias from going active if outside the
 //			spec of the PA (1.8-29.7MHz)
 //		- Fixed problem with band showing up as GEN sometimes 

@@ -134,7 +134,7 @@ ringb_read_space (const ringb_t * rb)
 	if (w > r)
 		return w - r;
 	else
-		return (w - r + rb->size) & rb->mask;
+		return (rb->size + w - r ) & rb->mask;
 }
 
 size_t
@@ -144,7 +144,7 @@ ringb_float_read_space (const ringb_float_t * rb)
 	if (w > r)
 		return w - r;
 	else
-		return (w - r + rb->size) & rb->mask;
+		return (rb->size + w - r ) & rb->mask;
 }
 
 size_t
@@ -152,7 +152,7 @@ ringb_write_space (const ringb_t * rb)
 {
 	size_t w = rb->wptr, r = rb->rptr;
 	if (w > r)
-		return ((r - w + rb->size) & rb->mask) - 1;
+		return ((rb->size + r - w) & rb->mask) - 1;
 	else if (w < r)
 		return r - w - 1;
 	else
@@ -164,7 +164,7 @@ ringb_float_write_space (const ringb_float_t * rb)
 {
 	size_t w = rb->wptr, r = rb->rptr;
 	if (w > r)
-		return ((r - w + rb->size) & rb->mask) - 1;
+		return ((rb->size + r - w) & rb->mask) - 1;
 	else if (w < r)
 		return r - w - 1;
 	else

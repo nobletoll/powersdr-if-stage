@@ -52,6 +52,8 @@ newCorrectIQ (REAL phase, REAL gain, REAL mu)
 	iq->y = (COMPLEX *)safealloc(16,sizeof(COMPLEX),"correctIQ y");
 	iq->del = (COMPLEX *)safealloc(16,sizeof(COMPLEX),"correctIQ del");
 	memset((void *)iq->w,0,16*sizeof(COMPLEX));
+	iq->wbir_tuned = TRUE;
+	iq->wbir_state = FastAdapt;
 	return iq;
 }
 
@@ -76,16 +78,28 @@ correctIQ (CXB sigbuf, IQ iq, BOOLEAN isTX, int subchan)
 	else doit = 0;
 	if(!isTX)
 	{
+
 		// if (subchan == 0) // removed so that sub rx's will get IQ correction
+		switch (iq->wbir_state) {
+			case FastAdapt:
+				break;
+			case SlowAdapt:
+				break;
+			case NoAdapt:
+				break;
+			default:
+				break;
+		}
+
 		for (i = 0; i < CXBhave (sigbuf); i++)
 		{
-			iq->del[iq->index] = CXBdata(sigbuf,i);
-			iq->y[iq->index] = Cadd(iq->del[iq->index],Cmul(iq->w[0],Conjg(iq->del[iq->index])));
-			iq->y[iq->index] = Cadd(iq->y[iq->index],Cmul(iq->w[1],Conjg(iq->y[iq->index])));
-			iq->w[1] = Csub(iq->w[1], Cscl(Cmul(iq->y[iq->index],iq->y[iq->index]), doit));  // this is where the adaption happens
+			iq->del[iq->index] = CXBdata(sigbuf, i);
+			iq->y[iq->index] = Cadd(iq->del[iq->index], Cmul(iq->w[0], Conjg(iq->del[iq->index])));
+			iq->y[iq->index] = Cadd(iq->y[iq->index], Cmul(iq->w[1], Conjg(iq->y[iq->index])));
+			iq->w[1] = Csub(iq->w[1], Cscl(Cmul(iq->y[iq->index], iq->y[iq->index]), doit));  // this is where the adaption happens
 
-			CXBdata(sigbuf,i)=iq->y[iq->index];
-			iq->index = (iq->index+iq->MASK)&iq->MASK;
+			CXBdata(sigbuf, i) = iq->y[iq->index];
+			iq->index = (iq->index + iq->MASK) & iq->MASK;
 		}
 		//fprintf(stderr, "w1 real: %g, w1 imag: %g\n", iq->w[1].re, iq->w[1].im); fflush(stderr); 
 	}

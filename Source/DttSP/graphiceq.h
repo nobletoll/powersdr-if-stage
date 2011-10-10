@@ -62,12 +62,13 @@ This is derived from equ.xmms:
 #include <fftw3.h>
 #include <fftw3_fix.h>
 
-typedef struct _eq {
-  CXB data;
-  FiltOvSv p;
-  CXB in, out;
-  COMPLEX num[9], den[6];
-  BOOLEAN notchflag;
+typedef struct _eq 
+{
+	CXB data;
+	FiltOvSv p;
+	CXB in, out;
+	COMPLEX num[9], den[6];
+	BOOLEAN notchflag;
 } eq, *EQ;
 
 extern EQ new_EQ (CXB d, REAL samplerate, int pbits);

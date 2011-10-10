@@ -18,11 +18,11 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
-// You may contact us via email at: sales@flex-radio.com.
+// You may contact us via email at: gpl@flexradio.com.
 // Paper mail may be sent to: 
 //    FlexRadio Systems
-//    8900 Marybank Dr.
-//    Austin, TX 78750
+//    4616 W. Howard Lane  Suite 1-150
+//    Austin, TX 78728
 //    USA
 //=================================================================
 
@@ -256,7 +256,7 @@ namespace PowerSDR
 
 		private void cwedit_Load(object sender, System.EventArgs e)
 		{
-			sedit = console.CWXForm.editline;
+			sedit = console.cwxForm.editline;
 
 			txtOriginal.Text = sedit;
 			
@@ -269,7 +269,7 @@ namespace PowerSDR
 
 		private void saveButton_Click(object sender, System.EventArgs e)
 		{
-			console.CWXForm.editline = txtCurrent.Text;
+			console.cwxForm.editline = txtCurrent.Text;
 			this.Close();
 		}
 
@@ -279,7 +279,7 @@ namespace PowerSDR
 				MessageBoxButtons.YesNo, MessageBoxIcon.Question)
 				== DialogResult.Yes)
 			{
-				console.CWXForm.editline = "";
+				console.cwxForm.editline = "";
 				this.Close();
 			}
 		}

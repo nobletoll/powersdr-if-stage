@@ -2,7 +2,7 @@
 // AssemblyInfo.cs
 //=================================================================
 // PowerSDR is a C# implementation of a Software Defined Radio.
-// Copyright (C) 2004-2009  FlexRadio Systems
+// Copyright (C) 2004-2011  FlexRadio Systems
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -18,11 +18,11 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
-// You may contact us via email at: sales@flex-radio.com.
+// You may contact us via email at: gpl@flexradio.com.
 // Paper mail may be sent to: 
 //    FlexRadio Systems
-//    8900 Marybank Dr.
-//    Austin, TX 78750
+//    4616 W. Howard Lane  Suite 1-150
+//    Austin, TX 78728
 //    USA
 //=================================================================
 
@@ -34,27 +34,27 @@ using System.Runtime.CompilerServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
-[assembly: AssemblyTitle("PowerSDR")]
+[assembly: AssemblyTitle("PowerSDR/IF Stage")]
 [assembly: AssemblyDescription("Software Defined Radio Application")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("FlexRadio Systems")]
-[assembly: AssemblyProduct("PowerSDR")]
-[assembly: AssemblyCopyright("2009")]
+[assembly: AssemblyCompany("WU2X - W1CEG")]
+[assembly: AssemblyProduct("PowerSDR/IF Stage")]
+[assembly: AssemblyCopyright("2011")]
 [assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]		
+[assembly: AssemblyCulture("")]
 
 //
 // Version information for an assembly consists of the following four values:
 //
 //      Major Version
-//      Minor Version 
+//      Minor Version
 //      Build Number
 //      Revision
 //
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
 
-[assembly: AssemblyVersion("1.19.3")]
+[assembly: AssemblyVersion("2.2.3.1")]
 
 //
 // In order to sign your assembly you must specify a key to use. Refer to the 

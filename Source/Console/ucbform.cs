@@ -2,7 +2,7 @@
 // ucbform.cs
 //=================================================================
 // PowerSDR is a C# implementation of a Software Defined Radio.
-// Copyright (C) 2004-2009  FlexRadio Systems
+// Copyright (C) 2004-2011  FlexRadio Systems
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -18,11 +18,11 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
-// You may contact us via email at: sales@flex-radio.com.
+// You may contact us via email at: gpl@flexradio.com.
 // Paper mail may be sent to: 
 //    FlexRadio Systems
-//    8900 Marybank Dr.
-//    Austin, TX 78750
+//    4616 W. Howard Lane  Suite 1-150
+//    Austin, TX 78728
 //    USA
 //=================================================================
 
@@ -45,7 +45,7 @@ namespace PowerSDR
 
 		private Console console;
 		private bool ucb_busy = false;
-		private HW hw;
+		private AbstractHW hw;
 		private byte address;
 		private int val;
 		private UCB.CMD cmd;
@@ -405,6 +405,30 @@ namespace PowerSDR
 			{
 				case Model.FLEX3000:
 				case Model.FLEX5000:
+                case Model.FLEX1500:
+                    btnEnable.Visible = false;
+                    btnDisable.Visible = false;
+                    lblDelay.Visible = false;
+                    comboDelay.Visible = false;
+                    btnSetDelay.Visible = false;
+                    btnDisableClear.Visible = false;
+                    btnWriteAll.Visible = false;
+                    btnWriteLine0.Visible = false;
+                    btnWriteLine1.Visible = false;
+                    btnWriteLine2.Visible = false;
+                    btnWriteLine3.Visible = false;
+                    btnWriteLine4.Visible = false;
+                    btnWriteLine5.Visible = false;
+                    btnWriteLine6.Visible = false;
+                    btnWriteLine7.Visible = false;
+                    btnWriteLine8.Visible = false;
+                    btnWriteLine9.Visible = false;
+                    btnWriteLine10.Visible = false;
+                    btnWriteLine11.Visible = false;
+                    btnWriteLine12.Visible = false;
+                    btnWriteLine13.Visible = false;
+                    btnWriteLine14.Visible = false;
+                    btnWriteLine15.Visible = false;
 					break;
 				default:
 					chkFlexWire.Visible = false;
@@ -813,7 +837,6 @@ namespace PowerSDR
             this.chkL00R01.Name = "chkL00R01";
             this.chkL00R01.Size = new System.Drawing.Size(16, 24);
             this.chkL00R01.TabIndex = 3;
-            this.chkL00R01.Text = "CheckBoxTS1";
             this.chkL00R01.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL00R02
@@ -823,7 +846,6 @@ namespace PowerSDR
             this.chkL00R02.Name = "chkL00R02";
             this.chkL00R02.Size = new System.Drawing.Size(16, 24);
             this.chkL00R02.TabIndex = 4;
-            this.chkL00R02.Text = "CheckBoxTS2";
             this.chkL00R02.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL00R03
@@ -833,7 +855,6 @@ namespace PowerSDR
             this.chkL00R03.Name = "chkL00R03";
             this.chkL00R03.Size = new System.Drawing.Size(16, 24);
             this.chkL00R03.TabIndex = 5;
-            this.chkL00R03.Text = "CheckBoxTS3";
             this.chkL00R03.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL00R04
@@ -843,7 +864,6 @@ namespace PowerSDR
             this.chkL00R04.Name = "chkL00R04";
             this.chkL00R04.Size = new System.Drawing.Size(16, 24);
             this.chkL00R04.TabIndex = 6;
-            this.chkL00R04.Text = "CheckBoxTS4";
             this.chkL00R04.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL00R05
@@ -853,7 +873,6 @@ namespace PowerSDR
             this.chkL00R05.Name = "chkL00R05";
             this.chkL00R05.Size = new System.Drawing.Size(16, 24);
             this.chkL00R05.TabIndex = 7;
-            this.chkL00R05.Text = "CheckBoxTS5";
             this.chkL00R05.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL00R06
@@ -863,7 +882,6 @@ namespace PowerSDR
             this.chkL00R06.Name = "chkL00R06";
             this.chkL00R06.Size = new System.Drawing.Size(16, 24);
             this.chkL00R06.TabIndex = 8;
-            this.chkL00R06.Text = "CheckBoxTS6";
             this.chkL00R06.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL00R07
@@ -873,7 +891,6 @@ namespace PowerSDR
             this.chkL00R07.Name = "chkL00R07";
             this.chkL00R07.Size = new System.Drawing.Size(16, 24);
             this.chkL00R07.TabIndex = 9;
-            this.chkL00R07.Text = "CheckBoxTS7";
             this.chkL00R07.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL00R08
@@ -883,7 +900,6 @@ namespace PowerSDR
             this.chkL00R08.Name = "chkL00R08";
             this.chkL00R08.Size = new System.Drawing.Size(16, 24);
             this.chkL00R08.TabIndex = 10;
-            this.chkL00R08.Text = "CheckBoxTS8";
             this.chkL00R08.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL00R09
@@ -893,7 +909,6 @@ namespace PowerSDR
             this.chkL00R09.Name = "chkL00R09";
             this.chkL00R09.Size = new System.Drawing.Size(16, 24);
             this.chkL00R09.TabIndex = 18;
-            this.chkL00R09.Text = "CheckBoxTS9";
             this.chkL00R09.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL00R10
@@ -903,7 +918,6 @@ namespace PowerSDR
             this.chkL00R10.Name = "chkL00R10";
             this.chkL00R10.Size = new System.Drawing.Size(16, 24);
             this.chkL00R10.TabIndex = 17;
-            this.chkL00R10.Text = "CheckBoxTS10";
             this.chkL00R10.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL00R11
@@ -913,7 +927,6 @@ namespace PowerSDR
             this.chkL00R11.Name = "chkL00R11";
             this.chkL00R11.Size = new System.Drawing.Size(16, 24);
             this.chkL00R11.TabIndex = 16;
-            this.chkL00R11.Text = "CheckBoxTS11";
             this.chkL00R11.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL00R12
@@ -923,7 +936,6 @@ namespace PowerSDR
             this.chkL00R12.Name = "chkL00R12";
             this.chkL00R12.Size = new System.Drawing.Size(16, 24);
             this.chkL00R12.TabIndex = 15;
-            this.chkL00R12.Text = "CheckBoxTS12";
             this.chkL00R12.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL00R13
@@ -933,7 +945,6 @@ namespace PowerSDR
             this.chkL00R13.Name = "chkL00R13";
             this.chkL00R13.Size = new System.Drawing.Size(16, 24);
             this.chkL00R13.TabIndex = 14;
-            this.chkL00R13.Text = "CheckBoxTS13";
             this.chkL00R13.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL00R14
@@ -943,7 +954,6 @@ namespace PowerSDR
             this.chkL00R14.Name = "chkL00R14";
             this.chkL00R14.Size = new System.Drawing.Size(16, 24);
             this.chkL00R14.TabIndex = 13;
-            this.chkL00R14.Text = "CheckBoxTS14";
             this.chkL00R14.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL00R15
@@ -953,7 +963,6 @@ namespace PowerSDR
             this.chkL00R15.Name = "chkL00R15";
             this.chkL00R15.Size = new System.Drawing.Size(16, 24);
             this.chkL00R15.TabIndex = 12;
-            this.chkL00R15.Text = "CheckBoxTS15";
             this.chkL00R15.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL00R16
@@ -963,7 +972,6 @@ namespace PowerSDR
             this.chkL00R16.Name = "chkL00R16";
             this.chkL00R16.Size = new System.Drawing.Size(16, 24);
             this.chkL00R16.TabIndex = 11;
-            this.chkL00R16.Text = "CheckBoxTS16";
             this.chkL00R16.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // lblR1
@@ -1117,7 +1125,6 @@ namespace PowerSDR
             this.chkL01R09.Name = "chkL01R09";
             this.chkL01R09.Size = new System.Drawing.Size(16, 24);
             this.chkL01R09.TabIndex = 50;
-            this.chkL01R09.Text = "CheckBoxTS17";
             this.chkL01R09.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL01R10
@@ -1127,7 +1134,6 @@ namespace PowerSDR
             this.chkL01R10.Name = "chkL01R10";
             this.chkL01R10.Size = new System.Drawing.Size(16, 24);
             this.chkL01R10.TabIndex = 49;
-            this.chkL01R10.Text = "CheckBoxTS18";
             this.chkL01R10.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL01R11
@@ -1137,7 +1143,6 @@ namespace PowerSDR
             this.chkL01R11.Name = "chkL01R11";
             this.chkL01R11.Size = new System.Drawing.Size(16, 24);
             this.chkL01R11.TabIndex = 48;
-            this.chkL01R11.Text = "CheckBoxTS19";
             this.chkL01R11.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL01R12
@@ -1147,7 +1152,6 @@ namespace PowerSDR
             this.chkL01R12.Name = "chkL01R12";
             this.chkL01R12.Size = new System.Drawing.Size(16, 24);
             this.chkL01R12.TabIndex = 47;
-            this.chkL01R12.Text = "CheckBoxTS20";
             this.chkL01R12.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL01R13
@@ -1157,7 +1161,6 @@ namespace PowerSDR
             this.chkL01R13.Name = "chkL01R13";
             this.chkL01R13.Size = new System.Drawing.Size(16, 24);
             this.chkL01R13.TabIndex = 46;
-            this.chkL01R13.Text = "CheckBoxTS21";
             this.chkL01R13.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL01R14
@@ -1167,7 +1170,6 @@ namespace PowerSDR
             this.chkL01R14.Name = "chkL01R14";
             this.chkL01R14.Size = new System.Drawing.Size(16, 24);
             this.chkL01R14.TabIndex = 45;
-            this.chkL01R14.Text = "CheckBoxTS22";
             this.chkL01R14.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL01R15
@@ -1177,7 +1179,6 @@ namespace PowerSDR
             this.chkL01R15.Name = "chkL01R15";
             this.chkL01R15.Size = new System.Drawing.Size(16, 24);
             this.chkL01R15.TabIndex = 44;
-            this.chkL01R15.Text = "CheckBoxTS23";
             this.chkL01R15.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL01R16
@@ -1187,7 +1188,6 @@ namespace PowerSDR
             this.chkL01R16.Name = "chkL01R16";
             this.chkL01R16.Size = new System.Drawing.Size(16, 24);
             this.chkL01R16.TabIndex = 43;
-            this.chkL01R16.Text = "CheckBoxTS24";
             this.chkL01R16.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL01R08
@@ -1197,7 +1197,6 @@ namespace PowerSDR
             this.chkL01R08.Name = "chkL01R08";
             this.chkL01R08.Size = new System.Drawing.Size(16, 24);
             this.chkL01R08.TabIndex = 42;
-            this.chkL01R08.Text = "CheckBoxTS25";
             this.chkL01R08.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL01R07
@@ -1207,7 +1206,6 @@ namespace PowerSDR
             this.chkL01R07.Name = "chkL01R07";
             this.chkL01R07.Size = new System.Drawing.Size(16, 24);
             this.chkL01R07.TabIndex = 41;
-            this.chkL01R07.Text = "CheckBoxTS26";
             this.chkL01R07.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL01R06
@@ -1217,7 +1215,6 @@ namespace PowerSDR
             this.chkL01R06.Name = "chkL01R06";
             this.chkL01R06.Size = new System.Drawing.Size(16, 24);
             this.chkL01R06.TabIndex = 40;
-            this.chkL01R06.Text = "CheckBoxTS27";
             this.chkL01R06.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL01R05
@@ -1227,7 +1224,6 @@ namespace PowerSDR
             this.chkL01R05.Name = "chkL01R05";
             this.chkL01R05.Size = new System.Drawing.Size(16, 24);
             this.chkL01R05.TabIndex = 39;
-            this.chkL01R05.Text = "CheckBoxTS28";
             this.chkL01R05.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL01R04
@@ -1237,7 +1233,6 @@ namespace PowerSDR
             this.chkL01R04.Name = "chkL01R04";
             this.chkL01R04.Size = new System.Drawing.Size(16, 24);
             this.chkL01R04.TabIndex = 38;
-            this.chkL01R04.Text = "CheckBoxTS29";
             this.chkL01R04.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL01R03
@@ -1247,7 +1242,6 @@ namespace PowerSDR
             this.chkL01R03.Name = "chkL01R03";
             this.chkL01R03.Size = new System.Drawing.Size(16, 24);
             this.chkL01R03.TabIndex = 37;
-            this.chkL01R03.Text = "CheckBoxTS30";
             this.chkL01R03.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL01R02
@@ -1257,7 +1251,6 @@ namespace PowerSDR
             this.chkL01R02.Name = "chkL01R02";
             this.chkL01R02.Size = new System.Drawing.Size(16, 24);
             this.chkL01R02.TabIndex = 36;
-            this.chkL01R02.Text = "CheckBoxTS31";
             this.chkL01R02.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL01R01
@@ -1267,7 +1260,6 @@ namespace PowerSDR
             this.chkL01R01.Name = "chkL01R01";
             this.chkL01R01.Size = new System.Drawing.Size(16, 24);
             this.chkL01R01.TabIndex = 35;
-            this.chkL01R01.Text = "CheckBoxTS32";
             this.chkL01R01.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL02R09
@@ -1277,7 +1269,6 @@ namespace PowerSDR
             this.chkL02R09.Name = "chkL02R09";
             this.chkL02R09.Size = new System.Drawing.Size(16, 24);
             this.chkL02R09.TabIndex = 66;
-            this.chkL02R09.Text = "CheckBoxTS33";
             this.chkL02R09.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL02R10
@@ -1287,7 +1278,6 @@ namespace PowerSDR
             this.chkL02R10.Name = "chkL02R10";
             this.chkL02R10.Size = new System.Drawing.Size(16, 24);
             this.chkL02R10.TabIndex = 65;
-            this.chkL02R10.Text = "CheckBoxTS34";
             this.chkL02R10.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL02R11
@@ -1297,7 +1287,6 @@ namespace PowerSDR
             this.chkL02R11.Name = "chkL02R11";
             this.chkL02R11.Size = new System.Drawing.Size(16, 24);
             this.chkL02R11.TabIndex = 64;
-            this.chkL02R11.Text = "CheckBoxTS35";
             this.chkL02R11.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL02R12
@@ -1307,7 +1296,6 @@ namespace PowerSDR
             this.chkL02R12.Name = "chkL02R12";
             this.chkL02R12.Size = new System.Drawing.Size(16, 24);
             this.chkL02R12.TabIndex = 63;
-            this.chkL02R12.Text = "CheckBoxTS36";
             this.chkL02R12.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL02R13
@@ -1317,7 +1305,6 @@ namespace PowerSDR
             this.chkL02R13.Name = "chkL02R13";
             this.chkL02R13.Size = new System.Drawing.Size(16, 24);
             this.chkL02R13.TabIndex = 62;
-            this.chkL02R13.Text = "CheckBoxTS37";
             this.chkL02R13.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL02R14
@@ -1327,7 +1314,6 @@ namespace PowerSDR
             this.chkL02R14.Name = "chkL02R14";
             this.chkL02R14.Size = new System.Drawing.Size(16, 24);
             this.chkL02R14.TabIndex = 61;
-            this.chkL02R14.Text = "CheckBoxTS38";
             this.chkL02R14.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL02R15
@@ -1337,7 +1323,6 @@ namespace PowerSDR
             this.chkL02R15.Name = "chkL02R15";
             this.chkL02R15.Size = new System.Drawing.Size(16, 24);
             this.chkL02R15.TabIndex = 60;
-            this.chkL02R15.Text = "CheckBoxTS39";
             this.chkL02R15.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL02R16
@@ -1347,7 +1332,6 @@ namespace PowerSDR
             this.chkL02R16.Name = "chkL02R16";
             this.chkL02R16.Size = new System.Drawing.Size(16, 24);
             this.chkL02R16.TabIndex = 59;
-            this.chkL02R16.Text = "CheckBoxTS40";
             this.chkL02R16.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL02R08
@@ -1357,7 +1341,6 @@ namespace PowerSDR
             this.chkL02R08.Name = "chkL02R08";
             this.chkL02R08.Size = new System.Drawing.Size(16, 24);
             this.chkL02R08.TabIndex = 58;
-            this.chkL02R08.Text = "CheckBoxTS41";
             this.chkL02R08.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL02R07
@@ -1367,7 +1350,6 @@ namespace PowerSDR
             this.chkL02R07.Name = "chkL02R07";
             this.chkL02R07.Size = new System.Drawing.Size(16, 24);
             this.chkL02R07.TabIndex = 57;
-            this.chkL02R07.Text = "CheckBoxTS42";
             this.chkL02R07.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL02R06
@@ -1377,7 +1359,6 @@ namespace PowerSDR
             this.chkL02R06.Name = "chkL02R06";
             this.chkL02R06.Size = new System.Drawing.Size(16, 24);
             this.chkL02R06.TabIndex = 56;
-            this.chkL02R06.Text = "CheckBoxTS43";
             this.chkL02R06.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL02R05
@@ -1387,7 +1368,6 @@ namespace PowerSDR
             this.chkL02R05.Name = "chkL02R05";
             this.chkL02R05.Size = new System.Drawing.Size(16, 24);
             this.chkL02R05.TabIndex = 55;
-            this.chkL02R05.Text = "CheckBoxTS44";
             this.chkL02R05.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL02R04
@@ -1397,7 +1377,6 @@ namespace PowerSDR
             this.chkL02R04.Name = "chkL02R04";
             this.chkL02R04.Size = new System.Drawing.Size(16, 24);
             this.chkL02R04.TabIndex = 54;
-            this.chkL02R04.Text = "CheckBoxTS45";
             this.chkL02R04.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL02R03
@@ -1407,7 +1386,6 @@ namespace PowerSDR
             this.chkL02R03.Name = "chkL02R03";
             this.chkL02R03.Size = new System.Drawing.Size(16, 24);
             this.chkL02R03.TabIndex = 53;
-            this.chkL02R03.Text = "CheckBoxTS46";
             this.chkL02R03.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL02R02
@@ -1417,7 +1395,6 @@ namespace PowerSDR
             this.chkL02R02.Name = "chkL02R02";
             this.chkL02R02.Size = new System.Drawing.Size(16, 24);
             this.chkL02R02.TabIndex = 52;
-            this.chkL02R02.Text = "CheckBoxTS47";
             this.chkL02R02.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL02R01
@@ -1427,7 +1404,6 @@ namespace PowerSDR
             this.chkL02R01.Name = "chkL02R01";
             this.chkL02R01.Size = new System.Drawing.Size(16, 24);
             this.chkL02R01.TabIndex = 51;
-            this.chkL02R01.Text = "CheckBoxTS48";
             this.chkL02R01.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL03R09
@@ -1437,7 +1413,6 @@ namespace PowerSDR
             this.chkL03R09.Name = "chkL03R09";
             this.chkL03R09.Size = new System.Drawing.Size(16, 24);
             this.chkL03R09.TabIndex = 82;
-            this.chkL03R09.Text = "CheckBoxTS49";
             this.chkL03R09.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL03R10
@@ -1447,7 +1422,6 @@ namespace PowerSDR
             this.chkL03R10.Name = "chkL03R10";
             this.chkL03R10.Size = new System.Drawing.Size(16, 24);
             this.chkL03R10.TabIndex = 81;
-            this.chkL03R10.Text = "CheckBoxTS50";
             this.chkL03R10.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL03R11
@@ -1457,7 +1431,6 @@ namespace PowerSDR
             this.chkL03R11.Name = "chkL03R11";
             this.chkL03R11.Size = new System.Drawing.Size(16, 24);
             this.chkL03R11.TabIndex = 80;
-            this.chkL03R11.Text = "CheckBoxTS51";
             this.chkL03R11.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL03R12
@@ -1467,7 +1440,6 @@ namespace PowerSDR
             this.chkL03R12.Name = "chkL03R12";
             this.chkL03R12.Size = new System.Drawing.Size(16, 24);
             this.chkL03R12.TabIndex = 79;
-            this.chkL03R12.Text = "CheckBoxTS52";
             this.chkL03R12.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL03R13
@@ -1477,7 +1449,6 @@ namespace PowerSDR
             this.chkL03R13.Name = "chkL03R13";
             this.chkL03R13.Size = new System.Drawing.Size(16, 24);
             this.chkL03R13.TabIndex = 78;
-            this.chkL03R13.Text = "CheckBoxTS53";
             this.chkL03R13.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL03R14
@@ -1487,7 +1458,6 @@ namespace PowerSDR
             this.chkL03R14.Name = "chkL03R14";
             this.chkL03R14.Size = new System.Drawing.Size(16, 24);
             this.chkL03R14.TabIndex = 77;
-            this.chkL03R14.Text = "CheckBoxTS54";
             this.chkL03R14.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL03R15
@@ -1497,7 +1467,6 @@ namespace PowerSDR
             this.chkL03R15.Name = "chkL03R15";
             this.chkL03R15.Size = new System.Drawing.Size(16, 24);
             this.chkL03R15.TabIndex = 76;
-            this.chkL03R15.Text = "CheckBoxTS55";
             this.chkL03R15.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL03R16
@@ -1507,7 +1476,6 @@ namespace PowerSDR
             this.chkL03R16.Name = "chkL03R16";
             this.chkL03R16.Size = new System.Drawing.Size(16, 24);
             this.chkL03R16.TabIndex = 75;
-            this.chkL03R16.Text = "CheckBoxTS56";
             this.chkL03R16.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL03R08
@@ -1517,7 +1485,6 @@ namespace PowerSDR
             this.chkL03R08.Name = "chkL03R08";
             this.chkL03R08.Size = new System.Drawing.Size(16, 24);
             this.chkL03R08.TabIndex = 74;
-            this.chkL03R08.Text = "CheckBoxTS57";
             this.chkL03R08.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL03R07
@@ -1527,7 +1494,6 @@ namespace PowerSDR
             this.chkL03R07.Name = "chkL03R07";
             this.chkL03R07.Size = new System.Drawing.Size(16, 24);
             this.chkL03R07.TabIndex = 73;
-            this.chkL03R07.Text = "CheckBoxTS58";
             this.chkL03R07.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL03R06
@@ -1537,7 +1503,6 @@ namespace PowerSDR
             this.chkL03R06.Name = "chkL03R06";
             this.chkL03R06.Size = new System.Drawing.Size(16, 24);
             this.chkL03R06.TabIndex = 72;
-            this.chkL03R06.Text = "CheckBoxTS59";
             this.chkL03R06.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL03R05
@@ -1547,7 +1512,6 @@ namespace PowerSDR
             this.chkL03R05.Name = "chkL03R05";
             this.chkL03R05.Size = new System.Drawing.Size(16, 24);
             this.chkL03R05.TabIndex = 71;
-            this.chkL03R05.Text = "CheckBoxTS60";
             this.chkL03R05.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL03R04
@@ -1557,7 +1521,6 @@ namespace PowerSDR
             this.chkL03R04.Name = "chkL03R04";
             this.chkL03R04.Size = new System.Drawing.Size(16, 24);
             this.chkL03R04.TabIndex = 70;
-            this.chkL03R04.Text = "CheckBoxTS61";
             this.chkL03R04.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL03R03
@@ -1567,7 +1530,6 @@ namespace PowerSDR
             this.chkL03R03.Name = "chkL03R03";
             this.chkL03R03.Size = new System.Drawing.Size(16, 24);
             this.chkL03R03.TabIndex = 69;
-            this.chkL03R03.Text = "CheckBoxTS62";
             this.chkL03R03.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL03R02
@@ -1577,7 +1539,6 @@ namespace PowerSDR
             this.chkL03R02.Name = "chkL03R02";
             this.chkL03R02.Size = new System.Drawing.Size(16, 24);
             this.chkL03R02.TabIndex = 68;
-            this.chkL03R02.Text = "CheckBoxTS63";
             this.chkL03R02.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL03R01
@@ -1587,7 +1548,6 @@ namespace PowerSDR
             this.chkL03R01.Name = "chkL03R01";
             this.chkL03R01.Size = new System.Drawing.Size(16, 24);
             this.chkL03R01.TabIndex = 67;
-            this.chkL03R01.Text = "CheckBoxTS64";
             this.chkL03R01.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL04R09
@@ -1597,7 +1557,6 @@ namespace PowerSDR
             this.chkL04R09.Name = "chkL04R09";
             this.chkL04R09.Size = new System.Drawing.Size(16, 24);
             this.chkL04R09.TabIndex = 98;
-            this.chkL04R09.Text = "CheckBoxTS65";
             this.chkL04R09.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL04R10
@@ -1607,7 +1566,6 @@ namespace PowerSDR
             this.chkL04R10.Name = "chkL04R10";
             this.chkL04R10.Size = new System.Drawing.Size(16, 24);
             this.chkL04R10.TabIndex = 97;
-            this.chkL04R10.Text = "CheckBoxTS66";
             this.chkL04R10.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL04R11
@@ -1617,7 +1575,6 @@ namespace PowerSDR
             this.chkL04R11.Name = "chkL04R11";
             this.chkL04R11.Size = new System.Drawing.Size(16, 24);
             this.chkL04R11.TabIndex = 96;
-            this.chkL04R11.Text = "CheckBoxTS67";
             this.chkL04R11.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL04R12
@@ -1627,7 +1584,6 @@ namespace PowerSDR
             this.chkL04R12.Name = "chkL04R12";
             this.chkL04R12.Size = new System.Drawing.Size(16, 24);
             this.chkL04R12.TabIndex = 95;
-            this.chkL04R12.Text = "CheckBoxTS68";
             this.chkL04R12.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL04R13
@@ -1637,7 +1593,6 @@ namespace PowerSDR
             this.chkL04R13.Name = "chkL04R13";
             this.chkL04R13.Size = new System.Drawing.Size(16, 24);
             this.chkL04R13.TabIndex = 94;
-            this.chkL04R13.Text = "CheckBoxTS69";
             this.chkL04R13.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL04R14
@@ -1647,7 +1602,6 @@ namespace PowerSDR
             this.chkL04R14.Name = "chkL04R14";
             this.chkL04R14.Size = new System.Drawing.Size(16, 24);
             this.chkL04R14.TabIndex = 93;
-            this.chkL04R14.Text = "CheckBoxTS70";
             this.chkL04R14.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL04R15
@@ -1657,7 +1611,6 @@ namespace PowerSDR
             this.chkL04R15.Name = "chkL04R15";
             this.chkL04R15.Size = new System.Drawing.Size(16, 24);
             this.chkL04R15.TabIndex = 92;
-            this.chkL04R15.Text = "CheckBoxTS71";
             this.chkL04R15.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL04R16
@@ -1667,7 +1620,6 @@ namespace PowerSDR
             this.chkL04R16.Name = "chkL04R16";
             this.chkL04R16.Size = new System.Drawing.Size(16, 24);
             this.chkL04R16.TabIndex = 91;
-            this.chkL04R16.Text = "CheckBoxTS72";
             this.chkL04R16.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL04R08
@@ -1677,7 +1629,6 @@ namespace PowerSDR
             this.chkL04R08.Name = "chkL04R08";
             this.chkL04R08.Size = new System.Drawing.Size(16, 24);
             this.chkL04R08.TabIndex = 90;
-            this.chkL04R08.Text = "CheckBoxTS73";
             this.chkL04R08.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL04R07
@@ -1687,7 +1638,6 @@ namespace PowerSDR
             this.chkL04R07.Name = "chkL04R07";
             this.chkL04R07.Size = new System.Drawing.Size(16, 24);
             this.chkL04R07.TabIndex = 89;
-            this.chkL04R07.Text = "CheckBoxTS74";
             this.chkL04R07.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL04R06
@@ -1697,7 +1647,6 @@ namespace PowerSDR
             this.chkL04R06.Name = "chkL04R06";
             this.chkL04R06.Size = new System.Drawing.Size(16, 24);
             this.chkL04R06.TabIndex = 88;
-            this.chkL04R06.Text = "CheckBoxTS75";
             this.chkL04R06.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL04R05
@@ -1707,7 +1656,6 @@ namespace PowerSDR
             this.chkL04R05.Name = "chkL04R05";
             this.chkL04R05.Size = new System.Drawing.Size(16, 24);
             this.chkL04R05.TabIndex = 87;
-            this.chkL04R05.Text = "CheckBoxTS76";
             this.chkL04R05.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL04R04
@@ -1717,7 +1665,6 @@ namespace PowerSDR
             this.chkL04R04.Name = "chkL04R04";
             this.chkL04R04.Size = new System.Drawing.Size(16, 24);
             this.chkL04R04.TabIndex = 86;
-            this.chkL04R04.Text = "CheckBoxTS77";
             this.chkL04R04.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL04R03
@@ -1727,7 +1674,6 @@ namespace PowerSDR
             this.chkL04R03.Name = "chkL04R03";
             this.chkL04R03.Size = new System.Drawing.Size(16, 24);
             this.chkL04R03.TabIndex = 85;
-            this.chkL04R03.Text = "CheckBoxTS78";
             this.chkL04R03.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL04R02
@@ -1737,7 +1683,6 @@ namespace PowerSDR
             this.chkL04R02.Name = "chkL04R02";
             this.chkL04R02.Size = new System.Drawing.Size(16, 24);
             this.chkL04R02.TabIndex = 84;
-            this.chkL04R02.Text = "CheckBoxTS79";
             this.chkL04R02.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL04R01
@@ -1747,7 +1692,6 @@ namespace PowerSDR
             this.chkL04R01.Name = "chkL04R01";
             this.chkL04R01.Size = new System.Drawing.Size(16, 24);
             this.chkL04R01.TabIndex = 83;
-            this.chkL04R01.Text = "CheckBoxTS80";
             this.chkL04R01.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL05R09
@@ -1757,7 +1701,6 @@ namespace PowerSDR
             this.chkL05R09.Name = "chkL05R09";
             this.chkL05R09.Size = new System.Drawing.Size(16, 24);
             this.chkL05R09.TabIndex = 114;
-            this.chkL05R09.Text = "CheckBoxTS81";
             this.chkL05R09.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL05R10
@@ -1767,7 +1710,6 @@ namespace PowerSDR
             this.chkL05R10.Name = "chkL05R10";
             this.chkL05R10.Size = new System.Drawing.Size(16, 24);
             this.chkL05R10.TabIndex = 113;
-            this.chkL05R10.Text = "CheckBoxTS82";
             this.chkL05R10.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL05R11
@@ -1777,7 +1719,6 @@ namespace PowerSDR
             this.chkL05R11.Name = "chkL05R11";
             this.chkL05R11.Size = new System.Drawing.Size(16, 24);
             this.chkL05R11.TabIndex = 112;
-            this.chkL05R11.Text = "CheckBoxTS83";
             this.chkL05R11.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL05R12
@@ -1787,7 +1728,6 @@ namespace PowerSDR
             this.chkL05R12.Name = "chkL05R12";
             this.chkL05R12.Size = new System.Drawing.Size(16, 24);
             this.chkL05R12.TabIndex = 111;
-            this.chkL05R12.Text = "CheckBoxTS84";
             this.chkL05R12.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL05R13
@@ -1797,7 +1737,6 @@ namespace PowerSDR
             this.chkL05R13.Name = "chkL05R13";
             this.chkL05R13.Size = new System.Drawing.Size(16, 24);
             this.chkL05R13.TabIndex = 110;
-            this.chkL05R13.Text = "CheckBoxTS85";
             this.chkL05R13.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL05R14
@@ -1807,7 +1746,6 @@ namespace PowerSDR
             this.chkL05R14.Name = "chkL05R14";
             this.chkL05R14.Size = new System.Drawing.Size(16, 24);
             this.chkL05R14.TabIndex = 109;
-            this.chkL05R14.Text = "CheckBoxTS86";
             this.chkL05R14.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL05R15
@@ -1817,7 +1755,6 @@ namespace PowerSDR
             this.chkL05R15.Name = "chkL05R15";
             this.chkL05R15.Size = new System.Drawing.Size(16, 24);
             this.chkL05R15.TabIndex = 108;
-            this.chkL05R15.Text = "CheckBoxTS87";
             this.chkL05R15.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL05R16
@@ -1827,7 +1764,6 @@ namespace PowerSDR
             this.chkL05R16.Name = "chkL05R16";
             this.chkL05R16.Size = new System.Drawing.Size(16, 24);
             this.chkL05R16.TabIndex = 107;
-            this.chkL05R16.Text = "CheckBoxTS88";
             this.chkL05R16.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL05R08
@@ -1837,7 +1773,6 @@ namespace PowerSDR
             this.chkL05R08.Name = "chkL05R08";
             this.chkL05R08.Size = new System.Drawing.Size(16, 24);
             this.chkL05R08.TabIndex = 106;
-            this.chkL05R08.Text = "CheckBoxTS89";
             this.chkL05R08.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL05R07
@@ -1847,7 +1782,6 @@ namespace PowerSDR
             this.chkL05R07.Name = "chkL05R07";
             this.chkL05R07.Size = new System.Drawing.Size(16, 24);
             this.chkL05R07.TabIndex = 105;
-            this.chkL05R07.Text = "CheckBoxTS90";
             this.chkL05R07.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL05R06
@@ -1857,7 +1791,6 @@ namespace PowerSDR
             this.chkL05R06.Name = "chkL05R06";
             this.chkL05R06.Size = new System.Drawing.Size(16, 24);
             this.chkL05R06.TabIndex = 104;
-            this.chkL05R06.Text = "CheckBoxTS91";
             this.chkL05R06.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL05R05
@@ -1867,7 +1800,6 @@ namespace PowerSDR
             this.chkL05R05.Name = "chkL05R05";
             this.chkL05R05.Size = new System.Drawing.Size(16, 24);
             this.chkL05R05.TabIndex = 103;
-            this.chkL05R05.Text = "CheckBoxTS92";
             this.chkL05R05.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL05R04
@@ -1877,7 +1809,6 @@ namespace PowerSDR
             this.chkL05R04.Name = "chkL05R04";
             this.chkL05R04.Size = new System.Drawing.Size(16, 24);
             this.chkL05R04.TabIndex = 102;
-            this.chkL05R04.Text = "CheckBoxTS93";
             this.chkL05R04.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL05R03
@@ -1887,7 +1818,6 @@ namespace PowerSDR
             this.chkL05R03.Name = "chkL05R03";
             this.chkL05R03.Size = new System.Drawing.Size(16, 24);
             this.chkL05R03.TabIndex = 101;
-            this.chkL05R03.Text = "CheckBoxTS94";
             this.chkL05R03.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL05R02
@@ -1897,7 +1827,6 @@ namespace PowerSDR
             this.chkL05R02.Name = "chkL05R02";
             this.chkL05R02.Size = new System.Drawing.Size(16, 24);
             this.chkL05R02.TabIndex = 100;
-            this.chkL05R02.Text = "CheckBoxTS95";
             this.chkL05R02.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL05R01
@@ -1907,7 +1836,6 @@ namespace PowerSDR
             this.chkL05R01.Name = "chkL05R01";
             this.chkL05R01.Size = new System.Drawing.Size(16, 24);
             this.chkL05R01.TabIndex = 99;
-            this.chkL05R01.Text = "CheckBoxTS96";
             this.chkL05R01.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL06R09
@@ -1917,7 +1845,6 @@ namespace PowerSDR
             this.chkL06R09.Name = "chkL06R09";
             this.chkL06R09.Size = new System.Drawing.Size(16, 24);
             this.chkL06R09.TabIndex = 130;
-            this.chkL06R09.Text = "CheckBoxTS97";
             this.chkL06R09.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL06R10
@@ -1927,7 +1854,6 @@ namespace PowerSDR
             this.chkL06R10.Name = "chkL06R10";
             this.chkL06R10.Size = new System.Drawing.Size(16, 24);
             this.chkL06R10.TabIndex = 129;
-            this.chkL06R10.Text = "CheckBoxTS98";
             this.chkL06R10.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL06R11
@@ -1937,7 +1863,6 @@ namespace PowerSDR
             this.chkL06R11.Name = "chkL06R11";
             this.chkL06R11.Size = new System.Drawing.Size(16, 24);
             this.chkL06R11.TabIndex = 128;
-            this.chkL06R11.Text = "CheckBoxTS99";
             this.chkL06R11.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL06R12
@@ -1947,7 +1872,6 @@ namespace PowerSDR
             this.chkL06R12.Name = "chkL06R12";
             this.chkL06R12.Size = new System.Drawing.Size(16, 24);
             this.chkL06R12.TabIndex = 127;
-            this.chkL06R12.Text = "CheckBoxTS100";
             this.chkL06R12.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL06R13
@@ -1957,7 +1881,6 @@ namespace PowerSDR
             this.chkL06R13.Name = "chkL06R13";
             this.chkL06R13.Size = new System.Drawing.Size(16, 24);
             this.chkL06R13.TabIndex = 126;
-            this.chkL06R13.Text = "CheckBoxTS101";
             this.chkL06R13.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL06R14
@@ -1967,7 +1890,6 @@ namespace PowerSDR
             this.chkL06R14.Name = "chkL06R14";
             this.chkL06R14.Size = new System.Drawing.Size(16, 24);
             this.chkL06R14.TabIndex = 125;
-            this.chkL06R14.Text = "CheckBoxTS102";
             this.chkL06R14.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL06R15
@@ -1977,7 +1899,6 @@ namespace PowerSDR
             this.chkL06R15.Name = "chkL06R15";
             this.chkL06R15.Size = new System.Drawing.Size(16, 24);
             this.chkL06R15.TabIndex = 124;
-            this.chkL06R15.Text = "CheckBoxTS103";
             this.chkL06R15.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL06R16
@@ -1987,7 +1908,6 @@ namespace PowerSDR
             this.chkL06R16.Name = "chkL06R16";
             this.chkL06R16.Size = new System.Drawing.Size(16, 24);
             this.chkL06R16.TabIndex = 123;
-            this.chkL06R16.Text = "CheckBoxTS104";
             this.chkL06R16.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL06R08
@@ -1997,7 +1917,6 @@ namespace PowerSDR
             this.chkL06R08.Name = "chkL06R08";
             this.chkL06R08.Size = new System.Drawing.Size(16, 24);
             this.chkL06R08.TabIndex = 122;
-            this.chkL06R08.Text = "CheckBoxTS105";
             this.chkL06R08.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL06R07
@@ -2007,7 +1926,6 @@ namespace PowerSDR
             this.chkL06R07.Name = "chkL06R07";
             this.chkL06R07.Size = new System.Drawing.Size(16, 24);
             this.chkL06R07.TabIndex = 121;
-            this.chkL06R07.Text = "CheckBoxTS106";
             this.chkL06R07.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL06R06
@@ -2017,7 +1935,6 @@ namespace PowerSDR
             this.chkL06R06.Name = "chkL06R06";
             this.chkL06R06.Size = new System.Drawing.Size(16, 24);
             this.chkL06R06.TabIndex = 120;
-            this.chkL06R06.Text = "CheckBoxTS107";
             this.chkL06R06.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL06R05
@@ -2027,7 +1944,6 @@ namespace PowerSDR
             this.chkL06R05.Name = "chkL06R05";
             this.chkL06R05.Size = new System.Drawing.Size(16, 24);
             this.chkL06R05.TabIndex = 119;
-            this.chkL06R05.Text = "CheckBoxTS108";
             this.chkL06R05.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL06R04
@@ -2037,7 +1953,6 @@ namespace PowerSDR
             this.chkL06R04.Name = "chkL06R04";
             this.chkL06R04.Size = new System.Drawing.Size(16, 24);
             this.chkL06R04.TabIndex = 118;
-            this.chkL06R04.Text = "CheckBoxTS109";
             this.chkL06R04.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL06R03
@@ -2047,7 +1962,6 @@ namespace PowerSDR
             this.chkL06R03.Name = "chkL06R03";
             this.chkL06R03.Size = new System.Drawing.Size(16, 24);
             this.chkL06R03.TabIndex = 117;
-            this.chkL06R03.Text = "CheckBoxTS110";
             this.chkL06R03.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL06R02
@@ -2057,7 +1971,6 @@ namespace PowerSDR
             this.chkL06R02.Name = "chkL06R02";
             this.chkL06R02.Size = new System.Drawing.Size(16, 24);
             this.chkL06R02.TabIndex = 116;
-            this.chkL06R02.Text = "CheckBoxTS111";
             this.chkL06R02.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL06R01
@@ -2067,7 +1980,6 @@ namespace PowerSDR
             this.chkL06R01.Name = "chkL06R01";
             this.chkL06R01.Size = new System.Drawing.Size(16, 24);
             this.chkL06R01.TabIndex = 115;
-            this.chkL06R01.Text = "CheckBoxTS112";
             this.chkL06R01.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL07R09
@@ -2077,7 +1989,6 @@ namespace PowerSDR
             this.chkL07R09.Name = "chkL07R09";
             this.chkL07R09.Size = new System.Drawing.Size(16, 24);
             this.chkL07R09.TabIndex = 146;
-            this.chkL07R09.Text = "CheckBoxTS113";
             this.chkL07R09.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL07R10
@@ -2087,7 +1998,6 @@ namespace PowerSDR
             this.chkL07R10.Name = "chkL07R10";
             this.chkL07R10.Size = new System.Drawing.Size(16, 24);
             this.chkL07R10.TabIndex = 145;
-            this.chkL07R10.Text = "CheckBoxTS114";
             this.chkL07R10.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL07R11
@@ -2097,7 +2007,6 @@ namespace PowerSDR
             this.chkL07R11.Name = "chkL07R11";
             this.chkL07R11.Size = new System.Drawing.Size(16, 24);
             this.chkL07R11.TabIndex = 144;
-            this.chkL07R11.Text = "CheckBoxTS115";
             this.chkL07R11.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL07R12
@@ -2107,7 +2016,6 @@ namespace PowerSDR
             this.chkL07R12.Name = "chkL07R12";
             this.chkL07R12.Size = new System.Drawing.Size(16, 24);
             this.chkL07R12.TabIndex = 143;
-            this.chkL07R12.Text = "CheckBoxTS116";
             this.chkL07R12.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL07R13
@@ -2117,7 +2025,6 @@ namespace PowerSDR
             this.chkL07R13.Name = "chkL07R13";
             this.chkL07R13.Size = new System.Drawing.Size(16, 24);
             this.chkL07R13.TabIndex = 142;
-            this.chkL07R13.Text = "CheckBoxTS117";
             this.chkL07R13.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL07R14
@@ -2127,7 +2034,6 @@ namespace PowerSDR
             this.chkL07R14.Name = "chkL07R14";
             this.chkL07R14.Size = new System.Drawing.Size(16, 24);
             this.chkL07R14.TabIndex = 141;
-            this.chkL07R14.Text = "CheckBoxTS118";
             this.chkL07R14.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL07R15
@@ -2137,7 +2043,6 @@ namespace PowerSDR
             this.chkL07R15.Name = "chkL07R15";
             this.chkL07R15.Size = new System.Drawing.Size(16, 24);
             this.chkL07R15.TabIndex = 140;
-            this.chkL07R15.Text = "CheckBoxTS119";
             this.chkL07R15.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL07R16
@@ -2147,7 +2052,6 @@ namespace PowerSDR
             this.chkL07R16.Name = "chkL07R16";
             this.chkL07R16.Size = new System.Drawing.Size(16, 24);
             this.chkL07R16.TabIndex = 139;
-            this.chkL07R16.Text = "CheckBoxTS120";
             this.chkL07R16.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL07R08
@@ -2157,7 +2061,6 @@ namespace PowerSDR
             this.chkL07R08.Name = "chkL07R08";
             this.chkL07R08.Size = new System.Drawing.Size(16, 24);
             this.chkL07R08.TabIndex = 138;
-            this.chkL07R08.Text = "CheckBoxTS121";
             this.chkL07R08.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL07R07
@@ -2167,7 +2070,6 @@ namespace PowerSDR
             this.chkL07R07.Name = "chkL07R07";
             this.chkL07R07.Size = new System.Drawing.Size(16, 24);
             this.chkL07R07.TabIndex = 137;
-            this.chkL07R07.Text = "CheckBoxTS122";
             this.chkL07R07.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL07R06
@@ -2177,7 +2079,6 @@ namespace PowerSDR
             this.chkL07R06.Name = "chkL07R06";
             this.chkL07R06.Size = new System.Drawing.Size(16, 24);
             this.chkL07R06.TabIndex = 136;
-            this.chkL07R06.Text = "CheckBoxTS123";
             this.chkL07R06.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL07R05
@@ -2187,7 +2088,6 @@ namespace PowerSDR
             this.chkL07R05.Name = "chkL07R05";
             this.chkL07R05.Size = new System.Drawing.Size(16, 24);
             this.chkL07R05.TabIndex = 135;
-            this.chkL07R05.Text = "CheckBoxTS124";
             this.chkL07R05.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL07R04
@@ -2197,7 +2097,6 @@ namespace PowerSDR
             this.chkL07R04.Name = "chkL07R04";
             this.chkL07R04.Size = new System.Drawing.Size(16, 24);
             this.chkL07R04.TabIndex = 134;
-            this.chkL07R04.Text = "CheckBoxTS125";
             this.chkL07R04.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL07R03
@@ -2207,7 +2106,6 @@ namespace PowerSDR
             this.chkL07R03.Name = "chkL07R03";
             this.chkL07R03.Size = new System.Drawing.Size(16, 24);
             this.chkL07R03.TabIndex = 133;
-            this.chkL07R03.Text = "CheckBoxTS126";
             this.chkL07R03.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL07R02
@@ -2217,7 +2115,6 @@ namespace PowerSDR
             this.chkL07R02.Name = "chkL07R02";
             this.chkL07R02.Size = new System.Drawing.Size(16, 24);
             this.chkL07R02.TabIndex = 132;
-            this.chkL07R02.Text = "CheckBoxTS127";
             this.chkL07R02.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL07R01
@@ -2227,7 +2124,6 @@ namespace PowerSDR
             this.chkL07R01.Name = "chkL07R01";
             this.chkL07R01.Size = new System.Drawing.Size(16, 24);
             this.chkL07R01.TabIndex = 131;
-            this.chkL07R01.Text = "CheckBoxTS128";
             this.chkL07R01.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL08R09
@@ -2237,7 +2133,6 @@ namespace PowerSDR
             this.chkL08R09.Name = "chkL08R09";
             this.chkL08R09.Size = new System.Drawing.Size(16, 24);
             this.chkL08R09.TabIndex = 162;
-            this.chkL08R09.Text = "CheckBoxTS129";
             this.chkL08R09.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL08R10
@@ -2247,7 +2142,6 @@ namespace PowerSDR
             this.chkL08R10.Name = "chkL08R10";
             this.chkL08R10.Size = new System.Drawing.Size(16, 24);
             this.chkL08R10.TabIndex = 161;
-            this.chkL08R10.Text = "CheckBoxTS130";
             this.chkL08R10.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL08R11
@@ -2257,7 +2151,6 @@ namespace PowerSDR
             this.chkL08R11.Name = "chkL08R11";
             this.chkL08R11.Size = new System.Drawing.Size(16, 24);
             this.chkL08R11.TabIndex = 160;
-            this.chkL08R11.Text = "CheckBoxTS131";
             this.chkL08R11.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL08R12
@@ -2267,7 +2160,6 @@ namespace PowerSDR
             this.chkL08R12.Name = "chkL08R12";
             this.chkL08R12.Size = new System.Drawing.Size(16, 24);
             this.chkL08R12.TabIndex = 159;
-            this.chkL08R12.Text = "CheckBoxTS132";
             this.chkL08R12.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL08R13
@@ -2277,7 +2169,6 @@ namespace PowerSDR
             this.chkL08R13.Name = "chkL08R13";
             this.chkL08R13.Size = new System.Drawing.Size(16, 24);
             this.chkL08R13.TabIndex = 158;
-            this.chkL08R13.Text = "CheckBoxTS133";
             this.chkL08R13.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL08R14
@@ -2287,7 +2178,6 @@ namespace PowerSDR
             this.chkL08R14.Name = "chkL08R14";
             this.chkL08R14.Size = new System.Drawing.Size(16, 24);
             this.chkL08R14.TabIndex = 157;
-            this.chkL08R14.Text = "CheckBoxTS134";
             this.chkL08R14.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL08R15
@@ -2297,7 +2187,6 @@ namespace PowerSDR
             this.chkL08R15.Name = "chkL08R15";
             this.chkL08R15.Size = new System.Drawing.Size(16, 24);
             this.chkL08R15.TabIndex = 156;
-            this.chkL08R15.Text = "CheckBoxTS135";
             this.chkL08R15.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL08R16
@@ -2307,7 +2196,6 @@ namespace PowerSDR
             this.chkL08R16.Name = "chkL08R16";
             this.chkL08R16.Size = new System.Drawing.Size(16, 24);
             this.chkL08R16.TabIndex = 155;
-            this.chkL08R16.Text = "CheckBoxTS136";
             this.chkL08R16.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL08R08
@@ -2317,7 +2205,6 @@ namespace PowerSDR
             this.chkL08R08.Name = "chkL08R08";
             this.chkL08R08.Size = new System.Drawing.Size(16, 24);
             this.chkL08R08.TabIndex = 154;
-            this.chkL08R08.Text = "CheckBoxTS137";
             this.chkL08R08.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL08R07
@@ -2327,7 +2214,6 @@ namespace PowerSDR
             this.chkL08R07.Name = "chkL08R07";
             this.chkL08R07.Size = new System.Drawing.Size(16, 24);
             this.chkL08R07.TabIndex = 153;
-            this.chkL08R07.Text = "CheckBoxTS138";
             this.chkL08R07.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL08R06
@@ -2337,7 +2223,6 @@ namespace PowerSDR
             this.chkL08R06.Name = "chkL08R06";
             this.chkL08R06.Size = new System.Drawing.Size(16, 24);
             this.chkL08R06.TabIndex = 152;
-            this.chkL08R06.Text = "CheckBoxTS139";
             this.chkL08R06.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL08R05
@@ -2347,7 +2232,6 @@ namespace PowerSDR
             this.chkL08R05.Name = "chkL08R05";
             this.chkL08R05.Size = new System.Drawing.Size(16, 24);
             this.chkL08R05.TabIndex = 151;
-            this.chkL08R05.Text = "CheckBoxTS140";
             this.chkL08R05.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL08R04
@@ -2357,7 +2241,6 @@ namespace PowerSDR
             this.chkL08R04.Name = "chkL08R04";
             this.chkL08R04.Size = new System.Drawing.Size(16, 24);
             this.chkL08R04.TabIndex = 150;
-            this.chkL08R04.Text = "CheckBoxTS141";
             this.chkL08R04.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL08R03
@@ -2367,7 +2250,6 @@ namespace PowerSDR
             this.chkL08R03.Name = "chkL08R03";
             this.chkL08R03.Size = new System.Drawing.Size(16, 24);
             this.chkL08R03.TabIndex = 149;
-            this.chkL08R03.Text = "CheckBoxTS142";
             this.chkL08R03.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL08R02
@@ -2377,7 +2259,6 @@ namespace PowerSDR
             this.chkL08R02.Name = "chkL08R02";
             this.chkL08R02.Size = new System.Drawing.Size(16, 24);
             this.chkL08R02.TabIndex = 148;
-            this.chkL08R02.Text = "CheckBoxTS143";
             this.chkL08R02.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL08R01
@@ -2387,7 +2268,6 @@ namespace PowerSDR
             this.chkL08R01.Name = "chkL08R01";
             this.chkL08R01.Size = new System.Drawing.Size(16, 24);
             this.chkL08R01.TabIndex = 147;
-            this.chkL08R01.Text = "CheckBoxTS144";
             this.chkL08R01.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL09R09
@@ -2397,7 +2277,6 @@ namespace PowerSDR
             this.chkL09R09.Name = "chkL09R09";
             this.chkL09R09.Size = new System.Drawing.Size(16, 24);
             this.chkL09R09.TabIndex = 178;
-            this.chkL09R09.Text = "CheckBoxTS145";
             this.chkL09R09.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL09R10
@@ -2407,7 +2286,6 @@ namespace PowerSDR
             this.chkL09R10.Name = "chkL09R10";
             this.chkL09R10.Size = new System.Drawing.Size(16, 24);
             this.chkL09R10.TabIndex = 177;
-            this.chkL09R10.Text = "CheckBoxTS146";
             this.chkL09R10.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL09R11
@@ -2417,7 +2295,6 @@ namespace PowerSDR
             this.chkL09R11.Name = "chkL09R11";
             this.chkL09R11.Size = new System.Drawing.Size(16, 24);
             this.chkL09R11.TabIndex = 176;
-            this.chkL09R11.Text = "CheckBoxTS147";
             this.chkL09R11.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL09R12
@@ -2427,7 +2304,6 @@ namespace PowerSDR
             this.chkL09R12.Name = "chkL09R12";
             this.chkL09R12.Size = new System.Drawing.Size(16, 24);
             this.chkL09R12.TabIndex = 175;
-            this.chkL09R12.Text = "CheckBoxTS148";
             this.chkL09R12.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL09R13
@@ -2437,7 +2313,6 @@ namespace PowerSDR
             this.chkL09R13.Name = "chkL09R13";
             this.chkL09R13.Size = new System.Drawing.Size(16, 24);
             this.chkL09R13.TabIndex = 174;
-            this.chkL09R13.Text = "CheckBoxTS149";
             this.chkL09R13.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL09R14
@@ -2447,7 +2322,6 @@ namespace PowerSDR
             this.chkL09R14.Name = "chkL09R14";
             this.chkL09R14.Size = new System.Drawing.Size(16, 24);
             this.chkL09R14.TabIndex = 173;
-            this.chkL09R14.Text = "CheckBoxTS150";
             this.chkL09R14.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL09R15
@@ -2457,7 +2331,6 @@ namespace PowerSDR
             this.chkL09R15.Name = "chkL09R15";
             this.chkL09R15.Size = new System.Drawing.Size(16, 24);
             this.chkL09R15.TabIndex = 172;
-            this.chkL09R15.Text = "CheckBoxTS151";
             this.chkL09R15.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL09R16
@@ -2467,7 +2340,6 @@ namespace PowerSDR
             this.chkL09R16.Name = "chkL09R16";
             this.chkL09R16.Size = new System.Drawing.Size(16, 24);
             this.chkL09R16.TabIndex = 171;
-            this.chkL09R16.Text = "CheckBoxTS152";
             this.chkL09R16.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL09R08
@@ -2477,7 +2349,6 @@ namespace PowerSDR
             this.chkL09R08.Name = "chkL09R08";
             this.chkL09R08.Size = new System.Drawing.Size(16, 24);
             this.chkL09R08.TabIndex = 170;
-            this.chkL09R08.Text = "CheckBoxTS153";
             this.chkL09R08.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL09R07
@@ -2487,7 +2358,6 @@ namespace PowerSDR
             this.chkL09R07.Name = "chkL09R07";
             this.chkL09R07.Size = new System.Drawing.Size(16, 24);
             this.chkL09R07.TabIndex = 169;
-            this.chkL09R07.Text = "CheckBoxTS154";
             this.chkL09R07.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL09R06
@@ -2497,7 +2367,6 @@ namespace PowerSDR
             this.chkL09R06.Name = "chkL09R06";
             this.chkL09R06.Size = new System.Drawing.Size(16, 24);
             this.chkL09R06.TabIndex = 168;
-            this.chkL09R06.Text = "CheckBoxTS155";
             this.chkL09R06.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL09R05
@@ -2507,7 +2376,6 @@ namespace PowerSDR
             this.chkL09R05.Name = "chkL09R05";
             this.chkL09R05.Size = new System.Drawing.Size(16, 24);
             this.chkL09R05.TabIndex = 167;
-            this.chkL09R05.Text = "CheckBoxTS156";
             this.chkL09R05.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL09R04
@@ -2517,7 +2385,6 @@ namespace PowerSDR
             this.chkL09R04.Name = "chkL09R04";
             this.chkL09R04.Size = new System.Drawing.Size(16, 24);
             this.chkL09R04.TabIndex = 166;
-            this.chkL09R04.Text = "CheckBoxTS157";
             this.chkL09R04.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL09R03
@@ -2527,7 +2394,6 @@ namespace PowerSDR
             this.chkL09R03.Name = "chkL09R03";
             this.chkL09R03.Size = new System.Drawing.Size(16, 24);
             this.chkL09R03.TabIndex = 165;
-            this.chkL09R03.Text = "CheckBoxTS158";
             this.chkL09R03.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL09R02
@@ -2537,7 +2403,6 @@ namespace PowerSDR
             this.chkL09R02.Name = "chkL09R02";
             this.chkL09R02.Size = new System.Drawing.Size(16, 24);
             this.chkL09R02.TabIndex = 164;
-            this.chkL09R02.Text = "CheckBoxTS159";
             this.chkL09R02.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL09R01
@@ -2547,7 +2412,6 @@ namespace PowerSDR
             this.chkL09R01.Name = "chkL09R01";
             this.chkL09R01.Size = new System.Drawing.Size(16, 24);
             this.chkL09R01.TabIndex = 163;
-            this.chkL09R01.Text = "CheckBoxTS160";
             this.chkL09R01.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL10R09
@@ -2557,7 +2421,6 @@ namespace PowerSDR
             this.chkL10R09.Name = "chkL10R09";
             this.chkL10R09.Size = new System.Drawing.Size(16, 24);
             this.chkL10R09.TabIndex = 194;
-            this.chkL10R09.Text = "CheckBoxTS161";
             this.chkL10R09.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL10R10
@@ -2567,7 +2430,6 @@ namespace PowerSDR
             this.chkL10R10.Name = "chkL10R10";
             this.chkL10R10.Size = new System.Drawing.Size(16, 24);
             this.chkL10R10.TabIndex = 193;
-            this.chkL10R10.Text = "CheckBoxTS162";
             this.chkL10R10.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL10R11
@@ -2577,7 +2439,6 @@ namespace PowerSDR
             this.chkL10R11.Name = "chkL10R11";
             this.chkL10R11.Size = new System.Drawing.Size(16, 24);
             this.chkL10R11.TabIndex = 192;
-            this.chkL10R11.Text = "CheckBoxTS163";
             this.chkL10R11.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL10R12
@@ -2587,7 +2448,6 @@ namespace PowerSDR
             this.chkL10R12.Name = "chkL10R12";
             this.chkL10R12.Size = new System.Drawing.Size(16, 24);
             this.chkL10R12.TabIndex = 191;
-            this.chkL10R12.Text = "CheckBoxTS164";
             this.chkL10R12.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL10R13
@@ -2597,7 +2457,6 @@ namespace PowerSDR
             this.chkL10R13.Name = "chkL10R13";
             this.chkL10R13.Size = new System.Drawing.Size(16, 24);
             this.chkL10R13.TabIndex = 190;
-            this.chkL10R13.Text = "CheckBoxTS165";
             this.chkL10R13.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL10R14
@@ -2607,7 +2466,6 @@ namespace PowerSDR
             this.chkL10R14.Name = "chkL10R14";
             this.chkL10R14.Size = new System.Drawing.Size(16, 24);
             this.chkL10R14.TabIndex = 189;
-            this.chkL10R14.Text = "CheckBoxTS166";
             this.chkL10R14.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL10R15
@@ -2617,7 +2475,6 @@ namespace PowerSDR
             this.chkL10R15.Name = "chkL10R15";
             this.chkL10R15.Size = new System.Drawing.Size(16, 24);
             this.chkL10R15.TabIndex = 188;
-            this.chkL10R15.Text = "CheckBoxTS167";
             this.chkL10R15.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL10R16
@@ -2627,7 +2484,6 @@ namespace PowerSDR
             this.chkL10R16.Name = "chkL10R16";
             this.chkL10R16.Size = new System.Drawing.Size(16, 24);
             this.chkL10R16.TabIndex = 187;
-            this.chkL10R16.Text = "CheckBoxTS168";
             this.chkL10R16.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL10R08
@@ -2637,7 +2493,6 @@ namespace PowerSDR
             this.chkL10R08.Name = "chkL10R08";
             this.chkL10R08.Size = new System.Drawing.Size(16, 24);
             this.chkL10R08.TabIndex = 186;
-            this.chkL10R08.Text = "CheckBoxTS169";
             this.chkL10R08.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL10R07
@@ -2647,7 +2502,6 @@ namespace PowerSDR
             this.chkL10R07.Name = "chkL10R07";
             this.chkL10R07.Size = new System.Drawing.Size(16, 24);
             this.chkL10R07.TabIndex = 185;
-            this.chkL10R07.Text = "CheckBoxTS170";
             this.chkL10R07.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL10R06
@@ -2657,7 +2511,6 @@ namespace PowerSDR
             this.chkL10R06.Name = "chkL10R06";
             this.chkL10R06.Size = new System.Drawing.Size(16, 24);
             this.chkL10R06.TabIndex = 184;
-            this.chkL10R06.Text = "CheckBoxTS171";
             this.chkL10R06.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL10R05
@@ -2667,7 +2520,6 @@ namespace PowerSDR
             this.chkL10R05.Name = "chkL10R05";
             this.chkL10R05.Size = new System.Drawing.Size(16, 24);
             this.chkL10R05.TabIndex = 183;
-            this.chkL10R05.Text = "CheckBoxTS172";
             this.chkL10R05.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL10R04
@@ -2677,7 +2529,6 @@ namespace PowerSDR
             this.chkL10R04.Name = "chkL10R04";
             this.chkL10R04.Size = new System.Drawing.Size(16, 24);
             this.chkL10R04.TabIndex = 182;
-            this.chkL10R04.Text = "CheckBoxTS173";
             this.chkL10R04.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL10R03
@@ -2687,7 +2538,6 @@ namespace PowerSDR
             this.chkL10R03.Name = "chkL10R03";
             this.chkL10R03.Size = new System.Drawing.Size(16, 24);
             this.chkL10R03.TabIndex = 181;
-            this.chkL10R03.Text = "CheckBoxTS174";
             this.chkL10R03.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL10R02
@@ -2697,7 +2547,6 @@ namespace PowerSDR
             this.chkL10R02.Name = "chkL10R02";
             this.chkL10R02.Size = new System.Drawing.Size(16, 24);
             this.chkL10R02.TabIndex = 180;
-            this.chkL10R02.Text = "CheckBoxTS175";
             this.chkL10R02.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL10R01
@@ -2707,7 +2556,6 @@ namespace PowerSDR
             this.chkL10R01.Name = "chkL10R01";
             this.chkL10R01.Size = new System.Drawing.Size(16, 24);
             this.chkL10R01.TabIndex = 179;
-            this.chkL10R01.Text = "CheckBoxTS176";
             this.chkL10R01.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL11R09
@@ -2717,7 +2565,6 @@ namespace PowerSDR
             this.chkL11R09.Name = "chkL11R09";
             this.chkL11R09.Size = new System.Drawing.Size(16, 24);
             this.chkL11R09.TabIndex = 210;
-            this.chkL11R09.Text = "CheckBoxTS177";
             this.chkL11R09.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL11R10
@@ -2727,7 +2574,6 @@ namespace PowerSDR
             this.chkL11R10.Name = "chkL11R10";
             this.chkL11R10.Size = new System.Drawing.Size(16, 24);
             this.chkL11R10.TabIndex = 209;
-            this.chkL11R10.Text = "CheckBoxTS178";
             this.chkL11R10.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL11R11
@@ -2737,7 +2583,6 @@ namespace PowerSDR
             this.chkL11R11.Name = "chkL11R11";
             this.chkL11R11.Size = new System.Drawing.Size(16, 24);
             this.chkL11R11.TabIndex = 208;
-            this.chkL11R11.Text = "CheckBoxTS179";
             this.chkL11R11.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL11R12
@@ -2747,7 +2592,6 @@ namespace PowerSDR
             this.chkL11R12.Name = "chkL11R12";
             this.chkL11R12.Size = new System.Drawing.Size(16, 24);
             this.chkL11R12.TabIndex = 207;
-            this.chkL11R12.Text = "CheckBoxTS180";
             this.chkL11R12.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL11R13
@@ -2757,7 +2601,6 @@ namespace PowerSDR
             this.chkL11R13.Name = "chkL11R13";
             this.chkL11R13.Size = new System.Drawing.Size(16, 24);
             this.chkL11R13.TabIndex = 206;
-            this.chkL11R13.Text = "CheckBoxTS181";
             this.chkL11R13.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL11R14
@@ -2767,7 +2610,6 @@ namespace PowerSDR
             this.chkL11R14.Name = "chkL11R14";
             this.chkL11R14.Size = new System.Drawing.Size(16, 24);
             this.chkL11R14.TabIndex = 205;
-            this.chkL11R14.Text = "CheckBoxTS182";
             this.chkL11R14.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL11R15
@@ -2777,7 +2619,6 @@ namespace PowerSDR
             this.chkL11R15.Name = "chkL11R15";
             this.chkL11R15.Size = new System.Drawing.Size(16, 24);
             this.chkL11R15.TabIndex = 204;
-            this.chkL11R15.Text = "CheckBoxTS183";
             this.chkL11R15.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL11R16
@@ -2787,7 +2628,6 @@ namespace PowerSDR
             this.chkL11R16.Name = "chkL11R16";
             this.chkL11R16.Size = new System.Drawing.Size(16, 24);
             this.chkL11R16.TabIndex = 203;
-            this.chkL11R16.Text = "CheckBoxTS184";
             this.chkL11R16.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL11R08
@@ -2797,7 +2637,6 @@ namespace PowerSDR
             this.chkL11R08.Name = "chkL11R08";
             this.chkL11R08.Size = new System.Drawing.Size(16, 24);
             this.chkL11R08.TabIndex = 202;
-            this.chkL11R08.Text = "CheckBoxTS185";
             this.chkL11R08.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL11R07
@@ -2807,7 +2646,6 @@ namespace PowerSDR
             this.chkL11R07.Name = "chkL11R07";
             this.chkL11R07.Size = new System.Drawing.Size(16, 24);
             this.chkL11R07.TabIndex = 201;
-            this.chkL11R07.Text = "CheckBoxTS186";
             this.chkL11R07.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL11R06
@@ -2817,7 +2655,6 @@ namespace PowerSDR
             this.chkL11R06.Name = "chkL11R06";
             this.chkL11R06.Size = new System.Drawing.Size(16, 24);
             this.chkL11R06.TabIndex = 200;
-            this.chkL11R06.Text = "CheckBoxTS187";
             this.chkL11R06.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL11R05
@@ -2827,7 +2664,6 @@ namespace PowerSDR
             this.chkL11R05.Name = "chkL11R05";
             this.chkL11R05.Size = new System.Drawing.Size(16, 24);
             this.chkL11R05.TabIndex = 199;
-            this.chkL11R05.Text = "CheckBoxTS188";
             this.chkL11R05.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL11R04
@@ -2837,7 +2673,6 @@ namespace PowerSDR
             this.chkL11R04.Name = "chkL11R04";
             this.chkL11R04.Size = new System.Drawing.Size(16, 24);
             this.chkL11R04.TabIndex = 198;
-            this.chkL11R04.Text = "CheckBoxTS189";
             this.chkL11R04.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL11R03
@@ -2847,7 +2682,6 @@ namespace PowerSDR
             this.chkL11R03.Name = "chkL11R03";
             this.chkL11R03.Size = new System.Drawing.Size(16, 24);
             this.chkL11R03.TabIndex = 197;
-            this.chkL11R03.Text = "CheckBoxTS190";
             this.chkL11R03.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL11R02
@@ -2857,7 +2691,6 @@ namespace PowerSDR
             this.chkL11R02.Name = "chkL11R02";
             this.chkL11R02.Size = new System.Drawing.Size(16, 24);
             this.chkL11R02.TabIndex = 196;
-            this.chkL11R02.Text = "CheckBoxTS191";
             this.chkL11R02.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL11R01
@@ -2867,7 +2700,6 @@ namespace PowerSDR
             this.chkL11R01.Name = "chkL11R01";
             this.chkL11R01.Size = new System.Drawing.Size(16, 24);
             this.chkL11R01.TabIndex = 195;
-            this.chkL11R01.Text = "CheckBoxTS192";
             this.chkL11R01.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL12R09
@@ -2877,7 +2709,6 @@ namespace PowerSDR
             this.chkL12R09.Name = "chkL12R09";
             this.chkL12R09.Size = new System.Drawing.Size(16, 24);
             this.chkL12R09.TabIndex = 226;
-            this.chkL12R09.Text = "CheckBoxTS193";
             this.chkL12R09.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL12R10
@@ -2887,7 +2718,6 @@ namespace PowerSDR
             this.chkL12R10.Name = "chkL12R10";
             this.chkL12R10.Size = new System.Drawing.Size(16, 24);
             this.chkL12R10.TabIndex = 225;
-            this.chkL12R10.Text = "CheckBoxTS194";
             this.chkL12R10.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL12R11
@@ -2897,7 +2727,6 @@ namespace PowerSDR
             this.chkL12R11.Name = "chkL12R11";
             this.chkL12R11.Size = new System.Drawing.Size(16, 24);
             this.chkL12R11.TabIndex = 224;
-            this.chkL12R11.Text = "CheckBoxTS195";
             this.chkL12R11.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL12R12
@@ -2907,7 +2736,6 @@ namespace PowerSDR
             this.chkL12R12.Name = "chkL12R12";
             this.chkL12R12.Size = new System.Drawing.Size(16, 24);
             this.chkL12R12.TabIndex = 223;
-            this.chkL12R12.Text = "CheckBoxTS196";
             this.chkL12R12.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL12R13
@@ -2917,7 +2745,6 @@ namespace PowerSDR
             this.chkL12R13.Name = "chkL12R13";
             this.chkL12R13.Size = new System.Drawing.Size(16, 24);
             this.chkL12R13.TabIndex = 222;
-            this.chkL12R13.Text = "CheckBoxTS197";
             this.chkL12R13.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL12R14
@@ -2927,7 +2754,6 @@ namespace PowerSDR
             this.chkL12R14.Name = "chkL12R14";
             this.chkL12R14.Size = new System.Drawing.Size(16, 24);
             this.chkL12R14.TabIndex = 221;
-            this.chkL12R14.Text = "CheckBoxTS198";
             this.chkL12R14.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL12R15
@@ -2937,7 +2763,6 @@ namespace PowerSDR
             this.chkL12R15.Name = "chkL12R15";
             this.chkL12R15.Size = new System.Drawing.Size(16, 24);
             this.chkL12R15.TabIndex = 220;
-            this.chkL12R15.Text = "CheckBoxTS199";
             this.chkL12R15.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL12R16
@@ -2947,7 +2772,6 @@ namespace PowerSDR
             this.chkL12R16.Name = "chkL12R16";
             this.chkL12R16.Size = new System.Drawing.Size(16, 24);
             this.chkL12R16.TabIndex = 219;
-            this.chkL12R16.Text = "CheckBoxTS200";
             this.chkL12R16.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL12R08
@@ -2957,7 +2781,6 @@ namespace PowerSDR
             this.chkL12R08.Name = "chkL12R08";
             this.chkL12R08.Size = new System.Drawing.Size(16, 24);
             this.chkL12R08.TabIndex = 218;
-            this.chkL12R08.Text = "CheckBoxTS201";
             this.chkL12R08.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL12R07
@@ -2967,7 +2790,6 @@ namespace PowerSDR
             this.chkL12R07.Name = "chkL12R07";
             this.chkL12R07.Size = new System.Drawing.Size(16, 24);
             this.chkL12R07.TabIndex = 217;
-            this.chkL12R07.Text = "CheckBoxTS202";
             this.chkL12R07.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL12R06
@@ -2977,7 +2799,6 @@ namespace PowerSDR
             this.chkL12R06.Name = "chkL12R06";
             this.chkL12R06.Size = new System.Drawing.Size(16, 24);
             this.chkL12R06.TabIndex = 216;
-            this.chkL12R06.Text = "CheckBoxTS203";
             this.chkL12R06.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL12R05
@@ -2987,7 +2808,6 @@ namespace PowerSDR
             this.chkL12R05.Name = "chkL12R05";
             this.chkL12R05.Size = new System.Drawing.Size(16, 24);
             this.chkL12R05.TabIndex = 215;
-            this.chkL12R05.Text = "CheckBoxTS204";
             this.chkL12R05.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL12R04
@@ -2997,7 +2817,6 @@ namespace PowerSDR
             this.chkL12R04.Name = "chkL12R04";
             this.chkL12R04.Size = new System.Drawing.Size(16, 24);
             this.chkL12R04.TabIndex = 214;
-            this.chkL12R04.Text = "CheckBoxTS205";
             this.chkL12R04.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL12R03
@@ -3007,7 +2826,6 @@ namespace PowerSDR
             this.chkL12R03.Name = "chkL12R03";
             this.chkL12R03.Size = new System.Drawing.Size(16, 24);
             this.chkL12R03.TabIndex = 213;
-            this.chkL12R03.Text = "CheckBoxTS206";
             this.chkL12R03.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL12R02
@@ -3017,7 +2835,6 @@ namespace PowerSDR
             this.chkL12R02.Name = "chkL12R02";
             this.chkL12R02.Size = new System.Drawing.Size(16, 24);
             this.chkL12R02.TabIndex = 212;
-            this.chkL12R02.Text = "CheckBoxTS207";
             this.chkL12R02.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL12R01
@@ -3027,7 +2844,6 @@ namespace PowerSDR
             this.chkL12R01.Name = "chkL12R01";
             this.chkL12R01.Size = new System.Drawing.Size(16, 24);
             this.chkL12R01.TabIndex = 211;
-            this.chkL12R01.Text = "CheckBoxTS208";
             this.chkL12R01.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL13R09
@@ -3037,7 +2853,6 @@ namespace PowerSDR
             this.chkL13R09.Name = "chkL13R09";
             this.chkL13R09.Size = new System.Drawing.Size(16, 24);
             this.chkL13R09.TabIndex = 242;
-            this.chkL13R09.Text = "CheckBoxTS209";
             this.chkL13R09.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL13R10
@@ -3047,7 +2862,6 @@ namespace PowerSDR
             this.chkL13R10.Name = "chkL13R10";
             this.chkL13R10.Size = new System.Drawing.Size(16, 24);
             this.chkL13R10.TabIndex = 241;
-            this.chkL13R10.Text = "CheckBoxTS210";
             this.chkL13R10.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL13R11
@@ -3057,7 +2871,6 @@ namespace PowerSDR
             this.chkL13R11.Name = "chkL13R11";
             this.chkL13R11.Size = new System.Drawing.Size(16, 24);
             this.chkL13R11.TabIndex = 240;
-            this.chkL13R11.Text = "CheckBoxTS211";
             this.chkL13R11.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL13R12
@@ -3067,7 +2880,6 @@ namespace PowerSDR
             this.chkL13R12.Name = "chkL13R12";
             this.chkL13R12.Size = new System.Drawing.Size(16, 24);
             this.chkL13R12.TabIndex = 239;
-            this.chkL13R12.Text = "CheckBoxTS212";
             this.chkL13R12.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL13R13
@@ -3077,7 +2889,6 @@ namespace PowerSDR
             this.chkL13R13.Name = "chkL13R13";
             this.chkL13R13.Size = new System.Drawing.Size(16, 24);
             this.chkL13R13.TabIndex = 238;
-            this.chkL13R13.Text = "CheckBoxTS213";
             this.chkL13R13.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL13R14
@@ -3087,7 +2898,6 @@ namespace PowerSDR
             this.chkL13R14.Name = "chkL13R14";
             this.chkL13R14.Size = new System.Drawing.Size(16, 24);
             this.chkL13R14.TabIndex = 237;
-            this.chkL13R14.Text = "CheckBoxTS214";
             this.chkL13R14.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL13R15
@@ -3097,7 +2907,6 @@ namespace PowerSDR
             this.chkL13R15.Name = "chkL13R15";
             this.chkL13R15.Size = new System.Drawing.Size(16, 24);
             this.chkL13R15.TabIndex = 236;
-            this.chkL13R15.Text = "CheckBoxTS215";
             this.chkL13R15.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL13R16
@@ -3107,7 +2916,6 @@ namespace PowerSDR
             this.chkL13R16.Name = "chkL13R16";
             this.chkL13R16.Size = new System.Drawing.Size(16, 24);
             this.chkL13R16.TabIndex = 235;
-            this.chkL13R16.Text = "CheckBoxTS216";
             this.chkL13R16.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL13R08
@@ -3117,7 +2925,6 @@ namespace PowerSDR
             this.chkL13R08.Name = "chkL13R08";
             this.chkL13R08.Size = new System.Drawing.Size(16, 24);
             this.chkL13R08.TabIndex = 234;
-            this.chkL13R08.Text = "CheckBoxTS217";
             this.chkL13R08.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL13R07
@@ -3127,7 +2934,6 @@ namespace PowerSDR
             this.chkL13R07.Name = "chkL13R07";
             this.chkL13R07.Size = new System.Drawing.Size(16, 24);
             this.chkL13R07.TabIndex = 233;
-            this.chkL13R07.Text = "CheckBoxTS218";
             this.chkL13R07.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL13R06
@@ -3137,7 +2943,6 @@ namespace PowerSDR
             this.chkL13R06.Name = "chkL13R06";
             this.chkL13R06.Size = new System.Drawing.Size(16, 24);
             this.chkL13R06.TabIndex = 232;
-            this.chkL13R06.Text = "CheckBoxTS219";
             this.chkL13R06.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL13R05
@@ -3147,7 +2952,6 @@ namespace PowerSDR
             this.chkL13R05.Name = "chkL13R05";
             this.chkL13R05.Size = new System.Drawing.Size(16, 24);
             this.chkL13R05.TabIndex = 231;
-            this.chkL13R05.Text = "CheckBoxTS220";
             this.chkL13R05.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL13R04
@@ -3157,7 +2961,6 @@ namespace PowerSDR
             this.chkL13R04.Name = "chkL13R04";
             this.chkL13R04.Size = new System.Drawing.Size(16, 24);
             this.chkL13R04.TabIndex = 230;
-            this.chkL13R04.Text = "CheckBoxTS221";
             this.chkL13R04.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL13R03
@@ -3167,7 +2970,6 @@ namespace PowerSDR
             this.chkL13R03.Name = "chkL13R03";
             this.chkL13R03.Size = new System.Drawing.Size(16, 24);
             this.chkL13R03.TabIndex = 229;
-            this.chkL13R03.Text = "CheckBoxTS222";
             this.chkL13R03.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL13R02
@@ -3177,7 +2979,6 @@ namespace PowerSDR
             this.chkL13R02.Name = "chkL13R02";
             this.chkL13R02.Size = new System.Drawing.Size(16, 24);
             this.chkL13R02.TabIndex = 228;
-            this.chkL13R02.Text = "CheckBoxTS223";
             this.chkL13R02.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL13R01
@@ -3187,7 +2988,6 @@ namespace PowerSDR
             this.chkL13R01.Name = "chkL13R01";
             this.chkL13R01.Size = new System.Drawing.Size(16, 24);
             this.chkL13R01.TabIndex = 227;
-            this.chkL13R01.Text = "CheckBoxTS224";
             this.chkL13R01.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL14R09
@@ -3197,7 +2997,6 @@ namespace PowerSDR
             this.chkL14R09.Name = "chkL14R09";
             this.chkL14R09.Size = new System.Drawing.Size(16, 24);
             this.chkL14R09.TabIndex = 258;
-            this.chkL14R09.Text = "CheckBoxTS225";
             this.chkL14R09.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL14R10
@@ -3207,7 +3006,6 @@ namespace PowerSDR
             this.chkL14R10.Name = "chkL14R10";
             this.chkL14R10.Size = new System.Drawing.Size(16, 24);
             this.chkL14R10.TabIndex = 257;
-            this.chkL14R10.Text = "CheckBoxTS226";
             this.chkL14R10.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL14R11
@@ -3217,7 +3015,6 @@ namespace PowerSDR
             this.chkL14R11.Name = "chkL14R11";
             this.chkL14R11.Size = new System.Drawing.Size(16, 24);
             this.chkL14R11.TabIndex = 256;
-            this.chkL14R11.Text = "CheckBoxTS227";
             this.chkL14R11.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL14R12
@@ -3227,7 +3024,6 @@ namespace PowerSDR
             this.chkL14R12.Name = "chkL14R12";
             this.chkL14R12.Size = new System.Drawing.Size(16, 24);
             this.chkL14R12.TabIndex = 255;
-            this.chkL14R12.Text = "CheckBoxTS228";
             this.chkL14R12.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL14R13
@@ -3237,7 +3033,6 @@ namespace PowerSDR
             this.chkL14R13.Name = "chkL14R13";
             this.chkL14R13.Size = new System.Drawing.Size(16, 24);
             this.chkL14R13.TabIndex = 254;
-            this.chkL14R13.Text = "CheckBoxTS229";
             this.chkL14R13.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL14R14
@@ -3247,7 +3042,6 @@ namespace PowerSDR
             this.chkL14R14.Name = "chkL14R14";
             this.chkL14R14.Size = new System.Drawing.Size(16, 24);
             this.chkL14R14.TabIndex = 253;
-            this.chkL14R14.Text = "CheckBoxTS230";
             this.chkL14R14.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL14R15
@@ -3257,7 +3051,6 @@ namespace PowerSDR
             this.chkL14R15.Name = "chkL14R15";
             this.chkL14R15.Size = new System.Drawing.Size(16, 24);
             this.chkL14R15.TabIndex = 252;
-            this.chkL14R15.Text = "CheckBoxTS231";
             this.chkL14R15.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL14R16
@@ -3267,7 +3060,6 @@ namespace PowerSDR
             this.chkL14R16.Name = "chkL14R16";
             this.chkL14R16.Size = new System.Drawing.Size(16, 24);
             this.chkL14R16.TabIndex = 251;
-            this.chkL14R16.Text = "CheckBoxTS232";
             this.chkL14R16.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL14R08
@@ -3277,7 +3069,6 @@ namespace PowerSDR
             this.chkL14R08.Name = "chkL14R08";
             this.chkL14R08.Size = new System.Drawing.Size(16, 24);
             this.chkL14R08.TabIndex = 250;
-            this.chkL14R08.Text = "CheckBoxTS233";
             this.chkL14R08.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL14R07
@@ -3287,7 +3078,6 @@ namespace PowerSDR
             this.chkL14R07.Name = "chkL14R07";
             this.chkL14R07.Size = new System.Drawing.Size(16, 24);
             this.chkL14R07.TabIndex = 249;
-            this.chkL14R07.Text = "CheckBoxTS234";
             this.chkL14R07.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL14R06
@@ -3297,7 +3087,6 @@ namespace PowerSDR
             this.chkL14R06.Name = "chkL14R06";
             this.chkL14R06.Size = new System.Drawing.Size(16, 24);
             this.chkL14R06.TabIndex = 248;
-            this.chkL14R06.Text = "CheckBoxTS235";
             this.chkL14R06.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL14R05
@@ -3307,7 +3096,6 @@ namespace PowerSDR
             this.chkL14R05.Name = "chkL14R05";
             this.chkL14R05.Size = new System.Drawing.Size(16, 24);
             this.chkL14R05.TabIndex = 247;
-            this.chkL14R05.Text = "CheckBoxTS236";
             this.chkL14R05.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL14R04
@@ -3317,7 +3105,6 @@ namespace PowerSDR
             this.chkL14R04.Name = "chkL14R04";
             this.chkL14R04.Size = new System.Drawing.Size(16, 24);
             this.chkL14R04.TabIndex = 246;
-            this.chkL14R04.Text = "CheckBoxTS237";
             this.chkL14R04.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL14R03
@@ -3327,7 +3114,6 @@ namespace PowerSDR
             this.chkL14R03.Name = "chkL14R03";
             this.chkL14R03.Size = new System.Drawing.Size(16, 24);
             this.chkL14R03.TabIndex = 245;
-            this.chkL14R03.Text = "CheckBoxTS238";
             this.chkL14R03.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL14R02
@@ -3337,7 +3123,6 @@ namespace PowerSDR
             this.chkL14R02.Name = "chkL14R02";
             this.chkL14R02.Size = new System.Drawing.Size(16, 24);
             this.chkL14R02.TabIndex = 244;
-            this.chkL14R02.Text = "CheckBoxTS239";
             this.chkL14R02.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL14R01
@@ -3347,7 +3132,6 @@ namespace PowerSDR
             this.chkL14R01.Name = "chkL14R01";
             this.chkL14R01.Size = new System.Drawing.Size(16, 24);
             this.chkL14R01.TabIndex = 243;
-            this.chkL14R01.Text = "CheckBoxTS240";
             this.chkL14R01.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL15R09
@@ -3357,7 +3141,6 @@ namespace PowerSDR
             this.chkL15R09.Name = "chkL15R09";
             this.chkL15R09.Size = new System.Drawing.Size(16, 24);
             this.chkL15R09.TabIndex = 274;
-            this.chkL15R09.Text = "CheckBoxTS241";
             this.chkL15R09.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL15R10
@@ -3367,7 +3150,6 @@ namespace PowerSDR
             this.chkL15R10.Name = "chkL15R10";
             this.chkL15R10.Size = new System.Drawing.Size(16, 24);
             this.chkL15R10.TabIndex = 273;
-            this.chkL15R10.Text = "CheckBoxTS242";
             this.chkL15R10.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL15R11
@@ -3377,7 +3159,6 @@ namespace PowerSDR
             this.chkL15R11.Name = "chkL15R11";
             this.chkL15R11.Size = new System.Drawing.Size(16, 24);
             this.chkL15R11.TabIndex = 272;
-            this.chkL15R11.Text = "CheckBoxTS243";
             this.chkL15R11.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL15R12
@@ -3387,7 +3168,6 @@ namespace PowerSDR
             this.chkL15R12.Name = "chkL15R12";
             this.chkL15R12.Size = new System.Drawing.Size(16, 24);
             this.chkL15R12.TabIndex = 271;
-            this.chkL15R12.Text = "CheckBoxTS244";
             this.chkL15R12.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL15R13
@@ -3397,7 +3177,6 @@ namespace PowerSDR
             this.chkL15R13.Name = "chkL15R13";
             this.chkL15R13.Size = new System.Drawing.Size(16, 24);
             this.chkL15R13.TabIndex = 270;
-            this.chkL15R13.Text = "CheckBoxTS245";
             this.chkL15R13.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL15R14
@@ -3407,7 +3186,6 @@ namespace PowerSDR
             this.chkL15R14.Name = "chkL15R14";
             this.chkL15R14.Size = new System.Drawing.Size(16, 24);
             this.chkL15R14.TabIndex = 269;
-            this.chkL15R14.Text = "CheckBoxTS246";
             this.chkL15R14.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL15R15
@@ -3417,7 +3195,6 @@ namespace PowerSDR
             this.chkL15R15.Name = "chkL15R15";
             this.chkL15R15.Size = new System.Drawing.Size(16, 24);
             this.chkL15R15.TabIndex = 268;
-            this.chkL15R15.Text = "CheckBoxTS247";
             this.chkL15R15.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL15R16
@@ -3427,7 +3204,6 @@ namespace PowerSDR
             this.chkL15R16.Name = "chkL15R16";
             this.chkL15R16.Size = new System.Drawing.Size(16, 24);
             this.chkL15R16.TabIndex = 267;
-            this.chkL15R16.Text = "CheckBoxTS248";
             this.chkL15R16.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL15R08
@@ -3437,7 +3213,6 @@ namespace PowerSDR
             this.chkL15R08.Name = "chkL15R08";
             this.chkL15R08.Size = new System.Drawing.Size(16, 24);
             this.chkL15R08.TabIndex = 266;
-            this.chkL15R08.Text = "CheckBoxTS249";
             this.chkL15R08.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL15R07
@@ -3447,7 +3222,6 @@ namespace PowerSDR
             this.chkL15R07.Name = "chkL15R07";
             this.chkL15R07.Size = new System.Drawing.Size(16, 24);
             this.chkL15R07.TabIndex = 265;
-            this.chkL15R07.Text = "CheckBoxTS250";
             this.chkL15R07.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL15R06
@@ -3457,7 +3231,6 @@ namespace PowerSDR
             this.chkL15R06.Name = "chkL15R06";
             this.chkL15R06.Size = new System.Drawing.Size(16, 24);
             this.chkL15R06.TabIndex = 264;
-            this.chkL15R06.Text = "CheckBoxTS251";
             this.chkL15R06.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL15R05
@@ -3467,7 +3240,6 @@ namespace PowerSDR
             this.chkL15R05.Name = "chkL15R05";
             this.chkL15R05.Size = new System.Drawing.Size(16, 24);
             this.chkL15R05.TabIndex = 263;
-            this.chkL15R05.Text = "CheckBoxTS252";
             this.chkL15R05.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL15R04
@@ -3477,7 +3249,6 @@ namespace PowerSDR
             this.chkL15R04.Name = "chkL15R04";
             this.chkL15R04.Size = new System.Drawing.Size(16, 24);
             this.chkL15R04.TabIndex = 262;
-            this.chkL15R04.Text = "CheckBoxTS253";
             this.chkL15R04.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL15R03
@@ -3487,7 +3258,6 @@ namespace PowerSDR
             this.chkL15R03.Name = "chkL15R03";
             this.chkL15R03.Size = new System.Drawing.Size(16, 24);
             this.chkL15R03.TabIndex = 261;
-            this.chkL15R03.Text = "CheckBoxTS254";
             this.chkL15R03.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL15R02
@@ -3497,7 +3267,6 @@ namespace PowerSDR
             this.chkL15R02.Name = "chkL15R02";
             this.chkL15R02.Size = new System.Drawing.Size(16, 24);
             this.chkL15R02.TabIndex = 260;
-            this.chkL15R02.Text = "CheckBoxTS255";
             this.chkL15R02.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // chkL15R01
@@ -3507,7 +3276,6 @@ namespace PowerSDR
             this.chkL15R01.Name = "chkL15R01";
             this.chkL15R01.Size = new System.Drawing.Size(16, 24);
             this.chkL15R01.TabIndex = 259;
-            this.chkL15R01.Text = "CheckBoxTS256";
             this.chkL15R01.CheckedChanged += new System.EventHandler(this.chkRelay_CheckedChanged);
             // 
             // lblAddr
@@ -4552,8 +4320,8 @@ namespace PowerSDR
 
 		#region Properties
 
-		private uint[] line = new uint[16];
-		public uint GetLine(int index)
+		private ushort[] line = new ushort[16];
+        public ushort GetLine(int index)
 		{
 			return line[index];
 		}		
@@ -4609,7 +4377,8 @@ namespace PowerSDR
 
 		private void label_DoubleClick(object sender, System.EventArgs e)
 		{
-			string s = InputBox.Show("New Label", "Enter a new Label and press OK.", "<new LabelTS>");
+            string s = InputBox.Show("New Label", "Enter a new Label and press OK.", "<new Label>");
+            if (s == "" || s == null) return;
 			((LabelTS)sender).Text = s;
 		}
 
@@ -4724,11 +4493,11 @@ namespace PowerSDR
 
 		private void btnSetupXVTR_Click(object sender, System.EventArgs e)
 		{
-			if(console.XVTRForm == null)
-				console.XVTRForm = new XVTRForm(console);
+			if(console.xvtrForm == null)
+				console.xvtrForm = new XVTRForm(console);
 
-			console.XVTRForm.Show();
-			console.XVTRForm.Focus();
+			console.xvtrForm.Show();
+			console.xvtrForm.Focus();
 		}
 
 		#endregion
@@ -4786,7 +4555,7 @@ namespace PowerSDR
 			if(chkL01R15.Checked) val += 1<<14;
 			if(chkL01R16.Checked) val += 1<<15;
 
-			line[address] = (uint)val;
+			line[address] = (ushort)val;
 
 			ControlsEnabled(false);
 
@@ -4818,7 +4587,7 @@ namespace PowerSDR
 			if(chkL02R15.Checked) val += 1<<14;
 			if(chkL02R16.Checked) val += 1<<15;
 
-			line[address] = (uint)val;
+			line[address] = (ushort)val;
 
 			ControlsEnabled(false);
 
@@ -4850,7 +4619,7 @@ namespace PowerSDR
 			if(chkL03R15.Checked) val += 1<<14;
 			if(chkL03R16.Checked) val += 1<<15;
 
-			line[address] = (uint)val;
+			line[address] = (ushort)val;
 
 			ControlsEnabled(false);
 
@@ -4882,7 +4651,7 @@ namespace PowerSDR
 			if(chkL04R15.Checked) val += 1<<14;
 			if(chkL04R16.Checked) val += 1<<15;
 
-			line[address] = (uint)val;
+            line[address] = (ushort)val;
 
 			ControlsEnabled(false);
 
@@ -4914,7 +4683,7 @@ namespace PowerSDR
 			if(chkL05R15.Checked) val += 1<<14;
 			if(chkL05R16.Checked) val += 1<<15;
 
-			line[address] = (uint)val;
+            line[address] = (ushort)val;
 
 			ControlsEnabled(false);
 
@@ -4946,7 +4715,7 @@ namespace PowerSDR
 			if(chkL06R15.Checked) val += 1<<14;
 			if(chkL06R16.Checked) val += 1<<15;
 
-			line[address] = (uint)val;
+            line[address] = (ushort)val;
 
 			ControlsEnabled(false);
 
@@ -4978,7 +4747,7 @@ namespace PowerSDR
 			if(chkL07R15.Checked) val += 1<<14;
 			if(chkL07R16.Checked) val += 1<<15;
 
-			line[address] = (uint)val;
+            line[address] = (ushort)val;
 
 			ControlsEnabled(false);
 
@@ -5010,7 +4779,7 @@ namespace PowerSDR
 			if(chkL08R15.Checked) val += 1<<14;
 			if(chkL08R16.Checked) val += 1<<15;
 
-			line[address] = (uint)val;
+            line[address] = (ushort)val;
 
 			ControlsEnabled(false);
 
@@ -5042,7 +4811,7 @@ namespace PowerSDR
 			if(chkL09R15.Checked) val += 1<<14;
 			if(chkL09R16.Checked) val += 1<<15;
 
-			line[address] = (uint)val;
+            line[address] = (ushort)val;
 
 			ControlsEnabled(false);
 
@@ -5074,7 +4843,7 @@ namespace PowerSDR
 			if(chkL10R15.Checked) val += 1<<14;
 			if(chkL10R16.Checked) val += 1<<15;
 
-			line[address] = (uint)val;
+            line[address] = (ushort)val;
 
 			ControlsEnabled(false);
 
@@ -5106,7 +4875,7 @@ namespace PowerSDR
 			if(chkL11R15.Checked) val += 1<<14;
 			if(chkL11R16.Checked) val += 1<<15;
 
-			line[address] = (uint)val;
+            line[address] = (ushort)val;
 
 			ControlsEnabled(false);
 
@@ -5138,7 +4907,7 @@ namespace PowerSDR
 			if(chkL12R15.Checked) val += 1<<14;
 			if(chkL12R16.Checked) val += 1<<15;
 
-			line[address] = (uint)val;
+            line[address] = (ushort)val;
 
 			ControlsEnabled(false);
 
@@ -5170,7 +4939,7 @@ namespace PowerSDR
 			if(chkL13R15.Checked) val += 1<<14;
 			if(chkL13R16.Checked) val += 1<<15;
 
-			line[address] = (uint)val;
+            line[address] = (ushort)val;
 
 			ControlsEnabled(false);
 
@@ -5202,7 +4971,7 @@ namespace PowerSDR
 			if(chkL14R15.Checked) val += 1<<14;
 			if(chkL14R16.Checked) val += 1<<15;
 
-			line[address] = (uint)val;
+            line[address] = (ushort)val;
 
 			ControlsEnabled(false);
 
@@ -5234,7 +5003,7 @@ namespace PowerSDR
 			if(chkL15R15.Checked) val += 1<<14;
 			if(chkL15R16.Checked) val += 1<<15;
 
-			line[address] = (uint)val;
+            line[address] = (ushort)val;
 
 			ControlsEnabled(false);
 
@@ -5255,9 +5024,11 @@ namespace PowerSDR
 			int index = int.Parse(chk.Name.Substring(4, 2));
 			int relay = int.Parse(chk.Name.Substring(7, 2));
 			if(chk.Checked)
-				line[index] |= (uint)(1<<(relay-1));
+				line[index] |= (ushort)(1<<(relay-1));
 			else
-				line[index] &= ~((uint)(1<<(relay-1)));
+                line[index] &= (ushort)(0xFFFF - (1 << (relay - 1)));
+
+            //Debug.WriteLine("line[" + index + "]: " + line[index]);
 		}
 
 		private void chkFlexWire_CheckedChanged(object sender, System.EventArgs e)
@@ -5265,45 +5036,13 @@ namespace PowerSDR
 			if(chkFlexWire.Checked)
 			{
 				chkFlexWire.BackColor = console.ButtonSelectedColor;
-				if(console.fwc_init)
-				{
-					switch(console.CurrentModel)
-					{
-						case Model.FLEX3000:
-						case Model.FLEX5000:
-							FWC.FlexWire_Write2Value(0x4C, 0x06, 0x00);
-							break;
-					}
-				}
 			}
 			else
 			{
 				chkFlexWire.BackColor = SystemColors.Control;
 			}
-			console.FlexWireUCB = chkFlexWire.Checked;
-			btnEnable.Visible = !chkFlexWire.Checked;
-			btnDisable.Visible = !chkFlexWire.Checked;
-			lblDelay.Visible = !chkFlexWire.Checked;
-			comboDelay.Visible = !chkFlexWire.Checked;
-			btnSetDelay.Visible = !chkFlexWire.Checked;
-			btnDisableClear.Visible = !chkFlexWire.Checked;
-			btnWriteAll.Visible = !chkFlexWire.Checked;
-			btnWriteLine0.Visible = !chkFlexWire.Checked;
-			btnWriteLine1.Visible = !chkFlexWire.Checked;
-			btnWriteLine2.Visible = !chkFlexWire.Checked;
-			btnWriteLine3.Visible = !chkFlexWire.Checked;
-			btnWriteLine4.Visible = !chkFlexWire.Checked;
-			btnWriteLine5.Visible = !chkFlexWire.Checked;
-			btnWriteLine6.Visible = !chkFlexWire.Checked;
-			btnWriteLine7.Visible = !chkFlexWire.Checked;
-			btnWriteLine8.Visible = !chkFlexWire.Checked;
-			btnWriteLine9.Visible = !chkFlexWire.Checked;
-			btnWriteLine10.Visible = !chkFlexWire.Checked;
-			btnWriteLine11.Visible = !chkFlexWire.Checked;
-			btnWriteLine12.Visible = !chkFlexWire.Checked;
-			btnWriteLine13.Visible = !chkFlexWire.Checked;
-			btnWriteLine14.Visible = !chkFlexWire.Checked;
-			btnWriteLine15.Visible = !chkFlexWire.Checked;
+
+			console.FlexWireUCB = chkFlexWire.Checked;			
 		}
 	}
 }

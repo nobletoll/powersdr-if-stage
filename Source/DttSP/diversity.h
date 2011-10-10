@@ -31,6 +31,7 @@ The DTTS Microwave Society
 6 Kathleen Place
 Bridgewater, NJ 08807
 */
+
 #ifndef _diversity_h
 #define _diversity_h
 #include <datatypes.h>
@@ -41,15 +42,16 @@ typedef struct _diversity_block
 	BOOLEAN flag;
 	COMPLEX scalar;
 	REAL gain;
-	pthread_mutex_t diversity_osc_mutex,diversity_sum_mutex, diversity_out_mutex;
-	pthread_cond_t dv_osc_cond,dv_sum_cond,dv_out_cond;
+	pthread_mutex_t diversity_osc_mutex,diversity_sum_mutex, diversity_out_mutex, diversity_trx_mutex;
+	pthread_cond_t dv_osc_cond,dv_sum_cond,dv_out_cond, dv_trx_cond;
 } DiversityControl;
 
 
-
+#if 0
 extern void barrier_osc();
 extern void barrier_sum();
 extern void barrier_out();
 
 
+#endif
 #endif

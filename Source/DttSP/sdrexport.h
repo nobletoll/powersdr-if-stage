@@ -61,6 +61,8 @@ Bridgewater, NJ 08807
 #include <meter.h>
 #include <spectrum.h>
 #include <diversity.h>
+//#include <filt2p.h>
+#include <common.h>
 
 //------------------------------------------------------------------------
 // max no. simultaneous receivers
@@ -75,51 +77,52 @@ Bridgewater, NJ 08807
 //------------------------------------------------------------------------
 
 DiversityControl diversity;
-
+//int MAX_NOTCHES_IN_PASSBAND = 18;
 extern struct _uni
 {
-  REAL samplerate;
-  int buflen;
+	REAL samplerate;
+	int buflen;
 
-  struct
-  {
-    SDRMODE sdr;
-    TRXMODE trx;
-  } mode;
+	struct
+	{
+		SDRMODE sdr;
+		TRXMODE trx;
+	} mode;
 
-  METERBlock meter;
-  SpecBlock spec;
+	METERBlock meter;
+	SpecBlock spec;
 
-  struct
-  {
-    BOOLEAN flag;
-    FILE *fp;
-    splitfld splt;
-  } update;
+	struct
+	{
+		BOOLEAN flag;
+		FILE *fp;
+		splitfld splt;
 
-  struct
-  {
-    char *path;
-    int bits;
-  } wisdom;
+	} update;
 
-  struct
-  {
-    BOOLEAN act[MAXRX];
-    int lis, nac, nrx;
-  } multirx;
+	struct
+	{
+		char *path;
+		int bits;
+	} wisdom;
 
-  struct
-  {
-    struct
-    {
-      BOOLEAN flag;
-      REAL gain;
-    } rx, tx;
-  } mix;
-  int cpdlen;
-  long tick,oldtick;
+	struct
+	{
+		BOOLEAN act[MAXRX];
+		int lis, nac, nrx;
+	} multirx;
 
+	struct
+	{
+		struct
+		{
+			BOOLEAN flag;
+			REAL gain;
+		} rx, tx;
+	} mix;
+	int cpdlen;
+	long tick,oldtick;
+	WBIR_STATE wbir_state;
 } uni[3];
 
 //------------------------------------------------------------------------
@@ -128,100 +131,118 @@ extern struct _uni
 
 extern struct _rx
 {
-  struct
-  {
-    CXB i, o;
-  } buf;
-  IQ iqfix;
-  struct
-  {
-    double freq, phase;
-    OSC gen;
-  } osc;
-  struct
-  {
-	 int decim;
-	 BOOLEAN flag;
-	 ResStF gen1r,gen1i,gen2r,gen2i;
-  } resample;
-  float output_gain;
-  struct
-  {
-    ComplexFIR coef;
-    FiltOvSv ovsv;
-    COMPLEX *save;
-  } filt,filt2;
-  struct
-  {
-    REAL thresh;
-    NB gen;
-    BOOLEAN flag;
-  } nb;
-  struct
-  {
-    REAL thresh;
-    NB gen;
-    BOOLEAN flag;
-  } nb_sdrom;
+	struct
+	{
+		CXB i, o;
+	} buf;
+	IQ iqfix;
 
-  struct
-  {
-    LMSR gen;
-    BOOLEAN flag;
-  } anr, anf;
+	struct
+	{
+		double freq, phase;
+		OSC gen;
+	} osc;
 
-  struct
-  {
-	  BLMS gen;
-	  BOOLEAN flag;
-  } banr, banf;
+	struct
+	{
+		int decim;
+		BOOLEAN flag;
+		ResStF gen1r,gen1i,gen2r,gen2i;
+	} resample;
+	float output_gain;
 
-  struct
-  {
-    DTTSPAGC gen;
-    BOOLEAN flag;
-  } dttspagc;
-  struct
-  {
-    AMD gen;
-  } am;
-  struct
-  {
-    FMD gen;
-  } fm;
-  struct
-  {
-    BOOLEAN flag;
-    SpotToneGen gen;
-  } spot;
-  struct
-  {
-    REAL thresh, atten, power;
-    BOOLEAN flag, running, set;
-    int num;
-	int phase;
-  } squelch;
+	struct
+	{
+		ComplexFIR coef;
+		FiltOvSv ovsv;
+		COMPLEX *save;
+	} filt,filt2;
 
-  struct
-  {
-    BOOLEAN flag;
-    WSCompander gen;
-  } cpd;
+	DCBlocker dcb;
 
-  struct
-  {
-    EQ gen;
-    BOOLEAN flag;
-  } grapheq;
+	struct
+	{
+		REAL thresh;
+		NB gen;
+		BOOLEAN flag;
+	} nb;
 
-  SDRMODE mode;
-  struct
-  {
-    BOOLEAN flag;
-  } bin;
-  REAL norm;
-  COMPLEX azim;
-  long tick;
+	struct
+	{
+		REAL thresh;
+		NB gen;
+		BOOLEAN flag;
+	} nb_sdrom;
+
+	struct
+	{
+		LMSR gen;
+		BOOLEAN flag;
+	} anr, anf;
+
+	struct
+	{
+		BLMS gen;
+		BOOLEAN flag;
+	} banr, banf;
+
+	struct
+	{
+		DTTSPAGC gen;
+		BOOLEAN flag;
+	} dttspagc;
+
+	struct
+	{
+		AMD gen;
+	} am;
+
+	struct
+	{
+		FMD gen;
+	} fm;
+
+	struct
+	{
+		BOOLEAN flag;
+		SpotToneGen gen;
+	} spot;
+
+	struct
+	{
+		REAL thresh, atten, power;
+		BOOLEAN flag, running, set;
+		int num;
+		int phase;
+	} squelch;
+
+	struct
+	{
+		BOOLEAN flag;
+		WSCompander gen;
+	} cpd;
+
+	struct
+	{
+		EQ gen;
+		BOOLEAN flag;
+	} grapheq;
+
+	struct
+	{
+		IIR_2P2Z gen;
+		BOOLEAN flag;
+	}  notch[18]; //MAX_NOTCHES_IN_PASSBAND
+
+	SDRMODE mode;
+	struct
+	{
+		BOOLEAN flag;
+	} bin;
+
+	REAL norm;
+	COMPLEX azim;
+	long tick;
 } rx[3][MAXRX];
 
 //------------------------------------------------------------------------
@@ -229,231 +250,273 @@ extern struct _rx
 //------------------------------------------------------------------------
 extern struct _tx
 {
-  struct
-  {
-    CXB i, o;
-  } buf;
-  IQ iqfix;
+	struct
+	{
+		CXB i, ic, o, oc;
+	} buf;
+	IQ iqfix;
 
-  struct
-  {
-    BOOLEAN flag;
-    DCBlocker gen;
-  } dcb;
+	struct
+	{
+		BOOLEAN flag;
+		DCBlocker gen;
+	} dcb;
 
-  struct
-  {
-    double freq, phase;
-    OSC gen;
-  } osc;
-  struct
-  {
-    ComplexFIR coef;
-    FiltOvSv ovsv;
-    COMPLEX *save;
-  } filt;
+	struct
+	{
+		double freq, phase;
+		OSC gen;
+	} osc;
 
-  struct
-  {
-    REAL carrier_level;
-  } am;
+	struct
+	{
+		ComplexFIR coef;
+		FiltOvSv ovsv, ovsv_pre;
+		COMPLEX *save;
+	} filt;
 
-  struct
-  {
-    REAL cvtmod2freq;
-  } fm;
+	struct
+	{
+		REAL carrier_level;
+	} am;
 
-  struct
-  {
-    REAL thresh, atten, power;
-    BOOLEAN flag, running, set;
-    int num;
-  } squelch;
+	struct
+	{
+		REAL cvtmod2freq;
+		double phase;
+		REAL preemphasis_filter;
+		REAL deemphasis_out;
+		REAL k_preemphasis;
+		REAL k_deemphasis;		
+		REAL clip_threshold;
+		IIR_BPF_2P input_BPF;
+		IIR_LPF_2P output_LPF1;
+		IIR_LPF_2P output_LPF2;
+		IIR_LPF_2P input_BPF1;
+		IIR_LPF_2P input_BPF2;
+		IIR_LPF_2P input_BPF3;
+		IIR_LPF_2P input_BPF4;
+		IIR_LPF_2P input_LPF1;
+		IIR_LPF_2P input_LPF2;
+		IIR_HPF_2P input_HPF1;
+		IIR_HPF_2P input_HPF2;
 
-  struct
-  {
-    DTTSPAGC gen;
-    BOOLEAN flag;
-  } leveler, alc;
+		struct
+		{
+			double freq_hz;
+			OSC osc;
+			REAL amp;
+			BOOL flag;
+		}ctcss;
+	} fm;
 
-  struct
-  {
-    EQ gen;
-    BOOLEAN flag;
-  } grapheq;
+	struct
+	{
+		REAL thresh, atten, power;
+		BOOLEAN flag, running, set;
+		int num;
+	} squelch;
 
+	struct
+	{
+		DTTSPAGC gen;
+		BOOLEAN flag;
+	} leveler, alc;
 
-  struct
-  {
-    SpeechProc gen;
-    BOOLEAN flag;
-  } spr;
+	struct
+	{
+		EQ gen;
+		BOOLEAN flag;
+	} grapheq;
 
+	struct
+	{
+		SpeechProc gen;
+		BOOLEAN flag;
+	} spr;
 
-  struct
-  {
-    BOOLEAN flag;
-    WSCompander gen;
-  } cpd;
+	struct
+	{
+		BOOLEAN flag;
+		WSCompander gen;
+	} cpd;
 
-  struct
-  {
-	  BOOLEAN flag;
-	  Hilsim gen;
-  } hlb;
+	struct
+	{
+		BOOLEAN flag;
+		Hilsim gen;
+	} hlb;
 
-  SDRMODE mode;
+	SDRMODE mode;
 
-  long tick;
-  REAL norm;
+	long tick;
+	REAL norm;
 } tx[3];
 
 //------------------------------------------------------------------------
 
 typedef enum _runmode
 {
-  RUN_MUTE, RUN_PASS, RUN_PLAY, RUN_SWCH
+	RUN_MUTE, RUN_PASS, RUN_PLAY, RUN_SWCH
 } RUNMODE;
 
 extern struct _top
 {
-  DWORD pid;
-  uid_t uid;
+	DWORD pid;
+	uid_t uid;
 
-  struct timeval start_tv;
+	struct timeval start_tv;
 
-  BOOLEAN running, verbose;
-  RUNMODE state;
+	BOOLEAN running, verbose;
+	RUNMODE state;
 
-  // audio io
-  struct
-  {
-    struct
-    {
-      float *l, *r;
-    } aux, buf;
-    struct
-    {
-      unsigned int frames, bytes;
-    } size;
-  } hold;
+	// audio io
+	struct
+	{
+		struct
+		{
+			float *l, *r;
+	  int swap; // WU2X
+		} aux, buf;
+		struct
+		{
+			unsigned int frames, bytes;
+		} size;
+	} hold;
 
-  struct
-  {
-    char *path;
-    HANDLE fd;
-    HANDLE fp;
-    char buff[4096];
-  } parm;
+	struct
+	{
+		char *path;
+		HANDLE fd;
+		HANDLE fp;
+		char buff[4096];
+	} parm;
 
-  struct
-  {
-    struct
-    {
-      char *path;
-      HANDLE fp, fd;
-    } mtr, spec;
-  } meas;
+	struct
+	{
+		struct
+		{
+			char *path;
+			HANDLE fp, fd;
+		} mtr, spec;
+	} meas;
 
-  struct
-  {
-    char name[256];
+	struct
+	{
+		char name[256];
 
-    struct
-    {
-      struct
-      {
-	ringb_float_t *l, *r;
-      } i, o;
-    } ring;
+		struct
+		{
+			struct
+			{
+				ringb_float_t *l, *r;
+			} i, o;
+		} ring;
 
-    struct
-    {
-      struct
-      {
-	ringb_float_t *l, *r;
-      } i, o;
-    } auxr;
+		struct
+		{
+			struct
+			{
+				ringb_float_t *l, *r;
+			} i, o;
+		} auxr;
 
+		size_t reset_size;
+		size_t size;
 
-    size_t reset_size;
+		struct
+		{
+			int cb;
+			struct
+			{
+				int i, o;
+			} rb;
+			int xr;
+		} blow;
+	} jack;
 
-    size_t size;
+	// update io
+	// multiprocessing & synchronization
+	struct
+	{
+		struct
+		{
+			pthread_t id;
+		} trx, upd, updrx, mon, pws, mtr, scope;
+	} thrd;
 
-    struct
-    {
-      int cb;
-      struct
-      {
-	int i, o;
-      } rb;
-      int xr;
-    } blow;
-  } jack;
+	struct
+	{
+		struct
+		{
+			sem_t sem;
+		} buf, upd, mon, pws, mtr, scope;
+	} sync;
 
-  // update io
-  // multiprocessing & synchronization
-  struct
-  {
-    struct
-    {
-      pthread_t id;
-    } trx, upd, updrx, mon, pws, mtr, scope;
-  } thrd;
-
-  struct
-  {
-    struct
-    {
-      sem_t sem;
-    } buf, upd, mon, pws, mtr, scope;
-  } sync;
-
-  // TRX switching
+	// TRX switching
 #if 0
-  struct
-  {
-    struct
-    {
-      int want, have;
-    } bfct;
-    struct
-    {
-      TRXMODE next;
-    } trx;
-    struct
-    {
-      RUNMODE last;
-    } run;
-    int fade, tail;
-  } swch;
+	struct
+	{
+		struct
+		{
+			int want, have;
+		} bfct;
+		struct
+		{
+			TRXMODE next;
+		} trx;
+		struct
+		{
+			RUNMODE last;
+		} run;
+		int fade, tail;
+	} swch;
 #endif
 
 
-  // TRX switching
-  struct {
-    struct {
-      struct {
-	SWCHSTATE type;
-	int cnt;
-	REAL val;
-      } curr;
-      struct {
-	int size;
-	REAL incr;
-      } fall, rise, stdy;
-    } env;
-    struct {
-      TRXMODE next;
-    } trx;
-    struct {
-      RUNMODE last;
-    } run;
-  } swch;
+	// TRX switching
+	struct
+	{
+		struct
+		{
+			struct
+			{
+				SWCHSTATE type;
+				int cnt;
+				REAL val;
+			} curr;
 
-  
-  BOOLEAN susp;
-  int offset;
+			struct
+			{
+				int size;
+				REAL incr;
+			} fall, rise, stdy;
+		} env;
+
+		struct 
+		{
+			TRXMODE next;
+		} trx;
+
+		struct 
+		{
+			RUNMODE last;
+		} run;
+
+		struct
+		{
+			BOOLEAN flag;
+			int count;
+			int count_limit;
+			float threshold;
+		} rise_thresh;
+
+		BOOLEAN flag;
+		
+	} swch;
+
+	BOOLEAN susp;
+	int offset;
 
 } top[3];
 

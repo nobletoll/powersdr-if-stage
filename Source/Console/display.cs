@@ -2,7 +2,7 @@
 // display.cs
 //=================================================================
 // PowerSDR is a C# implementation of a Software Defined Radio.
-// Copyright (C) 2004-2009  FlexRadio Systems
+// Copyright (C) 2004-2011  FlexRadio Systems
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -18,22 +18,24 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
-// You may contact us via email at: sales@flex-radio.com.
+// You may contact us via email at: gpl@flexradio.com.
 // Paper mail may be sent to: 
 //    FlexRadio Systems
-//    8900 Marybank Dr.
-//    Austin, TX 78750
+//    4616 W. Howard Lane  Suite 1-150
+//    Austin, TX 78728
 //    USA
 //=================================================================
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Threading;
 using System.Windows.Forms;
+using Flex.TNF;
 
 //using Microsoft.DirectX;
 //using Microsoft.DirectX.Direct3D;
@@ -70,6 +72,49 @@ namespace PowerSDR
 		#endregion
 
 		#region Properties
+
+        private static bool tnf_zoom = false;
+        public static bool TNFZoom
+        {
+            get { return tnf_zoom; }
+            set
+            {
+                tnf_zoom = value;
+                if (current_display_mode == DisplayMode.PANADAPTER)
+                    DrawBackground();
+            }
+        }
+
+        private static bool tnf_active = true;
+        public static bool TNFActive
+        {
+            get { return tnf_active; }
+            set 
+            {
+                tnf_active = value;
+                if (current_display_mode == DisplayMode.PANADAPTER)
+                    DrawBackground();
+            }
+        }
+
+        //Color notch_on_color = Color.DarkGreen;
+        //Color notch_highlight_color = Color.Chartreuse;
+        //Color notch_perm_on_color = Color.DarkRed;
+        //Color notch_perm_highlight_color = Color.DeepPink;
+        private static Color notch_on_color = Color.Olive;
+        private static Color notch_on_color_zoomed = Color.FromArgb(190, 128, 128, 0);
+        private static Color notch_highlight_color = Color.YellowGreen;
+        private static Color notch_highlight_color_zoomed = Color.FromArgb(190, 154, 205, 50);
+        private static Color notch_perm_on_color = Color.DarkGreen;
+        private static Color notch_perm_highlight_color = Color.Chartreuse;
+        private static Color notch_off_color = Color.Gray;
+
+        private static double notch_zoom_start_freq;
+        public static double NotchZoomStartFreq
+        {
+            get { return notch_zoom_start_freq; }
+            set { notch_zoom_start_freq = value; }
+        }
 
         private static bool pan_fill = true;
         public static bool PanFill
@@ -243,8 +288,8 @@ namespace PowerSDR
 			set
 			{
 				vfoa_hz = value;
-				if(current_display_mode == DisplayMode.PANADAPTER)
-					DrawBackground();
+				//if(current_display_mode == DisplayMode.PANADAPTER)
+				//	DrawBackground();
 			}
 		}
 
@@ -255,8 +300,8 @@ namespace PowerSDR
 			set 
 			{
 				vfoa_sub_hz = value;
-				if(current_display_mode == DisplayMode.PANADAPTER)
-					DrawBackground();
+				//if(current_display_mode == DisplayMode.PANADAPTER)
+				//	DrawBackground();
 			}
 		}
 
@@ -267,9 +312,9 @@ namespace PowerSDR
 			set
 			{
 				vfob_hz = value;
-				if((current_display_mode == DisplayMode.PANADAPTER && split_enabled && draw_tx_filter) ||
-					(current_display_mode == DisplayMode.PANADAPTER && sub_rx1_enabled))
-					DrawBackground();
+				//if((current_display_mode == DisplayMode.PANADAPTER && split_enabled && draw_tx_filter) ||
+				//	(current_display_mode == DisplayMode.PANADAPTER && sub_rx1_enabled))
+				//	DrawBackground();
 			}
 		}
 
@@ -280,8 +325,8 @@ namespace PowerSDR
 			set 
 			{
 				vfob_sub_hz = value;
-				if(current_display_mode == DisplayMode.PANADAPTER)
-					DrawBackground();
+				//if(current_display_mode == DisplayMode.PANADAPTER)
+				//	DrawBackground();
 			}
 		}
 
@@ -292,8 +337,8 @@ namespace PowerSDR
 			set
 			{
 				rit_hz = value;
-				if(current_display_mode == DisplayMode.PANADAPTER)
-					DrawBackground();
+				//if(current_display_mode == DisplayMode.PANADAPTER)
+				//	DrawBackground();
 			}
 		}
 
@@ -304,8 +349,8 @@ namespace PowerSDR
 			set
 			{
 				xit_hz = value;
-				if(current_display_mode == DisplayMode.PANADAPTER && (draw_tx_filter || mox))
-					DrawBackground();
+				//if(current_display_mode == DisplayMode.PANADAPTER && (draw_tx_filter || mox))
+				//	DrawBackground();
 			}
 		}
 
@@ -923,6 +968,134 @@ namespace PowerSDR
 			}*/
 		}
 
+        // This draws a little callout on the notch to show it's frequency and bandwidth
+        // xlimit is the right side of the picDisplay
+        private static void drawNotchStatus(Graphics g, Notch n, int x, int y, int x_limit, int height)
+        {
+            // if we're not supposed to be drawing this, return to caller
+            if (!n.Details) return;
+            // in case notch is showing on RX1 & RX2, just show it for the one that was clicked
+            if ((y < height && n.RX == 2) || (y > height && n.RX == 1)) return;
+            // first we need to test if it is OK to draw the box to the right of the notch ... I don't
+            // know the panadapter limits in x, so I will use a constant.  This needs to be replaced
+            int x_distance_from_notch = 40;
+            int y_distance_from_bot = 20;
+            int box_width = 120;
+            int box_height = 55;
+            int x_start, y_start, x_pin, y_pin;
+            // determine if it will fit in the panadapter to the right of the notch
+            if (x + box_width + x_distance_from_notch > x_limit)
+            {
+                // draw to the left
+                x_pin = x - x_distance_from_notch;
+                y_pin = y - y_distance_from_bot;
+                x_start = x_pin - box_width;
+                y_start = y_pin - (box_height / 2);
+            }
+            else
+            {
+                // draw to the right
+                x_start = x + x_distance_from_notch;
+                x_pin = x_start;
+                y_pin = y - y_distance_from_bot;
+                y_start = y_pin - (box_height / 2);
+            }
+
+            // such pretty colors of green, hardcoded for your viewing pleasure
+            Color c = Color.DarkOliveGreen;
+            Pen p = new Pen(Color.DarkOliveGreen, 1);
+            Brush b = new SolidBrush(Color.Chartreuse);
+            // Draw a nice rectangle to write into
+            g.FillRectangle(new SolidBrush(c), x_start, y_start, box_width, box_height);
+            // draw a left and right line on the side of the rectancle
+            g.DrawLine(p, x, y, x_pin, y_pin);
+            // get the Hz part of the frequency because we want to set it off from the actual number so it looks neato
+            int right_three = (int)(n.Freq * 1e6) - (int)(n.Freq * 1e3) * 1000;
+            double left_three = (((int)(n.Freq * 1e3)) / 1e3);
+            //string perm = n.Permanent ? "*" : "";
+            g.DrawString("RF Tracking Notch", // + perm,
+                new Font("Trebuchet MS", 9, FontStyle.Underline),
+                b, new Point(x_start + 5, y_start + 5));
+            g.DrawString(left_three.ToString("f3") + " " + right_three.ToString("d3") + " MHz",
+                new Font("Trebuchet MS", 9, FontStyle.Regular),
+                b, new Point(x_start + 5, y_start + 20));
+            g.DrawString(n.BW.ToString("d") + " Hz wide",
+                new Font("Trebuchet MS", 9, FontStyle.Regular),
+                b, new Point(x_start + 5, y_start + 35));
+        }
+
+        /// <summary>
+        /// draws the vertical bar to highlight where a notch is on the panadapter
+        /// </summary>
+        /// <param name="g">Graphics object reference</param>
+        /// <param name="n">Notch object reference</param>
+        /// <param name="left">left side of notch in pixel location</param>
+        /// <param name="right">right side of notch, pixel location</param>
+        /// <param name="top">top of bar</param>
+        /// <param name="H">height of bar</param>
+        /// <param name="on">color for notch on</param>
+        /// <param name="off">color for notch off</param>
+        /// <param name="highlight">highlight color to draw highlights on bar</param>
+        /// <param name="active">true if notches are turned on</param>
+        static void drawNotchBar(Graphics g, Notch n, int left, int right, int top, int height, Color c, Color h)
+        {
+            int width = right - left;
+            int hash_spacing_pixels = 1;
+            switch (n.Depth)
+            {
+                case 1:
+                    hash_spacing_pixels = 12;
+                    break;
+                case 2:
+                    hash_spacing_pixels = 8;
+                    break;
+                case 3:
+                    hash_spacing_pixels = 4;
+                    break;
+            }            
+
+            // get a purty pen to draw with 
+            Pen p = new Pen(h, 1);
+
+            // shade in the notch
+            g.FillRectangle(new SolidBrush(c), left, top, width, height);
+
+            // draw a left and right line on the side of the rectancle if wide enough
+            if (width > 2 && tnf_active)
+            {
+                g.DrawLine(p, left, top, left, top + height - 1);
+                g.DrawLine(p, right, top, right, top + height - 1);
+
+                // first draw down left side of notch indicator horizontal lines -- a series of 45-degree hashes
+                for (int y = top + hash_spacing_pixels; y < top + height - 1 + width; y += hash_spacing_pixels)
+                {
+                    int start_y = y;
+                    int start_x = left;
+                    int end_x = right;
+                    int end_y = start_y - width;
+
+                    int min_y = top;
+                    int max_y = top + height - 1;
+
+                    // if we are about to over-draw past the top of the rectangle, we must restrain ourselves!
+                    if (end_y < min_y)
+                    {
+                        end_x -= (min_y - end_y);
+                        end_y = top;
+                    }
+
+                    // if we are about to over-draw past the bottom of the rectangle, we must restrain ourselves!
+                    if (start_y > max_y)
+                    {
+                        start_x += (start_y - max_y); 
+                        start_y = max_y;                        
+                    }
+
+                    g.DrawLine(p, start_x, start_y, end_x, end_y);
+                }
+            }
+        }
+
 		#endregion
 
 		#region GDI+
@@ -1488,16 +1661,18 @@ namespace PowerSDR
 				g.DrawString("High SWR", new System.Drawing.Font("Arial", 14, FontStyle.Bold), new SolidBrush(Color.Red), 245, 20);
 		}
 
+        static float zoom_height = 1.5f;   // Should be > 1.  H = H/zoom_height
 		private static void DrawPanadapterGrid(ref Graphics g, int W, int H, int rx, bool bottom)
 		{
 			// draw background
 			/*if(bottom) g.FillRectangle(new SolidBrush(display_background_color), 0, H, W, H);
 			else g.FillRectangle(new SolidBrush(display_background_color), 0, 0, W, H);*/
 
-			bool local_mox = mox;
-			if(rx==2) local_mox = false;
-			int low = rx_display_low;					// initialize variables
-			int high = rx_display_high;
+			bool local_mox = false;
+            if (mox && rx == 1 && !tx_on_vfob) local_mox = true;
+			if (mox && rx == 2 && tx_on_vfob) local_mox = true;
+			int Low = rx_display_low;					// initialize variables
+			int High = rx_display_high;
 			int mid_w = W/2;
 			int[] step_list = {10, 20, 25, 50};
 			int step_power = 1;
@@ -1507,6 +1682,7 @@ namespace PowerSDR
 			int grid_step = spectrum_grid_step;
 			if(split_display) grid_step *= 2;
 
+            //g.SmoothingMode = SmoothingMode.AntiAlias;
 			System.Drawing.Font font = new System.Drawing.Font("Arial", 9);
 			SolidBrush grid_text_brush = new SolidBrush(grid_text_color);
 			//Pen grid_pen = new Pen(grid_color);
@@ -1515,9 +1691,9 @@ namespace PowerSDR
             //display_filter_color = Color.FromArgb(40, 255, 255, 255);
 			Pen tx_filter_pen = new Pen(display_filter_tx_color);
 			int y_range = spectrum_grid_max - spectrum_grid_min;
-			int filter_low, filter_high;
+			int filter_low, filter_high;            
 
-			int center_line_x = (int)(-(double)low/(high-low)*W);
+			int center_line_x = (int)(-(double)Low/(High-Low)*W);
 
 			if(local_mox) // get filter limits
 			{
@@ -1543,7 +1719,7 @@ namespace PowerSDR
 			}
 
 			// Calculate horizontal step size
-			int width = high-low;
+			int width = High-Low;
 			while(width/freq_step_size > 10)
 			{
                 /*inbetweenies = step_list[step_index] / 10;
@@ -1564,8 +1740,8 @@ namespace PowerSDR
 			{
 				// draw Sub RX filter
 				// get filter screen coordinates
-				int filter_left_x = (int)((float)(filter_low-low+vfoa_sub_hz-vfoa_hz-rit_hz)/(high-low)*W);
-				int filter_right_x = (int)((float)(filter_high-low+vfoa_sub_hz-vfoa_hz-rit_hz)/(high-low)*W);
+				int filter_left_x = (int)((float)(filter_low-Low+vfoa_sub_hz-vfoa_hz-rit_hz)/(High-Low)*W);
+				int filter_right_x = (int)((float)(filter_high-Low+vfoa_sub_hz-vfoa_hz-rit_hz)/(High-Low)*W);
 
 				// make the filter display at least one pixel wide.
 				if(filter_left_x == filter_right_x) filter_right_x = filter_left_x+1;
@@ -1583,7 +1759,7 @@ namespace PowerSDR
 				}
 
 				// draw Sub RX 0Hz line
-				int x = (int)((float)(vfoa_sub_hz-vfoa_hz-low)/(high-low)*W);
+				int x = (int)((float)(vfoa_sub_hz-vfoa_hz-Low)/(High-Low)*W);
 				if(bottom)
 				{
 					g.DrawLine(new Pen(sub_rx_zero_line_color), x, H+top, x, H+H);
@@ -1599,8 +1775,8 @@ namespace PowerSDR
 			if(!(local_mox && (rx1_dsp_mode == DSPMode.CWL || rx1_dsp_mode == DSPMode.CWU)))
 			{
 				// get filter screen coordinates
-				int filter_left_x = (int)((float)(filter_low-low)/(high-low)*W);
-				int filter_right_x = (int)((float)(filter_high-low)/(high-low)*W);
+				int filter_left_x = (int)((float)(filter_low-Low)/(High-Low)*W);
+				int filter_right_x = (int)((float)(filter_high-Low)/(High-Low)*W);
 
 				// make the filter display at least one pixel wide.
 				if(filter_left_x == filter_right_x) filter_right_x = filter_left_x+1;
@@ -1629,26 +1805,26 @@ namespace PowerSDR
 				{
 					if(!split_enabled)
 					{
-						filter_left_x = (int)((float)(tx_filter_low - low + xit_hz - rit_hz /*+ (vfob_hz - vfoa_hz)*/) / (high - low) * W);
-						filter_right_x = (int)((float)(tx_filter_high - low + xit_hz - rit_hz /*+ (vfob_hz - vfoa_hz)*/) / (high - low) * W);
+						filter_left_x = (int)((float)(tx_filter_low - Low + xit_hz - rit_hz /*+ (vfob_hz - vfoa_hz)*/) / (High - Low) * W);
+						filter_right_x = (int)((float)(tx_filter_high - Low + xit_hz - rit_hz /*+ (vfob_hz - vfoa_hz)*/) / (High - Low) * W);
 					}
 					else
 					{
-						filter_left_x = (int)((float)(tx_filter_low - low + xit_hz - rit_hz + (vfob_sub_hz - vfoa_hz)) / (high - low) * W);
-						filter_right_x = (int)((float)(tx_filter_high - low + xit_hz - rit_hz + (vfob_sub_hz - vfoa_hz)) / (high - low) * W);
+						filter_left_x = (int)((float)(tx_filter_low - Low + xit_hz - rit_hz + (vfob_sub_hz - vfoa_hz)) / (High - Low) * W);
+						filter_right_x = (int)((float)(tx_filter_high - Low + xit_hz - rit_hz + (vfob_sub_hz - vfoa_hz)) / (High - Low) * W);
 					}
 				}
 				else
 				{
 					if(!split_enabled)
 					{
-						filter_left_x = (int)((float)(tx_filter_low - low + xit_hz - rit_hz) / (high - low) * W);
-						filter_right_x = (int)((float)(tx_filter_high - low + xit_hz - rit_hz) / (high - low) * W);
+						filter_left_x = (int)((float)(tx_filter_low - Low + xit_hz - rit_hz) / (High - Low) * W);
+						filter_right_x = (int)((float)(tx_filter_high - Low + xit_hz - rit_hz) / (High - Low) * W);
 					}
 					else
 					{
-						filter_left_x = (int)((float)(tx_filter_low - low + xit_hz - rit_hz + (vfoa_sub_hz - vfoa_hz)) / (high - low) * W);
-						filter_right_x = (int)((float)(tx_filter_high - low + xit_hz - rit_hz + (vfoa_sub_hz - vfoa_hz)) / (high - low) * W);
+						filter_left_x = (int)((float)(tx_filter_low - Low + xit_hz - rit_hz + (vfoa_sub_hz - vfoa_hz)) / (High - Low) * W);
+						filter_right_x = (int)((float)(tx_filter_high - Low + xit_hz - rit_hz + (vfoa_sub_hz - vfoa_hz)) / (High - Low) * W);
 					}
 				}
 				
@@ -1677,9 +1853,9 @@ namespace PowerSDR
 
 				int cw_line_x;
 				if(!split_enabled)
-					cw_line_x = (int)((float)(pitch - low + xit_hz - rit_hz)/(high - low) * W);
+					cw_line_x = (int)((float)(pitch - Low + xit_hz - rit_hz)/(High - Low) * W);
 				else
-					cw_line_x = (int)((float)(pitch - low + xit_hz - rit_hz + (vfoa_sub_hz - vfoa_hz)) / (high - low) * W);
+					cw_line_x = (int)((float)(pitch - Low + xit_hz - rit_hz + (vfoa_sub_hz - vfoa_hz)) / (High - Low) * W);
 
 				if(bottom)
 				{
@@ -1693,36 +1869,251 @@ namespace PowerSDR
 				}
 			}
 
-			double vfo;
-			
-			if(local_mox)
-			{
-				if(split_enabled)
-					vfo = vfoa_sub_hz;
-				else
-					vfo = vfoa_hz;
-				vfo += xit_hz;
-			}
-			else if(rx==1)
-			{
-				vfo = vfoa_hz + rit_hz;
-			}
-			else //if(rx==2)
-			{
-				vfo = vfob_hz + rit_hz;
-			}
+            // draw notches if in RX
+            if (!local_mox)
+            {
+                List<Notch> notches;
+                if (!bottom)
+                    notches = NotchList.NotchesInBW((double)vfoa_hz * 1e-6, Low, High);
+                else
+                    notches = NotchList.NotchesInBW((double)vfob_hz * 1e-6, Low, High);
 
-			switch(rx1_dsp_mode)
-			{
-				case DSPMode.CWL:
-					vfo += cw_pitch;
-					break;
-				case DSPMode.CWU:
-					vfo -= cw_pitch;
-					break;
-				default:
-					break;
-			}
+                //draw notch bars in this for loop
+                foreach (Notch n in notches)
+                {
+                    long rf_freq = vfoa_hz;
+                    int rit = rit_hz;
+
+                    if (bottom)
+                    {
+                        rf_freq = vfob_hz;
+                    }
+
+                    if (bottom)
+                    {
+                        switch (rx2_dsp_mode)
+                        {
+                            case (DSPMode.CWL):
+                                rf_freq += cw_pitch;
+                                break;
+                            case (DSPMode.CWU):
+                                rf_freq -= cw_pitch;
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        switch (rx1_dsp_mode)
+                        {
+                            case (DSPMode.CWL):
+                                rf_freq += cw_pitch;
+                                break;
+                            case (DSPMode.CWU):
+                                rf_freq -= cw_pitch;
+                                break;
+                        }
+                    }
+
+                    int notch_left_x = (int)((float)(n.Freq * 1e6 - rf_freq - n.BW / 2 - Low - rit) / (High - Low) * W);
+                    int notch_right_x = (int)((float)(n.Freq * 1e6 - rf_freq + n.BW / 2 - Low - rit) / (High - Low) * W);
+
+                    if (notch_right_x == notch_left_x)
+                        notch_right_x = notch_left_x + 1;
+
+                    if (tnf_zoom && n.Details &&
+                        ((bottom && n.RX == 2) ||
+                        (!bottom && n.RX == 1)))
+                    {
+                        int zoomed_notch_center_freq = (int)(notch_zoom_start_freq * 1e6 - rf_freq - rit);
+
+                        int original_bw = High - Low;
+                        int zoom_bw = original_bw / 10;
+
+                        int low = zoomed_notch_center_freq - zoom_bw / 2;
+                        int high = zoomed_notch_center_freq + zoom_bw / 2;
+
+                        if (low < Low) // check left limit
+                        {
+                            low = Low;
+                            high = Low + zoom_bw;
+                        }
+                        else if (high > High) // check right limit
+                        {
+                            high = High;
+                            low = High - zoom_bw;
+                        }
+
+                        int zoom_bw_left_x = (int)((float)(low - Low) / (High - Low) * W);
+                        int zoom_bw_right_x = (int)((float)(high - Low) / (High - Low) * W);
+
+                        Pen p = new Pen(Color.White, 2.0f);
+                        
+                        if (!bottom)
+                        {
+                            // draw zoomed bandwidth outline
+                            Point[] left_zoom_line_points = {
+                                new Point(0, (int)(H/zoom_height)),
+                                new Point(zoom_bw_left_x-1,(int)(0.5*H*(1+1/zoom_height))),
+                                new Point(zoom_bw_left_x-1, H) };
+                            g.DrawLines(p, left_zoom_line_points);
+
+                            Point[] right_zoom_line_points = {
+                                new Point(W, (int)(H/zoom_height)),
+                                new Point(zoom_bw_right_x+1, (int)(0.5*H*(1+1/zoom_height))),
+                                new Point(zoom_bw_right_x+1, H) };
+                            g.DrawLines(p, right_zoom_line_points);
+
+                            //grey out non-zoomed in area on actual panadapter
+                            g.FillRectangle(new SolidBrush(Color.FromArgb(150, 0, 0, 0)), 0, H/zoom_height, zoom_bw_left_x, H - H/zoom_height);
+                            g.FillRectangle(new SolidBrush(Color.FromArgb(150, 0, 0, 0)), zoom_bw_right_x, H/zoom_height, W-zoom_bw_right_x, H - H/zoom_height);
+                        }
+                        else
+                        {
+                            // draw zoomed bandwidth outline
+                            Point[] left_zoom_line_points = {
+                                new Point(0, H+(int)(H/zoom_height)),
+                                new Point(zoom_bw_left_x-1, H+(int)(0.5*H*(1+1/zoom_height))),
+                                new Point(zoom_bw_left_x-1, H+H) };
+                            g.DrawLines(p, left_zoom_line_points);
+
+                            Point[] right_zoom_line_points = {
+                                new Point(W, H+(int)(H/zoom_height)),
+                                new Point(zoom_bw_right_x+1, H+(int)(0.5*H*(1+1/zoom_height))),
+                                new Point(zoom_bw_right_x+1, H+H) };
+                            g.DrawLines(p, right_zoom_line_points);
+
+                            g.FillRectangle(new SolidBrush(Color.FromArgb(160, 0, 0, 0)), 0, H + H/ zoom_height, zoom_bw_left_x, H + H - H / zoom_height);
+                            g.FillRectangle(new SolidBrush(Color.FromArgb(160, 0, 0, 0)), zoom_bw_right_x, H + H/ zoom_height, W - zoom_bw_right_x, H + H - H / zoom_height);
+                        }
+                    }
+
+                    // decide colors to draw notch
+                    Color c1 = notch_on_color;
+                    Color c2 = notch_highlight_color;
+
+                    if (!tnf_active)
+                    {
+                        c1 = notch_off_color;
+                        c2 = Color.Black;
+                    }
+                    else if (n.Permanent)
+                    {
+                        c1 = notch_perm_on_color;
+                        c2 = notch_perm_highlight_color;
+                    }
+
+                    if (bottom)
+                        drawNotchBar(g, n, notch_left_x, notch_right_x, H + top, H - top, c1, c2);
+                    else
+                        drawNotchBar(g, n, notch_left_x, notch_right_x, top, H - top, c1, c2);
+
+                    //if (bottom)
+                    //    drawNotchStatus(g, n, (notch_left_x + notch_right_x) / 2, H + top + 75, W, H);
+                    //else
+                    //    drawNotchStatus(g, n, (notch_left_x + notch_right_x) / 2, top + 75, W, H);
+                }
+
+                //draw notch statuses in this for loop
+                if(!tnf_zoom)
+                {
+                    foreach (Notch n in notches)
+                    {
+                        long rf_freq = vfoa_hz;
+                        int rit = rit_hz;
+
+                        if (bottom)
+                        {
+                            rf_freq = vfob_hz;
+                        }
+
+                        if (bottom)
+                        {
+                            switch (rx2_dsp_mode)
+                            {
+                                case (DSPMode.CWL):
+                                    rf_freq += cw_pitch;
+                                    break;
+                                case (DSPMode.CWU):
+                                    rf_freq -= cw_pitch;
+                                    break;
+                            }
+                        }
+                        else
+                        {
+                            switch (rx1_dsp_mode)
+                            {
+                                case (DSPMode.CWL):
+                                    rf_freq += cw_pitch;
+                                    break;
+                                case (DSPMode.CWU):
+                                    rf_freq -= cw_pitch;
+                                    break;
+                            }
+                        }
+
+                        int notch_left_x = (int)((float)(n.Freq * 1e6 - rf_freq - n.BW / 2 - Low - rit) / (High - Low) * W);
+                        int notch_right_x = (int)((float)(n.Freq * 1e6 - rf_freq + n.BW / 2 - Low - rit) / (High - Low) * W);
+
+                        if (notch_right_x == notch_left_x)
+                            notch_right_x = notch_left_x + 1;
+
+                        if (bottom)
+                            drawNotchStatus(g, n, (notch_left_x + notch_right_x) / 2, H + top + 75, W, H);
+                        else
+                            drawNotchStatus(g, n, (notch_left_x + notch_right_x) / 2, top + 75, W, H);
+                    }
+            }
+            }
+
+			double vfo;
+
+            if (rx == 1)
+            {
+                if (local_mox && !tx_on_vfob)
+                {
+                    if (split_enabled)
+                        vfo = vfoa_sub_hz;
+                    else
+                        vfo = vfoa_hz;
+                    vfo += xit_hz;
+                }
+                else vfo = vfoa_hz + rit_hz;
+            }
+            else //if(rx==2)
+            {
+                if (local_mox && tx_on_vfob)
+                    vfo = vfob_hz + xit_hz;
+                else vfo = vfob_hz + rit_hz;
+            }
+
+            if (!bottom)
+            {
+                switch (rx1_dsp_mode)
+                {
+                    case DSPMode.CWL:
+                        vfo += cw_pitch;
+                        break;
+                    case DSPMode.CWU:
+                        vfo -= cw_pitch;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            else
+            {
+                switch (rx2_dsp_mode)
+                {
+                    case DSPMode.CWL:
+                        vfo += cw_pitch;
+                        break;
+                    case DSPMode.CWU:
+                        vfo -= cw_pitch;
+                        break;
+                    default:
+                        break;
+                }
+            }
 
 			long vfo_round = ((long)(vfo/freq_step_size))*freq_step_size;
 			long vfo_delta = (long)(vfo - vfo_round);
@@ -1735,9 +2126,9 @@ namespace PowerSDR
 				int offsetL;
 				int offsetR;
 
-				int fgrid = i*freq_step_size + (low/freq_step_size)*freq_step_size;
+				int fgrid = i*freq_step_size + (Low/freq_step_size)*freq_step_size;
 				double actual_fgrid = ((double)(vfo_round+fgrid))/1000000;
-				int vgrid = (int)((double)(fgrid-vfo_delta-low)/(high-low)*W);
+				int vgrid = (int)((double)(fgrid-vfo_delta-Low)/(High-Low)*W);
 
 				if(!show_freq_offset)
 				{
@@ -1765,8 +2156,8 @@ namespace PowerSDR
 						if(bottom) g.DrawString(label, font, new SolidBrush(band_edge_color), vgrid-offsetL, H+(float)Math.Floor(H*.01));
 						else g.DrawString(label, font, new SolidBrush(band_edge_color), vgrid-offsetL, (float)Math.Floor(H*.01));
 
-                        int fgrid_2 = ((i + 1) * freq_step_size) + (int)((low / freq_step_size) * freq_step_size);
-                        int x_2 = (int)(((float)(fgrid_2 - vfo_delta - low) / width * W));
+                        int fgrid_2 = ((i + 1) * freq_step_size) + (int)((Low / freq_step_size) * freq_step_size);
+                        int x_2 = (int)(((float)(fgrid_2 - vfo_delta - Low) / width * W));
                         float scale = (float)(x_2 - vgrid) / inbetweenies;
 
                         for (int j = 1; j < inbetweenies; j++)
@@ -1781,8 +2172,8 @@ namespace PowerSDR
 						if(bottom) g.DrawLine(grid_pen, vgrid, H+top, vgrid, H+H);
 						else g.DrawLine(grid_pen, vgrid, top, vgrid, H);			//wa6ahl
 
-                        int fgrid_2 = ((i + 1) * freq_step_size) + (int)((low / freq_step_size) * freq_step_size);
-                        int x_2 = (int)(((float)(fgrid_2 - vfo_delta - low) / width * W));
+                        int fgrid_2 = ((i + 1) * freq_step_size) + (int)((Low / freq_step_size) * freq_step_size);
+                        int x_2 = (int)(((float)(fgrid_2 - vfo_delta - Low) / width * W));
                         float scale = (float)(x_2 - vgrid) / inbetweenies;
 
                         for (int j = 1; j < inbetweenies; j++)
@@ -1826,7 +2217,7 @@ namespace PowerSDR
 				}
 				else
 				{
-					vgrid = Convert.ToInt32((double)-(fgrid-low)/(low-high)*W);	//wa6ahl
+					vgrid = Convert.ToInt32((double)-(fgrid-Low)/(Low-High)*W);	//wa6ahl
 					if(bottom) g.DrawLine(grid_pen, vgrid, H+top, vgrid, H+H);
 					else g.DrawLine(grid_pen, vgrid, top, vgrid, H);			//wa6ahl
 
@@ -1850,9 +2241,9 @@ namespace PowerSDR
 			for(int i=0; i<band_edge_list.Length; i++)
 			{
 				double band_edge_offset = band_edge_list[i] - vfo;
-				if (band_edge_offset >= low && band_edge_offset <= high)
+				if (band_edge_offset >= Low && band_edge_offset <= High)
 				{
-					int temp_vline =  (int)((double)(band_edge_offset-low)/(high-low)*W);//wa6ahl
+					int temp_vline =  (int)((double)(band_edge_offset-Low)/(High-Low)*W);//wa6ahl
 					if(bottom) g.DrawLine(new Pen(band_edge_color), temp_vline, H+top, temp_vline, H+H);//wa6ahl
 					else g.DrawLine(new Pen(band_edge_color), temp_vline, top, temp_vline, H);//wa6ahl
 				}
@@ -2587,7 +2978,7 @@ namespace PowerSDR
 				if(mox && (rx1_dsp_mode == DSPMode.CWL || rx1_dsp_mode == DSPMode.CWU))
 				{
 					for(int i=0; i<current_display_data.Length; i++)
-						current_display_data[i] = -200.0f;
+                        current_display_data[i] = spectrum_grid_min - rx1_display_cal_offset;
 				}
 				else
 				{
@@ -2602,12 +2993,12 @@ namespace PowerSDR
 			}
 			else if(bottom && data_ready_bottom)
 			{
-				if(mox && (rx1_dsp_mode == DSPMode.CWL || rx1_dsp_mode == DSPMode.CWU))
+				/*if(mox && (rx1_dsp_mode == DSPMode.CWL || rx1_dsp_mode == DSPMode.CWU))
 				{
 					for(int i=0; i<current_display_data_bottom.Length; i++)
 						current_display_data_bottom[i] = -200.0f;
 				}
-				else
+				else*/
 				{
 					fixed(void *rptr = &new_display_data_bottom[0])
 						fixed(void *wptr = &current_display_data_bottom[0])
@@ -2733,6 +3124,9 @@ namespace PowerSDR
 			int High = rx_display_high;
 			int yRange = spectrum_grid_max - spectrum_grid_min;
 			float local_max_y = float.MinValue;
+            bool local_mox = false;
+            if (rx == 1 && !tx_on_vfob && mox) local_mox = true;
+            if (rx == 2 && tx_on_vfob && mox) local_mox = true;
 
 			if(rx1_dsp_mode == DSPMode.DRM)
 			{
@@ -2742,10 +3136,10 @@ namespace PowerSDR
 
 			if(rx == 1 && data_ready)
 			{
-				if(mox && (rx1_dsp_mode == DSPMode.CWL || rx1_dsp_mode == DSPMode.CWU))
+				if(local_mox && (rx1_dsp_mode == DSPMode.CWL || rx1_dsp_mode == DSPMode.CWU))
 				{
 					for(int i=0; i<current_display_data.Length; i++)
-						current_display_data[i] = -200.0f;
+                        current_display_data[i] = spectrum_grid_min - rx1_display_cal_offset;
 				}
 				else
 				{
@@ -2760,12 +3154,20 @@ namespace PowerSDR
 			}
 			else if(rx == 2 && data_ready_bottom)
 			{
-				fixed(void *rptr = &new_display_data_bottom[0])
-					fixed(void *wptr = &current_display_data_bottom[0])
-						Win32.memcpy(wptr, rptr, BUFFER_SIZE*sizeof(float));
+                if (local_mox && (rx2_dsp_mode == DSPMode.CWL || rx2_dsp_mode == DSPMode.CWU))
+                {
+                    for (int i = 0; i < current_display_data_bottom.Length; i++)
+                        current_display_data_bottom[i] = spectrum_grid_min - rx2_display_cal_offset;
+                }
+                else
+                {
+                    fixed (void* rptr = &new_display_data_bottom[0])
+                    fixed (void* wptr = &current_display_data_bottom[0])
+                        Win32.memcpy(wptr, rptr, BUFFER_SIZE * sizeof(float));
 
-				if ( current_model == Model.SOFTROCK40 ) 
-					console.AdjustDisplayDataForBandEdge(ref current_display_data_bottom);
+                    if (current_model == Model.SOFTROCK40)
+                        console.AdjustDisplayDataForBandEdge(ref current_display_data_bottom);
+                }
 
 				data_ready_bottom = false;
 			}
@@ -2779,8 +3181,6 @@ namespace PowerSDR
 				UpdateDisplayPeak(rx1_peak_buffer, current_display_data);
 			else if(rx==2 && rx2_peak_on)
 				UpdateDisplayPeak(rx2_peak_buffer, current_display_data_bottom);
-
-			num_samples = (High - Low);
 
 			start_sample_index = (BUFFER_SIZE>>1) +(int)((Low * BUFFER_SIZE) / sample_rate);
 			num_samples = (int)((High - Low) * BUFFER_SIZE / sample_rate);
@@ -2825,7 +3225,7 @@ namespace PowerSDR
 				if(rx==1) max += rx1_display_cal_offset;
 				else if(rx==2) max += rx2_display_cal_offset;
 
-				if(!mox) 
+				if(!local_mox) 
 				{
 					if(rx==1) max += rx1_preamp_offset;
 					else if(rx==2) max += rx2_preamp_offset;
@@ -2839,6 +3239,7 @@ namespace PowerSDR
 
 				points[i].X = i;
 				points[i].Y = (int)(Math.Floor((spectrum_grid_max - max)*H/yRange));
+                points[i].Y = Math.Min(points[i].Y, H);
 				if(bottom) points[i].Y += H;
 			} 
 			
@@ -2861,7 +3262,200 @@ namespace PowerSDR
                 g.DrawLines(data_line_pen, points);                
             }
             else g.DrawLines(data_line_pen, points);
-			
+
+            
+            // draw notch zoom if enabled
+            if (tnf_zoom)
+            {
+                
+                List<Notch> notches;
+                if (!bottom)
+                    notches = NotchList.NotchesInBW((double)vfoa_hz * 1e-6, Low, High);
+                else
+                    notches = NotchList.NotchesInBW((double)vfob_hz * 1e-6, Low, High);
+
+                Notch notch = null;
+                foreach (Notch n in notches)
+                {
+                    if (n.Details)
+                    {
+                        notch = n;
+                        break;
+                    }
+                }
+
+                if (notch != null && 
+                    ((bottom && notch.RX == 2) ||
+                    (!bottom && notch.RX == 1)))
+                {
+                    // draw zoom background
+                    if (bottom) g.FillRectangle(new SolidBrush(Color.FromArgb(230, 0, 0, 0)), 0, H, W, H / zoom_height);
+                    else g.FillRectangle(new SolidBrush(Color.FromArgb(230, 0, 0, 0)), 0, 0, W, H / zoom_height);
+                    
+
+                    // calculate data needed for zoomed notch
+                    long rf_freq = vfoa_hz;
+                    int rit = rit_hz;
+
+                    if (bottom)
+                    {
+                        rf_freq = vfob_hz;
+                    }
+
+                    if (bottom)
+                    {
+                        switch (rx2_dsp_mode)
+                        {
+                            case (DSPMode.CWL):
+                                rf_freq += cw_pitch;
+                                break;
+                            case (DSPMode.CWU):
+                                rf_freq -= cw_pitch;
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        switch (rx1_dsp_mode)
+                        {
+                            case (DSPMode.CWL):
+                                rf_freq += cw_pitch;
+                                break;
+                            case (DSPMode.CWU):
+                                rf_freq -= cw_pitch;
+                                break;
+                        }
+                    }
+
+                    int zoomed_notch_center_freq = (int)(notch_zoom_start_freq * 1e6 - rf_freq - rit);
+
+                    int original_bw = High - Low;
+                    int zoom_bw = original_bw / 10;
+
+                    int low = zoomed_notch_center_freq - zoom_bw / 2;
+                    int high = zoomed_notch_center_freq + zoom_bw / 2;
+
+                    if (low < Low) // check left limit
+                    {
+                        low = Low;
+                        high = Low + zoom_bw;
+                    }
+                    else if (high > High) // check right limit
+                    {
+                        high = High;
+                        low = High - zoom_bw;
+                    }
+
+                    // decide colors to draw notch
+                    Color c1 = notch_on_color_zoomed;
+                    Color c2 = notch_highlight_color_zoomed;
+
+                    if (!tnf_active)
+                    {
+                        c1 = notch_off_color;
+                        c2 = Color.Black;
+                    }
+                    else if (notch.Permanent)
+                    {
+                        c1 = notch_perm_on_color;
+                        c2 = notch_perm_highlight_color;
+                    }
+
+                    int notch_zoom_left_x = (int)((float)(notch.Freq * 1e6 - rf_freq - notch.BW / 2 - low - rit) / (high - low) * W);
+                    int notch_zoom_right_x = (int)((float)(notch.Freq * 1e6 - rf_freq + notch.BW / 2 - low - rit) / (high - low) * W);
+
+                    if (notch_zoom_left_x == notch_zoom_right_x)
+                        notch_zoom_right_x = notch_zoom_left_x + 1;
+
+                    //draw zoomed notch bars
+                    if (!bottom)
+                        drawNotchBar(g, notch, notch_zoom_left_x, notch_zoom_right_x, 0, (int)(H / zoom_height), c1, c2);
+                    else
+                        drawNotchBar(g, notch, notch_zoom_left_x, notch_zoom_right_x, H, (int)(H / zoom_height), c1, c2);
+
+                    // draw data
+                    start_sample_index = (BUFFER_SIZE >> 1) + (int)((low * BUFFER_SIZE) / sample_rate);
+                    num_samples = (int)((high - low) * BUFFER_SIZE / sample_rate);
+                    if (start_sample_index < 0) start_sample_index += 4096;
+                    if ((num_samples - start_sample_index) > (BUFFER_SIZE + 1))
+                        num_samples = BUFFER_SIZE - start_sample_index;
+
+                    //Debug.WriteLine("start_sample_index: "+start_sample_index);
+                    slope = (float)num_samples / (float)W;
+                    //int grid_max = spectrum_grid_min + (spectrum_grid_max - spectrum_grid_min) / 2;
+                    for (int i = 0; i < W; i++)
+                    {
+                        float max = float.MinValue;
+                        float dval = i * slope + start_sample_index;
+                        int lindex = (int)Math.Floor(dval);
+                        int rindex = (int)Math.Floor(dval + slope);
+
+                        if (rx == 1)
+                        {
+                            if (slope <= 1.0 || lindex == rindex)
+                            {
+                                max = current_display_data[lindex % 4096] * ((float)lindex - dval + 1) + current_display_data[(lindex + 1) % 4096] * (dval - (float)lindex);
+                            }
+                            else
+                            {
+                                for (int j = lindex; j < rindex; j++)
+                                    if (current_display_data[j % 4096] > max) max = current_display_data[j % 4096];
+                            }
+                        }
+                        else if (rx == 2)
+                        {
+                            if (slope <= 1.0 || lindex == rindex)
+                            {
+                                max = current_display_data_bottom[lindex % 4096] * ((float)lindex - dval + 1) + current_display_data_bottom[(lindex + 1) % 4096] * (dval - (float)lindex);
+                            }
+                            else
+                            {
+                                for (int j = lindex; j < rindex; j++)
+                                    if (current_display_data_bottom[j % 4096] > max) max = current_display_data_bottom[j % 4096];
+                            }
+                        }
+
+                        if (rx == 1) max += rx1_display_cal_offset;
+                        else if (rx == 2) max += rx2_display_cal_offset;
+
+                        if (!local_mox)
+                        {
+                            if (rx == 1) max += rx1_preamp_offset;
+                            else if (rx == 2) max += rx2_preamp_offset;
+                        }
+
+                        if (max > local_max_y)
+                        {
+                            local_max_y = max;
+                            max_x = i;
+                        }
+
+                        points[i].X = i;
+                        points[i].Y = (int)(Math.Floor((spectrum_grid_max - max) * H / zoom_height / yRange));    //used to be 6
+                        points[i].Y = Math.Min(points[i].Y, H);
+                        if (bottom) points[i].Y += H;
+                    }
+
+                    if (pan_fill)
+                    {
+                        points[W].X = W; points[W].Y = (int)(H / zoom_height);
+                        points[W + 1].X = 0; points[W + 1].Y = (int)(H / zoom_height);
+                        if (bottom)
+                        {
+                            points[W].Y += H;
+                            points[W + 1].Y += H;
+                        }
+                        data_line_pen.Color = Color.FromArgb(100, 255, 255, 255);
+                        g.FillPolygon(data_line_pen.Brush, points);
+                        points[W] = points[W - 1];
+                        points[W + 1] = points[W - 1];
+                        data_line_pen.Color = data_line_color;
+                        g.DrawLines(data_line_pen, points);
+                    }
+                    else g.DrawLines(data_line_pen, points);
+                }
+            }
+
 			points = null;
 
 			// draw long cursor
@@ -2914,6 +3508,9 @@ namespace PowerSDR
 			int High = rx_display_high;
 			int yRange = spectrum_grid_max - spectrum_grid_min;
 			float local_max_y = float.MinValue;
+            bool local_mox = false;
+            if (rx == 1 && !tx_on_vfob && mox) local_mox = true;
+            if (rx == 2 && tx_on_vfob && mox) local_mox = true;
 			
 			if((rx1_dsp_mode == DSPMode.DRM && rx==1) ||
 				(rx2_dsp_mode == DSPMode.DRM && rx==2))
@@ -2924,10 +3521,10 @@ namespace PowerSDR
 
 			if(rx==1 && data_ready)
 			{
-				if(mox && (rx1_dsp_mode == DSPMode.CWL || rx1_dsp_mode == DSPMode.CWU))
+				if(local_mox && (rx1_dsp_mode == DSPMode.CWL || rx1_dsp_mode == DSPMode.CWU))
 				{
 					for(int i=0; i<current_display_data.Length; i++)
-						current_display_data[i] = -200.0f;
+                        current_display_data[i] = spectrum_grid_min - rx1_display_cal_offset;
 				}
 				else
 				{
@@ -2942,12 +3539,20 @@ namespace PowerSDR
 			}
 			else if(rx==2 && data_ready_bottom)
 			{
-				fixed(void *rptr = &new_display_data_bottom[0])
-					fixed(void *wptr = &current_display_data_bottom[0])
-						Win32.memcpy(wptr, rptr, BUFFER_SIZE*sizeof(float));
+                if (local_mox && (rx2_dsp_mode == DSPMode.CWL || rx2_dsp_mode == DSPMode.CWU))
+                {
+                    for (int i = 0; i < current_display_data_bottom.Length; i++)
+                        current_display_data_bottom[i] = spectrum_grid_min - rx2_display_cal_offset;
+                }
+                else
+                {
+                    fixed (void* rptr = &new_display_data_bottom[0])
+                    fixed (void* wptr = &current_display_data_bottom[0])
+                        Win32.memcpy(wptr, rptr, BUFFER_SIZE * sizeof(float));
 
-				if ( current_model == Model.SOFTROCK40 ) 
-					console.AdjustDisplayDataForBandEdge(ref current_display_data_bottom);
+                    if (current_model == Model.SOFTROCK40)
+                        console.AdjustDisplayDataForBandEdge(ref current_display_data_bottom);
+                }
 
 				data_ready_bottom = false;
 			}
@@ -3206,8 +3811,23 @@ namespace PowerSDR
 				if(current_click_tune_mode == ClickTuneMode.VFOA)
 					p = new Pen(grid_text_color);
 				else p = new Pen(Color.Red);
-				g.DrawLine(p, display_cursor_x, 0, display_cursor_x, H);
-				g.DrawLine(p, 0, display_cursor_y, W, display_cursor_y);
+                if (bottom)
+                {
+                    if (display_cursor_y > H)
+                    {
+                        g.DrawLine(p, display_cursor_x, 0, display_cursor_x, H + H);
+                        g.DrawLine(p, 0, display_cursor_y, W, display_cursor_y);
+                    }
+                    else g.DrawLine(p, display_cursor_x, 0, display_cursor_x, H + H);
+                }
+                else
+                {
+                    if (display_cursor_y <= H)
+                    {
+                        g.DrawLine(p, display_cursor_x, 0, display_cursor_x, H);
+                        g.DrawLine(p, 0, display_cursor_y, W, display_cursor_y);
+                    }
+                }
 			}
 
 			return true;

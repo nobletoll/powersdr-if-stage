@@ -2,7 +2,7 @@
 // FLEX3000MixerForm.cs
 //=================================================================
 // PowerSDR is a C# implementation of a Software Defined Radio.
-// Copyright (C) 2004-2009  FlexRadio Systems
+// Copyright (C) 2004-2011  FlexRadio Systems
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -18,11 +18,11 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
-// You may contact us via email at: sales@flex-radio.com.
+// You may contact us via email at: gpl@flexradio.com.
 // Paper mail may be sent to: 
 //    FlexRadio Systems
-//    8900 Marybank Dr.
-//    Austin, TX 78750
+//    4616 W. Howard Lane  Suite 1-150
+//    Austin, TX 78728
 //    USA
 //=================================================================
 
@@ -421,11 +421,11 @@ namespace PowerSDR
 
 		#region Misc Routines
 
-		private int InputSliderToRegVal(int slider)
+		private byte InputSliderToRegVal(int slider)
 		{
-			int retval;
-			if(slider < 0) retval = 0x100 + slider;
-			else retval = slider;
+			byte retval;
+			if(slider < 0) retval = (byte)(0x100 + slider);
+			else retval = (byte)slider;
 			//Debug.WriteLine("slider: "+slider+" Reg: "+retval.ToString("X"));
 			return retval;
 		}
@@ -669,55 +669,55 @@ namespace PowerSDR
 
 		private void tbExtSpkr_Scroll(object sender, System.EventArgs e)
 		{
-			FWC.WriteCodecReg(0x0C, 0xFF-tbExtSpkr.Value);
-			FWC.WriteCodecReg(0x0D, 0xFF-tbExtSpkr.Value);
+            FWC.WriteCodecReg(0x0C, (byte)(0xFF - tbExtSpkr.Value));
+            FWC.WriteCodecReg(0x0D, (byte)(0xFF - tbExtSpkr.Value));
 		}
 
 		private void tbHeadphone_Scroll(object sender, System.EventArgs e)
 		{
-			FWC.WriteCodecReg(0x0A, 0xFF-tbHeadphone.Value);
-			FWC.WriteCodecReg(0x0B, 0xFF-tbHeadphone.Value);
+            FWC.WriteCodecReg(0x0A, (byte)(0xFF - tbHeadphone.Value));
+            FWC.WriteCodecReg(0x0B, (byte)(0xFF - tbHeadphone.Value));
 		}
 
 		private void tbLineOutDB9_Scroll(object sender, System.EventArgs e)
 		{
-			FWC.WriteCodecReg(0x0E, 0xFF-tbLineOutDB9.Value);
+            FWC.WriteCodecReg(0x0E, (byte)(0xFF - (byte)tbLineOutDB9.Value));
 		}
 
 		private void chkExtSpkrSel_CheckedChanged(object sender, System.EventArgs e)
 		{
-			int val = 0;
-			FWC.ReadCodecReg(7, out val);
+			byte val = 0;
+            FWC.ReadCodecReg(0x07, out val);
 			if(chkExtSpkrSel.Checked)
-				FWC.WriteCodecReg(7, val & 0xCF);
+                FWC.WriteCodecReg(0x07, (byte)(val & 0xCC));
 			else
-				FWC.WriteCodecReg(7, val | 0x30);
+                FWC.WriteCodecReg(0x07, (byte)(val | 0x30));
 		}
 
 		private void chkHeadphoneSel_CheckedChanged(object sender, System.EventArgs e)
 		{
-			int val = 0;
-			FWC.ReadCodecReg(7, out val);
+			byte val = 0;
+            FWC.ReadCodecReg(0x07, out val);
 			if(chkHeadphoneSel.Checked)
 			{
 				FWC.SetHeadphone(true);
-				FWC.WriteCodecReg(7, val & 0xF3);
+                FWC.WriteCodecReg(0x07, (byte)(val & 0xF0));
 			}
 			else
 			{
-				FWC.WriteCodecReg(7, val | 0x0C);
+                FWC.WriteCodecReg(0x07, (byte)(val | 0x0C));
 				FWC.SetHeadphone(false);
 			}
 		}
 
 		private void chkLineOutDB9Sel_CheckedChanged(object sender, System.EventArgs e)
 		{
-			int val = 0;
-			FWC.ReadCodecReg(7, out val);
+			byte val = 0;
+            FWC.ReadCodecReg(0x07, out val);
 			if(chkLineOutDB9Sel.Checked)
-				FWC.WriteCodecReg(7, val & 0xBF);
+                FWC.WriteCodecReg(0x07, (byte)(val & 0xBC));
 			else
-				FWC.WriteCodecReg(7, val | 0x40);
+                FWC.WriteCodecReg(0x07, (byte)(val | 0x40));
 		}
 
 		private void chkOutputMuteAll_CheckedChanged(object sender, System.EventArgs e)
@@ -725,7 +725,7 @@ namespace PowerSDR
 			if(chkOutputMuteAll.Checked)
 			{
 				chkOutputMuteAll.BackColor = console.ButtonSelectedColor;
-				FWC.WriteCodecReg(7, 0xFC);
+                FWC.WriteCodecReg(0x07, 0xFC);
 			}
 			else
 			{

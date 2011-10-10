@@ -2,7 +2,7 @@
 // fwc_atu.cs
 //=================================================================
 // PowerSDR is a C# implementation of a Software Defined Radio.
-// Copyright (C) 2004-2009  FlexRadio Systems
+// Copyright (C) 2004-2011  FlexRadio Systems
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -18,11 +18,11 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
-// You may contact us via email at: sales@flex-radio.com.
+// You may contact us via email at: gpl@flexradio.com.
 // Paper mail may be sent to: 
 //    FlexRadio Systems
-//    8900 Marybank Dr.
-//    Austin, TX 78750
+//    4616 W. Howard Lane  Suite 1-150
+//    Austin, TX 78728
 //    USA
 //=================================================================
 
@@ -214,76 +214,56 @@ namespace PowerSDR
 
 		public static void IncrementInductance()
 		{
-			byte cmd, b2, b3, b4;
 			FWC.ATUSendCmd((byte)ATURequest.REQ_INDUP, 0, 0);
-			do
-			{
-				FWC.ATUGetResult(out cmd, out b2, out b3, out b4, 200);
-				ParseResult(cmd, b2, b3);
-			} while(b4 > 0);
+            FlushBuffer(true);
 		}
 
 		public static void DecrementInductance()
 		{
-			byte cmd, b2, b3, b4;
 			FWC.ATUSendCmd((byte)ATURequest.REQ_INDDN, 0, 0);
-			do
-			{
-				FWC.ATUGetResult(out cmd, out b2, out b3, out b4, 200);
-				ParseResult(cmd, b2, b3);
-			} while(b4 > 0);
+            FlushBuffer(true);
 		}
 
 		public static void IncrementCapacitance()
 		{
-			byte cmd, b2, b3, b4;
 			FWC.ATUSendCmd((byte)ATURequest.REQ_CAPUP, 0, 0);
-			do
-			{
-				FWC.ATUGetResult(out cmd, out b2, out b3, out b4, 200);
-				ParseResult(cmd, b2, b3);
-			} while(b4 > 0);
+            FlushBuffer(true);
 		}
 
 		public static void DecrementCapacitance()
 		{
-			byte cmd, b2, b3, b4;
 			FWC.ATUSendCmd((byte)ATURequest.REQ_CAPDN, 0, 0);
-			do
-			{
-				FWC.ATUGetResult(out cmd, out b2, out b3, out b4, 200);
-				ParseResult(cmd, b2, b3);
-			} while(b4 > 0);
+            FlushBuffer(true);
 		}
+
+        public static void SelectAntenna1()
+        {
+            FWC.ATUSendCmd((byte)ATURequest.REQ_ANT1, 0, 0);
+            Thread.Sleep(200);
+            FlushBuffer(true);
+        }
+
+        public static void SelectAntenna2()
+        {
+            FWC.ATUSendCmd((byte)ATURequest.REQ_ANT2, 0, 0);
+            Thread.Sleep(200);
+            FlushBuffer(true);
+        }
 
 		public static void MemoryTune()
 		{
 			int count = 0;
-			bool done_tuning = false;
 			byte cmd, b2, b3, b4;
 			FWC.ATUSendCmd((byte)ATURequest.REQ_MEMTUNE, 0, 0);
-			while(!done_tuning)
-			{
-				FWC.ATUGetResult(out cmd, out b2, out b3, out b4, 200);
-				ParseResult(cmd, b2, b3);
-				switch((ATUResponse)cmd)
-				{
-					case ATUResponse.CMD_TUNEPASS:
-					case ATUResponse.CMD_TUNEFAIL:
-						done_tuning = true;
-						break;
-				}
-				Thread.Sleep(100);
-				if(count++ > 100)
-					break;
-			}
-			
-			for(int i=0; i<13; i++)
-			{
-				FWC.ATUGetResult(out cmd, out b2, out b3, out b4, 200);
-				if(cmd == 200 || b4 == 0) break;
-				ParseResult(cmd, b2, b3);
-			}
+
+            do
+            {
+                FWC.ATUGetResult(out cmd, out b2, out b3, out b4, 200);
+                ParseResult(cmd, b2, b3);
+                Thread.Sleep(10);
+            } while (cmd != 6 && cmd != 10 && count++ < 900);  //6 = CMD_SWR (tune success), 10 = CMD_TUNEFAIL
+
+            FlushBuffer(false);
 
 			if(tune_pass)
 				Debug.WriteLine("fwd: "+fwd_pwr.ToString("f2")+" ref: "+rev_pwr.ToString("f2")+" swr: "+swr.ToString("f2")+":1");
@@ -293,68 +273,52 @@ namespace PowerSDR
 
 		public static void FullTune()
 		{
-			int count = 0;
-			bool done_tuning = false;
-			byte cmd, b2, b3, b4;
-			FWC.ATUSendCmd((byte)ATURequest.REQ_FULLTUNE, 0, 0);
-			while(!done_tuning)
-			{
-				FWC.ATUGetResult(out cmd, out b2, out b3, out b4, 200);
-				ParseResult(cmd, b2, b3);
-				switch((ATUResponse)cmd)
-				{
-					case ATUResponse.CMD_TUNEPASS:
-					case ATUResponse.CMD_TUNEFAIL:
-						done_tuning = true;
-						break;
-				}
-				Thread.Sleep(100);
-				if(count++ > 200)
-					break;
-			}
+            byte cmd, b2, b3;
+            byte b4 = 1;
+            int count = 0;
+            FlushBuffer(false);
 
-			for(int i=0; i<13; i++)
-			{
-				FWC.ATUGetResult(out cmd, out b2, out b3, out b4, 200);
-				if(cmd == 200 || b4 == 0) break;
-				ParseResult(cmd, b2, b3);
-			}
+            Debug.WriteLine("fulltune start");
+            FWC.ATUSendCmd((byte)ATURequest.REQ_FULLTUNE, 0, 0);
+            
+    
+                do
+                {
+                    FWC.ATUGetResult(out cmd, out b2, out b3, out b4, 200);
+                    ParseResult(cmd, b2, b3);
+                    Thread.Sleep(10);
+                } while (cmd != 6 && cmd != 10 && count++ < 900);  //6 = CMD_SWR (tune success), 10 = CMD_TUNEFAIL
 
-			if(tune_pass)
-				Debug.WriteLine("fwd: "+fwd_pwr.ToString("f2")+" ref: "+rev_pwr.ToString("f2")+" swr: "+swr.ToString("f2")+":1");
-			else
-				Debug.WriteLine("Tune Failed: "+((ATUTuneFail)tune_fail).ToString());
+                if (tune_pass)
+                    Debug.WriteLine("fwd: " + fwd_pwr.ToString("f2") + " ref: " + rev_pwr.ToString("f2") + " swr: " + swr.ToString("f2") + ":1-------------------------------");
+                else
+                    Debug.WriteLine("Tune Failed: " + ((ATUTuneFail)tune_fail).ToString());
+
+            FlushBuffer(false);
 		}
 
 		public static void Activate(bool b)
 		{
-			byte cmd, b2, b3, b4;
+			byte cmd;
 			if(b) cmd = (byte)ATURequest.REQ_TUNER_ACTIVE;
 			else cmd = (byte)ATURequest.REQ_TUNER_STANDBY;
 			FWC.ATUSendCmd(cmd, 0, 0);
-			do
-			{
-				FWC.ATUGetResult(out cmd, out b2, out b3, out b4, 200);
-				ParseResult(cmd, b2, b3);
-			} while(b4 > 0);
+            FlushBuffer(true);
 		}
 
 		public static void AutoTuning(bool b)
 		{
-			byte cmd, b2, b3, b4;
+			byte cmd;
 			if(b) cmd = (byte)ATURequest.REQ_AUTO_ON;
 			else cmd = (byte)ATURequest.REQ_AUTO_OFF;
 			FWC.ATUSendCmd(cmd, 0, 0);
-			do
-			{
-				FWC.ATUGetResult(out cmd, out b2, out b3, out b4, 200);
-				ParseResult(cmd, b2, b3);
-			} while(b4 > 0);
+            //Thread.Sleep(3000);
+            FlushBuffer(true);
 		}
 
 		public static void SetSWRThreshold(double swr_thresh)
 		{
-			byte cmd=0, b2, b3, b4;
+			byte cmd=0;
 			if(swr_thresh == 1.1) cmd = (byte)ATURequest.REQ_SWR11;
 			else if(swr_thresh == 1.3) cmd = (byte)ATURequest.REQ_SWR13;
 			else if(swr_thresh == 1.5) cmd = (byte)ATURequest.REQ_SWR15;
@@ -363,11 +327,7 @@ namespace PowerSDR
 			else if(swr_thresh == 2.5) cmd = (byte)ATURequest.REQ_SWR25;
 			else if(swr_thresh == 3.0) cmd = (byte)ATURequest.REQ_SWR30;
 			FWC.ATUSendCmd(cmd, 0, 0);
-			do
-			{
-				FWC.ATUGetResult(out cmd, out b2, out b3, out b4, 200);
-				ParseResult(cmd, b2, b3);
-			} while(b4 > 0);
+            FlushBuffer(true);
 		}
 
 		#endregion
@@ -450,6 +410,32 @@ namespace PowerSDR
 					break;
 			}
 		}
+
+        public static void FlushBuffer(bool waitForFeedback)
+        {
+            bool feedback = false;
+            int count = 0;
+            uint timeout = 200;
+            if (!waitForFeedback)
+            {
+                timeout = 0;
+            }
+            byte b1, b2, b3, b4;
+            do
+            {
+                count++;                
+                FWC.ATUGetResult(out b1, out b2, out b3, out b4, timeout);
+                if (b1 != 255 && b2 != 255 && b3 != 255)
+                {
+                    feedback = true;
+                }
+                if((waitForFeedback && !feedback))
+                {
+                    Thread.Sleep((int)timeout);
+                }
+            } while (b4>0 || (waitForFeedback && !feedback) && count < 20);
+
+        }
 
 		#endregion
 	}

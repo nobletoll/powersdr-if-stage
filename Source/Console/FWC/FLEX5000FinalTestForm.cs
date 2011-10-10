@@ -2,7 +2,7 @@
 // FLEX5000FinalTestForm.cs
 //=================================================================
 // PowerSDR is a C# implementation of a Software Defined Radio.
-// Copyright (C) 2004-2009  FlexRadio Systems
+// Copyright (C) 2004-2011  FlexRadio Systems
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -18,11 +18,11 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
-// You may contact us via email at: sales@flex-radio.com.
+// You may contact us via email at: gpl@flexradio.com.
 // Paper mail may be sent to: 
 //    FlexRadio Systems
-//    8900 Marybank Dr.
-//    Austin, TX 78750
+//    4616 W. Howard Lane  Suite 1-150
+//    Austin, TX 78728
 //    USA
 //=================================================================
 
@@ -34,6 +34,7 @@ using System.Drawing.Text;
 using System.Collections;
 using System.ComponentModel;
 using System.IO;
+using System.IO.Ports;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
@@ -85,8 +86,7 @@ namespace PowerSDR
 		private System.Windows.Forms.CheckBoxTS ck80;
 		private System.Windows.Forms.CheckBoxTS ck160;
 		private System.Windows.Forms.GroupBoxTS grpATU;
-		private System.Windows.Forms.ButtonTS btnATUSWR;
-        private ButtonTS btnTXSpur;
+        private System.Windows.Forms.ButtonTS btnATUSWR;
 		private System.ComponentModel.IContainer components;
 		
 		#endregion
@@ -98,9 +98,7 @@ namespace PowerSDR
 			InitializeComponent();
 			console = c;
 			this.Text += "  (PA:"+FWCEEPROM.SerialToString(FWCEEPROM.PASerial)+")";
-			comboCOMPort.SelectedIndex = 0;
-			Common.RestoreForm(this, "FLEX5000FinalTestForm", false);
-
+			
 			if(FWCEEPROM.TRXSerial == 0)
 			{
 				MessageBox.Show("No TRX Serial Found.  Please enter and try again.",
@@ -134,19 +132,25 @@ namespace PowerSDR
 					MessageBoxButtons.OK,
 					MessageBoxIcon.Warning);
 
-			if(console.SetupForm.DSPPhoneRXBuffer != 4096)
+			if(console.setupForm.DSPPhoneRXBuffer != 4096)
 			/*	MessageBox.Show("Warning: DSP RX Buffer size should be at least 4096 before calibrating.",
 					"Warning: DSP RX Buffer Size Low",
 					MessageBoxButtons.OK,
 					MessageBoxIcon.Warning);*/
-				console.SetupForm.DSPPhoneRXBuffer = 4096;
+				console.setupForm.DSPPhoneRXBuffer = 4096;
 
-			MessageBox.Show("Production Reminder: Check the Power button to ensure\n"+
+			/*MessageBox.Show("Production Reminder: Check the Power button to ensure\n"+
 				"power off/on sequence works as intended",
 				"Reminder: Check Power Button",
 				MessageBoxButtons.OK,
-				MessageBoxIcon.Information);
+				MessageBoxIcon.Information);*/
 
+            // populate COM port selection with only ports that are available
+            comboCOMPort.Items.Clear();
+            comboCOMPort.Items.AddRange(Common.SortedComPorts());
+            if (comboCOMPort.Items.Count > 0)
+                comboCOMPort.SelectedIndex = 0;
+            Common.RestoreForm(this, "FLEX5000FinalTestForm", false);
 			// set powermaster COM port based on data in powermaster.txt file if it exists
 			if(File.Exists(Application.StartupPath+"\\powermaster.txt"))
 			{
@@ -174,6 +178,23 @@ namespace PowerSDR
 					this.Text = this.Text.Replace("IO", "ATU");
 					break;
 			}
+
+            if (console.Production)
+            {
+                //btnPABias.Enabled = true;
+                btnRunPACal.Enabled = true;
+                btnPAPower.Enabled = true;
+                btnPASWR.Enabled = true;
+                btnATUSWR.Enabled = true;
+            }
+            else
+            {
+                //btnPABias.Enabled = false;
+                btnRunPACal.Enabled = false;
+                btnPAPower.Enabled = false;
+                btnPASWR.Enabled = false;
+                btnATUSWR.Enabled = false;
+            }
 		}
 
 		protected override void Dispose( bool disposing )
@@ -200,12 +221,12 @@ namespace PowerSDR
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FLEX5000FinalTestForm));
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.comboCOMPort = new System.Windows.Forms.ComboBoxTS();
             this.printPreviewDialog1 = new System.Windows.Forms.PrintPreviewDialog();
             this.printDocument1 = new System.Drawing.Printing.PrintDocument();
             this.udBiasDriverTarget = new System.Windows.Forms.NumericUpDown();
             this.udBiasFinalTarget = new System.Windows.Forms.NumericUpDown();
             this.lstDebug = new System.Windows.Forms.ListBox();
-            this.btnTXSpur = new System.Windows.Forms.ButtonTS();
             this.grpATU = new System.Windows.Forms.GroupBoxTS();
             this.btnATUSWR = new System.Windows.Forms.ButtonTS();
             this.grpBridgeNull = new System.Windows.Forms.GroupBoxTS();
@@ -226,7 +247,6 @@ namespace PowerSDR
             this.txtTech = new System.Windows.Forms.TextBoxTS();
             this.lblTech = new System.Windows.Forms.LabelTS();
             this.grpComPort = new System.Windows.Forms.GroupBoxTS();
-            this.comboCOMPort = new System.Windows.Forms.ComboBoxTS();
             this.grpBands = new System.Windows.Forms.GroupBoxTS();
             this.ck6 = new System.Windows.Forms.CheckBoxTS();
             this.ck10 = new System.Windows.Forms.CheckBoxTS();
@@ -251,6 +271,16 @@ namespace PowerSDR
             this.grpComPort.SuspendLayout();
             this.grpBands.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // comboCOMPort
+            // 
+            this.comboCOMPort.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboCOMPort.DropDownWidth = 72;
+            this.comboCOMPort.Location = new System.Drawing.Point(16, 16);
+            this.comboCOMPort.Name = "comboCOMPort";
+            this.comboCOMPort.Size = new System.Drawing.Size(72, 21);
+            this.comboCOMPort.TabIndex = 0;
+            this.toolTip1.SetToolTip(this.comboCOMPort, "COM Port Power Master Wattmeter is connected to");
             // 
             // printPreviewDialog1
             // 
@@ -321,17 +351,6 @@ namespace PowerSDR
             this.lstDebug.Name = "lstDebug";
             this.lstDebug.Size = new System.Drawing.Size(256, 264);
             this.lstDebug.TabIndex = 29;
-            // 
-            // btnTXSpur
-            // 
-            this.btnTXSpur.Image = null;
-            this.btnTXSpur.Location = new System.Drawing.Point(12, 401);
-            this.btnTXSpur.Name = "btnTXSpur";
-            this.btnTXSpur.Size = new System.Drawing.Size(75, 23);
-            this.btnTXSpur.TabIndex = 33;
-            this.btnTXSpur.Text = "Spur";
-            this.btnTXSpur.Visible = false;
-            this.btnTXSpur.Click += new System.EventHandler(this.btnTXSpur_Click);
             // 
             // grpATU
             // 
@@ -541,25 +560,6 @@ namespace PowerSDR
             this.grpComPort.TabStop = false;
             this.grpComPort.Text = "COM Port";
             // 
-            // comboCOMPort
-            // 
-            this.comboCOMPort.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboCOMPort.DropDownWidth = 72;
-            this.comboCOMPort.Items.AddRange(new object[] {
-            "COM1",
-            "COM2",
-            "COM3",
-            "COM4",
-            "COM5",
-            "COM6",
-            "COM7",
-            "COM8"});
-            this.comboCOMPort.Location = new System.Drawing.Point(16, 16);
-            this.comboCOMPort.Name = "comboCOMPort";
-            this.comboCOMPort.Size = new System.Drawing.Size(72, 21);
-            this.comboCOMPort.TabIndex = 0;
-            this.toolTip1.SetToolTip(this.comboCOMPort, "COM Port Power Master Wattmeter is connected to");
-            // 
             // grpBands
             // 
             this.grpBands.Controls.Add(this.ck6);
@@ -727,7 +727,6 @@ namespace PowerSDR
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
             this.ClientSize = new System.Drawing.Size(504, 390);
-            this.Controls.Add(this.btnTXSpur);
             this.Controls.Add(this.grpATU);
             this.Controls.Add(this.grpBridgeNull);
             this.Controls.Add(this.lstDebug);
@@ -808,6 +807,7 @@ namespace PowerSDR
 
 		private void FLEX5000FinalTestForm_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
 		{
+         
 			if(e.Control && e.Alt && e.KeyCode == Keys.B)
 			{
 				udBiasDriverTarget.Visible = true;
@@ -817,10 +817,8 @@ namespace PowerSDR
 			{
 				btnPASWR.Visible = true;
 			}
-            else if (e.Control && e.Alt && e.KeyCode == Keys.T)
-            {
-                btnTXSpur.Visible = true;
-            }
+
+
 		}
 
 		private void btnCheckAll_Click(object sender, System.EventArgs e)
@@ -1006,7 +1004,8 @@ namespace PowerSDR
 
 		private string test_pa_bias = "PA Bias Test: Not Run";
 		public void CalFWCPABias()
-		{			
+		{
+
 			bool b = console.CalibratePABias(progress, (float)udBiasDriverTarget.Value, (float)udBiasFinalTarget.Value, 0.05f, 0);
 
 			if(b)
@@ -1099,6 +1098,20 @@ namespace PowerSDR
 				return;
 			}
 
+            if(!comboCOMPort.Text.StartsWith("COM"))
+            {
+                progress.Text = "";
+                progress.Hide();
+                MessageBox.Show("Invalid COM Port selection.  A valid COM port connected to a PowerMaster is required.",
+                    "Invalid COM Port",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                btnNullBridge.BackColor = Color.Red;
+                grpPA.Enabled = true;
+                grpIO.Enabled = true;
+                grpATU.Enabled = true;
+                return;
+            }
+
 			if(!console.PowerOn)
 			{
 				console.PowerOn = true;
@@ -1123,7 +1136,23 @@ namespace PowerSDR
 				btnNullBridge.BackColor = Color.Red;
 				return;
 			}
-			if(pm.Watts != 0.0f) return;
+
+            Thread.Sleep(500);
+            if (!pm.Present)
+            {
+                MessageBox.Show("No data received from PowerMaster on " + comboCOMPort.Text + ".\n" +
+                    "Please check COM port and PowerMaster connections and settings.\n\n" +
+                    "Make sure the PowerMaster shows \"F\" on the upper left of the display.\n" +
+                    "Verify the selected COM port is correct.  Verify port in Device Manager.",
+                    "No Data From PowerMaster",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                grpIO.Enabled = true;
+                grpPA.Enabled = true;
+                progress.Hide();
+                btnNullBridge.BackColor = Color.Red;
+                return;
+            } 
 
 			Band[] bands = { Band.B160M, Band.B80M, Band.B60M, Band.B40M, Band.B30M, Band.B20M, Band.B17M, Band.B15M, Band.B12M, Band.B10M, Band.B6M };
 			float[] pm_trim = { 1.04f, 1.03f, 1.03f, 1.03f, 1.02f, 1.01f, 1.01f, 1.0f, 1.0f, 1.0f, 0.9f };
@@ -1203,7 +1232,6 @@ namespace PowerSDR
 			}
 
 			grpBridgeNull.Visible = true;
-			pm.Start();
 			Thread.Sleep(1500);
 
 			lstDebug.Items.Insert(0, "PM: "+(pm.Watts*pm_trim[10]).ToString("f1"));
@@ -1313,11 +1341,58 @@ namespace PowerSDR
 				return;
 			}
 
-			if(console.VFOSync)
+            if (!comboCOMPort.Text.StartsWith("COM"))
+            {
+                progress.Text = "";
+                progress.Hide();
+                MessageBox.Show("Invalid COM Port selected.  A valid COM Port connected to a PowerMaster is required.",
+                    "Error: Invalid COM Port",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                btnRunPACal.BackColor = Color.Red;
+                grpPA.Enabled = true;
+                grpIO.Enabled = true;
+                grpATU.Enabled = true;
+                return;
+            }
+
+            PowerMaster pm;
+            try
+            {
+                pm = new PowerMaster(comboCOMPort.Text);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Error opening COM Port for Power Master",
+                    "COM Port Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                grpIO.Enabled = true;
+                grpPA.Enabled = true;
+                progress.Hide();
+                btnRunPACal.BackColor = Color.Red;
+                return;
+            }
+
+            Thread.Sleep(500);
+            if (!pm.Present)
+            {
+                MessageBox.Show("No data received from PowerMaster on " + comboCOMPort.Text + ".\n" +
+                    "Please check COM port and PowerMaster connections and settings.\n\n" +
+                    "Make sure the PowerMaster shows \"F\" on the upper left of the display.\n" +
+                    "Verify the selected COM port is correct.  Verify port in Device Manager.",
+                    "No Data From PowerMaster",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                grpIO.Enabled = true;
+                grpPA.Enabled = true;
+                progress.Hide();
+                btnRunPACal.BackColor = Color.Red;
+                return;
+            }
+
+            if(console.VFOSync)
 				console.VFOSync = false;
 
-			bool leveler = console.radio.GetDSPTX(0).TXLevelerOn;
-			console.radio.GetDSPTX(0).TXLevelerOn = false;
+			bool leveler = console.dsp.GetDSPTX(0).TXLevelerOn;
+			console.dsp.GetDSPTX(0).TXLevelerOn = false;
 
 			bool[] run = new bool[11];
 			run[0] = ck160.Checked;
@@ -1333,7 +1408,7 @@ namespace PowerSDR
 			run[10] = ck6.Checked;
 			console.CalibratePAGain2(progress, run, true);
 
-			console.radio.GetDSPTX(0).TXLevelerOn = leveler;
+			console.dsp.GetDSPTX(0).TXLevelerOn = leveler;
 
 			test_pa_power = "PA Power Test: Passed";
 			Band[] bands = { Band.B160M, Band.B80M, Band.B60M, Band.B40M, Band.B30M, Band.B20M, Band.B17M, Band.B15M, Band.B12M, Band.B10M, Band.B6M };
@@ -1477,6 +1552,53 @@ namespace PowerSDR
 				grpATU.Enabled = true;
 				return;
 			}
+
+            if (!comboCOMPort.Text.StartsWith("COM"))
+            {
+                progress.Text = "";
+                progress.Hide();
+                MessageBox.Show("Invalid COM Port selected.  A valid COM Port connected to a PowerMaster is required.",
+                    "Error: Invalid COM Port",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                btnRunPACal.BackColor = Color.Red;
+                grpPA.Enabled = true;
+                grpIO.Enabled = true;
+                grpATU.Enabled = true;
+                return;
+            }
+
+            PowerMaster pm;
+            try
+            {
+                pm = new PowerMaster(comboCOMPort.Text);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Error opening COM Port for Power Master",
+                    "COM Port Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                grpIO.Enabled = true;
+                grpPA.Enabled = true;
+                progress.Hide();
+                btnRunPACal.BackColor = Color.Red;
+                return;
+            }
+
+            Thread.Sleep(500);
+            if (!pm.Present)
+            {
+                MessageBox.Show("No data received from PowerMaster on " + comboCOMPort.Text + ".\n" +
+                    "Please check COM port and PowerMaster connections and settings.\n\n" +
+                    "Make sure the PowerMaster shows \"F\" on the upper left of the display.\n" +
+                    "Verify the selected COM port is correct.  Verify port in Device Manager.",
+                    "No Data From PowerMaster",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                grpIO.Enabled = true;
+                grpPA.Enabled = true;
+                progress.Hide();
+                btnRunPACal.BackColor = Color.Red;
+                return;
+            }
 
 			if(console.VFOSync)
 				console.VFOSync = false;
@@ -1678,11 +1800,25 @@ namespace PowerSDR
 				return;
 			}
 
+            if (!comboCOMPort.Text.StartsWith("COM"))
+            {
+                progress.Text = "";
+                progress.Hide();
+                MessageBox.Show("Invalid COM Port selection.  A valid COM port connected to a PowerMaster is required.",
+                    "Error: Invalid COM Port",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                btnPAVerify.BackColor = Color.Red;
+                grpPA.Enabled = true;
+                grpIO.Enabled = true;
+                grpATU.Enabled = true;
+                return;
+            }
+
 			if(console.VFOSync)
 				console.VFOSync = false;
 
-			bool leveler = console.radio.GetDSPTX(0).TXLevelerOn;
-			console.radio.GetDSPTX(0).TXLevelerOn = false;
+			bool leveler = console.dsp.GetDSPTX(0).TXLevelerOn;
+			console.dsp.GetDSPTX(0).TXLevelerOn = false;
 
 			PowerMaster pm;
 			try
@@ -1699,7 +1835,23 @@ namespace PowerSDR
 				btnPAVerify.BackColor = Color.Red;
 				return;
 			}
-			if(pm.Watts != 0.0f) return;
+
+            Thread.Sleep(500);
+            if (!pm.Present)
+            {
+                MessageBox.Show("No data received from PowerMaster on " + comboCOMPort.Text + ".\n" +
+                    "Please check COM port and PowerMaster connections and settings.\n\n" +
+                    "Make sure the PowerMaster shows \"F\" on the upper left of the display.\n" +
+                    "Verify the selected COM port is correct.  Verify port in Device Manager.",
+                    "No Data From PowerMaster",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                grpIO.Enabled = true;
+                grpPA.Enabled = true;
+                progress.Hide();
+                btnPAVerify.BackColor = Color.Red;
+                return;
+            }
 
 			Band[] bands = { Band.B6M, Band.B160M, Band.B80M, Band.B60M, Band.B40M, Band.B30M, Band.B20M, Band.B17M, Band.B15M, Band.B12M, Band.B10M};
 			float[] band_freqs = { 50.11f, 1.85f, 3.75f, 5.3665f, 7.15f, 10.125f, 14.175f, 18.1f, 21.300f, 24.9f, 28.4f};
@@ -1748,7 +1900,6 @@ namespace PowerSDR
 			console.CurrentMeterTXMode = MeterTXMode.FORWARD_POWER;
 
 			progress.SetPercent(0.0f);
-			pm.Start();
 
 			int counter = 0;
 			int num_bands = 0;
@@ -1823,7 +1974,7 @@ namespace PowerSDR
 					{
 						console.TunePower = targets[k];
 						console.TUN = true;
-						for(int j=0; j<20; j++)
+						for(int j=0; j<10; j++)
 						{
 							progress.SetPercent(++counter/(float)total_counts);
 							if(!progress.Visible) goto end;
@@ -1881,13 +2032,11 @@ namespace PowerSDR
 
 			try
 			{
-				pm.Stop();
-				Thread.Sleep(100);
 				pm.Close(); 
 			}
 			catch(Exception) { }
 
-			console.radio.GetDSPTX(0).TXLevelerOn = leveler;
+			console.dsp.GetDSPTX(0).TXLevelerOn = leveler;
 
 			if(test_pa_verify.StartsWith("PA Verify Test: Failed ("))
 				test_pa_verify = test_pa_verify.Substring(0, test_pa_verify.Length-2)+")";
@@ -2011,11 +2160,19 @@ namespace PowerSDR
 				return;
 			}
 
-			if(console.VFOSync)
-				console.VFOSync = false;
-
-			bool leveler = console.radio.GetDSPTX(0).TXLevelerOn;
-			console.radio.GetDSPTX(0).TXLevelerOn = false;
+            if (!comboCOMPort.Text.StartsWith("COM"))
+            {
+                progress.Text = "";
+                progress.Hide();
+                MessageBox.Show("Invalid COM Port selected.  A valid COM Port connected to a PowerMaster is required.",
+                    "Error: Invalid COM Port",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                btnRunPACal.BackColor = Color.Red;
+                grpPA.Enabled = true;
+                grpIO.Enabled = true;
+                grpATU.Enabled = true;
+                return;
+            }
 
 			PowerMaster pm;
 			try
@@ -2032,7 +2189,29 @@ namespace PowerSDR
 				btnRunPACal.BackColor = Color.Red;
 				return;
 			}
-			if(pm.Watts != 0.0f) return;
+
+            Thread.Sleep(500);
+            if (!pm.Present)
+            {
+                MessageBox.Show("No data received from PowerMaster on " + comboCOMPort.Text + ".\n" +
+                    "Please check COM port and PowerMaster connections and settings.\n\n" +
+                    "Make sure the PowerMaster shows \"F\" on the upper left of the display.\n" +
+                    "Verify the selected COM port is correct.  Verify port in Device Manager.",
+                    "No Data From PowerMaster",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                grpIO.Enabled = true;
+                grpPA.Enabled = true;
+                progress.Hide();
+                btnRunPACal.BackColor = Color.Red;
+                return;
+            }
+
+            if (console.VFOSync)
+                console.VFOSync = false;
+
+            bool leveler = console.dsp.GetDSPTX(0).TXLevelerOn;
+            console.dsp.GetDSPTX(0).TXLevelerOn = false;
 
 			Band[] bands = { Band.B6M, Band.B160M, Band.B80M, Band.B60M, Band.B40M, Band.B30M, Band.B20M, Band.B17M, Band.B15M, Band.B12M, Band.B10M};
 			float[] band_freqs = { 50.11f, 1.85f, 3.75f, 5.3665f, 7.15f, 10.125f, 14.175f, 18.1f, 21.300f, 24.9f, 28.4f };
@@ -2067,6 +2246,8 @@ namespace PowerSDR
 
 			double vfoa = console.VFOAFreq;
 			double vfob = console.VFOBFreq;
+            FWCAnt tx_ant = console.TXAnt;
+            console.TXCal = true;
 
 			console.FullDuplex = true;
 
@@ -2091,7 +2272,6 @@ namespace PowerSDR
 			}
 
 			progress.SetPercent(0.0f);
-			pm.Start();
 
 			int counter = 0;
 			int num_bands = 0;
@@ -2145,7 +2325,9 @@ namespace PowerSDR
 
 					console.VFOAFreq = band_freqs[i];
 					console.VFOBFreq = band_freqs[i];
-					
+
+                    console.FullDuplex = false;
+                    console.FullDuplex = true;
 					FWC.SetTXAnt(1);
 					//Thread.Sleep(50);
 
@@ -2165,7 +2347,7 @@ namespace PowerSDR
 
 					Audio.RadioVolume = 0.04;
 					double last_watts = 0.0;
-					double last_volts = 0.0;
+					double last_volts = 0.04;
 
 					for(int k=0; k<targets.Length; k++)
 					{          
@@ -2178,7 +2360,6 @@ namespace PowerSDR
 							tol = 5.0f;*/
 						
 						FWC.SetMOX(true);
-						console.TXCal = true;
 						//Thread.Sleep(50);
 						Audio.TXInputSignal = Audio.SignalSource.SINE;
 						Audio.SourceScale = 1.0;
@@ -2187,7 +2368,7 @@ namespace PowerSDR
 
 						while(Math.Abs(targets[k]-p) > tol)
 						{
-							for(int j=0; j<20; j++)
+							for(int j=0; j<10; j++)
 							{
 								if(!progress.Visible) goto end;
 								Thread.Sleep(50);
@@ -2202,7 +2383,6 @@ namespace PowerSDR
 								if(zero_count > 2)
 								{
 									FWC.SetMOX(false);
-									console.TXCal = false;
 									//Thread.Sleep(50);
 									MessageBox.Show("No power reading from PowerMaster.  Check cables and try again.");
 									progress.Text = "";
@@ -2216,7 +2396,6 @@ namespace PowerSDR
 								if(try_again_count++ == 20) // poop out
 								{
 									FWC.SetMOX(false);
-									console.TXCal = false;
 									//Thread.Sleep(50);
 									for(int kk = k; kk<12; kk++)
 										lstDebug.Items.Insert(0, "Bridge/Power - "+BandToString(bands[i])+" ("+targets[kk].ToString("f0")+"w): Failed");
@@ -2226,70 +2405,81 @@ namespace PowerSDR
 									if(k>0)
 										Audio.RadioVolume = console.power_table[(int)bands[i]][k-1];
 								}
-								else if(targets[k] <= 10)
-								{
-									double x1 = Math.Pow(last_volts, 2.0);
-									double x2 = Math.Pow(Audio.RadioVolume, 2.0);
-									double y1 = last_watts;
-									double y2 = p;
-									double next_volts = 0.0;
+                                /*else if (targets[k] <= 10)
+                                {
+                                    double x1 = Math.Pow(last_volts, 2.0);
+                                    double x2 = Math.Pow(Audio.RadioVolume, 2.0);
+                                    double y1 = last_watts;
+                                    double y2 = p;
+                                    double next_volts = 0.0;
 
-									lstDebug.Items.Insert(0, last_volts.ToString("f5")+" "+Audio.RadioVolume.ToString("f5")+" "+y1.ToString("f1")+" "+y2.ToString("f1"));
+                                    lstDebug.Items.Insert(0, last_volts.ToString("f5") + " " + Audio.RadioVolume.ToString("f5") + " " + y1.ToString("f1") + " " + y2.ToString("f1"));
 
-									if(y2 == y1)
-									{
-										if(y1 == 0.0) next_volts = last_volts*2;
-										else next_volts += (Audio.RadioVolume-last_volts);
-									}
-									else if(x2 == x1)
-									{
-										FWC.SetMOX(false);
-										console.TXCal = false;
-										//Thread.Sleep(50);
-										MessageBox.Show("Error in Bridge Cal");
-										progress.Text = "";
-										goto end;
-									}
-									else
-									{
-										double a = (y2-y1)/(x2-x1);
+                                    if (y2 == y1)
+                                    {
+                                        if (y1 == 0.0) next_volts = last_volts * 2;
+                                        else next_volts += (Audio.RadioVolume - last_volts);
+                                    }
+                                    else if (x2 == x1)
+                                    {
+                                        FWC.SetMOX(false);
+                                        //Thread.Sleep(50);
+                                        MessageBox.Show("Error in Bridge Cal");
+                                        progress.Text = "";
+                                        goto end;
+                                    }
+                                    else
+                                    {
+                                        double a = (y2 - y1) / (x2 - x1);
 
-										if(a <= 0.0)
-										{
-											next_volts += (Audio.RadioVolume-last_volts);
-										}
-										else
-										{
-											double b = y2-a*x2;
-											
-											lstDebug.Items.Insert(0, a.ToString("f5")+" "+b.ToString("f5"));
+                                        if (a <= 0.0)
+                                        {
+                                            next_volts += (Audio.RadioVolume - last_volts);
+                                        }
+                                        else
+                                        {
+                                            double b = y2 - a * x2;
 
-											next_volts = Math.Sqrt((targets[k]-b)/a);
-											if(double.IsNaN(next_volts))
-											{
-												/*// error out -- two times through the cap will do this
-												FWC.SetMOX(false);
-												MessageBox.Show("NaN Error in Bridge Cal");
-												progress.Text = "";
-												goto end;*/
-												next_volts += (Audio.RadioVolume-last_volts);
-											}
-										}
-									}
+                                            //lstDebug.Items.Insert(0, a.ToString("f5")+" "+b.ToString("f5"));
 
-									last_volts = Audio.RadioVolume;
-									if(next_volts/last_volts > 2.0)
-										next_volts = last_volts*2.0;
-									else if(next_volts/last_volts < 0.5)
-										next_volts = last_volts*0.5;
-									Audio.RadioVolume = Math.Min(0.5, next_volts); // 0.5 cap where 0.83 is max before overloading QSE
-								}
-								else Audio.RadioVolume *= Math.Sqrt(targets[k]/p);
+                                            next_volts = Math.Sqrt((targets[k] - b) / a);
+                                            if (double.IsNaN(next_volts))
+                                            {
+                                                // error out -- two times through the cap will do this
+                                                //FWC.SetMOX(false);
+                                                //MessageBox.Show("NaN Error in Bridge Cal");
+                                                //progress.Text = "";
+                                                //goto end;
+                                                next_volts += (Audio.RadioVolume - last_volts);
+                                            }
+                                        }
+                                    }
+
+                                    last_volts = Audio.RadioVolume;
+                                    if (next_volts / last_volts > 2.0)
+                                        next_volts = last_volts * 2.0;
+                                    else if (next_volts / last_volts < 0.5)
+                                        next_volts = last_volts * 0.5;
+                                    Audio.RadioVolume = Math.Min(0.5, next_volts); // 0.5 cap where 0.83 is max before overloading QSE
+                                }*/
+                                else
+                                {
+                                    double next_volts = Audio.RadioVolume * Math.Sqrt(targets[k] / p);
+                                    if (next_volts / last_volts > 2.0)
+                                        next_volts = last_volts * 2.0;
+                                    else if (next_volts / last_volts < 0.5)
+                                        next_volts = last_volts * 0.5;
+
+                                    lstDebug.Items.Insert(0, last_volts.ToString("f5") + " " + Audio.RadioVolume.ToString("f5") + " " +
+                                        last_watts.ToString("f2") + " " + p.ToString("f2"));
+
+                                    last_volts = Audio.RadioVolume;
+                                    Audio.RadioVolume = next_volts;
+                                }
 
 								if(p > 50.0)
 								{
 									FWC.SetMOX(false);
-									console.TXCal = false;
 									//Thread.Sleep(50);
 									for(int j=0; j<20; j++)
 									{
@@ -2301,7 +2491,6 @@ namespace PowerSDR
 										Thread.Sleep(50);
 									}
 									FWC.SetMOX(true);
-									console.TXCal = true;
 									//Thread.Sleep(50);
 								}
 							}
@@ -2344,15 +2533,14 @@ namespace PowerSDR
 					}
 
 					// do SWR cal here
+                    FWC.SetMOX(false);
 					console.MOX = false;
-					console.TXCal = false;
 					Thread.Sleep(100);
-					FWCAnt tx_ant = console.TXAnt;
 
 					switch(console.CurrentModel)
 					{
 						case Model.FLEX5000:
-							console.TXAnt = FWCAnt.ANT2;
+							//console.TXAnt = FWCAnt.ANT2;
 							FWC.SetTXAnt(2);
 							break;
 						case Model.FLEX3000:
@@ -2402,7 +2590,7 @@ namespace PowerSDR
 					switch(console.CurrentModel)
 					{
 						case Model.FLEX5000:
-							console.TXAnt = tx_ant;
+							//console.TXAnt = tx_ant;
 							break;
 						case Model.FLEX3000:
 							FWC.SetRCATX1(false);
@@ -2439,16 +2627,17 @@ namespace PowerSDR
 			//Thread.Sleep(50);
 			if(console.CurrentModel == Model.FLEX3000)
 				FWC.SetAmpTX1(true);
+            
+            console.TXAnt = tx_ant;
+            console.TXCal = false;
 
 			try
 			{
-				pm.Stop();
-				Thread.Sleep(100);
 				pm.Close(); 
 			}
 			catch(Exception) { }
 
-			console.radio.GetDSPTX(0).TXLevelerOn = leveler;
+			console.dsp.GetDSPTX(0).TXLevelerOn = leveler;
 
 			bool pass = true;
 			test_pa_bridge = "PA Bridge Test: Passed";
@@ -2466,7 +2655,8 @@ namespace PowerSDR
 					}
 					else if(j!=0)
 					{
-						if(console.pa_bridge_table[(int)bands[i]][j] <= console.pa_bridge_table[(int)bands[i]][j-1])
+						if(console.pa_bridge_table[(int)bands[i]][j] <= console.pa_bridge_table[(int)bands[i]][j-1] ||
+                            console.pa_bridge_table[(int)bands[i]][j] > 2.0f)
 						{
 							pass = false;
 							if(!test_pa_bridge.StartsWith("PA Bridge Test: Failed ("))
@@ -3267,6 +3457,53 @@ namespace PowerSDR
 				return;
 			}
 
+            if (!comboCOMPort.Text.StartsWith("COM"))
+            {
+                progress.Text = "";
+                progress.Hide();
+                MessageBox.Show("Invalid COM Port selected.  A valid COM Port connected to a PowerMaster is required.",
+                    "Error: Invalid COM Port",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                btnRunPACal.BackColor = Color.Red;
+                grpPA.Enabled = true;
+                grpIO.Enabled = true;
+                grpATU.Enabled = true;
+                return;
+            }
+
+            PowerMaster pm;
+            try
+            {
+                pm = new PowerMaster(comboCOMPort.Text);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Error opening COM Port for Power Master",
+                    "COM Port Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                grpIO.Enabled = true;
+                grpPA.Enabled = true;
+                progress.Hide();
+                btnRunPACal.BackColor = Color.Red;
+                return;
+            }
+
+            Thread.Sleep(500);
+            if (!pm.Present)
+            {
+                MessageBox.Show("No data received from PowerMaster on " + comboCOMPort.Text + ".\n" +
+                    "Please check COM port and PowerMaster connections and settings.\n\n" +
+                    "Make sure the PowerMaster shows \"F\" on the upper left of the display.\n" +
+                    "Verify the selected COM port is correct.  Verify port in Device Manager.",
+                    "No Data From PowerMaster",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                grpIO.Enabled = true;
+                grpPA.Enabled = true;
+                progress.Hide();
+                btnRunPACal.BackColor = Color.Red;
+                return;
+            }
+
 			if(console.VFOSync)
 				console.VFOSync = false;
 
@@ -3414,159 +3651,5 @@ namespace PowerSDR
 		}
 
 		#endregion
-
-        #region Spur
-
-        private string test_tx_spur = "TX Spur Test: Not Run";
-        private void btnTXSpur_Click(object sender, EventArgs e)
-        {
-            grpPA.Enabled = false;
-            grpIO.Enabled = false;
-            grpATU.Enabled = false;
-            btnTXSpur.BackColor = Color.Green;
-
-            progress = new Progress("Calibrate TX Spur");
-            Thread t = new Thread(new ThreadStart(RunCalFWCTXSpur));
-            t.Name = "Run Calibrate TX Spur Thread";
-            t.IsBackground = true;
-            t.Priority = ThreadPriority.Normal;
-            t.Start();
-        }
-
-        public void RunCalFWCTXSpur()
-        {
-            float tol = -80.0f;
-            test_tx_spur = "TX Spur Test: Passed";
-
-            if (!console.PowerOn)
-            {
-                console.PowerOn = true;
-                Thread.Sleep(500);
-            }
-
-            if (console.VFOSync)
-                console.VFOSync = false;
-
-            double vfoa = console.VFOAFreq;
-            double vfob = console.VFOBFreq;
-
-            int tx_low = console.TXFilterLow;
-            console.TXFilterLow = 100;
-
-            int tx_high = console.TXFilterHigh;
-            console.TXFilterHigh = 200;
-
-            HiPerfTimer t1 = new HiPerfTimer();
-            t1.Start();
-            Band[] bands = { Band.B160M, Band.B80M, Band.B60M, Band.B40M, Band.B30M, Band.B20M, Band.B17M, Band.B15M, Band.B12M, Band.B10M, Band.B6M };
-            float[] band_freqs = { 1.85f, 3.55f, 5.3665f, 7.15f, 10.125f, 14.175f, 18.1f, 21.300f, 24.9f, 28.4f, 50.11f };
-            for (int i = 0; i < band_freqs.Length; i++)
-            {
-                bool do_band = false;
-                switch (bands[i])
-                {
-                    case Band.B160M: do_band = ck160.Checked; break;
-                    case Band.B80M: do_band = ck80.Checked; break;
-                    case Band.B60M: do_band = ck60.Checked; break;
-                    case Band.B40M: do_band = ck40.Checked; break;
-                    case Band.B30M: do_band = ck30.Checked; break;
-                    case Band.B20M: do_band = ck20.Checked; break;
-                    case Band.B17M: do_band = ck17.Checked; break;
-                    case Band.B15M: do_band = ck15.Checked; break;
-                    case Band.B12M: do_band = ck12.Checked; break;
-                    case Band.B10M: do_band = ck10.Checked; break;
-                    case Band.B6M: do_band = ck6.Checked; break;
-                }
-
-                if (do_band)
-                {
-                    progress.SetPercent(0.0f);
-                    Invoke(new MethodInvoker(progress.Show));
-                    Application.DoEvents();
-
-                    console.VFOAFreq = band_freqs[i];
-                    console.VFOBFreq = band_freqs[i];
-
-                    console.CalTXSpur(band_freqs[i], progress);
-
-                    if (progress.Text == "") break;
-
-                    if (console.tx_spur_level[(int)bands[i]] > tol)
-                    {
-                        if (!test_tx_spur.StartsWith("TX Spur Test: Failed ("))
-                            test_tx_spur = "TX Spur Test: Failed (";
-                        test_tx_spur += BandToString(bands[i]) + ",";
-                        btnTXSpur.BackColor = Color.Red;
-                        lstDebug.Items.Insert(0, "TX Spur - " + BandToString(bands[i]) + ": Failed ("
-                            + console.tx_spur_level[(int)bands[i]].ToString("f1") + ")");
-                    }
-                    else
-                    {
-                        lstDebug.Items.Insert(0, "TX Spur - " + BandToString(bands[i]) + ": Passed ("
-                            + console.tx_spur_level[(int)bands[i]].ToString("f1") + ")");
-                    }
-                    Thread.Sleep(500);
-                }
-            }
-
-            console.TXFilterLow = tx_low;
-            console.TXFilterHigh = tx_high;
-
-            console.VFOAFreq = vfoa;
-            console.VFOBFreq = vfob;
-
-            if (test_tx_spur.StartsWith("TX Spur Test: Failed ("))
-                test_tx_spur = test_tx_spur.Substring(0, test_tx_spur.Length - 1) + ")";
-            toolTip1.SetToolTip(btnTXSpur, test_tx_spur);
-
-            t1.Stop();
-            Debug.WriteLine("TX Spur Timer: " + t1.Duration);
-
-            string path = console.AppDataPath + "\\Tests";
-            if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-            bool file_exists = File.Exists(path + "\\tx_spur.csv");
-            StreamWriter writer = new StreamWriter(path + "\\tx_spur.csv", true);
-            if (!file_exists) writer.WriteLine("Model, Serial Num, Date/Time, Version, "
-                                  + "160m, 80m, 60m, 40m, 30m, 20m, 17m, 15m, 12m, 10m, 6m,");
-            writer.Write(console.CurrentModel.ToString() + ","
-                + FWCEEPROM.SerialToString(FWCEEPROM.TRXSerial) + ","
-                + DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + ","
-                + console.Text + ",");
-            for (int i = 0; i < bands.Length; i++)
-            {
-                writer.Write(console.tx_spur_level[(int)bands[i]].ToString("f1") + ",");
-            }
-            writer.WriteLine("");
-            writer.Close();
-
-            path += "\\TX Spur";
-            if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-            string model = "";
-            switch (console.CurrentModel)
-            {
-                case Model.FLEX5000: model = "F5K"; break;
-            }
-            writer = new StreamWriter(path + "\\tx_spur_" + model + "_" + FWCEEPROM.SerialToString(FWCEEPROM.TRXSerial) + ".csv");
-            writer.WriteLine("Band, dBc");
-            for (int i = 0; i < bands.Length; i++)
-            {
-                writer.Write(BandToString(bands[i]) + ",");
-                writer.WriteLine(console.tx_spur_level[(int)bands[i]].ToString("f1"));
-            }
-            writer.Close();
-
-            lstDebug.Items.Insert(0, "Saving Carrier data to EEPROM...");
-            byte checksum;
-            FWCEEPROM.WriteTXCarrier(console.tx_carrier_table, out checksum);
-            console.tx_carrier_checksum = checksum;
-            console.SyncCalDateTime();
-            lstDebug.Items[0] = "Saving Carrier data to EEPROM...done";
-
-            /*grpGeneral.Enabled = true;
-            grpReceiver.Enabled = true;
-            grpTransmitter.Enabled = true;*/
-        }
-
-        #endregion
-	}
+    }
 }

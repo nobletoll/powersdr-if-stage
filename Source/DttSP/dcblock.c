@@ -85,7 +85,20 @@ DCBlock (DCBlocker dcb)
 				CXBdata (dcb->buf, i) = Cmplx (y, 0.0);
 			}
 			break;
+		case DCB_SINGLE_POLE:
+			for (i = 0; i < CXBsize (dcb->buf); i++)
+			{
+				COMPLEX x = CXBdata(dcb->buf, i);
+				if(dcb->first)
+				{
+					dcb->first = FALSE;
+					dcb->sigval = x;
+				}
 
+				dcb->sigval = Cadd(Cscl(x, 0.00005f), Cscl(dcb->sigval, 0.99995f));
+				CXBdata (dcb->buf, i) = Csub(x, dcb->sigval);
+			}
+			break;
 		default:
 			break;
     }
@@ -97,6 +110,7 @@ resetDCBlocker (DCBlocker dcb, int lev)
 	memset ((char *) dcb->old.inp, 0, BLKMEM * sizeof (REAL));
 	memset ((char *) dcb->old.out, 0, BLKMEM * sizeof (REAL));
 	dcb->lev = lev;
+	dcb->first = TRUE;
 }
 
 DCBlocker
@@ -106,6 +120,8 @@ newDCBlocker (int lev, CXB buf)
 		(DCBlocker) safealloc (1, sizeof (DCBlockerInfo), "DCBlocker");
 	dcb->buf = newCXB (CXBsize (buf), CXBbase (buf), "DCBlocker");
 	dcb->lev = lev;
+	dcb->sigval = cxzero;
+	dcb->first = TRUE;
 	return dcb;
 }
 

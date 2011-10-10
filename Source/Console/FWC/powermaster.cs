@@ -2,7 +2,7 @@
 // powermaster.cs
 //=================================================================
 // PowerSDR is a C# implementation of a Software Defined Radio.
-// Copyright (C) 2004-2009  FlexRadio Systems
+// Copyright (C) 2004-2011  FlexRadio Systems
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -18,11 +18,11 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
-// You may contact us via email at: sales@flex-radio.com.
+// You may contact us via email at: gpl@flexradio.com.
 // Paper mail may be sent to: 
 //    FlexRadio Systems
-//    8900 Marybank Dr.
-//    Austin, TX 78750
+//    4616 W. Howard Lane  Suite 1-150
+//    Austin, TX 78728
 //    USA
 //=================================================================
 
@@ -51,22 +51,17 @@ namespace PowerSDR
 			InitComPort(port);
 		}
 
+        private bool closing = false;
 		public void Close()
 		{
-			try
-			{
-				if(com_port != null && com_port.IsOpen)
-					com_port.Close();
-			}
-			catch(Exception) { }
-			com_port = null;
+            closing = true;			
 		}
 
 		private void InitComPort(int port)
 		{
 			com_port = new SerialPort();
 			com_port.Encoding = System.Text.Encoding.ASCII;
-			com_port.RtsEnable = true; // kd5tfd hack for soft rock ptt 
+			com_port.RtsEnable = true; // hack for soft rock ptt 
 			com_port.DtrEnable = false; // set dtr off 
 			com_port.ErrorReceived += new SerialErrorReceivedEventHandler(SerialPort_ErrorReceived);
 			com_port.DataReceived += new SerialDataReceivedEventHandler(SerialPort_DataReceived);
@@ -81,73 +76,36 @@ namespace PowerSDR
 			com_port.ReceivedBytesThreshold = 1;
 			com_port.Open();
 
-			out_buffer = new byte[7];
-			out_buffer[0] = 0x02;
-			Encoding.ASCII.GetBytes("D3", 0, 2, out_buffer, 1);
-			out_buffer[3] = 0x03;
-			byte crc = CRC(out_buffer);
-			out_buffer[4] = ByteToAscii((byte)(crc>>4));
-			out_buffer[5] = ByteToAscii((byte)(crc&0x0F));
-			out_buffer[6] = 0x0D;
+            byte[] out_buffer = new byte[7];
+            out_buffer[0] = 0x02;
+            Encoding.ASCII.GetBytes("D3", 0, 2, out_buffer, 1);
+            out_buffer[3] = 0x03;
+            byte crc = CRC(out_buffer);
+            out_buffer[4] = ByteToAscii((byte)(crc >> 4));
+            out_buffer[5] = ByteToAscii((byte)(crc & 0x0F));
+            out_buffer[6] = 0x0D;
+
+            com_port.Write(out_buffer, 0, 7);
+            t1.Start();
 		}
 
-		private bool running = false;
-		public bool Running
-		{
-			get { return running; }
-		}
+        private byte CRC(byte[] b)
+        {
+            byte crc = 0;
+            Debug.Assert(b[0] == 0x02);
+            for (int i = 1; b[i] != 0x03 && i < b.Length; i++)
+                crc = crc8revtab[crc ^ b[i]];
+            return (byte)(~crc);
+        }
 
-		public void Start()
-		{
-			Thread t = new Thread(new ThreadStart(Poll));
-			t.Name = "PowerMaster Poll Thread";
-			t.IsBackground = true;
-			t.Priority = ThreadPriority.Normal;
-			t.Start();
-			running = true;
-		}
+        private byte ByteToAscii(byte b)
+        {
+            byte ret_val = (byte)(b + 0x30);
+            if (ret_val > 0x39) ret_val += 7;
+            return ret_val;
+        }
 
-		public void Stop()
-		{
-			running = false;
-		}
-
-		private byte[] out_buffer;
-		private void Poll()
-		{
-			while(running)
-			{
-				if(com_port == null || !com_port.IsOpen) break;
-
-				com_port.Write(out_buffer, 0, 7);
-				while(com_port.BytesToRead > 0)
-				{
-					string s = com_port.ReadLine();
-					if(s.Length >= 10 && s[1] == 'D')
-						last_rx = s;
-					Thread.Sleep(5);
-				}
-				Thread.Sleep(100);
-			}
-		}
-
-		private byte CRC(byte[] b)
-		{
-			byte crc = 0;
-			Debug.Assert(b[0] == 0x02);
-			for(int i=1; b[i] != 0x03 && i<b.Length; i++)
-				crc = crc8revtab[crc ^ b[i]];
-			return (byte)(~crc);
-		}
-
-		private byte ByteToAscii(byte b)
-		{
-			byte ret_val = (byte)(b+0x30);
-			if(ret_val > 0x39) ret_val += 7;
-			return ret_val;
-		}
-
-		private static byte[] crc8revtab =
+        private static byte[] crc8revtab =
 		{
 		//	0x00  0x01  0x02  0x03  0x04  0x05  0x06  0x07  0x08  0x09  0x0A  0x0B  0x0C  0x0D  0x0E  0x0F
 /*0x0*/		0x00, 0xB1, 0xD3, 0x62, 0x17, 0xA6, 0xC4, 0x75, 0x2E, 0x9F, 0xFD, 0x4C, 0x39, 0x88, 0xEA, 0x5B,
@@ -168,7 +126,6 @@ namespace PowerSDR
 /*0xF*/		0x16, 0xA7, 0xC5, 0x74, 0x01, 0xB0, 0xD2, 0x63, 0x38, 0x89, 0xEB, 0x5A, 0x2F, 0x9E, 0xFC, 0x4D
 		};
 
-
 		private void SerialPort_ErrorReceived(object source, SerialErrorReceivedEventArgs e)
 		{
 			
@@ -177,31 +134,46 @@ namespace PowerSDR
 		private void SerialPort_PinChanged(object source, SerialPinChangedEventArgs e)
 		{
 			
-		}	
-		
-		private float watts = 0.0f;
-		public float Watts
-		{
-			get 
-			{
-				if(last_rx != "" && last_rx[1] == 'D')
-					watts = float.Parse(last_rx.Substring(3, 7));
-				return watts;
-			}
 		}
 
-		private string last_rx = "";
+        private bool present = false;
+        public bool Present
+        {
+            get { return present; }
+        }
 
         private void SerialPort_DataReceived(object source, SerialDataReceivedEventArgs e)
 		{
-			/*Debug.Write("Serial Debug: ");
-			while(com_port.InBufferBytes > 0)
-				Debug.Write(com_port.ReadByte().ToString("X")+" ");
-			Debug.WriteLine("");*/
-			/*string s = com_port.ReadLine();
-			Debug.WriteLine("Serial Debug: "+s);
-			if(s[1] == 'D')
-				last_rx = s;*/
+            if (closing)
+            {
+                try
+                {
+                    if (com_port != null && com_port.IsOpen)
+                        com_port.Close();
+                }
+                catch (Exception) { }
+                com_port = null;
+                return;
+            }
+
+            while (com_port.BytesToRead > 0)
+            {
+                // drain buffer
+                string s = com_port.ReadLine();
+
+                if (s.Length > 10 && s[1] == 'D')
+                {
+                    watts = float.Parse(s.Substring(3, 7));
+                    if (!present) present = true;
+                }
+            }
 		}
+
+        private static HiPerfTimer t1 = new HiPerfTimer();
+        private float watts = 0.0f;
+        public float Watts
+        {
+            get { return watts; }
+        }
 	}
 }

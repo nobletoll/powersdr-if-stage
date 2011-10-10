@@ -70,7 +70,8 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="winMM.lib libfftw3f-3.lib pthreadVC.lib"
 				OutputFile="../../bin/Debug/DttSP.dll"
-				LinkIncremental="2"
+				Version=""
+				LinkIncremental="1"
 				ModuleDefinitionFile="./DttSP.def"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/DttSP.pdb"
@@ -237,10 +238,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\diversity.c"
-				>
-			</File>
-			<File
 				RelativePath=".\dttspagc.c"
 				>
 			</File>
@@ -263,6 +260,10 @@
 						ObjectFile="$(IntDir)/$(InputName)1.obj"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\filt2p2z.c"
+				>
 			</File>
 			<File
 				RelativePath=".\filter.c"
@@ -361,6 +362,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\Console\svnrev.cs"
+				>
+			</File>
+			<File
+				RelativePath="..\Console\titlebar.cs"
+				>
+			</File>
+			<File
 				RelativePath=".\update.c"
 				>
 			</File>
@@ -447,6 +456,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\filt2p2z.h"
+				>
+			</File>
+			<File
 				RelativePath=".\filter.h"
 				>
 			</File>
@@ -523,6 +536,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\resource.h"
+				>
+			</File>
+			<File
 				RelativePath=".\ringb.h"
 				>
 			</File>
@@ -572,6 +589,10 @@
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
+			<File
+				RelativePath=".\DttSP.rc"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

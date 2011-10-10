@@ -2,7 +2,7 @@
 // hw_register.cs
 //=================================================================
 // PowerSDR is a C# implementation of a Software Defined Radio.
-// Copyright (C) 2004-2009  FlexRadio Systems
+// Copyright (C) 2004-2011  FlexRadio Systems
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -18,11 +18,11 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
-// You may contact us via email at: sales@flex-radio.com.
+// You may contact us via email at: gpl@flexradio.com.
 // Paper mail may be sent to: 
 //    FlexRadio Systems
-//    8900 Marybank Dr.
-//    Austin, TX 78750
+//    4616 W. Howard Lane  Suite 1-150
+//    Austin, TX 78728
 //    USA
 //=================================================================
 
@@ -39,7 +39,7 @@ namespace PowerSDR
 	public delegate void Register8WriteDel(byte data, object user_data);
 
 	/// <summary>
-	/// Represents an 8 bit hardware register
+	/// Represents an 8-bit hardware register
 	/// </summary>
 	public class Register8
 	{
@@ -217,7 +217,7 @@ namespace PowerSDR
 	public delegate void Register16WriteDel(ushort data, object user_data);
 
 	/// <summary>
-	/// Represents an 16 bit hardware register
+	/// Represents a 16-bit hardware register
 	/// </summary>
 	public class Register16
 	{
@@ -392,7 +392,7 @@ namespace PowerSDR
 	public delegate void Register24WriteDel(int data, object user_data);
 
 	/// <summary>
-	/// Represents an 24 bit hardware register
+	/// Represents a 24-bit hardware register
 	/// </summary>
 	public class Register24
 	{

@@ -30,7 +30,6 @@ using System.Threading;
 using System.Windows.Forms; // needed for MessageBox (wjt)
 using System.Text.RegularExpressions;
 using System.Diagnostics;
-using SDRSerialSupportII;
 
 namespace PowerSDR
 {	
@@ -45,9 +44,6 @@ namespace PowerSDR
 			console.Closing += new System.ComponentModel.CancelEventHandler(console_Closing);
 			parser = new CATParser(console);
 
-			//event handler for Serial RX Events
-			SDRSerialSupportII.SDRSerialPort.serial_rx_event += new SDRSerialSupportII.SerialRXEventHandler(SerialRXEventHandler);
-		
 			if ( console.CATEnabled )  // if CAT is on fire it up 
 			{ 
 				try 
@@ -59,15 +55,16 @@ namespace PowerSDR
 					// fixme??? how cool is to to pop a msg box from an exception handler in a constructor ?? 
 					//  seems ugly to me (wjt) 
 					console.CATEnabled = false; 
-					if ( console.SetupForm != null ) 
+					if ( console.setupForm != null ) 
 					{ 
-						console.SetupForm.copyCATPropsToDialogVars(); // need to make sure the props on the setup page get reset 
+						console.setupForm.copyCATPropsToDialogVars(); // need to make sure the props on the setup page get reset 
 					}
 					MessageBox.Show("Could not initialize CAT control.  Exception was:\n\n " + ex.Message + 
 						"\n\nCAT control has been disabled.", "Error Initializing CAT control", 
 						MessageBoxButtons.OK, MessageBoxIcon.Error);
 				}
 			}
+
 //			SIOMonitor = new System.Timers.Timer();
 //			SIOMonitor.Elapsed+=new
 //				System.Timers.ElapsedEventHandler(SIOMonitor_Elapsed);
@@ -138,6 +135,11 @@ namespace PowerSDR
 			}
 			int port_num = console.CATPort; 
 			SIO = new SDRSerialPort(port_num);
+
+			// W1CEG: Move to enableCAT() since I changed serial_rx_event to a non-static.
+			//event handler for Serial RX Events
+			this.SIO.serial_rx_event += new SDRSerialSupportII.SerialRXEventHandler(SerialRXEventHandler);
+
 			SIO.setCommParms(console.CATBaudRate, 
 							console.CATParity, 
 							console.CATDataBits, 
@@ -145,6 +147,61 @@ namespace PowerSDR
 		
 			Initialize();	
 		}
+
+        public bool UseForKeyPTT
+        {
+            set
+            {
+                if(SIO != null)
+                    SIO.UseForKeyPTT = value;
+            }
+        }
+
+        public bool UseForPaddles
+        {
+            set
+            { 
+                if (SIO != null) 
+                    SIO.UseForPaddles = value; 
+            }
+        }
+
+        public bool PTTOnDTR
+        {
+            set
+            {
+                if (SIO != null) 
+                    SIO.PTTOnDTR = value;
+            }
+        }
+
+        public bool PTTOnRTS
+        {
+            set
+            { 
+                if (SIO != null) 
+                    SIO.PTTOnRTS = value; 
+            }
+        }
+
+        public bool KeyOnDTR
+        {
+            set
+            { 
+                if (SIO != null) 
+                    SIO.KeyOnDTR = value;
+            }
+        }
+
+        public bool KeyOnRTS
+        {
+            set 
+            { 
+                if (SIO != null) 
+                    SIO.KeyOnRTS = value; 
+            }
+        }
+
 
 		// typically called when the end user has disabled CAT control through a UI element ... this 
 		// closes the serial port and neutralized the listeners we have in place
@@ -168,8 +225,10 @@ namespace PowerSDR
 		#endregion Constructor
 
 		#region Variables
-				
-		public SDRSerialSupportII.SDRSerialPort SIO; 
+
+        //HiPerfTimer testTimer1 = new HiPerfTimer();
+        //HiPerfTimer testTimer2 = new HiPerfTimer();
+		public SDRSerialPort SIO; 
 		Console console;
 		ASCIIEncoding AE = new ASCIIEncoding();
 		private bool Fpass = true;
@@ -277,34 +336,50 @@ namespace PowerSDR
 			}
 		}
 
-		string CommBuffer = "";				//holds incoming serial data from the port
-		private void SerialRXEventHandler(object source, SDRSerialSupportII.SerialRXEvent e)
+		StringBuilder CommBuffer = new StringBuilder();//"";				//holds incoming serial data from the port
+		private void SerialRXEventHandler(object source, SerialRXEvent e)
 		{
 //			SIOMonitor.Interval = 5000;		// set the timer for 5 seconds
 //			SIOMonitor.Enabled = true;		// start or restart the timer
 
-			CommBuffer += AE.GetString(e.buffer,0,e.buffer.Length);				//put the data in the string
-			if(parser != null)													//is the parser instantiated
+            //double T0 = 0.00;
+            //double T1 = 0.00;
+            //int bufferLen = 0;
+
+            CommBuffer.Append(e.buffer);                                		// put the data in the string
+			if(parser != null)													// is the parser instantiated
 			{
+                //bufferLen = CommBuffer.Length;
 				try
 				{
 					Regex rex = new Regex(".*?;");										//accept any string ending in ;
 					string answer;
-					byte[] out_string;
 					uint result;
-					for(Match m = rex.Match(CommBuffer); m.Success; m = m.NextMatch())	//loop thru the buffer and find matches
+
+					for(Match m = rex.Match(CommBuffer.ToString()); m.Success; m = m.NextMatch())	//loop thru the buffer and find matches
 					{
-						answer = parser.Get(m.Value);									//send the match to the parser
-						out_string = AE.GetBytes(answer);								//get the answer from the parser
-						result = SIO.put(out_string, (uint) out_string.Length);			//send the answer to the serial port
-						CommBuffer = CommBuffer.Replace(m.Value, "");					//remove the match from the buffer
-					}
+                        //testTimer1.Start();
+                        answer = parser.Get(m.Value);                                   //send the match to the parser
+                        //testTimer1.Stop();
+                        //T0 = testTimer1.DurationMsec;
+                        //testTimer2.Start();
+                        if(answer.Length > 0)
+    						result = SIO.put(answer);                           		//send the answer to the serial port
+                        //testTimer2.Stop();
+                        //T1 = testTimer2.DurationMsec;
+						CommBuffer = CommBuffer.Replace(m.Value, "", 0, m.Length);                   //remove the match from the buffer
+                        //Debug.WriteLine("Parser decode time for "+m.Value.ToString()+":  "+T0.ToString()+ "ms");
+                        //Debug.WriteLine("SIO send answer time:  " + T1.ToString() + "ms");
+                        //Debug.WriteLine("CommBuffer Length:  " + bufferLen.ToString());
+                        //if (bufferLen > 100)
+                            //Debug.WriteLine("Buffer contents:  "+CommBuffer.ToString());
+                    }
 				}
 				catch(Exception)
 				{
 					//Add ex name to exception above to enable
-//					Debug.WriteLine("RX Event:  "+ex.Message);
-//					Debug.WriteLine("RX Event:  "+ex.StackTrace);
+					//Debug.WriteLine("RX Event:  "+ex.Message);
+					//Debug.WriteLine("RX Event:  "+ex.StackTrace);
 				}
 			}
 		}

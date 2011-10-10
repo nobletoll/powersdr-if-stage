@@ -2,7 +2,7 @@
 // FLEX5000LLHWForm.cs
 //=================================================================
 // PowerSDR is a C# implementation of a Software Defined Radio.
-// Copyright (C) 2004-2009  FlexRadio Systems
+// Copyright (C) 2004-2011  FlexRadio Systems
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -18,11 +18,11 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
-// You may contact us via email at: sales@flex-radio.com.
+// You may contact us via email at: gpl@flexradio.com.
 // Paper mail may be sent to: 
 //    FlexRadio Systems
-//    8900 Marybank Dr.
-//    Austin, TX 78750
+//    4616 W. Howard Lane  Suite 1-150
+//    Austin, TX 78728
 //    USA
 //=================================================================
 
@@ -210,6 +210,8 @@ namespace PowerSDR
 		private System.Windows.Forms.NumericUpDown udATUC;
 		private System.Windows.Forms.ButtonTS btnFlexWireReadVal;
 		private System.Windows.Forms.ButtonTS btnFlexWireRead2Val;
+        private CheckBoxTS chkManualIOUpdate;
+        private ButtonTS btnIOUpdate;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
@@ -287,64 +289,69 @@ namespace PowerSDR
 		private void InitializeComponent()
 		{
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FLEX5000LLHWForm));
-            this.grpClockGen = new System.Windows.Forms.GroupBoxTS();
-            this.chkClockGenCS = new System.Windows.Forms.CheckBoxTS();
-            this.chkClockGenReset = new System.Windows.Forms.CheckBoxTS();
-            this.comboClockGenReg = new System.Windows.Forms.ComboBoxTS();
-            this.txtClockGenReadVal = new System.Windows.Forms.TextBox();
-            this.txtClockGenWriteVal = new System.Windows.Forms.TextBox();
-            this.lblClockGenReg = new System.Windows.Forms.LabelTS();
-            this.btnClockGenWrite = new System.Windows.Forms.ButtonTS();
-            this.btnClockGenRead = new System.Windows.Forms.ButtonTS();
-            this.grpDDS = new System.Windows.Forms.GroupBoxTS();
-            this.chkRX2DDS = new System.Windows.Forms.CheckBoxTS();
-            this.chkDDSCS = new System.Windows.Forms.CheckBoxTS();
-            this.chkDDSReset = new System.Windows.Forms.CheckBoxTS();
-            this.comboDDSChan = new System.Windows.Forms.ComboBoxTS();
-            this.lblDDSChan = new System.Windows.Forms.LabelTS();
-            this.comboDDSReg = new System.Windows.Forms.ComboBoxTS();
-            this.txtDDSWrite = new System.Windows.Forms.TextBox();
-            this.lblDDSReg = new System.Windows.Forms.LabelTS();
-            this.btnDDSWrite = new System.Windows.Forms.ButtonTS();
-            this.txtDDSReadVal = new System.Windows.Forms.TextBox();
-            this.btnDDSRead = new System.Windows.Forms.ButtonTS();
-            this.grpPIO = new System.Windows.Forms.GroupBoxTS();
-            this.comboPIOReg = new System.Windows.Forms.ComboBoxTS();
-            this.txtPIORead = new System.Windows.Forms.TextBox();
-            this.txtPIOWrite = new System.Windows.Forms.TextBox();
-            this.lblPIORegister = new System.Windows.Forms.LabelTS();
-            this.btnPIOWrite = new System.Windows.Forms.ButtonTS();
-            this.btnPIORead = new System.Windows.Forms.ButtonTS();
-            this.lblPIOChip = new System.Windows.Forms.LabelTS();
-            this.comboPIOChip = new System.Windows.Forms.ComboBoxTS();
-            this.grpEEPROM = new System.Windows.Forms.GroupBoxTS();
-            this.chkRX2EEPROM = new System.Windows.Forms.CheckBoxTS();
-            this.txtEEPROMReadFloat = new System.Windows.Forms.TextBox();
-            this.txtEEPROMWriteFloat = new System.Windows.Forms.TextBox();
-            this.btnEEPROMWriteFloat = new System.Windows.Forms.ButtonTS();
-            this.btnEEPROMReadFloat = new System.Windows.Forms.ButtonTS();
-            this.txtEEPROMOffset = new System.Windows.Forms.TextBox();
-            this.txtEEPROMRead = new System.Windows.Forms.TextBox();
-            this.txtEEPROMWrite = new System.Windows.Forms.TextBox();
-            this.lblEEPROMOffset = new System.Windows.Forms.LabelTS();
-            this.btnEEPROMWrite = new System.Windows.Forms.ButtonTS();
-            this.btnEEPROMRead = new System.Windows.Forms.ButtonTS();
-            this.grpTRXPot = new System.Windows.Forms.GroupBoxTS();
-            this.txtTRXPotRead = new System.Windows.Forms.TextBox();
-            this.txtTRXPotWrite = new System.Windows.Forms.TextBox();
-            this.btnTRXPotWrite = new System.Windows.Forms.ButtonTS();
-            this.btnTRXPotRead = new System.Windows.Forms.ButtonTS();
-            this.comboTRXPotIndex = new System.Windows.Forms.ComboBoxTS();
-            this.lblTRXPotIndex = new System.Windows.Forms.LabelTS();
-            this.grpCodec = new System.Windows.Forms.GroupBoxTS();
-            this.comboCodecReg = new System.Windows.Forms.ComboBoxTS();
-            this.txtCodecRead = new System.Windows.Forms.TextBox();
-            this.txtCodecWrite = new System.Windows.Forms.TextBox();
-            this.lblCodecRegister = new System.Windows.Forms.LabelTS();
-            this.btnCodecWrite = new System.Windows.Forms.ButtonTS();
-            this.btnCodecRead = new System.Windows.Forms.ButtonTS();
-            this.comboMuxChan = new System.Windows.Forms.ComboBoxTS();
-            this.lblMuxChannel = new System.Windows.Forms.LabelTS();
+            this.udATUL = new System.Windows.Forms.NumericUpDown();
+            this.udATUC = new System.Windows.Forms.NumericUpDown();
+            this.lblATUC = new System.Windows.Forms.LabelTS();
+            this.lblATUL = new System.Windows.Forms.LabelTS();
+            this.grpATURelays = new System.Windows.Forms.GroupBoxTS();
+            this.chkATUATTN = new System.Windows.Forms.CheckBoxTS();
+            this.chkATUEnable = new System.Windows.Forms.CheckBoxTS();
+            this.lblHiZ = new System.Windows.Forms.LabelTS();
+            this.chkHiZ = new System.Windows.Forms.CheckBoxTS();
+            this.lblC6 = new System.Windows.Forms.LabelTS();
+            this.lblC5 = new System.Windows.Forms.LabelTS();
+            this.lblC4 = new System.Windows.Forms.LabelTS();
+            this.lblC3 = new System.Windows.Forms.LabelTS();
+            this.lblC2 = new System.Windows.Forms.LabelTS();
+            this.lblC1 = new System.Windows.Forms.LabelTS();
+            this.lblC0 = new System.Windows.Forms.LabelTS();
+            this.chkC3 = new System.Windows.Forms.CheckBoxTS();
+            this.chkC6 = new System.Windows.Forms.CheckBoxTS();
+            this.chkC1 = new System.Windows.Forms.CheckBoxTS();
+            this.chkC0 = new System.Windows.Forms.CheckBoxTS();
+            this.chkC5 = new System.Windows.Forms.CheckBoxTS();
+            this.chkC4 = new System.Windows.Forms.CheckBoxTS();
+            this.chkC2 = new System.Windows.Forms.CheckBoxTS();
+            this.lblL8 = new System.Windows.Forms.LabelTS();
+            this.lblL7 = new System.Windows.Forms.LabelTS();
+            this.lblL6 = new System.Windows.Forms.LabelTS();
+            this.lblL2 = new System.Windows.Forms.LabelTS();
+            this.chkL8 = new System.Windows.Forms.CheckBoxTS();
+            this.chkL2 = new System.Windows.Forms.CheckBoxTS();
+            this.chkL7 = new System.Windows.Forms.CheckBoxTS();
+            this.chkL6 = new System.Windows.Forms.CheckBoxTS();
+            this.lblL9 = new System.Windows.Forms.LabelTS();
+            this.chkL9 = new System.Windows.Forms.CheckBoxTS();
+            this.chkL3 = new System.Windows.Forms.CheckBoxTS();
+            this.lblL3 = new System.Windows.Forms.LabelTS();
+            this.lblL4 = new System.Windows.Forms.LabelTS();
+            this.chkL4 = new System.Windows.Forms.CheckBoxTS();
+            this.lblL5 = new System.Windows.Forms.LabelTS();
+            this.chkL5 = new System.Windows.Forms.CheckBoxTS();
+            this.grpFlexWire = new System.Windows.Forms.GroupBoxTS();
+            this.btnFlexWireRead2Val = new System.Windows.Forms.ButtonTS();
+            this.btnFlexWireReadVal = new System.Windows.Forms.ButtonTS();
+            this.lblFlexWireVal2 = new System.Windows.Forms.LabelTS();
+            this.lblFlexWireVal1 = new System.Windows.Forms.LabelTS();
+            this.lblFlexWireAddr = new System.Windows.Forms.LabelTS();
+            this.btnFlexWireWriteVal = new System.Windows.Forms.ButtonTS();
+            this.txtFlexWireVal2 = new System.Windows.Forms.TextBox();
+            this.txtFlexWireVal1 = new System.Windows.Forms.TextBox();
+            this.txtFlexWireAddr = new System.Windows.Forms.TextBox();
+            this.btnFlexWireWrite2Val = new System.Windows.Forms.ButtonTS();
+            this.grpATU = new System.Windows.Forms.GroupBoxTS();
+            this.btnATUFull = new System.Windows.Forms.ButtonTS();
+            this.txtATU3 = new System.Windows.Forms.TextBox();
+            this.txtATU2 = new System.Windows.Forms.TextBox();
+            this.txtATU1 = new System.Windows.Forms.TextBox();
+            this.btnATUSendCmd = new System.Windows.Forms.ButtonTS();
+            this.grpPAPot = new System.Windows.Forms.GroupBoxTS();
+            this.txtPAPotRead = new System.Windows.Forms.TextBox();
+            this.txtPAPotWrite = new System.Windows.Forms.TextBox();
+            this.btnPAPotWrite = new System.Windows.Forms.ButtonTS();
+            this.btnPAPotRead = new System.Windows.Forms.ButtonTS();
+            this.comboPAPotIndex = new System.Windows.Forms.ComboBoxTS();
+            this.lblPAPotIndex = new System.Windows.Forms.LabelTS();
             this.grpGPIODDR = new System.Windows.Forms.GroupBoxTS();
             this.label9 = new System.Windows.Forms.LabelTS();
             this.label10 = new System.Windows.Forms.LabelTS();
@@ -387,707 +394,724 @@ namespace PowerSDR
             this.chkGPIO5 = new System.Windows.Forms.CheckBoxTS();
             this.chkGPIO3 = new System.Windows.Forms.CheckBoxTS();
             this.chkGPIO8 = new System.Windows.Forms.CheckBoxTS();
-            this.grpPAPot = new System.Windows.Forms.GroupBoxTS();
-            this.txtPAPotRead = new System.Windows.Forms.TextBox();
-            this.txtPAPotWrite = new System.Windows.Forms.TextBox();
-            this.btnPAPotWrite = new System.Windows.Forms.ButtonTS();
-            this.btnPAPotRead = new System.Windows.Forms.ButtonTS();
-            this.comboPAPotIndex = new System.Windows.Forms.ComboBoxTS();
-            this.lblPAPotIndex = new System.Windows.Forms.LabelTS();
-            this.grpATU = new System.Windows.Forms.GroupBoxTS();
-            this.btnATUFull = new System.Windows.Forms.ButtonTS();
-            this.txtATU3 = new System.Windows.Forms.TextBox();
-            this.txtATU2 = new System.Windows.Forms.TextBox();
-            this.txtATU1 = new System.Windows.Forms.TextBox();
-            this.btnATUSendCmd = new System.Windows.Forms.ButtonTS();
-            this.grpFlexWire = new System.Windows.Forms.GroupBoxTS();
-            this.btnFlexWireRead2Val = new System.Windows.Forms.ButtonTS();
-            this.btnFlexWireReadVal = new System.Windows.Forms.ButtonTS();
-            this.lblFlexWireVal2 = new System.Windows.Forms.LabelTS();
-            this.lblFlexWireVal1 = new System.Windows.Forms.LabelTS();
-            this.lblFlexWireAddr = new System.Windows.Forms.LabelTS();
-            this.btnFlexWireWriteVal = new System.Windows.Forms.ButtonTS();
-            this.txtFlexWireVal2 = new System.Windows.Forms.TextBox();
-            this.txtFlexWireVal1 = new System.Windows.Forms.TextBox();
-            this.txtFlexWireAddr = new System.Windows.Forms.TextBox();
-            this.btnFlexWireWrite2Val = new System.Windows.Forms.ButtonTS();
-            this.grpATURelays = new System.Windows.Forms.GroupBoxTS();
-            this.chkATUATTN = new System.Windows.Forms.CheckBoxTS();
-            this.chkATUEnable = new System.Windows.Forms.CheckBoxTS();
-            this.lblHiZ = new System.Windows.Forms.LabelTS();
-            this.chkHiZ = new System.Windows.Forms.CheckBoxTS();
-            this.lblC6 = new System.Windows.Forms.LabelTS();
-            this.lblC5 = new System.Windows.Forms.LabelTS();
-            this.lblC4 = new System.Windows.Forms.LabelTS();
-            this.lblC3 = new System.Windows.Forms.LabelTS();
-            this.lblC2 = new System.Windows.Forms.LabelTS();
-            this.lblC1 = new System.Windows.Forms.LabelTS();
-            this.lblC0 = new System.Windows.Forms.LabelTS();
-            this.chkC3 = new System.Windows.Forms.CheckBoxTS();
-            this.chkC6 = new System.Windows.Forms.CheckBoxTS();
-            this.chkC1 = new System.Windows.Forms.CheckBoxTS();
-            this.chkC0 = new System.Windows.Forms.CheckBoxTS();
-            this.chkC5 = new System.Windows.Forms.CheckBoxTS();
-            this.chkC4 = new System.Windows.Forms.CheckBoxTS();
-            this.chkC2 = new System.Windows.Forms.CheckBoxTS();
-            this.lblL8 = new System.Windows.Forms.LabelTS();
-            this.lblL7 = new System.Windows.Forms.LabelTS();
-            this.lblL6 = new System.Windows.Forms.LabelTS();
-            this.lblL2 = new System.Windows.Forms.LabelTS();
-            this.chkL8 = new System.Windows.Forms.CheckBoxTS();
-            this.chkL2 = new System.Windows.Forms.CheckBoxTS();
-            this.chkL7 = new System.Windows.Forms.CheckBoxTS();
-            this.chkL6 = new System.Windows.Forms.CheckBoxTS();
-            this.lblL9 = new System.Windows.Forms.LabelTS();
-            this.chkL9 = new System.Windows.Forms.CheckBoxTS();
-            this.chkL3 = new System.Windows.Forms.CheckBoxTS();
-            this.lblL3 = new System.Windows.Forms.LabelTS();
-            this.lblL4 = new System.Windows.Forms.LabelTS();
-            this.chkL4 = new System.Windows.Forms.CheckBoxTS();
-            this.lblL5 = new System.Windows.Forms.LabelTS();
-            this.chkL5 = new System.Windows.Forms.CheckBoxTS();
-            this.udATUL = new System.Windows.Forms.NumericUpDown();
-            this.lblATUL = new System.Windows.Forms.LabelTS();
-            this.lblATUC = new System.Windows.Forms.LabelTS();
-            this.udATUC = new System.Windows.Forms.NumericUpDown();
-            this.grpClockGen.SuspendLayout();
-            this.grpDDS.SuspendLayout();
-            this.grpPIO.SuspendLayout();
-            this.grpEEPROM.SuspendLayout();
-            this.grpTRXPot.SuspendLayout();
-            this.grpCodec.SuspendLayout();
-            this.grpGPIODDR.SuspendLayout();
-            this.grpGPIO.SuspendLayout();
-            this.grpPAPot.SuspendLayout();
-            this.grpATU.SuspendLayout();
-            this.grpFlexWire.SuspendLayout();
-            this.grpATURelays.SuspendLayout();
+            this.grpCodec = new System.Windows.Forms.GroupBoxTS();
+            this.comboCodecReg = new System.Windows.Forms.ComboBoxTS();
+            this.txtCodecRead = new System.Windows.Forms.TextBox();
+            this.txtCodecWrite = new System.Windows.Forms.TextBox();
+            this.lblCodecRegister = new System.Windows.Forms.LabelTS();
+            this.btnCodecWrite = new System.Windows.Forms.ButtonTS();
+            this.btnCodecRead = new System.Windows.Forms.ButtonTS();
+            this.grpTRXPot = new System.Windows.Forms.GroupBoxTS();
+            this.txtTRXPotRead = new System.Windows.Forms.TextBox();
+            this.txtTRXPotWrite = new System.Windows.Forms.TextBox();
+            this.btnTRXPotWrite = new System.Windows.Forms.ButtonTS();
+            this.btnTRXPotRead = new System.Windows.Forms.ButtonTS();
+            this.comboTRXPotIndex = new System.Windows.Forms.ComboBoxTS();
+            this.lblTRXPotIndex = new System.Windows.Forms.LabelTS();
+            this.grpEEPROM = new System.Windows.Forms.GroupBoxTS();
+            this.chkRX2EEPROM = new System.Windows.Forms.CheckBoxTS();
+            this.txtEEPROMReadFloat = new System.Windows.Forms.TextBox();
+            this.txtEEPROMWriteFloat = new System.Windows.Forms.TextBox();
+            this.btnEEPROMWriteFloat = new System.Windows.Forms.ButtonTS();
+            this.btnEEPROMReadFloat = new System.Windows.Forms.ButtonTS();
+            this.txtEEPROMOffset = new System.Windows.Forms.TextBox();
+            this.txtEEPROMRead = new System.Windows.Forms.TextBox();
+            this.txtEEPROMWrite = new System.Windows.Forms.TextBox();
+            this.lblEEPROMOffset = new System.Windows.Forms.LabelTS();
+            this.btnEEPROMWrite = new System.Windows.Forms.ButtonTS();
+            this.btnEEPROMRead = new System.Windows.Forms.ButtonTS();
+            this.grpPIO = new System.Windows.Forms.GroupBoxTS();
+            this.comboPIOReg = new System.Windows.Forms.ComboBoxTS();
+            this.txtPIORead = new System.Windows.Forms.TextBox();
+            this.txtPIOWrite = new System.Windows.Forms.TextBox();
+            this.lblPIORegister = new System.Windows.Forms.LabelTS();
+            this.btnPIOWrite = new System.Windows.Forms.ButtonTS();
+            this.btnPIORead = new System.Windows.Forms.ButtonTS();
+            this.lblPIOChip = new System.Windows.Forms.LabelTS();
+            this.comboPIOChip = new System.Windows.Forms.ComboBoxTS();
+            this.grpClockGen = new System.Windows.Forms.GroupBoxTS();
+            this.chkClockGenCS = new System.Windows.Forms.CheckBoxTS();
+            this.chkClockGenReset = new System.Windows.Forms.CheckBoxTS();
+            this.comboClockGenReg = new System.Windows.Forms.ComboBoxTS();
+            this.txtClockGenReadVal = new System.Windows.Forms.TextBox();
+            this.txtClockGenWriteVal = new System.Windows.Forms.TextBox();
+            this.lblClockGenReg = new System.Windows.Forms.LabelTS();
+            this.btnClockGenWrite = new System.Windows.Forms.ButtonTS();
+            this.btnClockGenRead = new System.Windows.Forms.ButtonTS();
+            this.grpDDS = new System.Windows.Forms.GroupBoxTS();
+            this.btnIOUpdate = new System.Windows.Forms.ButtonTS();
+            this.chkManualIOUpdate = new System.Windows.Forms.CheckBoxTS();
+            this.chkRX2DDS = new System.Windows.Forms.CheckBoxTS();
+            this.chkDDSCS = new System.Windows.Forms.CheckBoxTS();
+            this.chkDDSReset = new System.Windows.Forms.CheckBoxTS();
+            this.comboDDSChan = new System.Windows.Forms.ComboBoxTS();
+            this.lblDDSChan = new System.Windows.Forms.LabelTS();
+            this.comboDDSReg = new System.Windows.Forms.ComboBoxTS();
+            this.txtDDSWrite = new System.Windows.Forms.TextBox();
+            this.lblDDSReg = new System.Windows.Forms.LabelTS();
+            this.btnDDSWrite = new System.Windows.Forms.ButtonTS();
+            this.txtDDSReadVal = new System.Windows.Forms.TextBox();
+            this.btnDDSRead = new System.Windows.Forms.ButtonTS();
+            this.comboMuxChan = new System.Windows.Forms.ComboBoxTS();
+            this.lblMuxChannel = new System.Windows.Forms.LabelTS();
             ((System.ComponentModel.ISupportInitialize)(this.udATUL)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.udATUC)).BeginInit();
+            this.grpATURelays.SuspendLayout();
+            this.grpFlexWire.SuspendLayout();
+            this.grpATU.SuspendLayout();
+            this.grpPAPot.SuspendLayout();
+            this.grpGPIODDR.SuspendLayout();
+            this.grpGPIO.SuspendLayout();
+            this.grpCodec.SuspendLayout();
+            this.grpTRXPot.SuspendLayout();
+            this.grpEEPROM.SuspendLayout();
+            this.grpPIO.SuspendLayout();
+            this.grpClockGen.SuspendLayout();
+            this.grpDDS.SuspendLayout();
             this.SuspendLayout();
             // 
-            // grpClockGen
+            // udATUL
             // 
-            this.grpClockGen.Controls.Add(this.chkClockGenCS);
-            this.grpClockGen.Controls.Add(this.chkClockGenReset);
-            this.grpClockGen.Controls.Add(this.comboClockGenReg);
-            this.grpClockGen.Controls.Add(this.txtClockGenReadVal);
-            this.grpClockGen.Controls.Add(this.txtClockGenWriteVal);
-            this.grpClockGen.Controls.Add(this.lblClockGenReg);
-            this.grpClockGen.Controls.Add(this.btnClockGenWrite);
-            this.grpClockGen.Controls.Add(this.btnClockGenRead);
-            this.grpClockGen.Location = new System.Drawing.Point(8, 8);
-            this.grpClockGen.Name = "grpClockGen";
-            this.grpClockGen.Size = new System.Drawing.Size(168, 112);
-            this.grpClockGen.TabIndex = 22;
-            this.grpClockGen.TabStop = false;
-            this.grpClockGen.Text = "ClockGen";
+            this.udATUL.Location = new System.Drawing.Point(576, 408);
+            this.udATUL.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.udATUL.Name = "udATUL";
+            this.udATUL.Size = new System.Drawing.Size(48, 20);
+            this.udATUL.TabIndex = 39;
+            this.udATUL.ValueChanged += new System.EventHandler(this.udATUL_ValueChanged);
             // 
-            // chkClockGenCS
+            // udATUC
             // 
-            this.chkClockGenCS.Image = null;
-            this.chkClockGenCS.Location = new System.Drawing.Point(88, 80);
-            this.chkClockGenCS.Name = "chkClockGenCS";
-            this.chkClockGenCS.Size = new System.Drawing.Size(40, 24);
-            this.chkClockGenCS.TabIndex = 28;
-            this.chkClockGenCS.Text = "CS";
-            this.chkClockGenCS.CheckedChanged += new System.EventHandler(this.chkClockGenCS_CheckedChanged);
+            this.udATUC.Location = new System.Drawing.Point(576, 432);
+            this.udATUC.Maximum = new decimal(new int[] {
+            127,
+            0,
+            0,
+            0});
+            this.udATUC.Name = "udATUC";
+            this.udATUC.Size = new System.Drawing.Size(48, 20);
+            this.udATUC.TabIndex = 41;
+            this.udATUC.ValueChanged += new System.EventHandler(this.udATUC_ValueChanged);
             // 
-            // chkClockGenReset
+            // lblATUC
             // 
-            this.chkClockGenReset.Image = null;
-            this.chkClockGenReset.Location = new System.Drawing.Point(16, 80);
-            this.chkClockGenReset.Name = "chkClockGenReset";
-            this.chkClockGenReset.Size = new System.Drawing.Size(56, 24);
-            this.chkClockGenReset.TabIndex = 27;
-            this.chkClockGenReset.Text = "Reset";
-            this.chkClockGenReset.CheckedChanged += new System.EventHandler(this.chkClockGenReset_CheckedChanged);
+            this.lblATUC.Image = null;
+            this.lblATUC.Location = new System.Drawing.Point(520, 432);
+            this.lblATUC.Name = "lblATUC";
+            this.lblATUC.Size = new System.Drawing.Size(48, 16);
+            this.lblATUC.TabIndex = 42;
+            this.lblATUC.Text = "ATU - C:";
             // 
-            // comboClockGenReg
+            // lblATUL
             // 
-            this.comboClockGenReg.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboClockGenReg.DropDownWidth = 40;
-            this.comboClockGenReg.Location = new System.Drawing.Point(64, 24);
-            this.comboClockGenReg.Name = "comboClockGenReg";
-            this.comboClockGenReg.Size = new System.Drawing.Size(40, 21);
-            this.comboClockGenReg.TabIndex = 26;
-            this.comboClockGenReg.SelectedIndexChanged += new System.EventHandler(this.comboClockGenReg_SelectedIndexChanged);
+            this.lblATUL.Image = null;
+            this.lblATUL.Location = new System.Drawing.Point(520, 408);
+            this.lblATUL.Name = "lblATUL";
+            this.lblATUL.Size = new System.Drawing.Size(48, 16);
+            this.lblATUL.TabIndex = 40;
+            this.lblATUL.Text = "ATU - L:";
             // 
-            // txtClockGenReadVal
+            // grpATURelays
             // 
-            this.txtClockGenReadVal.Location = new System.Drawing.Point(64, 48);
-            this.txtClockGenReadVal.Name = "txtClockGenReadVal";
-            this.txtClockGenReadVal.ReadOnly = true;
-            this.txtClockGenReadVal.Size = new System.Drawing.Size(40, 20);
-            this.txtClockGenReadVal.TabIndex = 4;
-            this.txtClockGenReadVal.Text = "0";
+            this.grpATURelays.Controls.Add(this.chkATUATTN);
+            this.grpATURelays.Controls.Add(this.chkATUEnable);
+            this.grpATURelays.Controls.Add(this.lblHiZ);
+            this.grpATURelays.Controls.Add(this.chkHiZ);
+            this.grpATURelays.Controls.Add(this.lblC6);
+            this.grpATURelays.Controls.Add(this.lblC5);
+            this.grpATURelays.Controls.Add(this.lblC4);
+            this.grpATURelays.Controls.Add(this.lblC3);
+            this.grpATURelays.Controls.Add(this.lblC2);
+            this.grpATURelays.Controls.Add(this.lblC1);
+            this.grpATURelays.Controls.Add(this.lblC0);
+            this.grpATURelays.Controls.Add(this.chkC3);
+            this.grpATURelays.Controls.Add(this.chkC6);
+            this.grpATURelays.Controls.Add(this.chkC1);
+            this.grpATURelays.Controls.Add(this.chkC0);
+            this.grpATURelays.Controls.Add(this.chkC5);
+            this.grpATURelays.Controls.Add(this.chkC4);
+            this.grpATURelays.Controls.Add(this.chkC2);
+            this.grpATURelays.Controls.Add(this.lblL8);
+            this.grpATURelays.Controls.Add(this.lblL7);
+            this.grpATURelays.Controls.Add(this.lblL6);
+            this.grpATURelays.Controls.Add(this.lblL2);
+            this.grpATURelays.Controls.Add(this.chkL8);
+            this.grpATURelays.Controls.Add(this.chkL2);
+            this.grpATURelays.Controls.Add(this.chkL7);
+            this.grpATURelays.Controls.Add(this.chkL6);
+            this.grpATURelays.Controls.Add(this.lblL9);
+            this.grpATURelays.Controls.Add(this.chkL9);
+            this.grpATURelays.Controls.Add(this.chkL3);
+            this.grpATURelays.Controls.Add(this.lblL3);
+            this.grpATURelays.Controls.Add(this.lblL4);
+            this.grpATURelays.Controls.Add(this.chkL4);
+            this.grpATURelays.Controls.Add(this.lblL5);
+            this.grpATURelays.Controls.Add(this.chkL5);
+            this.grpATURelays.Location = new System.Drawing.Point(184, 128);
+            this.grpATURelays.Name = "grpATURelays";
+            this.grpATURelays.Size = new System.Drawing.Size(216, 112);
+            this.grpATURelays.TabIndex = 38;
+            this.grpATURelays.TabStop = false;
+            this.grpATURelays.Text = "ATU";
             // 
-            // txtClockGenWriteVal
+            // chkATUATTN
             // 
-            this.txtClockGenWriteVal.Location = new System.Drawing.Point(112, 24);
-            this.txtClockGenWriteVal.Name = "txtClockGenWriteVal";
-            this.txtClockGenWriteVal.Size = new System.Drawing.Size(40, 20);
-            this.txtClockGenWriteVal.TabIndex = 3;
-            this.txtClockGenWriteVal.Text = "0";
+            this.chkATUATTN.Image = null;
+            this.chkATUATTN.Location = new System.Drawing.Point(72, 50);
+            this.chkATUATTN.Name = "chkATUATTN";
+            this.chkATUATTN.Size = new System.Drawing.Size(56, 16);
+            this.chkATUATTN.TabIndex = 64;
+            this.chkATUATTN.Text = "ATTN";
+            this.chkATUATTN.CheckedChanged += new System.EventHandler(this.chkATUATTN_CheckedChanged);
             // 
-            // lblClockGenReg
+            // chkATUEnable
             // 
-            this.lblClockGenReg.Image = null;
-            this.lblClockGenReg.Location = new System.Drawing.Point(16, 24);
-            this.lblClockGenReg.Name = "lblClockGenReg";
-            this.lblClockGenReg.Size = new System.Drawing.Size(56, 16);
-            this.lblClockGenReg.TabIndex = 1;
-            this.lblClockGenReg.Text = "Register:";
+            this.chkATUEnable.Image = null;
+            this.chkATUEnable.Location = new System.Drawing.Point(8, 50);
+            this.chkATUEnable.Name = "chkATUEnable";
+            this.chkATUEnable.Size = new System.Drawing.Size(64, 16);
+            this.chkATUEnable.TabIndex = 63;
+            this.chkATUEnable.Text = "Enable";
+            this.chkATUEnable.CheckedChanged += new System.EventHandler(this.chkATUEnable_CheckedChanged);
             // 
-            // btnClockGenWrite
+            // lblHiZ
             // 
-            this.btnClockGenWrite.Image = null;
-            this.btnClockGenWrite.Location = new System.Drawing.Point(112, 48);
-            this.btnClockGenWrite.Name = "btnClockGenWrite";
-            this.btnClockGenWrite.Size = new System.Drawing.Size(40, 23);
-            this.btnClockGenWrite.TabIndex = 24;
-            this.btnClockGenWrite.Text = "Write";
-            this.btnClockGenWrite.Click += new System.EventHandler(this.btnClockGenWrite_Click);
+            this.lblHiZ.Image = null;
+            this.lblHiZ.Location = new System.Drawing.Point(16, 64);
+            this.lblHiZ.Name = "lblHiZ";
+            this.lblHiZ.Size = new System.Drawing.Size(24, 16);
+            this.lblHiZ.TabIndex = 62;
+            this.lblHiZ.Text = "HiZ";
             // 
-            // btnClockGenRead
+            // chkHiZ
             // 
-            this.btnClockGenRead.Image = null;
-            this.btnClockGenRead.Location = new System.Drawing.Point(16, 48);
-            this.btnClockGenRead.Name = "btnClockGenRead";
-            this.btnClockGenRead.Size = new System.Drawing.Size(40, 23);
-            this.btnClockGenRead.TabIndex = 25;
-            this.btnClockGenRead.Text = "Read";
-            this.btnClockGenRead.Click += new System.EventHandler(this.btnClockGenRead_Click);
+            this.chkHiZ.Image = null;
+            this.chkHiZ.Location = new System.Drawing.Point(16, 80);
+            this.chkHiZ.Name = "chkHiZ";
+            this.chkHiZ.Size = new System.Drawing.Size(16, 24);
+            this.chkHiZ.TabIndex = 61;
+            this.chkHiZ.CheckedChanged += new System.EventHandler(this.chkHiZ_CheckedChanged);
             // 
-            // grpDDS
+            // lblC6
             // 
-            this.grpDDS.Controls.Add(this.chkRX2DDS);
-            this.grpDDS.Controls.Add(this.chkDDSCS);
-            this.grpDDS.Controls.Add(this.chkDDSReset);
-            this.grpDDS.Controls.Add(this.comboDDSChan);
-            this.grpDDS.Controls.Add(this.lblDDSChan);
-            this.grpDDS.Controls.Add(this.comboDDSReg);
-            this.grpDDS.Controls.Add(this.txtDDSWrite);
-            this.grpDDS.Controls.Add(this.lblDDSReg);
-            this.grpDDS.Controls.Add(this.btnDDSWrite);
-            this.grpDDS.Controls.Add(this.txtDDSReadVal);
-            this.grpDDS.Controls.Add(this.btnDDSRead);
-            this.grpDDS.Location = new System.Drawing.Point(184, 8);
-            this.grpDDS.Name = "grpDDS";
-            this.grpDDS.Size = new System.Drawing.Size(208, 112);
-            this.grpDDS.TabIndex = 23;
-            this.grpDDS.TabStop = false;
-            this.grpDDS.Text = "DDS";
+            this.lblC6.Image = null;
+            this.lblC6.Location = new System.Drawing.Point(40, 64);
+            this.lblC6.Name = "lblC6";
+            this.lblC6.Size = new System.Drawing.Size(24, 16);
+            this.lblC6.TabIndex = 60;
+            this.lblC6.Text = "C6";
             // 
-            // chkRX2DDS
+            // lblC5
             // 
-            this.chkRX2DDS.Image = null;
-            this.chkRX2DDS.Location = new System.Drawing.Point(184, 8);
-            this.chkRX2DDS.Name = "chkRX2DDS";
-            this.chkRX2DDS.Size = new System.Drawing.Size(20, 24);
-            this.chkRX2DDS.TabIndex = 43;
-            this.chkRX2DDS.Text = "RX2";
+            this.lblC5.Image = null;
+            this.lblC5.Location = new System.Drawing.Point(64, 64);
+            this.lblC5.Name = "lblC5";
+            this.lblC5.Size = new System.Drawing.Size(24, 16);
+            this.lblC5.TabIndex = 59;
+            this.lblC5.Text = "C5";
             // 
-            // chkDDSCS
+            // lblC4
             // 
-            this.chkDDSCS.Image = null;
-            this.chkDDSCS.Location = new System.Drawing.Point(160, 80);
-            this.chkDDSCS.Name = "chkDDSCS";
-            this.chkDDSCS.Size = new System.Drawing.Size(40, 24);
-            this.chkDDSCS.TabIndex = 42;
-            this.chkDDSCS.Text = "CS";
-            this.chkDDSCS.CheckedChanged += new System.EventHandler(this.chkDDSCS_CheckedChanged);
+            this.lblC4.Image = null;
+            this.lblC4.Location = new System.Drawing.Point(88, 64);
+            this.lblC4.Name = "lblC4";
+            this.lblC4.Size = new System.Drawing.Size(24, 16);
+            this.lblC4.TabIndex = 58;
+            this.lblC4.Text = "C4";
             // 
-            // chkDDSReset
+            // lblC3
             // 
-            this.chkDDSReset.Image = null;
-            this.chkDDSReset.Location = new System.Drawing.Point(112, 80);
-            this.chkDDSReset.Name = "chkDDSReset";
-            this.chkDDSReset.Size = new System.Drawing.Size(56, 24);
-            this.chkDDSReset.TabIndex = 41;
-            this.chkDDSReset.Text = "Reset";
-            this.chkDDSReset.CheckedChanged += new System.EventHandler(this.chkDDSReset_CheckedChanged);
+            this.lblC3.Image = null;
+            this.lblC3.Location = new System.Drawing.Point(112, 64);
+            this.lblC3.Name = "lblC3";
+            this.lblC3.Size = new System.Drawing.Size(24, 16);
+            this.lblC3.TabIndex = 57;
+            this.lblC3.Text = "C3";
             // 
-            // comboDDSChan
+            // lblC2
             // 
-            this.comboDDSChan.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboDDSChan.DropDownWidth = 40;
-            this.comboDDSChan.Items.AddRange(new object[] {
+            this.lblC2.Image = null;
+            this.lblC2.Location = new System.Drawing.Point(136, 64);
+            this.lblC2.Name = "lblC2";
+            this.lblC2.Size = new System.Drawing.Size(24, 16);
+            this.lblC2.TabIndex = 56;
+            this.lblC2.Text = "C2";
+            // 
+            // lblC1
+            // 
+            this.lblC1.Image = null;
+            this.lblC1.Location = new System.Drawing.Point(160, 64);
+            this.lblC1.Name = "lblC1";
+            this.lblC1.Size = new System.Drawing.Size(24, 16);
+            this.lblC1.TabIndex = 55;
+            this.lblC1.Text = "C1";
+            // 
+            // lblC0
+            // 
+            this.lblC0.Image = null;
+            this.lblC0.Location = new System.Drawing.Point(184, 64);
+            this.lblC0.Name = "lblC0";
+            this.lblC0.Size = new System.Drawing.Size(24, 16);
+            this.lblC0.TabIndex = 54;
+            this.lblC0.Text = "C0";
+            // 
+            // chkC3
+            // 
+            this.chkC3.Image = null;
+            this.chkC3.Location = new System.Drawing.Point(112, 80);
+            this.chkC3.Name = "chkC3";
+            this.chkC3.Size = new System.Drawing.Size(16, 24);
+            this.chkC3.TabIndex = 52;
+            this.chkC3.CheckedChanged += new System.EventHandler(this.chkC_CheckedChanged);
+            // 
+            // chkC6
+            // 
+            this.chkC6.Image = null;
+            this.chkC6.Location = new System.Drawing.Point(40, 80);
+            this.chkC6.Name = "chkC6";
+            this.chkC6.Size = new System.Drawing.Size(16, 24);
+            this.chkC6.TabIndex = 47;
+            this.chkC6.CheckedChanged += new System.EventHandler(this.chkC_CheckedChanged);
+            // 
+            // chkC1
+            // 
+            this.chkC1.Image = null;
+            this.chkC1.Location = new System.Drawing.Point(160, 80);
+            this.chkC1.Name = "chkC1";
+            this.chkC1.Size = new System.Drawing.Size(16, 24);
+            this.chkC1.TabIndex = 51;
+            this.chkC1.CheckedChanged += new System.EventHandler(this.chkC_CheckedChanged);
+            // 
+            // chkC0
+            // 
+            this.chkC0.Image = null;
+            this.chkC0.Location = new System.Drawing.Point(184, 80);
+            this.chkC0.Name = "chkC0";
+            this.chkC0.Size = new System.Drawing.Size(16, 24);
+            this.chkC0.TabIndex = 50;
+            this.chkC0.CheckedChanged += new System.EventHandler(this.chkC_CheckedChanged);
+            // 
+            // chkC5
+            // 
+            this.chkC5.Image = null;
+            this.chkC5.Location = new System.Drawing.Point(64, 80);
+            this.chkC5.Name = "chkC5";
+            this.chkC5.Size = new System.Drawing.Size(16, 24);
+            this.chkC5.TabIndex = 49;
+            this.chkC5.CheckedChanged += new System.EventHandler(this.chkC_CheckedChanged);
+            // 
+            // chkC4
+            // 
+            this.chkC4.Image = null;
+            this.chkC4.Location = new System.Drawing.Point(88, 80);
+            this.chkC4.Name = "chkC4";
+            this.chkC4.Size = new System.Drawing.Size(16, 24);
+            this.chkC4.TabIndex = 48;
+            this.chkC4.CheckedChanged += new System.EventHandler(this.chkC_CheckedChanged);
+            // 
+            // chkC2
+            // 
+            this.chkC2.Image = null;
+            this.chkC2.Location = new System.Drawing.Point(136, 80);
+            this.chkC2.Name = "chkC2";
+            this.chkC2.Size = new System.Drawing.Size(16, 24);
+            this.chkC2.TabIndex = 53;
+            this.chkC2.CheckedChanged += new System.EventHandler(this.chkC_CheckedChanged);
+            // 
+            // lblL8
+            // 
+            this.lblL8.Image = null;
+            this.lblL8.Location = new System.Drawing.Point(160, 16);
+            this.lblL8.Name = "lblL8";
+            this.lblL8.Size = new System.Drawing.Size(24, 16);
+            this.lblL8.TabIndex = 44;
+            this.lblL8.Text = "L8";
+            // 
+            // lblL7
+            // 
+            this.lblL7.Image = null;
+            this.lblL7.Location = new System.Drawing.Point(136, 16);
+            this.lblL7.Name = "lblL7";
+            this.lblL7.Size = new System.Drawing.Size(24, 16);
+            this.lblL7.TabIndex = 43;
+            this.lblL7.Text = "L7";
+            // 
+            // lblL6
+            // 
+            this.lblL6.Image = null;
+            this.lblL6.Location = new System.Drawing.Point(112, 16);
+            this.lblL6.Name = "lblL6";
+            this.lblL6.Size = new System.Drawing.Size(24, 16);
+            this.lblL6.TabIndex = 42;
+            this.lblL6.Text = "L6";
+            // 
+            // lblL2
+            // 
+            this.lblL2.Image = null;
+            this.lblL2.Location = new System.Drawing.Point(16, 16);
+            this.lblL2.Name = "lblL2";
+            this.lblL2.Size = new System.Drawing.Size(24, 16);
+            this.lblL2.TabIndex = 30;
+            this.lblL2.Text = "L2";
+            // 
+            // chkL8
+            // 
+            this.chkL8.Image = null;
+            this.chkL8.Location = new System.Drawing.Point(160, 32);
+            this.chkL8.Name = "chkL8";
+            this.chkL8.Size = new System.Drawing.Size(16, 24);
+            this.chkL8.TabIndex = 23;
+            this.chkL8.CheckedChanged += new System.EventHandler(this.chkL_CheckedChanged);
+            // 
+            // chkL2
+            // 
+            this.chkL2.Image = null;
+            this.chkL2.Location = new System.Drawing.Point(16, 32);
+            this.chkL2.Name = "chkL2";
+            this.chkL2.Size = new System.Drawing.Size(16, 24);
+            this.chkL2.TabIndex = 26;
+            this.chkL2.CheckedChanged += new System.EventHandler(this.chkL_CheckedChanged);
+            // 
+            // chkL7
+            // 
+            this.chkL7.Image = null;
+            this.chkL7.Location = new System.Drawing.Point(136, 32);
+            this.chkL7.Name = "chkL7";
+            this.chkL7.Size = new System.Drawing.Size(16, 24);
+            this.chkL7.TabIndex = 25;
+            this.chkL7.CheckedChanged += new System.EventHandler(this.chkL_CheckedChanged);
+            // 
+            // chkL6
+            // 
+            this.chkL6.Image = null;
+            this.chkL6.Location = new System.Drawing.Point(112, 32);
+            this.chkL6.Name = "chkL6";
+            this.chkL6.Size = new System.Drawing.Size(16, 24);
+            this.chkL6.TabIndex = 24;
+            this.chkL6.CheckedChanged += new System.EventHandler(this.chkL_CheckedChanged);
+            // 
+            // lblL9
+            // 
+            this.lblL9.Image = null;
+            this.lblL9.Location = new System.Drawing.Point(184, 16);
+            this.lblL9.Name = "lblL9";
+            this.lblL9.Size = new System.Drawing.Size(24, 16);
+            this.lblL9.TabIndex = 46;
+            this.lblL9.Text = "L9";
+            // 
+            // chkL9
+            // 
+            this.chkL9.Image = null;
+            this.chkL9.Location = new System.Drawing.Point(184, 32);
+            this.chkL9.Name = "chkL9";
+            this.chkL9.Size = new System.Drawing.Size(16, 24);
+            this.chkL9.TabIndex = 45;
+            this.chkL9.CheckedChanged += new System.EventHandler(this.chkL_CheckedChanged);
+            // 
+            // chkL3
+            // 
+            this.chkL3.Image = null;
+            this.chkL3.Location = new System.Drawing.Point(40, 32);
+            this.chkL3.Name = "chkL3";
+            this.chkL3.Size = new System.Drawing.Size(16, 24);
+            this.chkL3.TabIndex = 27;
+            this.chkL3.CheckedChanged += new System.EventHandler(this.chkL_CheckedChanged);
+            // 
+            // lblL3
+            // 
+            this.lblL3.Image = null;
+            this.lblL3.Location = new System.Drawing.Point(40, 16);
+            this.lblL3.Name = "lblL3";
+            this.lblL3.Size = new System.Drawing.Size(24, 16);
+            this.lblL3.TabIndex = 31;
+            this.lblL3.Text = "L3";
+            // 
+            // lblL4
+            // 
+            this.lblL4.Image = null;
+            this.lblL4.Location = new System.Drawing.Point(64, 16);
+            this.lblL4.Name = "lblL4";
+            this.lblL4.Size = new System.Drawing.Size(24, 16);
+            this.lblL4.TabIndex = 32;
+            this.lblL4.Text = "L4";
+            // 
+            // chkL4
+            // 
+            this.chkL4.Image = null;
+            this.chkL4.Location = new System.Drawing.Point(64, 32);
+            this.chkL4.Name = "chkL4";
+            this.chkL4.Size = new System.Drawing.Size(16, 24);
+            this.chkL4.TabIndex = 29;
+            this.chkL4.CheckedChanged += new System.EventHandler(this.chkL_CheckedChanged);
+            // 
+            // lblL5
+            // 
+            this.lblL5.Image = null;
+            this.lblL5.Location = new System.Drawing.Point(88, 16);
+            this.lblL5.Name = "lblL5";
+            this.lblL5.Size = new System.Drawing.Size(24, 16);
+            this.lblL5.TabIndex = 33;
+            this.lblL5.Text = "L5";
+            // 
+            // chkL5
+            // 
+            this.chkL5.Image = null;
+            this.chkL5.Location = new System.Drawing.Point(88, 32);
+            this.chkL5.Name = "chkL5";
+            this.chkL5.Size = new System.Drawing.Size(16, 24);
+            this.chkL5.TabIndex = 28;
+            this.chkL5.CheckedChanged += new System.EventHandler(this.chkL_CheckedChanged);
+            // 
+            // grpFlexWire
+            // 
+            this.grpFlexWire.Controls.Add(this.btnFlexWireRead2Val);
+            this.grpFlexWire.Controls.Add(this.btnFlexWireReadVal);
+            this.grpFlexWire.Controls.Add(this.lblFlexWireVal2);
+            this.grpFlexWire.Controls.Add(this.lblFlexWireVal1);
+            this.grpFlexWire.Controls.Add(this.lblFlexWireAddr);
+            this.grpFlexWire.Controls.Add(this.btnFlexWireWriteVal);
+            this.grpFlexWire.Controls.Add(this.txtFlexWireVal2);
+            this.grpFlexWire.Controls.Add(this.txtFlexWireVal1);
+            this.grpFlexWire.Controls.Add(this.txtFlexWireAddr);
+            this.grpFlexWire.Controls.Add(this.btnFlexWireWrite2Val);
+            this.grpFlexWire.Location = new System.Drawing.Point(336, 368);
+            this.grpFlexWire.Name = "grpFlexWire";
+            this.grpFlexWire.Size = new System.Drawing.Size(168, 120);
+            this.grpFlexWire.TabIndex = 37;
+            this.grpFlexWire.TabStop = false;
+            this.grpFlexWire.Text = "FlexWire";
+            // 
+            // btnFlexWireRead2Val
+            // 
+            this.btnFlexWireRead2Val.Image = null;
+            this.btnFlexWireRead2Val.Location = new System.Drawing.Point(128, 72);
+            this.btnFlexWireRead2Val.Name = "btnFlexWireRead2Val";
+            this.btnFlexWireRead2Val.Size = new System.Drawing.Size(32, 23);
+            this.btnFlexWireRead2Val.TabIndex = 50;
+            this.btnFlexWireRead2Val.Text = "R2";
+            this.btnFlexWireRead2Val.Click += new System.EventHandler(this.btnFlexWireRead2Val_Click);
+            // 
+            // btnFlexWireReadVal
+            // 
+            this.btnFlexWireReadVal.Image = null;
+            this.btnFlexWireReadVal.Location = new System.Drawing.Point(88, 72);
+            this.btnFlexWireReadVal.Name = "btnFlexWireReadVal";
+            this.btnFlexWireReadVal.Size = new System.Drawing.Size(32, 23);
+            this.btnFlexWireReadVal.TabIndex = 49;
+            this.btnFlexWireReadVal.Text = "R1";
+            this.btnFlexWireReadVal.Click += new System.EventHandler(this.btnFlexWireReadVal_Click);
+            // 
+            // lblFlexWireVal2
+            // 
+            this.lblFlexWireVal2.Image = null;
+            this.lblFlexWireVal2.Location = new System.Drawing.Point(96, 24);
+            this.lblFlexWireVal2.Name = "lblFlexWireVal2";
+            this.lblFlexWireVal2.Size = new System.Drawing.Size(32, 16);
+            this.lblFlexWireVal2.TabIndex = 48;
+            this.lblFlexWireVal2.Text = "Val2:";
+            // 
+            // lblFlexWireVal1
+            // 
+            this.lblFlexWireVal1.Image = null;
+            this.lblFlexWireVal1.Location = new System.Drawing.Point(56, 24);
+            this.lblFlexWireVal1.Name = "lblFlexWireVal1";
+            this.lblFlexWireVal1.Size = new System.Drawing.Size(32, 16);
+            this.lblFlexWireVal1.TabIndex = 47;
+            this.lblFlexWireVal1.Text = "Val1:";
+            // 
+            // lblFlexWireAddr
+            // 
+            this.lblFlexWireAddr.Image = null;
+            this.lblFlexWireAddr.Location = new System.Drawing.Point(16, 24);
+            this.lblFlexWireAddr.Name = "lblFlexWireAddr";
+            this.lblFlexWireAddr.Size = new System.Drawing.Size(32, 16);
+            this.lblFlexWireAddr.TabIndex = 46;
+            this.lblFlexWireAddr.Text = "Addr:";
+            // 
+            // btnFlexWireWriteVal
+            // 
+            this.btnFlexWireWriteVal.Image = null;
+            this.btnFlexWireWriteVal.Location = new System.Drawing.Point(8, 72);
+            this.btnFlexWireWriteVal.Name = "btnFlexWireWriteVal";
+            this.btnFlexWireWriteVal.Size = new System.Drawing.Size(32, 23);
+            this.btnFlexWireWriteVal.TabIndex = 45;
+            this.btnFlexWireWriteVal.Text = "W1";
+            this.btnFlexWireWriteVal.Click += new System.EventHandler(this.btnFlexWireWriteVal_Click);
+            // 
+            // txtFlexWireVal2
+            // 
+            this.txtFlexWireVal2.Location = new System.Drawing.Point(96, 40);
+            this.txtFlexWireVal2.Name = "txtFlexWireVal2";
+            this.txtFlexWireVal2.Size = new System.Drawing.Size(32, 20);
+            this.txtFlexWireVal2.TabIndex = 44;
+            this.txtFlexWireVal2.Text = "0";
+            // 
+            // txtFlexWireVal1
+            // 
+            this.txtFlexWireVal1.Location = new System.Drawing.Point(56, 40);
+            this.txtFlexWireVal1.Name = "txtFlexWireVal1";
+            this.txtFlexWireVal1.Size = new System.Drawing.Size(32, 20);
+            this.txtFlexWireVal1.TabIndex = 43;
+            this.txtFlexWireVal1.Text = "0";
+            // 
+            // txtFlexWireAddr
+            // 
+            this.txtFlexWireAddr.Location = new System.Drawing.Point(16, 40);
+            this.txtFlexWireAddr.Name = "txtFlexWireAddr";
+            this.txtFlexWireAddr.Size = new System.Drawing.Size(32, 20);
+            this.txtFlexWireAddr.TabIndex = 41;
+            this.txtFlexWireAddr.Text = "0";
+            // 
+            // btnFlexWireWrite2Val
+            // 
+            this.btnFlexWireWrite2Val.Image = null;
+            this.btnFlexWireWrite2Val.Location = new System.Drawing.Point(48, 72);
+            this.btnFlexWireWrite2Val.Name = "btnFlexWireWrite2Val";
+            this.btnFlexWireWrite2Val.Size = new System.Drawing.Size(32, 23);
+            this.btnFlexWireWrite2Val.TabIndex = 42;
+            this.btnFlexWireWrite2Val.Text = "W2";
+            this.btnFlexWireWrite2Val.Click += new System.EventHandler(this.btnFlexWireWrite2Val_Click);
+            // 
+            // grpATU
+            // 
+            this.grpATU.Controls.Add(this.btnATUFull);
+            this.grpATU.Controls.Add(this.txtATU3);
+            this.grpATU.Controls.Add(this.txtATU2);
+            this.grpATU.Controls.Add(this.txtATU1);
+            this.grpATU.Controls.Add(this.btnATUSendCmd);
+            this.grpATU.Location = new System.Drawing.Point(184, 368);
+            this.grpATU.Name = "grpATU";
+            this.grpATU.Size = new System.Drawing.Size(144, 120);
+            this.grpATU.TabIndex = 36;
+            this.grpATU.TabStop = false;
+            this.grpATU.Text = "ATU";
+            // 
+            // btnATUFull
+            // 
+            this.btnATUFull.Image = null;
+            this.btnATUFull.Location = new System.Drawing.Point(16, 88);
+            this.btnATUFull.Name = "btnATUFull";
+            this.btnATUFull.Size = new System.Drawing.Size(40, 23);
+            this.btnATUFull.TabIndex = 45;
+            this.btnATUFull.Text = "Full";
+            this.btnATUFull.Click += new System.EventHandler(this.btnATUFull_Click);
+            // 
+            // txtATU3
+            // 
+            this.txtATU3.Location = new System.Drawing.Point(96, 24);
+            this.txtATU3.Name = "txtATU3";
+            this.txtATU3.Size = new System.Drawing.Size(32, 20);
+            this.txtATU3.TabIndex = 44;
+            this.txtATU3.Text = "0";
+            // 
+            // txtATU2
+            // 
+            this.txtATU2.Location = new System.Drawing.Point(56, 24);
+            this.txtATU2.Name = "txtATU2";
+            this.txtATU2.Size = new System.Drawing.Size(32, 20);
+            this.txtATU2.TabIndex = 43;
+            this.txtATU2.Text = "0";
+            // 
+            // txtATU1
+            // 
+            this.txtATU1.Location = new System.Drawing.Point(16, 24);
+            this.txtATU1.Name = "txtATU1";
+            this.txtATU1.Size = new System.Drawing.Size(32, 20);
+            this.txtATU1.TabIndex = 41;
+            this.txtATU1.Text = "0";
+            // 
+            // btnATUSendCmd
+            // 
+            this.btnATUSendCmd.Image = null;
+            this.btnATUSendCmd.Location = new System.Drawing.Point(16, 56);
+            this.btnATUSendCmd.Name = "btnATUSendCmd";
+            this.btnATUSendCmd.Size = new System.Drawing.Size(112, 23);
+            this.btnATUSendCmd.TabIndex = 42;
+            this.btnATUSendCmd.Text = "Send Command";
+            this.btnATUSendCmd.Click += new System.EventHandler(this.btnATUSendCmd_Click);
+            // 
+            // grpPAPot
+            // 
+            this.grpPAPot.Controls.Add(this.txtPAPotRead);
+            this.grpPAPot.Controls.Add(this.txtPAPotWrite);
+            this.grpPAPot.Controls.Add(this.btnPAPotWrite);
+            this.grpPAPot.Controls.Add(this.btnPAPotRead);
+            this.grpPAPot.Controls.Add(this.comboPAPotIndex);
+            this.grpPAPot.Controls.Add(this.lblPAPotIndex);
+            this.grpPAPot.Location = new System.Drawing.Point(8, 400);
+            this.grpPAPot.Name = "grpPAPot";
+            this.grpPAPot.Size = new System.Drawing.Size(168, 88);
+            this.grpPAPot.TabIndex = 35;
+            this.grpPAPot.TabStop = false;
+            this.grpPAPot.Text = "PA Pot";
+            // 
+            // txtPAPotRead
+            // 
+            this.txtPAPotRead.Location = new System.Drawing.Point(64, 56);
+            this.txtPAPotRead.Name = "txtPAPotRead";
+            this.txtPAPotRead.ReadOnly = true;
+            this.txtPAPotRead.Size = new System.Drawing.Size(40, 20);
+            this.txtPAPotRead.TabIndex = 27;
+            this.txtPAPotRead.Text = "0";
+            // 
+            // txtPAPotWrite
+            // 
+            this.txtPAPotWrite.Location = new System.Drawing.Point(112, 24);
+            this.txtPAPotWrite.Name = "txtPAPotWrite";
+            this.txtPAPotWrite.Size = new System.Drawing.Size(40, 20);
+            this.txtPAPotWrite.TabIndex = 26;
+            this.txtPAPotWrite.Text = "0";
+            // 
+            // btnPAPotWrite
+            // 
+            this.btnPAPotWrite.Image = null;
+            this.btnPAPotWrite.Location = new System.Drawing.Point(112, 56);
+            this.btnPAPotWrite.Name = "btnPAPotWrite";
+            this.btnPAPotWrite.Size = new System.Drawing.Size(40, 23);
+            this.btnPAPotWrite.TabIndex = 28;
+            this.btnPAPotWrite.Text = "Write";
+            this.btnPAPotWrite.Click += new System.EventHandler(this.btnPAPotWrite_Click);
+            // 
+            // btnPAPotRead
+            // 
+            this.btnPAPotRead.Image = null;
+            this.btnPAPotRead.Location = new System.Drawing.Point(16, 56);
+            this.btnPAPotRead.Name = "btnPAPotRead";
+            this.btnPAPotRead.Size = new System.Drawing.Size(40, 23);
+            this.btnPAPotRead.TabIndex = 29;
+            this.btnPAPotRead.Text = "Read";
+            this.btnPAPotRead.Click += new System.EventHandler(this.btnPAPotRead_Click);
+            // 
+            // comboPAPotIndex
+            // 
+            this.comboPAPotIndex.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboPAPotIndex.DropDownWidth = 40;
+            this.comboPAPotIndex.Items.AddRange(new object[] {
             "0",
             "1",
             "2",
-            "3"});
-            this.comboDDSChan.Location = new System.Drawing.Point(64, 80);
-            this.comboDDSChan.Name = "comboDDSChan";
-            this.comboDDSChan.Size = new System.Drawing.Size(40, 21);
-            this.comboDDSChan.TabIndex = 40;
-            this.comboDDSChan.SelectedIndexChanged += new System.EventHandler(this.comboDDSChan_SelectedIndexChanged);
-            // 
-            // lblDDSChan
-            // 
-            this.lblDDSChan.Image = null;
-            this.lblDDSChan.Location = new System.Drawing.Point(16, 80);
-            this.lblDDSChan.Name = "lblDDSChan";
-            this.lblDDSChan.Size = new System.Drawing.Size(56, 16);
-            this.lblDDSChan.TabIndex = 39;
-            this.lblDDSChan.Text = "Channel:";
-            // 
-            // comboDDSReg
-            // 
-            this.comboDDSReg.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboDDSReg.DropDownWidth = 40;
-            this.comboDDSReg.Location = new System.Drawing.Point(64, 24);
-            this.comboDDSReg.Name = "comboDDSReg";
-            this.comboDDSReg.Size = new System.Drawing.Size(40, 21);
-            this.comboDDSReg.TabIndex = 38;
-            this.comboDDSReg.SelectedIndexChanged += new System.EventHandler(this.comboDDSReg_SelectedIndexChanged);
-            // 
-            // txtDDSWrite
-            // 
-            this.txtDDSWrite.Location = new System.Drawing.Point(112, 24);
-            this.txtDDSWrite.Name = "txtDDSWrite";
-            this.txtDDSWrite.Size = new System.Drawing.Size(64, 20);
-            this.txtDDSWrite.TabIndex = 34;
-            this.txtDDSWrite.Text = "0";
-            // 
-            // lblDDSReg
-            // 
-            this.lblDDSReg.Image = null;
-            this.lblDDSReg.Location = new System.Drawing.Point(16, 24);
-            this.lblDDSReg.Name = "lblDDSReg";
-            this.lblDDSReg.Size = new System.Drawing.Size(56, 16);
-            this.lblDDSReg.TabIndex = 33;
-            this.lblDDSReg.Text = "Register:";
-            // 
-            // btnDDSWrite
-            // 
-            this.btnDDSWrite.Image = null;
-            this.btnDDSWrite.Location = new System.Drawing.Point(136, 48);
-            this.btnDDSWrite.Name = "btnDDSWrite";
-            this.btnDDSWrite.Size = new System.Drawing.Size(40, 23);
-            this.btnDDSWrite.TabIndex = 36;
-            this.btnDDSWrite.Text = "Write";
-            this.btnDDSWrite.Click += new System.EventHandler(this.btnDDSWrite_Click);
-            // 
-            // txtDDSReadVal
-            // 
-            this.txtDDSReadVal.Location = new System.Drawing.Point(64, 48);
-            this.txtDDSReadVal.Name = "txtDDSReadVal";
-            this.txtDDSReadVal.ReadOnly = true;
-            this.txtDDSReadVal.Size = new System.Drawing.Size(64, 20);
-            this.txtDDSReadVal.TabIndex = 26;
-            this.txtDDSReadVal.Text = "0";
-            // 
-            // btnDDSRead
-            // 
-            this.btnDDSRead.Image = null;
-            this.btnDDSRead.Location = new System.Drawing.Point(16, 48);
-            this.btnDDSRead.Name = "btnDDSRead";
-            this.btnDDSRead.Size = new System.Drawing.Size(40, 23);
-            this.btnDDSRead.TabIndex = 27;
-            this.btnDDSRead.Text = "Read";
-            this.btnDDSRead.Click += new System.EventHandler(this.btnDDSRead_Click);
-            // 
-            // grpPIO
-            // 
-            this.grpPIO.Controls.Add(this.comboPIOReg);
-            this.grpPIO.Controls.Add(this.txtPIORead);
-            this.grpPIO.Controls.Add(this.txtPIOWrite);
-            this.grpPIO.Controls.Add(this.lblPIORegister);
-            this.grpPIO.Controls.Add(this.btnPIOWrite);
-            this.grpPIO.Controls.Add(this.btnPIORead);
-            this.grpPIO.Controls.Add(this.lblPIOChip);
-            this.grpPIO.Controls.Add(this.comboPIOChip);
-            this.grpPIO.Location = new System.Drawing.Point(408, 8);
-            this.grpPIO.Name = "grpPIO";
-            this.grpPIO.Size = new System.Drawing.Size(192, 112);
-            this.grpPIO.TabIndex = 24;
-            this.grpPIO.TabStop = false;
-            this.grpPIO.Text = "PIO";
-            // 
-            // comboPIOReg
-            // 
-            this.comboPIOReg.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboPIOReg.DropDownWidth = 80;
-            this.comboPIOReg.Items.AddRange(new object[] {
-            "0 (Input 0)",
-            "1 (Input 1)",
-            "2 (Output 0)",
-            "3 (Output 1)",
-            "4 (Pol Inv 0)",
-            "5 (Pol Inv 1)",
-            "6 (DDR 0)",
-            "7 (DDR 1)"});
-            this.comboPIOReg.Location = new System.Drawing.Point(64, 48);
-            this.comboPIOReg.Name = "comboPIOReg";
-            this.comboPIOReg.Size = new System.Drawing.Size(32, 21);
-            this.comboPIOReg.TabIndex = 32;
-            this.comboPIOReg.SelectedIndexChanged += new System.EventHandler(this.comboPIOReg_SelectedIndexChanged);
-            // 
-            // txtPIORead
-            // 
-            this.txtPIORead.Location = new System.Drawing.Point(64, 72);
-            this.txtPIORead.Name = "txtPIORead";
-            this.txtPIORead.ReadOnly = true;
-            this.txtPIORead.Size = new System.Drawing.Size(40, 20);
-            this.txtPIORead.TabIndex = 29;
-            this.txtPIORead.Text = "0";
-            // 
-            // txtPIOWrite
-            // 
-            this.txtPIOWrite.Location = new System.Drawing.Point(112, 48);
-            this.txtPIOWrite.Name = "txtPIOWrite";
-            this.txtPIOWrite.Size = new System.Drawing.Size(40, 20);
-            this.txtPIOWrite.TabIndex = 28;
-            this.txtPIOWrite.Text = "0";
-            // 
-            // lblPIORegister
-            // 
-            this.lblPIORegister.Image = null;
-            this.lblPIORegister.Location = new System.Drawing.Point(16, 48);
-            this.lblPIORegister.Name = "lblPIORegister";
-            this.lblPIORegister.Size = new System.Drawing.Size(56, 16);
-            this.lblPIORegister.TabIndex = 27;
-            this.lblPIORegister.Text = "Register:";
-            // 
-            // btnPIOWrite
-            // 
-            this.btnPIOWrite.Image = null;
-            this.btnPIOWrite.Location = new System.Drawing.Point(112, 72);
-            this.btnPIOWrite.Name = "btnPIOWrite";
-            this.btnPIOWrite.Size = new System.Drawing.Size(40, 23);
-            this.btnPIOWrite.TabIndex = 30;
-            this.btnPIOWrite.Text = "Write";
-            this.btnPIOWrite.Click += new System.EventHandler(this.btnPIOWrite_Click);
-            // 
-            // btnPIORead
-            // 
-            this.btnPIORead.Image = null;
-            this.btnPIORead.Location = new System.Drawing.Point(16, 72);
-            this.btnPIORead.Name = "btnPIORead";
-            this.btnPIORead.Size = new System.Drawing.Size(40, 23);
-            this.btnPIORead.TabIndex = 31;
-            this.btnPIORead.Text = "Read";
-            this.btnPIORead.Click += new System.EventHandler(this.btnPIORead_Click);
-            // 
-            // lblPIOChip
-            // 
-            this.lblPIOChip.Image = null;
-            this.lblPIOChip.Location = new System.Drawing.Point(16, 16);
-            this.lblPIOChip.Name = "lblPIOChip";
-            this.lblPIOChip.Size = new System.Drawing.Size(32, 23);
-            this.lblPIOChip.TabIndex = 1;
-            this.lblPIOChip.Text = "Chip:";
-            // 
-            // comboPIOChip
-            // 
-            this.comboPIOChip.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboPIOChip.DropDownWidth = 80;
-            this.comboPIOChip.Items.AddRange(new object[] {
-            "TRX IC14",
-            "TRX IC26",
-            "TRX IC30",
-            "TRX IC31",
-            "RFIO IC1",
-            "PA IC9",
-            "RX2 IC30",
-            "RX2 IC31",
-            "VU IC16",
-            "VU IC17"});
-            this.comboPIOChip.Location = new System.Drawing.Point(48, 16);
-            this.comboPIOChip.Name = "comboPIOChip";
-            this.comboPIOChip.Size = new System.Drawing.Size(80, 21);
-            this.comboPIOChip.TabIndex = 0;
-            this.comboPIOChip.SelectedIndexChanged += new System.EventHandler(this.comboPIOChip_SelectedIndexChanged);
-            // 
-            // grpEEPROM
-            // 
-            this.grpEEPROM.Controls.Add(this.chkRX2EEPROM);
-            this.grpEEPROM.Controls.Add(this.txtEEPROMReadFloat);
-            this.grpEEPROM.Controls.Add(this.txtEEPROMWriteFloat);
-            this.grpEEPROM.Controls.Add(this.btnEEPROMWriteFloat);
-            this.grpEEPROM.Controls.Add(this.btnEEPROMReadFloat);
-            this.grpEEPROM.Controls.Add(this.txtEEPROMOffset);
-            this.grpEEPROM.Controls.Add(this.txtEEPROMRead);
-            this.grpEEPROM.Controls.Add(this.txtEEPROMWrite);
-            this.grpEEPROM.Controls.Add(this.lblEEPROMOffset);
-            this.grpEEPROM.Controls.Add(this.btnEEPROMWrite);
-            this.grpEEPROM.Controls.Add(this.btnEEPROMRead);
-            this.grpEEPROM.Location = new System.Drawing.Point(8, 128);
-            this.grpEEPROM.Name = "grpEEPROM";
-            this.grpEEPROM.Size = new System.Drawing.Size(168, 168);
-            this.grpEEPROM.TabIndex = 25;
-            this.grpEEPROM.TabStop = false;
-            this.grpEEPROM.Text = "EEPROM";
-            // 
-            // chkRX2EEPROM
-            // 
-            this.chkRX2EEPROM.Image = null;
-            this.chkRX2EEPROM.Location = new System.Drawing.Point(120, 16);
-            this.chkRX2EEPROM.Name = "chkRX2EEPROM";
-            this.chkRX2EEPROM.Size = new System.Drawing.Size(16, 24);
-            this.chkRX2EEPROM.TabIndex = 44;
-            this.chkRX2EEPROM.Text = "RX2";
-            // 
-            // txtEEPROMReadFloat
-            // 
-            this.txtEEPROMReadFloat.Location = new System.Drawing.Point(64, 128);
-            this.txtEEPROMReadFloat.Name = "txtEEPROMReadFloat";
-            this.txtEEPROMReadFloat.ReadOnly = true;
-            this.txtEEPROMReadFloat.Size = new System.Drawing.Size(64, 20);
-            this.txtEEPROMReadFloat.TabIndex = 28;
-            this.txtEEPROMReadFloat.Text = "0";
-            // 
-            // txtEEPROMWriteFloat
-            // 
-            this.txtEEPROMWriteFloat.Location = new System.Drawing.Point(64, 104);
-            this.txtEEPROMWriteFloat.Name = "txtEEPROMWriteFloat";
-            this.txtEEPROMWriteFloat.Size = new System.Drawing.Size(64, 20);
-            this.txtEEPROMWriteFloat.TabIndex = 27;
-            this.txtEEPROMWriteFloat.Text = "0";
-            // 
-            // btnEEPROMWriteFloat
-            // 
-            this.btnEEPROMWriteFloat.Image = null;
-            this.btnEEPROMWriteFloat.Location = new System.Drawing.Point(16, 104);
-            this.btnEEPROMWriteFloat.Name = "btnEEPROMWriteFloat";
-            this.btnEEPROMWriteFloat.Size = new System.Drawing.Size(40, 23);
-            this.btnEEPROMWriteFloat.TabIndex = 29;
-            this.btnEEPROMWriteFloat.Text = "Write";
-            this.btnEEPROMWriteFloat.Click += new System.EventHandler(this.btnEEPROMWriteFloat_Click);
-            // 
-            // btnEEPROMReadFloat
-            // 
-            this.btnEEPROMReadFloat.Image = null;
-            this.btnEEPROMReadFloat.Location = new System.Drawing.Point(16, 128);
-            this.btnEEPROMReadFloat.Name = "btnEEPROMReadFloat";
-            this.btnEEPROMReadFloat.Size = new System.Drawing.Size(40, 23);
-            this.btnEEPROMReadFloat.TabIndex = 30;
-            this.btnEEPROMReadFloat.Text = "Read";
-            this.btnEEPROMReadFloat.Click += new System.EventHandler(this.btnEEPROMReadFloat_Click);
-            // 
-            // txtEEPROMOffset
-            // 
-            this.txtEEPROMOffset.Location = new System.Drawing.Point(64, 24);
-            this.txtEEPROMOffset.Name = "txtEEPROMOffset";
-            this.txtEEPROMOffset.Size = new System.Drawing.Size(40, 20);
-            this.txtEEPROMOffset.TabIndex = 26;
-            this.txtEEPROMOffset.Text = "0";
-            // 
-            // txtEEPROMRead
-            // 
-            this.txtEEPROMRead.Location = new System.Drawing.Point(64, 72);
-            this.txtEEPROMRead.Name = "txtEEPROMRead";
-            this.txtEEPROMRead.ReadOnly = true;
-            this.txtEEPROMRead.Size = new System.Drawing.Size(64, 20);
-            this.txtEEPROMRead.TabIndex = 4;
-            this.txtEEPROMRead.Text = "0";
-            // 
-            // txtEEPROMWrite
-            // 
-            this.txtEEPROMWrite.Location = new System.Drawing.Point(64, 48);
-            this.txtEEPROMWrite.Name = "txtEEPROMWrite";
-            this.txtEEPROMWrite.Size = new System.Drawing.Size(64, 20);
-            this.txtEEPROMWrite.TabIndex = 3;
-            this.txtEEPROMWrite.Text = "0";
-            // 
-            // lblEEPROMOffset
-            // 
-            this.lblEEPROMOffset.Image = null;
-            this.lblEEPROMOffset.Location = new System.Drawing.Point(16, 24);
-            this.lblEEPROMOffset.Name = "lblEEPROMOffset";
-            this.lblEEPROMOffset.Size = new System.Drawing.Size(56, 16);
-            this.lblEEPROMOffset.TabIndex = 1;
-            this.lblEEPROMOffset.Text = "Offset:";
-            // 
-            // btnEEPROMWrite
-            // 
-            this.btnEEPROMWrite.Image = null;
-            this.btnEEPROMWrite.Location = new System.Drawing.Point(16, 48);
-            this.btnEEPROMWrite.Name = "btnEEPROMWrite";
-            this.btnEEPROMWrite.Size = new System.Drawing.Size(40, 23);
-            this.btnEEPROMWrite.TabIndex = 24;
-            this.btnEEPROMWrite.Text = "Write";
-            this.btnEEPROMWrite.Click += new System.EventHandler(this.btnEEPROMWrite_Click);
-            // 
-            // btnEEPROMRead
-            // 
-            this.btnEEPROMRead.Image = null;
-            this.btnEEPROMRead.Location = new System.Drawing.Point(16, 72);
-            this.btnEEPROMRead.Name = "btnEEPROMRead";
-            this.btnEEPROMRead.Size = new System.Drawing.Size(40, 23);
-            this.btnEEPROMRead.TabIndex = 25;
-            this.btnEEPROMRead.Text = "Read";
-            this.btnEEPROMRead.Click += new System.EventHandler(this.btnEEPROMRead_Click);
-            // 
-            // grpTRXPot
-            // 
-            this.grpTRXPot.Controls.Add(this.txtTRXPotRead);
-            this.grpTRXPot.Controls.Add(this.txtTRXPotWrite);
-            this.grpTRXPot.Controls.Add(this.btnTRXPotWrite);
-            this.grpTRXPot.Controls.Add(this.btnTRXPotRead);
-            this.grpTRXPot.Controls.Add(this.comboTRXPotIndex);
-            this.grpTRXPot.Controls.Add(this.lblTRXPotIndex);
-            this.grpTRXPot.Location = new System.Drawing.Point(8, 304);
-            this.grpTRXPot.Name = "grpTRXPot";
-            this.grpTRXPot.Size = new System.Drawing.Size(168, 88);
-            this.grpTRXPot.TabIndex = 26;
-            this.grpTRXPot.TabStop = false;
-            this.grpTRXPot.Text = "TRX Pot";
-            // 
-            // txtTRXPotRead
-            // 
-            this.txtTRXPotRead.Location = new System.Drawing.Point(64, 56);
-            this.txtTRXPotRead.Name = "txtTRXPotRead";
-            this.txtTRXPotRead.ReadOnly = true;
-            this.txtTRXPotRead.Size = new System.Drawing.Size(40, 20);
-            this.txtTRXPotRead.TabIndex = 27;
-            this.txtTRXPotRead.Text = "0";
-            // 
-            // txtTRXPotWrite
-            // 
-            this.txtTRXPotWrite.Location = new System.Drawing.Point(112, 24);
-            this.txtTRXPotWrite.Name = "txtTRXPotWrite";
-            this.txtTRXPotWrite.Size = new System.Drawing.Size(40, 20);
-            this.txtTRXPotWrite.TabIndex = 26;
-            this.txtTRXPotWrite.Text = "0";
-            // 
-            // btnTRXPotWrite
-            // 
-            this.btnTRXPotWrite.Image = null;
-            this.btnTRXPotWrite.Location = new System.Drawing.Point(112, 56);
-            this.btnTRXPotWrite.Name = "btnTRXPotWrite";
-            this.btnTRXPotWrite.Size = new System.Drawing.Size(40, 23);
-            this.btnTRXPotWrite.TabIndex = 28;
-            this.btnTRXPotWrite.Text = "Write";
-            this.btnTRXPotWrite.Click += new System.EventHandler(this.btnTRXPotWrite_Click);
-            // 
-            // btnTRXPotRead
-            // 
-            this.btnTRXPotRead.Image = null;
-            this.btnTRXPotRead.Location = new System.Drawing.Point(16, 56);
-            this.btnTRXPotRead.Name = "btnTRXPotRead";
-            this.btnTRXPotRead.Size = new System.Drawing.Size(40, 23);
-            this.btnTRXPotRead.TabIndex = 29;
-            this.btnTRXPotRead.Text = "Read";
-            this.btnTRXPotRead.Click += new System.EventHandler(this.btnTRXPotRead_Click);
-            // 
-            // comboTRXPotIndex
-            // 
-            this.comboTRXPotIndex.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboTRXPotIndex.DropDownWidth = 40;
-            this.comboTRXPotIndex.Items.AddRange(new object[] {
-            "0",
-            "1",
-            "2",
-            "3"});
-            this.comboTRXPotIndex.Location = new System.Drawing.Point(56, 24);
-            this.comboTRXPotIndex.Name = "comboTRXPotIndex";
-            this.comboTRXPotIndex.Size = new System.Drawing.Size(40, 21);
-            this.comboTRXPotIndex.TabIndex = 2;
-            this.comboTRXPotIndex.SelectedIndexChanged += new System.EventHandler(this.comboTRXPotIndex_SelectedIndexChanged);
-            // 
-            // lblTRXPotIndex
-            // 
-            this.lblTRXPotIndex.Image = null;
-            this.lblTRXPotIndex.Location = new System.Drawing.Point(16, 24);
-            this.lblTRXPotIndex.Name = "lblTRXPotIndex";
-            this.lblTRXPotIndex.Size = new System.Drawing.Size(40, 23);
-            this.lblTRXPotIndex.TabIndex = 3;
-            this.lblTRXPotIndex.Text = "Index:";
-            // 
-            // grpCodec
-            // 
-            this.grpCodec.Controls.Add(this.comboCodecReg);
-            this.grpCodec.Controls.Add(this.txtCodecRead);
-            this.grpCodec.Controls.Add(this.txtCodecWrite);
-            this.grpCodec.Controls.Add(this.lblCodecRegister);
-            this.grpCodec.Controls.Add(this.btnCodecWrite);
-            this.grpCodec.Controls.Add(this.btnCodecRead);
-            this.grpCodec.Location = new System.Drawing.Point(408, 128);
-            this.grpCodec.Name = "grpCodec";
-            this.grpCodec.Size = new System.Drawing.Size(192, 112);
-            this.grpCodec.TabIndex = 28;
-            this.grpCodec.TabStop = false;
-            this.grpCodec.Text = "Codec";
-            // 
-            // comboCodecReg
-            // 
-            this.comboCodecReg.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboCodecReg.DropDownWidth = 40;
-            this.comboCodecReg.Location = new System.Drawing.Point(64, 24);
-            this.comboCodecReg.Name = "comboCodecReg";
-            this.comboCodecReg.Size = new System.Drawing.Size(40, 21);
-            this.comboCodecReg.TabIndex = 32;
-            this.comboCodecReg.SelectedIndexChanged += new System.EventHandler(this.comboCodecReg_SelectedIndexChanged);
-            // 
-            // txtCodecRead
-            // 
-            this.txtCodecRead.Location = new System.Drawing.Point(64, 48);
-            this.txtCodecRead.Name = "txtCodecRead";
-            this.txtCodecRead.ReadOnly = true;
-            this.txtCodecRead.Size = new System.Drawing.Size(40, 20);
-            this.txtCodecRead.TabIndex = 29;
-            this.txtCodecRead.Text = "0";
-            // 
-            // txtCodecWrite
-            // 
-            this.txtCodecWrite.Location = new System.Drawing.Point(112, 24);
-            this.txtCodecWrite.Name = "txtCodecWrite";
-            this.txtCodecWrite.Size = new System.Drawing.Size(40, 20);
-            this.txtCodecWrite.TabIndex = 28;
-            this.txtCodecWrite.Text = "0";
-            // 
-            // lblCodecRegister
-            // 
-            this.lblCodecRegister.Image = null;
-            this.lblCodecRegister.Location = new System.Drawing.Point(16, 24);
-            this.lblCodecRegister.Name = "lblCodecRegister";
-            this.lblCodecRegister.Size = new System.Drawing.Size(56, 16);
-            this.lblCodecRegister.TabIndex = 27;
-            this.lblCodecRegister.Text = "Register:";
-            // 
-            // btnCodecWrite
-            // 
-            this.btnCodecWrite.Image = null;
-            this.btnCodecWrite.Location = new System.Drawing.Point(112, 48);
-            this.btnCodecWrite.Name = "btnCodecWrite";
-            this.btnCodecWrite.Size = new System.Drawing.Size(40, 23);
-            this.btnCodecWrite.TabIndex = 30;
-            this.btnCodecWrite.Text = "Write";
-            this.btnCodecWrite.Click += new System.EventHandler(this.btnCodecWrite_Click);
-            // 
-            // btnCodecRead
-            // 
-            this.btnCodecRead.Image = null;
-            this.btnCodecRead.Location = new System.Drawing.Point(16, 48);
-            this.btnCodecRead.Name = "btnCodecRead";
-            this.btnCodecRead.Size = new System.Drawing.Size(40, 23);
-            this.btnCodecRead.TabIndex = 31;
-            this.btnCodecRead.Text = "Read";
-            this.btnCodecRead.Click += new System.EventHandler(this.btnCodecRead_Click);
-            // 
-            // comboMuxChan
-            // 
-            this.comboMuxChan.DropDownWidth = 56;
-            this.comboMuxChan.Items.AddRange(new object[] {
-            "None",
-            "Chan0",
-            "Chan1"});
-            this.comboMuxChan.Location = new System.Drawing.Point(568, 368);
-            this.comboMuxChan.Name = "comboMuxChan";
-            this.comboMuxChan.Size = new System.Drawing.Size(56, 21);
-            this.comboMuxChan.TabIndex = 0;
-            this.comboMuxChan.SelectedIndexChanged += new System.EventHandler(this.comboMuxChan_SelectedIndexChanged);
-            // 
-            // lblMuxChannel
-            // 
-            this.lblMuxChannel.Image = null;
-            this.lblMuxChannel.Location = new System.Drawing.Point(512, 368);
-            this.lblMuxChannel.Name = "lblMuxChannel";
-            this.lblMuxChannel.Size = new System.Drawing.Size(56, 23);
-            this.lblMuxChannel.TabIndex = 1;
-            this.lblMuxChannel.Text = "Mux:";
+            "3",
+            "4",
+            "5",
+            "6",
+            "7"});
+            this.comboPAPotIndex.Location = new System.Drawing.Point(56, 24);
+            this.comboPAPotIndex.Name = "comboPAPotIndex";
+            this.comboPAPotIndex.Size = new System.Drawing.Size(40, 21);
+            this.comboPAPotIndex.TabIndex = 2;
+            this.comboPAPotIndex.SelectedIndexChanged += new System.EventHandler(this.comboPAPotIndex_SelectedIndexChanged);
+            // 
+            // lblPAPotIndex
+            // 
+            this.lblPAPotIndex.Image = null;
+            this.lblPAPotIndex.Location = new System.Drawing.Point(16, 24);
+            this.lblPAPotIndex.Name = "lblPAPotIndex";
+            this.lblPAPotIndex.Size = new System.Drawing.Size(40, 23);
+            this.lblPAPotIndex.TabIndex = 3;
+            this.lblPAPotIndex.Text = "Index:";
             // 
             // grpGPIODDR
             // 
@@ -1509,648 +1533,650 @@ namespace PowerSDR
             this.chkGPIO8.TabIndex = 22;
             this.chkGPIO8.CheckedChanged += new System.EventHandler(this.chkGPIO_CheckedChanged);
             // 
-            // grpPAPot
+            // grpCodec
             // 
-            this.grpPAPot.Controls.Add(this.txtPAPotRead);
-            this.grpPAPot.Controls.Add(this.txtPAPotWrite);
-            this.grpPAPot.Controls.Add(this.btnPAPotWrite);
-            this.grpPAPot.Controls.Add(this.btnPAPotRead);
-            this.grpPAPot.Controls.Add(this.comboPAPotIndex);
-            this.grpPAPot.Controls.Add(this.lblPAPotIndex);
-            this.grpPAPot.Location = new System.Drawing.Point(8, 400);
-            this.grpPAPot.Name = "grpPAPot";
-            this.grpPAPot.Size = new System.Drawing.Size(168, 88);
-            this.grpPAPot.TabIndex = 35;
-            this.grpPAPot.TabStop = false;
-            this.grpPAPot.Text = "PA Pot";
+            this.grpCodec.Controls.Add(this.comboCodecReg);
+            this.grpCodec.Controls.Add(this.txtCodecRead);
+            this.grpCodec.Controls.Add(this.txtCodecWrite);
+            this.grpCodec.Controls.Add(this.lblCodecRegister);
+            this.grpCodec.Controls.Add(this.btnCodecWrite);
+            this.grpCodec.Controls.Add(this.btnCodecRead);
+            this.grpCodec.Location = new System.Drawing.Point(408, 128);
+            this.grpCodec.Name = "grpCodec";
+            this.grpCodec.Size = new System.Drawing.Size(192, 112);
+            this.grpCodec.TabIndex = 28;
+            this.grpCodec.TabStop = false;
+            this.grpCodec.Text = "Codec";
             // 
-            // txtPAPotRead
+            // comboCodecReg
             // 
-            this.txtPAPotRead.Location = new System.Drawing.Point(64, 56);
-            this.txtPAPotRead.Name = "txtPAPotRead";
-            this.txtPAPotRead.ReadOnly = true;
-            this.txtPAPotRead.Size = new System.Drawing.Size(40, 20);
-            this.txtPAPotRead.TabIndex = 27;
-            this.txtPAPotRead.Text = "0";
+            this.comboCodecReg.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboCodecReg.DropDownWidth = 40;
+            this.comboCodecReg.Location = new System.Drawing.Point(64, 24);
+            this.comboCodecReg.Name = "comboCodecReg";
+            this.comboCodecReg.Size = new System.Drawing.Size(40, 21);
+            this.comboCodecReg.TabIndex = 32;
+            this.comboCodecReg.SelectedIndexChanged += new System.EventHandler(this.comboCodecReg_SelectedIndexChanged);
             // 
-            // txtPAPotWrite
+            // txtCodecRead
             // 
-            this.txtPAPotWrite.Location = new System.Drawing.Point(112, 24);
-            this.txtPAPotWrite.Name = "txtPAPotWrite";
-            this.txtPAPotWrite.Size = new System.Drawing.Size(40, 20);
-            this.txtPAPotWrite.TabIndex = 26;
-            this.txtPAPotWrite.Text = "0";
+            this.txtCodecRead.Location = new System.Drawing.Point(64, 48);
+            this.txtCodecRead.Name = "txtCodecRead";
+            this.txtCodecRead.ReadOnly = true;
+            this.txtCodecRead.Size = new System.Drawing.Size(40, 20);
+            this.txtCodecRead.TabIndex = 29;
+            this.txtCodecRead.Text = "0";
             // 
-            // btnPAPotWrite
+            // txtCodecWrite
             // 
-            this.btnPAPotWrite.Image = null;
-            this.btnPAPotWrite.Location = new System.Drawing.Point(112, 56);
-            this.btnPAPotWrite.Name = "btnPAPotWrite";
-            this.btnPAPotWrite.Size = new System.Drawing.Size(40, 23);
-            this.btnPAPotWrite.TabIndex = 28;
-            this.btnPAPotWrite.Text = "Write";
-            this.btnPAPotWrite.Click += new System.EventHandler(this.btnPAPotWrite_Click);
+            this.txtCodecWrite.Location = new System.Drawing.Point(112, 24);
+            this.txtCodecWrite.Name = "txtCodecWrite";
+            this.txtCodecWrite.Size = new System.Drawing.Size(40, 20);
+            this.txtCodecWrite.TabIndex = 28;
+            this.txtCodecWrite.Text = "0";
             // 
-            // btnPAPotRead
+            // lblCodecRegister
             // 
-            this.btnPAPotRead.Image = null;
-            this.btnPAPotRead.Location = new System.Drawing.Point(16, 56);
-            this.btnPAPotRead.Name = "btnPAPotRead";
-            this.btnPAPotRead.Size = new System.Drawing.Size(40, 23);
-            this.btnPAPotRead.TabIndex = 29;
-            this.btnPAPotRead.Text = "Read";
-            this.btnPAPotRead.Click += new System.EventHandler(this.btnPAPotRead_Click);
+            this.lblCodecRegister.Image = null;
+            this.lblCodecRegister.Location = new System.Drawing.Point(16, 24);
+            this.lblCodecRegister.Name = "lblCodecRegister";
+            this.lblCodecRegister.Size = new System.Drawing.Size(56, 16);
+            this.lblCodecRegister.TabIndex = 27;
+            this.lblCodecRegister.Text = "Register:";
             // 
-            // comboPAPotIndex
+            // btnCodecWrite
             // 
-            this.comboPAPotIndex.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboPAPotIndex.DropDownWidth = 40;
-            this.comboPAPotIndex.Items.AddRange(new object[] {
+            this.btnCodecWrite.Image = null;
+            this.btnCodecWrite.Location = new System.Drawing.Point(112, 48);
+            this.btnCodecWrite.Name = "btnCodecWrite";
+            this.btnCodecWrite.Size = new System.Drawing.Size(40, 23);
+            this.btnCodecWrite.TabIndex = 30;
+            this.btnCodecWrite.Text = "Write";
+            this.btnCodecWrite.Click += new System.EventHandler(this.btnCodecWrite_Click);
+            // 
+            // btnCodecRead
+            // 
+            this.btnCodecRead.Image = null;
+            this.btnCodecRead.Location = new System.Drawing.Point(16, 48);
+            this.btnCodecRead.Name = "btnCodecRead";
+            this.btnCodecRead.Size = new System.Drawing.Size(40, 23);
+            this.btnCodecRead.TabIndex = 31;
+            this.btnCodecRead.Text = "Read";
+            this.btnCodecRead.Click += new System.EventHandler(this.btnCodecRead_Click);
+            // 
+            // grpTRXPot
+            // 
+            this.grpTRXPot.Controls.Add(this.txtTRXPotRead);
+            this.grpTRXPot.Controls.Add(this.txtTRXPotWrite);
+            this.grpTRXPot.Controls.Add(this.btnTRXPotWrite);
+            this.grpTRXPot.Controls.Add(this.btnTRXPotRead);
+            this.grpTRXPot.Controls.Add(this.comboTRXPotIndex);
+            this.grpTRXPot.Controls.Add(this.lblTRXPotIndex);
+            this.grpTRXPot.Location = new System.Drawing.Point(8, 304);
+            this.grpTRXPot.Name = "grpTRXPot";
+            this.grpTRXPot.Size = new System.Drawing.Size(168, 88);
+            this.grpTRXPot.TabIndex = 26;
+            this.grpTRXPot.TabStop = false;
+            this.grpTRXPot.Text = "TRX Pot";
+            // 
+            // txtTRXPotRead
+            // 
+            this.txtTRXPotRead.Location = new System.Drawing.Point(64, 56);
+            this.txtTRXPotRead.Name = "txtTRXPotRead";
+            this.txtTRXPotRead.ReadOnly = true;
+            this.txtTRXPotRead.Size = new System.Drawing.Size(40, 20);
+            this.txtTRXPotRead.TabIndex = 27;
+            this.txtTRXPotRead.Text = "0";
+            // 
+            // txtTRXPotWrite
+            // 
+            this.txtTRXPotWrite.Location = new System.Drawing.Point(112, 24);
+            this.txtTRXPotWrite.Name = "txtTRXPotWrite";
+            this.txtTRXPotWrite.Size = new System.Drawing.Size(40, 20);
+            this.txtTRXPotWrite.TabIndex = 26;
+            this.txtTRXPotWrite.Text = "0";
+            // 
+            // btnTRXPotWrite
+            // 
+            this.btnTRXPotWrite.Image = null;
+            this.btnTRXPotWrite.Location = new System.Drawing.Point(112, 56);
+            this.btnTRXPotWrite.Name = "btnTRXPotWrite";
+            this.btnTRXPotWrite.Size = new System.Drawing.Size(40, 23);
+            this.btnTRXPotWrite.TabIndex = 28;
+            this.btnTRXPotWrite.Text = "Write";
+            this.btnTRXPotWrite.Click += new System.EventHandler(this.btnTRXPotWrite_Click);
+            // 
+            // btnTRXPotRead
+            // 
+            this.btnTRXPotRead.Image = null;
+            this.btnTRXPotRead.Location = new System.Drawing.Point(16, 56);
+            this.btnTRXPotRead.Name = "btnTRXPotRead";
+            this.btnTRXPotRead.Size = new System.Drawing.Size(40, 23);
+            this.btnTRXPotRead.TabIndex = 29;
+            this.btnTRXPotRead.Text = "Read";
+            this.btnTRXPotRead.Click += new System.EventHandler(this.btnTRXPotRead_Click);
+            // 
+            // comboTRXPotIndex
+            // 
+            this.comboTRXPotIndex.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboTRXPotIndex.DropDownWidth = 40;
+            this.comboTRXPotIndex.Items.AddRange(new object[] {
             "0",
             "1",
             "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7"});
-            this.comboPAPotIndex.Location = new System.Drawing.Point(56, 24);
-            this.comboPAPotIndex.Name = "comboPAPotIndex";
-            this.comboPAPotIndex.Size = new System.Drawing.Size(40, 21);
-            this.comboPAPotIndex.TabIndex = 2;
-            this.comboPAPotIndex.SelectedIndexChanged += new System.EventHandler(this.comboPAPotIndex_SelectedIndexChanged);
-            // 
-            // lblPAPotIndex
-            // 
-            this.lblPAPotIndex.Image = null;
-            this.lblPAPotIndex.Location = new System.Drawing.Point(16, 24);
-            this.lblPAPotIndex.Name = "lblPAPotIndex";
-            this.lblPAPotIndex.Size = new System.Drawing.Size(40, 23);
-            this.lblPAPotIndex.TabIndex = 3;
-            this.lblPAPotIndex.Text = "Index:";
-            // 
-            // grpATU
-            // 
-            this.grpATU.Controls.Add(this.btnATUFull);
-            this.grpATU.Controls.Add(this.txtATU3);
-            this.grpATU.Controls.Add(this.txtATU2);
-            this.grpATU.Controls.Add(this.txtATU1);
-            this.grpATU.Controls.Add(this.btnATUSendCmd);
-            this.grpATU.Location = new System.Drawing.Point(184, 368);
-            this.grpATU.Name = "grpATU";
-            this.grpATU.Size = new System.Drawing.Size(144, 120);
-            this.grpATU.TabIndex = 36;
-            this.grpATU.TabStop = false;
-            this.grpATU.Text = "ATU";
-            // 
-            // btnATUFull
-            // 
-            this.btnATUFull.Image = null;
-            this.btnATUFull.Location = new System.Drawing.Point(16, 88);
-            this.btnATUFull.Name = "btnATUFull";
-            this.btnATUFull.Size = new System.Drawing.Size(40, 23);
-            this.btnATUFull.TabIndex = 45;
-            this.btnATUFull.Text = "Full";
-            this.btnATUFull.Click += new System.EventHandler(this.btnATUFull_Click);
-            // 
-            // txtATU3
-            // 
-            this.txtATU3.Location = new System.Drawing.Point(96, 24);
-            this.txtATU3.Name = "txtATU3";
-            this.txtATU3.Size = new System.Drawing.Size(32, 20);
-            this.txtATU3.TabIndex = 44;
-            this.txtATU3.Text = "0";
-            // 
-            // txtATU2
-            // 
-            this.txtATU2.Location = new System.Drawing.Point(56, 24);
-            this.txtATU2.Name = "txtATU2";
-            this.txtATU2.Size = new System.Drawing.Size(32, 20);
-            this.txtATU2.TabIndex = 43;
-            this.txtATU2.Text = "0";
-            // 
-            // txtATU1
-            // 
-            this.txtATU1.Location = new System.Drawing.Point(16, 24);
-            this.txtATU1.Name = "txtATU1";
-            this.txtATU1.Size = new System.Drawing.Size(32, 20);
-            this.txtATU1.TabIndex = 41;
-            this.txtATU1.Text = "0";
-            // 
-            // btnATUSendCmd
-            // 
-            this.btnATUSendCmd.Image = null;
-            this.btnATUSendCmd.Location = new System.Drawing.Point(16, 56);
-            this.btnATUSendCmd.Name = "btnATUSendCmd";
-            this.btnATUSendCmd.Size = new System.Drawing.Size(112, 23);
-            this.btnATUSendCmd.TabIndex = 42;
-            this.btnATUSendCmd.Text = "Send Command";
-            this.btnATUSendCmd.Click += new System.EventHandler(this.btnATUSendCmd_Click);
-            // 
-            // grpFlexWire
-            // 
-            this.grpFlexWire.Controls.Add(this.btnFlexWireRead2Val);
-            this.grpFlexWire.Controls.Add(this.btnFlexWireReadVal);
-            this.grpFlexWire.Controls.Add(this.lblFlexWireVal2);
-            this.grpFlexWire.Controls.Add(this.lblFlexWireVal1);
-            this.grpFlexWire.Controls.Add(this.lblFlexWireAddr);
-            this.grpFlexWire.Controls.Add(this.btnFlexWireWriteVal);
-            this.grpFlexWire.Controls.Add(this.txtFlexWireVal2);
-            this.grpFlexWire.Controls.Add(this.txtFlexWireVal1);
-            this.grpFlexWire.Controls.Add(this.txtFlexWireAddr);
-            this.grpFlexWire.Controls.Add(this.btnFlexWireWrite2Val);
-            this.grpFlexWire.Location = new System.Drawing.Point(336, 368);
-            this.grpFlexWire.Name = "grpFlexWire";
-            this.grpFlexWire.Size = new System.Drawing.Size(168, 120);
-            this.grpFlexWire.TabIndex = 37;
-            this.grpFlexWire.TabStop = false;
-            this.grpFlexWire.Text = "FlexWire";
-            // 
-            // btnFlexWireRead2Val
-            // 
-            this.btnFlexWireRead2Val.Image = null;
-            this.btnFlexWireRead2Val.Location = new System.Drawing.Point(128, 72);
-            this.btnFlexWireRead2Val.Name = "btnFlexWireRead2Val";
-            this.btnFlexWireRead2Val.Size = new System.Drawing.Size(32, 23);
-            this.btnFlexWireRead2Val.TabIndex = 50;
-            this.btnFlexWireRead2Val.Text = "R2";
-            this.btnFlexWireRead2Val.Click += new System.EventHandler(this.btnFlexWireRead2Val_Click);
-            // 
-            // btnFlexWireReadVal
-            // 
-            this.btnFlexWireReadVal.Image = null;
-            this.btnFlexWireReadVal.Location = new System.Drawing.Point(88, 72);
-            this.btnFlexWireReadVal.Name = "btnFlexWireReadVal";
-            this.btnFlexWireReadVal.Size = new System.Drawing.Size(32, 23);
-            this.btnFlexWireReadVal.TabIndex = 49;
-            this.btnFlexWireReadVal.Text = "R1";
-            this.btnFlexWireReadVal.Click += new System.EventHandler(this.btnFlexWireReadVal_Click);
-            // 
-            // lblFlexWireVal2
-            // 
-            this.lblFlexWireVal2.Image = null;
-            this.lblFlexWireVal2.Location = new System.Drawing.Point(96, 24);
-            this.lblFlexWireVal2.Name = "lblFlexWireVal2";
-            this.lblFlexWireVal2.Size = new System.Drawing.Size(32, 16);
-            this.lblFlexWireVal2.TabIndex = 48;
-            this.lblFlexWireVal2.Text = "Val2:";
-            // 
-            // lblFlexWireVal1
-            // 
-            this.lblFlexWireVal1.Image = null;
-            this.lblFlexWireVal1.Location = new System.Drawing.Point(56, 24);
-            this.lblFlexWireVal1.Name = "lblFlexWireVal1";
-            this.lblFlexWireVal1.Size = new System.Drawing.Size(32, 16);
-            this.lblFlexWireVal1.TabIndex = 47;
-            this.lblFlexWireVal1.Text = "Val1:";
-            // 
-            // lblFlexWireAddr
-            // 
-            this.lblFlexWireAddr.Image = null;
-            this.lblFlexWireAddr.Location = new System.Drawing.Point(16, 24);
-            this.lblFlexWireAddr.Name = "lblFlexWireAddr";
-            this.lblFlexWireAddr.Size = new System.Drawing.Size(32, 16);
-            this.lblFlexWireAddr.TabIndex = 46;
-            this.lblFlexWireAddr.Text = "Addr:";
-            // 
-            // btnFlexWireWriteVal
-            // 
-            this.btnFlexWireWriteVal.Image = null;
-            this.btnFlexWireWriteVal.Location = new System.Drawing.Point(8, 72);
-            this.btnFlexWireWriteVal.Name = "btnFlexWireWriteVal";
-            this.btnFlexWireWriteVal.Size = new System.Drawing.Size(32, 23);
-            this.btnFlexWireWriteVal.TabIndex = 45;
-            this.btnFlexWireWriteVal.Text = "W1";
-            this.btnFlexWireWriteVal.Click += new System.EventHandler(this.btnFlexWireWriteVal_Click);
-            // 
-            // txtFlexWireVal2
-            // 
-            this.txtFlexWireVal2.Location = new System.Drawing.Point(96, 40);
-            this.txtFlexWireVal2.Name = "txtFlexWireVal2";
-            this.txtFlexWireVal2.Size = new System.Drawing.Size(32, 20);
-            this.txtFlexWireVal2.TabIndex = 44;
-            this.txtFlexWireVal2.Text = "0";
-            // 
-            // txtFlexWireVal1
-            // 
-            this.txtFlexWireVal1.Location = new System.Drawing.Point(56, 40);
-            this.txtFlexWireVal1.Name = "txtFlexWireVal1";
-            this.txtFlexWireVal1.Size = new System.Drawing.Size(32, 20);
-            this.txtFlexWireVal1.TabIndex = 43;
-            this.txtFlexWireVal1.Text = "0";
-            // 
-            // txtFlexWireAddr
-            // 
-            this.txtFlexWireAddr.Location = new System.Drawing.Point(16, 40);
-            this.txtFlexWireAddr.Name = "txtFlexWireAddr";
-            this.txtFlexWireAddr.Size = new System.Drawing.Size(32, 20);
-            this.txtFlexWireAddr.TabIndex = 41;
-            this.txtFlexWireAddr.Text = "0";
-            // 
-            // btnFlexWireWrite2Val
-            // 
-            this.btnFlexWireWrite2Val.Image = null;
-            this.btnFlexWireWrite2Val.Location = new System.Drawing.Point(48, 72);
-            this.btnFlexWireWrite2Val.Name = "btnFlexWireWrite2Val";
-            this.btnFlexWireWrite2Val.Size = new System.Drawing.Size(32, 23);
-            this.btnFlexWireWrite2Val.TabIndex = 42;
-            this.btnFlexWireWrite2Val.Text = "W2";
-            this.btnFlexWireWrite2Val.Click += new System.EventHandler(this.btnFlexWireWrite2Val_Click);
-            // 
-            // grpATURelays
-            // 
-            this.grpATURelays.Controls.Add(this.chkATUATTN);
-            this.grpATURelays.Controls.Add(this.chkATUEnable);
-            this.grpATURelays.Controls.Add(this.lblHiZ);
-            this.grpATURelays.Controls.Add(this.chkHiZ);
-            this.grpATURelays.Controls.Add(this.lblC6);
-            this.grpATURelays.Controls.Add(this.lblC5);
-            this.grpATURelays.Controls.Add(this.lblC4);
-            this.grpATURelays.Controls.Add(this.lblC3);
-            this.grpATURelays.Controls.Add(this.lblC2);
-            this.grpATURelays.Controls.Add(this.lblC1);
-            this.grpATURelays.Controls.Add(this.lblC0);
-            this.grpATURelays.Controls.Add(this.chkC3);
-            this.grpATURelays.Controls.Add(this.chkC6);
-            this.grpATURelays.Controls.Add(this.chkC1);
-            this.grpATURelays.Controls.Add(this.chkC0);
-            this.grpATURelays.Controls.Add(this.chkC5);
-            this.grpATURelays.Controls.Add(this.chkC4);
-            this.grpATURelays.Controls.Add(this.chkC2);
-            this.grpATURelays.Controls.Add(this.lblL8);
-            this.grpATURelays.Controls.Add(this.lblL7);
-            this.grpATURelays.Controls.Add(this.lblL6);
-            this.grpATURelays.Controls.Add(this.lblL2);
-            this.grpATURelays.Controls.Add(this.chkL8);
-            this.grpATURelays.Controls.Add(this.chkL2);
-            this.grpATURelays.Controls.Add(this.chkL7);
-            this.grpATURelays.Controls.Add(this.chkL6);
-            this.grpATURelays.Controls.Add(this.lblL9);
-            this.grpATURelays.Controls.Add(this.chkL9);
-            this.grpATURelays.Controls.Add(this.chkL3);
-            this.grpATURelays.Controls.Add(this.lblL3);
-            this.grpATURelays.Controls.Add(this.lblL4);
-            this.grpATURelays.Controls.Add(this.chkL4);
-            this.grpATURelays.Controls.Add(this.lblL5);
-            this.grpATURelays.Controls.Add(this.chkL5);
-            this.grpATURelays.Location = new System.Drawing.Point(184, 128);
-            this.grpATURelays.Name = "grpATURelays";
-            this.grpATURelays.Size = new System.Drawing.Size(216, 112);
-            this.grpATURelays.TabIndex = 38;
-            this.grpATURelays.TabStop = false;
-            this.grpATURelays.Text = "ATU";
-            // 
-            // chkATUATTN
-            // 
-            this.chkATUATTN.Image = null;
-            this.chkATUATTN.Location = new System.Drawing.Point(72, 50);
-            this.chkATUATTN.Name = "chkATUATTN";
-            this.chkATUATTN.Size = new System.Drawing.Size(56, 16);
-            this.chkATUATTN.TabIndex = 64;
-            this.chkATUATTN.Text = "ATTN";
-            this.chkATUATTN.CheckedChanged += new System.EventHandler(this.chkATUATTN_CheckedChanged);
-            // 
-            // chkATUEnable
-            // 
-            this.chkATUEnable.Image = null;
-            this.chkATUEnable.Location = new System.Drawing.Point(8, 50);
-            this.chkATUEnable.Name = "chkATUEnable";
-            this.chkATUEnable.Size = new System.Drawing.Size(64, 16);
-            this.chkATUEnable.TabIndex = 63;
-            this.chkATUEnable.Text = "Enable";
-            this.chkATUEnable.CheckedChanged += new System.EventHandler(this.chkATUEnable_CheckedChanged);
-            // 
-            // lblHiZ
-            // 
-            this.lblHiZ.Image = null;
-            this.lblHiZ.Location = new System.Drawing.Point(16, 64);
-            this.lblHiZ.Name = "lblHiZ";
-            this.lblHiZ.Size = new System.Drawing.Size(24, 16);
-            this.lblHiZ.TabIndex = 62;
-            this.lblHiZ.Text = "HiZ";
-            // 
-            // chkHiZ
-            // 
-            this.chkHiZ.Image = null;
-            this.chkHiZ.Location = new System.Drawing.Point(16, 80);
-            this.chkHiZ.Name = "chkHiZ";
-            this.chkHiZ.Size = new System.Drawing.Size(16, 24);
-            this.chkHiZ.TabIndex = 61;
-            this.chkHiZ.CheckedChanged += new System.EventHandler(this.chkHiZ_CheckedChanged);
-            // 
-            // lblC6
-            // 
-            this.lblC6.Image = null;
-            this.lblC6.Location = new System.Drawing.Point(40, 64);
-            this.lblC6.Name = "lblC6";
-            this.lblC6.Size = new System.Drawing.Size(24, 16);
-            this.lblC6.TabIndex = 60;
-            this.lblC6.Text = "C6";
-            // 
-            // lblC5
-            // 
-            this.lblC5.Image = null;
-            this.lblC5.Location = new System.Drawing.Point(64, 64);
-            this.lblC5.Name = "lblC5";
-            this.lblC5.Size = new System.Drawing.Size(24, 16);
-            this.lblC5.TabIndex = 59;
-            this.lblC5.Text = "C5";
-            // 
-            // lblC4
-            // 
-            this.lblC4.Image = null;
-            this.lblC4.Location = new System.Drawing.Point(88, 64);
-            this.lblC4.Name = "lblC4";
-            this.lblC4.Size = new System.Drawing.Size(24, 16);
-            this.lblC4.TabIndex = 58;
-            this.lblC4.Text = "C4";
-            // 
-            // lblC3
-            // 
-            this.lblC3.Image = null;
-            this.lblC3.Location = new System.Drawing.Point(112, 64);
-            this.lblC3.Name = "lblC3";
-            this.lblC3.Size = new System.Drawing.Size(24, 16);
-            this.lblC3.TabIndex = 57;
-            this.lblC3.Text = "C3";
-            // 
-            // lblC2
-            // 
-            this.lblC2.Image = null;
-            this.lblC2.Location = new System.Drawing.Point(136, 64);
-            this.lblC2.Name = "lblC2";
-            this.lblC2.Size = new System.Drawing.Size(24, 16);
-            this.lblC2.TabIndex = 56;
-            this.lblC2.Text = "C2";
-            // 
-            // lblC1
-            // 
-            this.lblC1.Image = null;
-            this.lblC1.Location = new System.Drawing.Point(160, 64);
-            this.lblC1.Name = "lblC1";
-            this.lblC1.Size = new System.Drawing.Size(24, 16);
-            this.lblC1.TabIndex = 55;
-            this.lblC1.Text = "C1";
-            // 
-            // lblC0
-            // 
-            this.lblC0.Image = null;
-            this.lblC0.Location = new System.Drawing.Point(184, 64);
-            this.lblC0.Name = "lblC0";
-            this.lblC0.Size = new System.Drawing.Size(24, 16);
-            this.lblC0.TabIndex = 54;
-            this.lblC0.Text = "C0";
-            // 
-            // chkC3
-            // 
-            this.chkC3.Image = null;
-            this.chkC3.Location = new System.Drawing.Point(112, 80);
-            this.chkC3.Name = "chkC3";
-            this.chkC3.Size = new System.Drawing.Size(16, 24);
-            this.chkC3.TabIndex = 52;
-            this.chkC3.CheckedChanged += new System.EventHandler(this.chkC_CheckedChanged);
-            // 
-            // chkC6
-            // 
-            this.chkC6.Image = null;
-            this.chkC6.Location = new System.Drawing.Point(40, 80);
-            this.chkC6.Name = "chkC6";
-            this.chkC6.Size = new System.Drawing.Size(16, 24);
-            this.chkC6.TabIndex = 47;
-            this.chkC6.CheckedChanged += new System.EventHandler(this.chkC_CheckedChanged);
-            // 
-            // chkC1
-            // 
-            this.chkC1.Image = null;
-            this.chkC1.Location = new System.Drawing.Point(160, 80);
-            this.chkC1.Name = "chkC1";
-            this.chkC1.Size = new System.Drawing.Size(16, 24);
-            this.chkC1.TabIndex = 51;
-            this.chkC1.CheckedChanged += new System.EventHandler(this.chkC_CheckedChanged);
-            // 
-            // chkC0
-            // 
-            this.chkC0.Image = null;
-            this.chkC0.Location = new System.Drawing.Point(184, 80);
-            this.chkC0.Name = "chkC0";
-            this.chkC0.Size = new System.Drawing.Size(16, 24);
-            this.chkC0.TabIndex = 50;
-            this.chkC0.CheckedChanged += new System.EventHandler(this.chkC_CheckedChanged);
-            // 
-            // chkC5
-            // 
-            this.chkC5.Image = null;
-            this.chkC5.Location = new System.Drawing.Point(64, 80);
-            this.chkC5.Name = "chkC5";
-            this.chkC5.Size = new System.Drawing.Size(16, 24);
-            this.chkC5.TabIndex = 49;
-            this.chkC5.CheckedChanged += new System.EventHandler(this.chkC_CheckedChanged);
-            // 
-            // chkC4
-            // 
-            this.chkC4.Image = null;
-            this.chkC4.Location = new System.Drawing.Point(88, 80);
-            this.chkC4.Name = "chkC4";
-            this.chkC4.Size = new System.Drawing.Size(16, 24);
-            this.chkC4.TabIndex = 48;
-            this.chkC4.CheckedChanged += new System.EventHandler(this.chkC_CheckedChanged);
-            // 
-            // chkC2
-            // 
-            this.chkC2.Image = null;
-            this.chkC2.Location = new System.Drawing.Point(136, 80);
-            this.chkC2.Name = "chkC2";
-            this.chkC2.Size = new System.Drawing.Size(16, 24);
-            this.chkC2.TabIndex = 53;
-            this.chkC2.CheckedChanged += new System.EventHandler(this.chkC_CheckedChanged);
-            // 
-            // lblL8
-            // 
-            this.lblL8.Image = null;
-            this.lblL8.Location = new System.Drawing.Point(160, 16);
-            this.lblL8.Name = "lblL8";
-            this.lblL8.Size = new System.Drawing.Size(24, 16);
-            this.lblL8.TabIndex = 44;
-            this.lblL8.Text = "L8";
-            // 
-            // lblL7
-            // 
-            this.lblL7.Image = null;
-            this.lblL7.Location = new System.Drawing.Point(136, 16);
-            this.lblL7.Name = "lblL7";
-            this.lblL7.Size = new System.Drawing.Size(24, 16);
-            this.lblL7.TabIndex = 43;
-            this.lblL7.Text = "L7";
-            // 
-            // lblL6
-            // 
-            this.lblL6.Image = null;
-            this.lblL6.Location = new System.Drawing.Point(112, 16);
-            this.lblL6.Name = "lblL6";
-            this.lblL6.Size = new System.Drawing.Size(24, 16);
-            this.lblL6.TabIndex = 42;
-            this.lblL6.Text = "L6";
-            // 
-            // lblL2
-            // 
-            this.lblL2.Image = null;
-            this.lblL2.Location = new System.Drawing.Point(16, 16);
-            this.lblL2.Name = "lblL2";
-            this.lblL2.Size = new System.Drawing.Size(24, 16);
-            this.lblL2.TabIndex = 30;
-            this.lblL2.Text = "L2";
-            // 
-            // chkL8
-            // 
-            this.chkL8.Image = null;
-            this.chkL8.Location = new System.Drawing.Point(160, 32);
-            this.chkL8.Name = "chkL8";
-            this.chkL8.Size = new System.Drawing.Size(16, 24);
-            this.chkL8.TabIndex = 23;
-            this.chkL8.CheckedChanged += new System.EventHandler(this.chkL_CheckedChanged);
-            // 
-            // chkL2
-            // 
-            this.chkL2.Image = null;
-            this.chkL2.Location = new System.Drawing.Point(16, 32);
-            this.chkL2.Name = "chkL2";
-            this.chkL2.Size = new System.Drawing.Size(16, 24);
-            this.chkL2.TabIndex = 26;
-            this.chkL2.CheckedChanged += new System.EventHandler(this.chkL_CheckedChanged);
-            // 
-            // chkL7
-            // 
-            this.chkL7.Image = null;
-            this.chkL7.Location = new System.Drawing.Point(136, 32);
-            this.chkL7.Name = "chkL7";
-            this.chkL7.Size = new System.Drawing.Size(16, 24);
-            this.chkL7.TabIndex = 25;
-            this.chkL7.CheckedChanged += new System.EventHandler(this.chkL_CheckedChanged);
-            // 
-            // chkL6
-            // 
-            this.chkL6.Image = null;
-            this.chkL6.Location = new System.Drawing.Point(112, 32);
-            this.chkL6.Name = "chkL6";
-            this.chkL6.Size = new System.Drawing.Size(16, 24);
-            this.chkL6.TabIndex = 24;
-            this.chkL6.CheckedChanged += new System.EventHandler(this.chkL_CheckedChanged);
-            // 
-            // lblL9
-            // 
-            this.lblL9.Image = null;
-            this.lblL9.Location = new System.Drawing.Point(184, 16);
-            this.lblL9.Name = "lblL9";
-            this.lblL9.Size = new System.Drawing.Size(24, 16);
-            this.lblL9.TabIndex = 46;
-            this.lblL9.Text = "L9";
-            // 
-            // chkL9
-            // 
-            this.chkL9.Image = null;
-            this.chkL9.Location = new System.Drawing.Point(184, 32);
-            this.chkL9.Name = "chkL9";
-            this.chkL9.Size = new System.Drawing.Size(16, 24);
-            this.chkL9.TabIndex = 45;
-            this.chkL9.CheckedChanged += new System.EventHandler(this.chkL_CheckedChanged);
-            // 
-            // chkL3
-            // 
-            this.chkL3.Image = null;
-            this.chkL3.Location = new System.Drawing.Point(40, 32);
-            this.chkL3.Name = "chkL3";
-            this.chkL3.Size = new System.Drawing.Size(16, 24);
-            this.chkL3.TabIndex = 27;
-            this.chkL3.CheckedChanged += new System.EventHandler(this.chkL_CheckedChanged);
-            // 
-            // lblL3
-            // 
-            this.lblL3.Image = null;
-            this.lblL3.Location = new System.Drawing.Point(40, 16);
-            this.lblL3.Name = "lblL3";
-            this.lblL3.Size = new System.Drawing.Size(24, 16);
-            this.lblL3.TabIndex = 31;
-            this.lblL3.Text = "L3";
-            // 
-            // lblL4
-            // 
-            this.lblL4.Image = null;
-            this.lblL4.Location = new System.Drawing.Point(64, 16);
-            this.lblL4.Name = "lblL4";
-            this.lblL4.Size = new System.Drawing.Size(24, 16);
-            this.lblL4.TabIndex = 32;
-            this.lblL4.Text = "L4";
-            // 
-            // chkL4
-            // 
-            this.chkL4.Image = null;
-            this.chkL4.Location = new System.Drawing.Point(64, 32);
-            this.chkL4.Name = "chkL4";
-            this.chkL4.Size = new System.Drawing.Size(16, 24);
-            this.chkL4.TabIndex = 29;
-            this.chkL4.CheckedChanged += new System.EventHandler(this.chkL_CheckedChanged);
-            // 
-            // lblL5
-            // 
-            this.lblL5.Image = null;
-            this.lblL5.Location = new System.Drawing.Point(88, 16);
-            this.lblL5.Name = "lblL5";
-            this.lblL5.Size = new System.Drawing.Size(24, 16);
-            this.lblL5.TabIndex = 33;
-            this.lblL5.Text = "L5";
-            // 
-            // chkL5
-            // 
-            this.chkL5.Image = null;
-            this.chkL5.Location = new System.Drawing.Point(88, 32);
-            this.chkL5.Name = "chkL5";
-            this.chkL5.Size = new System.Drawing.Size(16, 24);
-            this.chkL5.TabIndex = 28;
-            this.chkL5.CheckedChanged += new System.EventHandler(this.chkL_CheckedChanged);
-            // 
-            // udATUL
-            // 
-            this.udATUL.Location = new System.Drawing.Point(576, 408);
-            this.udATUL.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-            this.udATUL.Name = "udATUL";
-            this.udATUL.Size = new System.Drawing.Size(48, 20);
-            this.udATUL.TabIndex = 39;
-            this.udATUL.ValueChanged += new System.EventHandler(this.udATUL_ValueChanged);
-            // 
-            // lblATUL
-            // 
-            this.lblATUL.Image = null;
-            this.lblATUL.Location = new System.Drawing.Point(520, 408);
-            this.lblATUL.Name = "lblATUL";
-            this.lblATUL.Size = new System.Drawing.Size(48, 16);
-            this.lblATUL.TabIndex = 40;
-            this.lblATUL.Text = "ATU - L:";
-            // 
-            // lblATUC
-            // 
-            this.lblATUC.Image = null;
-            this.lblATUC.Location = new System.Drawing.Point(520, 432);
-            this.lblATUC.Name = "lblATUC";
-            this.lblATUC.Size = new System.Drawing.Size(48, 16);
-            this.lblATUC.TabIndex = 42;
-            this.lblATUC.Text = "ATU - C:";
-            // 
-            // udATUC
-            // 
-            this.udATUC.Location = new System.Drawing.Point(576, 432);
-            this.udATUC.Maximum = new decimal(new int[] {
-            127,
-            0,
-            0,
-            0});
-            this.udATUC.Name = "udATUC";
-            this.udATUC.Size = new System.Drawing.Size(48, 20);
-            this.udATUC.TabIndex = 41;
-            this.udATUC.ValueChanged += new System.EventHandler(this.udATUC_ValueChanged);
+            "3"});
+            this.comboTRXPotIndex.Location = new System.Drawing.Point(56, 24);
+            this.comboTRXPotIndex.Name = "comboTRXPotIndex";
+            this.comboTRXPotIndex.Size = new System.Drawing.Size(40, 21);
+            this.comboTRXPotIndex.TabIndex = 2;
+            this.comboTRXPotIndex.SelectedIndexChanged += new System.EventHandler(this.comboTRXPotIndex_SelectedIndexChanged);
+            // 
+            // lblTRXPotIndex
+            // 
+            this.lblTRXPotIndex.Image = null;
+            this.lblTRXPotIndex.Location = new System.Drawing.Point(16, 24);
+            this.lblTRXPotIndex.Name = "lblTRXPotIndex";
+            this.lblTRXPotIndex.Size = new System.Drawing.Size(40, 23);
+            this.lblTRXPotIndex.TabIndex = 3;
+            this.lblTRXPotIndex.Text = "Index:";
+            // 
+            // grpEEPROM
+            // 
+            this.grpEEPROM.Controls.Add(this.chkRX2EEPROM);
+            this.grpEEPROM.Controls.Add(this.txtEEPROMReadFloat);
+            this.grpEEPROM.Controls.Add(this.txtEEPROMWriteFloat);
+            this.grpEEPROM.Controls.Add(this.btnEEPROMWriteFloat);
+            this.grpEEPROM.Controls.Add(this.btnEEPROMReadFloat);
+            this.grpEEPROM.Controls.Add(this.txtEEPROMOffset);
+            this.grpEEPROM.Controls.Add(this.txtEEPROMRead);
+            this.grpEEPROM.Controls.Add(this.txtEEPROMWrite);
+            this.grpEEPROM.Controls.Add(this.lblEEPROMOffset);
+            this.grpEEPROM.Controls.Add(this.btnEEPROMWrite);
+            this.grpEEPROM.Controls.Add(this.btnEEPROMRead);
+            this.grpEEPROM.Location = new System.Drawing.Point(8, 128);
+            this.grpEEPROM.Name = "grpEEPROM";
+            this.grpEEPROM.Size = new System.Drawing.Size(168, 168);
+            this.grpEEPROM.TabIndex = 25;
+            this.grpEEPROM.TabStop = false;
+            this.grpEEPROM.Text = "EEPROM";
+            // 
+            // chkRX2EEPROM
+            // 
+            this.chkRX2EEPROM.Image = null;
+            this.chkRX2EEPROM.Location = new System.Drawing.Point(120, 16);
+            this.chkRX2EEPROM.Name = "chkRX2EEPROM";
+            this.chkRX2EEPROM.Size = new System.Drawing.Size(16, 24);
+            this.chkRX2EEPROM.TabIndex = 44;
+            // 
+            // txtEEPROMReadFloat
+            // 
+            this.txtEEPROMReadFloat.Location = new System.Drawing.Point(64, 128);
+            this.txtEEPROMReadFloat.Name = "txtEEPROMReadFloat";
+            this.txtEEPROMReadFloat.ReadOnly = true;
+            this.txtEEPROMReadFloat.Size = new System.Drawing.Size(64, 20);
+            this.txtEEPROMReadFloat.TabIndex = 28;
+            this.txtEEPROMReadFloat.Text = "0";
+            // 
+            // txtEEPROMWriteFloat
+            // 
+            this.txtEEPROMWriteFloat.Location = new System.Drawing.Point(64, 104);
+            this.txtEEPROMWriteFloat.Name = "txtEEPROMWriteFloat";
+            this.txtEEPROMWriteFloat.Size = new System.Drawing.Size(64, 20);
+            this.txtEEPROMWriteFloat.TabIndex = 27;
+            this.txtEEPROMWriteFloat.Text = "0";
+            // 
+            // btnEEPROMWriteFloat
+            // 
+            this.btnEEPROMWriteFloat.Image = null;
+            this.btnEEPROMWriteFloat.Location = new System.Drawing.Point(16, 104);
+            this.btnEEPROMWriteFloat.Name = "btnEEPROMWriteFloat";
+            this.btnEEPROMWriteFloat.Size = new System.Drawing.Size(40, 23);
+            this.btnEEPROMWriteFloat.TabIndex = 29;
+            this.btnEEPROMWriteFloat.Text = "Write";
+            this.btnEEPROMWriteFloat.Click += new System.EventHandler(this.btnEEPROMWriteFloat_Click);
+            // 
+            // btnEEPROMReadFloat
+            // 
+            this.btnEEPROMReadFloat.Image = null;
+            this.btnEEPROMReadFloat.Location = new System.Drawing.Point(16, 128);
+            this.btnEEPROMReadFloat.Name = "btnEEPROMReadFloat";
+            this.btnEEPROMReadFloat.Size = new System.Drawing.Size(40, 23);
+            this.btnEEPROMReadFloat.TabIndex = 30;
+            this.btnEEPROMReadFloat.Text = "Read";
+            this.btnEEPROMReadFloat.Click += new System.EventHandler(this.btnEEPROMReadFloat_Click);
+            // 
+            // txtEEPROMOffset
+            // 
+            this.txtEEPROMOffset.Location = new System.Drawing.Point(64, 24);
+            this.txtEEPROMOffset.Name = "txtEEPROMOffset";
+            this.txtEEPROMOffset.Size = new System.Drawing.Size(40, 20);
+            this.txtEEPROMOffset.TabIndex = 26;
+            this.txtEEPROMOffset.Text = "0";
+            // 
+            // txtEEPROMRead
+            // 
+            this.txtEEPROMRead.Location = new System.Drawing.Point(64, 72);
+            this.txtEEPROMRead.Name = "txtEEPROMRead";
+            this.txtEEPROMRead.ReadOnly = true;
+            this.txtEEPROMRead.Size = new System.Drawing.Size(64, 20);
+            this.txtEEPROMRead.TabIndex = 4;
+            this.txtEEPROMRead.Text = "0";
+            // 
+            // txtEEPROMWrite
+            // 
+            this.txtEEPROMWrite.Location = new System.Drawing.Point(64, 48);
+            this.txtEEPROMWrite.Name = "txtEEPROMWrite";
+            this.txtEEPROMWrite.Size = new System.Drawing.Size(64, 20);
+            this.txtEEPROMWrite.TabIndex = 3;
+            this.txtEEPROMWrite.Text = "0";
+            // 
+            // lblEEPROMOffset
+            // 
+            this.lblEEPROMOffset.Image = null;
+            this.lblEEPROMOffset.Location = new System.Drawing.Point(16, 24);
+            this.lblEEPROMOffset.Name = "lblEEPROMOffset";
+            this.lblEEPROMOffset.Size = new System.Drawing.Size(56, 16);
+            this.lblEEPROMOffset.TabIndex = 1;
+            this.lblEEPROMOffset.Text = "Offset:";
+            // 
+            // btnEEPROMWrite
+            // 
+            this.btnEEPROMWrite.Image = null;
+            this.btnEEPROMWrite.Location = new System.Drawing.Point(16, 48);
+            this.btnEEPROMWrite.Name = "btnEEPROMWrite";
+            this.btnEEPROMWrite.Size = new System.Drawing.Size(40, 23);
+            this.btnEEPROMWrite.TabIndex = 24;
+            this.btnEEPROMWrite.Text = "Write";
+            this.btnEEPROMWrite.Click += new System.EventHandler(this.btnEEPROMWrite_Click);
+            // 
+            // btnEEPROMRead
+            // 
+            this.btnEEPROMRead.Image = null;
+            this.btnEEPROMRead.Location = new System.Drawing.Point(16, 72);
+            this.btnEEPROMRead.Name = "btnEEPROMRead";
+            this.btnEEPROMRead.Size = new System.Drawing.Size(40, 23);
+            this.btnEEPROMRead.TabIndex = 25;
+            this.btnEEPROMRead.Text = "Read";
+            this.btnEEPROMRead.Click += new System.EventHandler(this.btnEEPROMRead_Click);
+            // 
+            // grpPIO
+            // 
+            this.grpPIO.Controls.Add(this.comboPIOReg);
+            this.grpPIO.Controls.Add(this.txtPIORead);
+            this.grpPIO.Controls.Add(this.txtPIOWrite);
+            this.grpPIO.Controls.Add(this.lblPIORegister);
+            this.grpPIO.Controls.Add(this.btnPIOWrite);
+            this.grpPIO.Controls.Add(this.btnPIORead);
+            this.grpPIO.Controls.Add(this.lblPIOChip);
+            this.grpPIO.Controls.Add(this.comboPIOChip);
+            this.grpPIO.Location = new System.Drawing.Point(408, 8);
+            this.grpPIO.Name = "grpPIO";
+            this.grpPIO.Size = new System.Drawing.Size(192, 112);
+            this.grpPIO.TabIndex = 24;
+            this.grpPIO.TabStop = false;
+            this.grpPIO.Text = "PIO";
+            // 
+            // comboPIOReg
+            // 
+            this.comboPIOReg.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboPIOReg.DropDownWidth = 80;
+            this.comboPIOReg.Items.AddRange(new object[] {
+            "0 (Input 0)",
+            "1 (Input 1)",
+            "2 (Output 0)",
+            "3 (Output 1)",
+            "4 (Pol Inv 0)",
+            "5 (Pol Inv 1)",
+            "6 (DDR 0)",
+            "7 (DDR 1)"});
+            this.comboPIOReg.Location = new System.Drawing.Point(64, 48);
+            this.comboPIOReg.Name = "comboPIOReg";
+            this.comboPIOReg.Size = new System.Drawing.Size(32, 21);
+            this.comboPIOReg.TabIndex = 32;
+            this.comboPIOReg.SelectedIndexChanged += new System.EventHandler(this.comboPIOReg_SelectedIndexChanged);
+            // 
+            // txtPIORead
+            // 
+            this.txtPIORead.Location = new System.Drawing.Point(64, 72);
+            this.txtPIORead.Name = "txtPIORead";
+            this.txtPIORead.ReadOnly = true;
+            this.txtPIORead.Size = new System.Drawing.Size(40, 20);
+            this.txtPIORead.TabIndex = 29;
+            this.txtPIORead.Text = "0";
+            // 
+            // txtPIOWrite
+            // 
+            this.txtPIOWrite.Location = new System.Drawing.Point(112, 48);
+            this.txtPIOWrite.Name = "txtPIOWrite";
+            this.txtPIOWrite.Size = new System.Drawing.Size(40, 20);
+            this.txtPIOWrite.TabIndex = 28;
+            this.txtPIOWrite.Text = "0";
+            // 
+            // lblPIORegister
+            // 
+            this.lblPIORegister.Image = null;
+            this.lblPIORegister.Location = new System.Drawing.Point(16, 48);
+            this.lblPIORegister.Name = "lblPIORegister";
+            this.lblPIORegister.Size = new System.Drawing.Size(56, 16);
+            this.lblPIORegister.TabIndex = 27;
+            this.lblPIORegister.Text = "Register:";
+            // 
+            // btnPIOWrite
+            // 
+            this.btnPIOWrite.Image = null;
+            this.btnPIOWrite.Location = new System.Drawing.Point(112, 72);
+            this.btnPIOWrite.Name = "btnPIOWrite";
+            this.btnPIOWrite.Size = new System.Drawing.Size(40, 23);
+            this.btnPIOWrite.TabIndex = 30;
+            this.btnPIOWrite.Text = "Write";
+            this.btnPIOWrite.Click += new System.EventHandler(this.btnPIOWrite_Click);
+            // 
+            // btnPIORead
+            // 
+            this.btnPIORead.Image = null;
+            this.btnPIORead.Location = new System.Drawing.Point(16, 72);
+            this.btnPIORead.Name = "btnPIORead";
+            this.btnPIORead.Size = new System.Drawing.Size(40, 23);
+            this.btnPIORead.TabIndex = 31;
+            this.btnPIORead.Text = "Read";
+            this.btnPIORead.Click += new System.EventHandler(this.btnPIORead_Click);
+            // 
+            // lblPIOChip
+            // 
+            this.lblPIOChip.Image = null;
+            this.lblPIOChip.Location = new System.Drawing.Point(16, 16);
+            this.lblPIOChip.Name = "lblPIOChip";
+            this.lblPIOChip.Size = new System.Drawing.Size(32, 23);
+            this.lblPIOChip.TabIndex = 1;
+            this.lblPIOChip.Text = "Chip:";
+            // 
+            // comboPIOChip
+            // 
+            this.comboPIOChip.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboPIOChip.DropDownWidth = 80;
+            this.comboPIOChip.Items.AddRange(new object[] {
+            "TRX IC14",
+            "TRX IC26",
+            "TRX IC30",
+            "TRX IC31",
+            "RFIO IC1",
+            "PA IC9",
+            "RX2 IC30",
+            "RX2 IC31",
+            "VU IC16",
+            "VU IC17"});
+            this.comboPIOChip.Location = new System.Drawing.Point(48, 16);
+            this.comboPIOChip.Name = "comboPIOChip";
+            this.comboPIOChip.Size = new System.Drawing.Size(80, 21);
+            this.comboPIOChip.TabIndex = 0;
+            this.comboPIOChip.SelectedIndexChanged += new System.EventHandler(this.comboPIOChip_SelectedIndexChanged);
+            // 
+            // grpClockGen
+            // 
+            this.grpClockGen.Controls.Add(this.chkClockGenCS);
+            this.grpClockGen.Controls.Add(this.chkClockGenReset);
+            this.grpClockGen.Controls.Add(this.comboClockGenReg);
+            this.grpClockGen.Controls.Add(this.txtClockGenReadVal);
+            this.grpClockGen.Controls.Add(this.txtClockGenWriteVal);
+            this.grpClockGen.Controls.Add(this.lblClockGenReg);
+            this.grpClockGen.Controls.Add(this.btnClockGenWrite);
+            this.grpClockGen.Controls.Add(this.btnClockGenRead);
+            this.grpClockGen.Location = new System.Drawing.Point(8, 8);
+            this.grpClockGen.Name = "grpClockGen";
+            this.grpClockGen.Size = new System.Drawing.Size(168, 112);
+            this.grpClockGen.TabIndex = 22;
+            this.grpClockGen.TabStop = false;
+            this.grpClockGen.Text = "ClockGen";
+            // 
+            // chkClockGenCS
+            // 
+            this.chkClockGenCS.Image = null;
+            this.chkClockGenCS.Location = new System.Drawing.Point(88, 80);
+            this.chkClockGenCS.Name = "chkClockGenCS";
+            this.chkClockGenCS.Size = new System.Drawing.Size(40, 24);
+            this.chkClockGenCS.TabIndex = 28;
+            this.chkClockGenCS.Text = "CS";
+            this.chkClockGenCS.CheckedChanged += new System.EventHandler(this.chkClockGenCS_CheckedChanged);
+            // 
+            // chkClockGenReset
+            // 
+            this.chkClockGenReset.Image = null;
+            this.chkClockGenReset.Location = new System.Drawing.Point(16, 80);
+            this.chkClockGenReset.Name = "chkClockGenReset";
+            this.chkClockGenReset.Size = new System.Drawing.Size(56, 24);
+            this.chkClockGenReset.TabIndex = 27;
+            this.chkClockGenReset.Text = "Reset";
+            this.chkClockGenReset.CheckedChanged += new System.EventHandler(this.chkClockGenReset_CheckedChanged);
+            // 
+            // comboClockGenReg
+            // 
+            this.comboClockGenReg.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboClockGenReg.DropDownWidth = 40;
+            this.comboClockGenReg.Location = new System.Drawing.Point(64, 24);
+            this.comboClockGenReg.Name = "comboClockGenReg";
+            this.comboClockGenReg.Size = new System.Drawing.Size(40, 21);
+            this.comboClockGenReg.TabIndex = 26;
+            this.comboClockGenReg.SelectedIndexChanged += new System.EventHandler(this.comboClockGenReg_SelectedIndexChanged);
+            // 
+            // txtClockGenReadVal
+            // 
+            this.txtClockGenReadVal.Location = new System.Drawing.Point(64, 48);
+            this.txtClockGenReadVal.Name = "txtClockGenReadVal";
+            this.txtClockGenReadVal.ReadOnly = true;
+            this.txtClockGenReadVal.Size = new System.Drawing.Size(40, 20);
+            this.txtClockGenReadVal.TabIndex = 4;
+            this.txtClockGenReadVal.Text = "0";
+            // 
+            // txtClockGenWriteVal
+            // 
+            this.txtClockGenWriteVal.Location = new System.Drawing.Point(112, 24);
+            this.txtClockGenWriteVal.Name = "txtClockGenWriteVal";
+            this.txtClockGenWriteVal.Size = new System.Drawing.Size(40, 20);
+            this.txtClockGenWriteVal.TabIndex = 3;
+            this.txtClockGenWriteVal.Text = "0";
+            // 
+            // lblClockGenReg
+            // 
+            this.lblClockGenReg.Image = null;
+            this.lblClockGenReg.Location = new System.Drawing.Point(16, 24);
+            this.lblClockGenReg.Name = "lblClockGenReg";
+            this.lblClockGenReg.Size = new System.Drawing.Size(56, 16);
+            this.lblClockGenReg.TabIndex = 1;
+            this.lblClockGenReg.Text = "Register:";
+            // 
+            // btnClockGenWrite
+            // 
+            this.btnClockGenWrite.Image = null;
+            this.btnClockGenWrite.Location = new System.Drawing.Point(112, 48);
+            this.btnClockGenWrite.Name = "btnClockGenWrite";
+            this.btnClockGenWrite.Size = new System.Drawing.Size(40, 23);
+            this.btnClockGenWrite.TabIndex = 24;
+            this.btnClockGenWrite.Text = "Write";
+            this.btnClockGenWrite.Click += new System.EventHandler(this.btnClockGenWrite_Click);
+            // 
+            // btnClockGenRead
+            // 
+            this.btnClockGenRead.Image = null;
+            this.btnClockGenRead.Location = new System.Drawing.Point(16, 48);
+            this.btnClockGenRead.Name = "btnClockGenRead";
+            this.btnClockGenRead.Size = new System.Drawing.Size(40, 23);
+            this.btnClockGenRead.TabIndex = 25;
+            this.btnClockGenRead.Text = "Read";
+            this.btnClockGenRead.Click += new System.EventHandler(this.btnClockGenRead_Click);
+            // 
+            // grpDDS
+            // 
+            this.grpDDS.Controls.Add(this.btnIOUpdate);
+            this.grpDDS.Controls.Add(this.chkManualIOUpdate);
+            this.grpDDS.Controls.Add(this.chkRX2DDS);
+            this.grpDDS.Controls.Add(this.chkDDSCS);
+            this.grpDDS.Controls.Add(this.chkDDSReset);
+            this.grpDDS.Controls.Add(this.comboDDSChan);
+            this.grpDDS.Controls.Add(this.lblDDSChan);
+            this.grpDDS.Controls.Add(this.comboDDSReg);
+            this.grpDDS.Controls.Add(this.txtDDSWrite);
+            this.grpDDS.Controls.Add(this.lblDDSReg);
+            this.grpDDS.Controls.Add(this.btnDDSWrite);
+            this.grpDDS.Controls.Add(this.txtDDSReadVal);
+            this.grpDDS.Controls.Add(this.btnDDSRead);
+            this.grpDDS.Location = new System.Drawing.Point(184, 8);
+            this.grpDDS.Name = "grpDDS";
+            this.grpDDS.Size = new System.Drawing.Size(208, 112);
+            this.grpDDS.TabIndex = 23;
+            this.grpDDS.TabStop = false;
+            this.grpDDS.Text = "DDS";
+            // 
+            // btnIOUpdate
+            // 
+            this.btnIOUpdate.Image = null;
+            this.btnIOUpdate.Location = new System.Drawing.Point(136, 79);
+            this.btnIOUpdate.Name = "btnIOUpdate";
+            this.btnIOUpdate.Size = new System.Drawing.Size(64, 23);
+            this.btnIOUpdate.TabIndex = 45;
+            this.btnIOUpdate.Text = "IO Update";
+            this.btnIOUpdate.Click += new System.EventHandler(this.btnIOUpdate_Click);
+            // 
+            // chkManualIOUpdate
+            // 
+            this.chkManualIOUpdate.Image = null;
+            this.chkManualIOUpdate.Location = new System.Drawing.Point(116, 80);
+            this.chkManualIOUpdate.Name = "chkManualIOUpdate";
+            this.chkManualIOUpdate.Size = new System.Drawing.Size(20, 24);
+            this.chkManualIOUpdate.TabIndex = 44;
+            this.chkManualIOUpdate.CheckedChanged += new System.EventHandler(this.chkManualIOUpdate_CheckedChanged);
+            // 
+            // chkRX2DDS
+            // 
+            this.chkRX2DDS.Image = null;
+            this.chkRX2DDS.Location = new System.Drawing.Point(184, 8);
+            this.chkRX2DDS.Name = "chkRX2DDS";
+            this.chkRX2DDS.Size = new System.Drawing.Size(20, 24);
+            this.chkRX2DDS.TabIndex = 43;
+            this.chkRX2DDS.Text = "RX2";
+            // 
+            // chkDDSCS
+            // 
+            this.chkDDSCS.Image = null;
+            this.chkDDSCS.Location = new System.Drawing.Point(6, 77);
+            this.chkDDSCS.Name = "chkDDSCS";
+            this.chkDDSCS.Size = new System.Drawing.Size(40, 24);
+            this.chkDDSCS.TabIndex = 42;
+            this.chkDDSCS.Text = "CS";
+            this.chkDDSCS.Visible = false;
+            this.chkDDSCS.CheckedChanged += new System.EventHandler(this.chkDDSCS_CheckedChanged);
+            // 
+            // chkDDSReset
+            // 
+            this.chkDDSReset.Image = null;
+            this.chkDDSReset.Location = new System.Drawing.Point(6, 78);
+            this.chkDDSReset.Name = "chkDDSReset";
+            this.chkDDSReset.Size = new System.Drawing.Size(56, 24);
+            this.chkDDSReset.TabIndex = 41;
+            this.chkDDSReset.Text = "Reset";
+            this.chkDDSReset.Visible = false;
+            this.chkDDSReset.CheckedChanged += new System.EventHandler(this.chkDDSReset_CheckedChanged);
+            // 
+            // comboDDSChan
+            // 
+            this.comboDDSChan.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboDDSChan.DropDownWidth = 40;
+            this.comboDDSChan.Items.AddRange(new object[] {
+            "0",
+            "1",
+            "2",
+            "3"});
+            this.comboDDSChan.Location = new System.Drawing.Point(64, 80);
+            this.comboDDSChan.Name = "comboDDSChan";
+            this.comboDDSChan.Size = new System.Drawing.Size(40, 21);
+            this.comboDDSChan.TabIndex = 40;
+            this.comboDDSChan.SelectedIndexChanged += new System.EventHandler(this.comboDDSChan_SelectedIndexChanged);
+            // 
+            // lblDDSChan
+            // 
+            this.lblDDSChan.Image = null;
+            this.lblDDSChan.Location = new System.Drawing.Point(16, 80);
+            this.lblDDSChan.Name = "lblDDSChan";
+            this.lblDDSChan.Size = new System.Drawing.Size(56, 16);
+            this.lblDDSChan.TabIndex = 39;
+            this.lblDDSChan.Text = "Channel:";
+            // 
+            // comboDDSReg
+            // 
+            this.comboDDSReg.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboDDSReg.DropDownWidth = 40;
+            this.comboDDSReg.Location = new System.Drawing.Point(64, 24);
+            this.comboDDSReg.Name = "comboDDSReg";
+            this.comboDDSReg.Size = new System.Drawing.Size(40, 21);
+            this.comboDDSReg.TabIndex = 38;
+            this.comboDDSReg.SelectedIndexChanged += new System.EventHandler(this.comboDDSReg_SelectedIndexChanged);
+            // 
+            // txtDDSWrite
+            // 
+            this.txtDDSWrite.Location = new System.Drawing.Point(112, 24);
+            this.txtDDSWrite.Name = "txtDDSWrite";
+            this.txtDDSWrite.Size = new System.Drawing.Size(64, 20);
+            this.txtDDSWrite.TabIndex = 34;
+            this.txtDDSWrite.Text = "0";
+            // 
+            // lblDDSReg
+            // 
+            this.lblDDSReg.Image = null;
+            this.lblDDSReg.Location = new System.Drawing.Point(16, 24);
+            this.lblDDSReg.Name = "lblDDSReg";
+            this.lblDDSReg.Size = new System.Drawing.Size(56, 16);
+            this.lblDDSReg.TabIndex = 33;
+            this.lblDDSReg.Text = "Register:";
+            // 
+            // btnDDSWrite
+            // 
+            this.btnDDSWrite.Image = null;
+            this.btnDDSWrite.Location = new System.Drawing.Point(136, 48);
+            this.btnDDSWrite.Name = "btnDDSWrite";
+            this.btnDDSWrite.Size = new System.Drawing.Size(40, 23);
+            this.btnDDSWrite.TabIndex = 36;
+            this.btnDDSWrite.Text = "Write";
+            this.btnDDSWrite.Click += new System.EventHandler(this.btnDDSWrite_Click);
+            // 
+            // txtDDSReadVal
+            // 
+            this.txtDDSReadVal.Location = new System.Drawing.Point(64, 48);
+            this.txtDDSReadVal.Name = "txtDDSReadVal";
+            this.txtDDSReadVal.ReadOnly = true;
+            this.txtDDSReadVal.Size = new System.Drawing.Size(64, 20);
+            this.txtDDSReadVal.TabIndex = 26;
+            this.txtDDSReadVal.Text = "0";
+            // 
+            // btnDDSRead
+            // 
+            this.btnDDSRead.Image = null;
+            this.btnDDSRead.Location = new System.Drawing.Point(16, 48);
+            this.btnDDSRead.Name = "btnDDSRead";
+            this.btnDDSRead.Size = new System.Drawing.Size(40, 23);
+            this.btnDDSRead.TabIndex = 27;
+            this.btnDDSRead.Text = "Read";
+            this.btnDDSRead.Click += new System.EventHandler(this.btnDDSRead_Click);
+            // 
+            // comboMuxChan
+            // 
+            this.comboMuxChan.DropDownWidth = 56;
+            this.comboMuxChan.Items.AddRange(new object[] {
+            "None",
+            "Chan0",
+            "Chan1"});
+            this.comboMuxChan.Location = new System.Drawing.Point(568, 368);
+            this.comboMuxChan.Name = "comboMuxChan";
+            this.comboMuxChan.Size = new System.Drawing.Size(56, 21);
+            this.comboMuxChan.TabIndex = 0;
+            this.comboMuxChan.SelectedIndexChanged += new System.EventHandler(this.comboMuxChan_SelectedIndexChanged);
+            // 
+            // lblMuxChannel
+            // 
+            this.lblMuxChannel.Image = null;
+            this.lblMuxChannel.Location = new System.Drawing.Point(512, 368);
+            this.lblMuxChannel.Name = "lblMuxChannel";
+            this.lblMuxChannel.Size = new System.Drawing.Size(56, 23);
+            this.lblMuxChannel.TabIndex = 1;
+            this.lblMuxChannel.Text = "Mux:";
             // 
             // FLEX5000LLHWForm
             // 
@@ -2178,31 +2204,31 @@ namespace PowerSDR
             this.Name = "FLEX5000LLHWForm";
             this.Text = "FLEX-5000 Low Level Hardware Control";
             this.Closing += new System.ComponentModel.CancelEventHandler(this.FLEX5000LLHWForm_Closing);
-            this.grpClockGen.ResumeLayout(false);
-            this.grpClockGen.PerformLayout();
-            this.grpDDS.ResumeLayout(false);
-            this.grpDDS.PerformLayout();
-            this.grpPIO.ResumeLayout(false);
-            this.grpPIO.PerformLayout();
-            this.grpEEPROM.ResumeLayout(false);
-            this.grpEEPROM.PerformLayout();
-            this.grpTRXPot.ResumeLayout(false);
-            this.grpTRXPot.PerformLayout();
-            this.grpCodec.ResumeLayout(false);
-            this.grpCodec.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.udATUL)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udATUC)).EndInit();
+            this.grpATURelays.ResumeLayout(false);
+            this.grpFlexWire.ResumeLayout(false);
+            this.grpFlexWire.PerformLayout();
+            this.grpATU.ResumeLayout(false);
+            this.grpATU.PerformLayout();
+            this.grpPAPot.ResumeLayout(false);
+            this.grpPAPot.PerformLayout();
             this.grpGPIODDR.ResumeLayout(false);
             this.grpGPIODDR.PerformLayout();
             this.grpGPIO.ResumeLayout(false);
             this.grpGPIO.PerformLayout();
-            this.grpPAPot.ResumeLayout(false);
-            this.grpPAPot.PerformLayout();
-            this.grpATU.ResumeLayout(false);
-            this.grpATU.PerformLayout();
-            this.grpFlexWire.ResumeLayout(false);
-            this.grpFlexWire.PerformLayout();
-            this.grpATURelays.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.udATUL)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.udATUC)).EndInit();
+            this.grpCodec.ResumeLayout(false);
+            this.grpCodec.PerformLayout();
+            this.grpTRXPot.ResumeLayout(false);
+            this.grpTRXPot.PerformLayout();
+            this.grpEEPROM.ResumeLayout(false);
+            this.grpEEPROM.PerformLayout();
+            this.grpPIO.ResumeLayout(false);
+            this.grpPIO.PerformLayout();
+            this.grpClockGen.ResumeLayout(false);
+            this.grpClockGen.PerformLayout();
+            this.grpDDS.ResumeLayout(false);
+            this.grpDDS.PerformLayout();
             this.ResumeLayout(false);
 
 		}
@@ -2645,9 +2671,9 @@ namespace PowerSDR
 		private void btnCodecRead_Click(object sender, System.EventArgs e)
 		{
 			if(comboCodecReg.Text == "") return;
-			int reg = int.Parse(comboCodecReg.Text, System.Globalization.NumberStyles.HexNumber);
+            byte reg = byte.Parse(comboCodecReg.Text, System.Globalization.NumberStyles.HexNumber);
 			
-			int val;
+			byte val;
 			if(FWC.ReadCodecReg(reg, out val) == 0)
 				MessageBox.Show("Error in ReadCodecReg");
 
@@ -2662,8 +2688,8 @@ namespace PowerSDR
 		private void btnCodecWrite_Click(object sender, System.EventArgs e)
 		{
 			if(comboCodecReg.Text == "") return;
-			int reg = int.Parse(comboCodecReg.Text, System.Globalization.NumberStyles.HexNumber);
-			int val = int.Parse(txtCodecWrite.Text, System.Globalization.NumberStyles.HexNumber);
+            byte reg = byte.Parse(comboCodecReg.Text, System.Globalization.NumberStyles.HexNumber);
+            byte val = byte.Parse(txtCodecWrite.Text, System.Globalization.NumberStyles.HexNumber);
 
 			if(FWC.WriteCodecReg(reg, val) == 0)
 				MessageBox.Show("Error in WriteCodecReg");
@@ -2732,6 +2758,7 @@ namespace PowerSDR
 
 			byte count;
 			string s = "";
+            Thread.Sleep((int)timeout_ms);
 			do
 			{
 				FWC.ATUGetResult(out b1, out b2, out b3, out count, timeout_ms);
@@ -2927,5 +2954,15 @@ namespace PowerSDR
 			chkC5.Checked = ((val & 0x20) == 0x20);
 			chkC6.Checked = ((val & 0x40) == 0x40);
 		}
+
+        private void chkManualIOUpdate_CheckedChanged(object sender, EventArgs e)
+        {
+            FWC.SetManualIOUpdate(chkManualIOUpdate.Checked);
+        }
+
+        private void btnIOUpdate_Click(object sender, EventArgs e)
+        {
+            FWC.DDSIOUpdate();
+        }
 	}
 }

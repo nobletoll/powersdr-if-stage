@@ -2,7 +2,7 @@
 // common.cs
 //=================================================================
 // PowerSDR is a C# implementation of a Software Defined Radio.
-// Copyright (C) 2004-2009  FlexRadio Systems
+// Copyright (C) 2004-2011  FlexRadio Systems
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -18,11 +18,11 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
-// You may contact us via email at: sales@flex-radio.com.
+// You may contact us via email at: gpl@flexradio.com.
 // Paper mail may be sent to: 
 //    FlexRadio Systems
-//    8900 Marybank Dr.
-//    Austin, TX 78750
+//    4616 W. Howard Lane  Suite 1-150
+//    Austin, TX 78728
 //    USA
 //=================================================================
 
@@ -31,6 +31,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Collections;
 using System.Windows.Forms;
+using System.IO.Ports;
 
 namespace PowerSDR
 {
@@ -105,6 +106,7 @@ namespace PowerSDR
 		public static void RestoreForm(Form form, string tablename, bool restore_size)
 		{
 			ArrayList temp = new ArrayList();		// list of all first level controls
+            //int VUskip = 0;
 			ControlList(form, ref temp);
 
 			ArrayList checkbox_list = new ArrayList();
@@ -115,24 +117,27 @@ namespace PowerSDR
 			ArrayList trackbar_list = new ArrayList();
 			ArrayList colorbutton_list = new ArrayList();
 
-			//ArrayList controls = new ArrayList();	// list of controls to restore
-			foreach(Control c in temp)
-			{
-				if(c.GetType() == typeof(CheckBoxTS))			// the control is a CheckBoxTS
-					checkbox_list.Add(c);
-				else if(c.GetType() == typeof(ComboBoxTS))		// the control is a ComboBox
-					combobox_list.Add(c);
-				else if(c.GetType() == typeof(NumericUpDownTS))	// the control is a NumericUpDown
-					numericupdown_list.Add(c);
-				else if(c.GetType() == typeof(RadioButtonTS))	// the control is a RadioButton
-					radiobutton_list.Add(c);
-				else if(c.GetType() == typeof(TextBoxTS))		// the control is a TextBox
-					textbox_list.Add(c);
-				else if(c.GetType() == typeof(TrackBarTS))		// the control is a TrackBar (slider)
-					trackbar_list.Add(c);
-				else if(c.GetType() == typeof(ColorButton))
-					colorbutton_list.Add(c);
-			}
+            //ArrayList controls = new ArrayList();	// list of controls to restore
+            foreach (Control c in temp)
+            {
+                if (c.GetType() == typeof(CheckBoxTS))			// the control is a CheckBoxTS
+                    checkbox_list.Add(c);
+                else if (c.GetType() == typeof(ComboBoxTS))		// the control is a ComboBox
+                    combobox_list.Add(c);
+                else if (c.GetType() == typeof(NumericUpDownTS))// the control is a NumericUpDown
+                    numericupdown_list.Add(c);
+                else if (c.GetType() == typeof(RadioButtonTS))	// the control is a RadioButton
+                    radiobutton_list.Add(c);
+                else if (c.GetType() == typeof(TextBoxTS))		// the control is a TextBox
+                    textbox_list.Add(c);
+                else if (c.GetType() == typeof(TrackBarTS))		// the control is a TrackBar (slider)
+                    trackbar_list.Add(c);
+                else if (c.GetType() == typeof(ColorButton))
+                    colorbutton_list.Add(c);
+            }
+
+            
+            
 			temp.Clear();	// now that we have the controls we want, delete first list 
 
 			ArrayList a = DB.GetVars(tablename);						// Get the saved list of controls
@@ -391,5 +396,33 @@ namespace PowerSDR
 
 			tc.ResumeLayout();
 		}
+
+        public static string[] SortedComPorts()
+        {
+            string[] ports = SerialPort.GetPortNames();
+            Array.Sort<string>(ports, delegate(string strA, string strB)
+            {
+                try
+                {
+                    int idA = int.Parse(strA.Substring(3));
+                    int idB = int.Parse(strB.Substring(3));
+
+                    return idA.CompareTo(idB);
+                }
+                catch (Exception)
+                {
+                    return strA.CompareTo(strB);
+                }
+            });
+            return ports;
+        }
+
+        public static string RevToString(uint rev)
+        {
+            return ((byte)(rev >> 24)).ToString() + "." +
+                ((byte)(rev >> 16)).ToString() + "." +
+                ((byte)(rev >> 8)).ToString() + "." +
+                ((byte)(rev >> 0)).ToString();
+        }
 	}
 }

@@ -2,7 +2,7 @@
 // wizard.cs
 //=================================================================
 // PowerSDR is a C# implementation of a Software Defined Radio.
-// Copyright (C) 2004-2009  FlexRadio Systems
+// Copyright (C) 2004-2011  FlexRadio Systems
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -18,11 +18,11 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
-// You may contact us via email at: sales@flex-radio.com.
+// You may contact us via email at: gpl@flexradio.com.
 // Paper mail may be sent to: 
 //    FlexRadio Systems
-//    8900 Marybank Dr.
-//    Austin, TX 78750
+//    4616 W. Howard Lane  Suite 1-150
+//    Austin, TX 78728
 //    USA
 //=================================================================
 
@@ -112,6 +112,7 @@ namespace PowerSDR
 		private System.Windows.Forms.RadioButtonTS radGenModelSDR1000;
 		private System.Windows.Forms.GroupBox grpModel;
 		private System.Windows.Forms.RadioButtonTS radGenModelFLEX5000;
+        private RadioButtonTS radGenModelFLEX1500;
 		private System.ComponentModel.Container components = null;
 
 		#endregion
@@ -136,16 +137,16 @@ namespace PowerSDR
 			pll_mult = 0;
 
 			gain_by_band = new float[10];
-			gain_by_band[0] = console.SetupForm.PAGain160;
-			gain_by_band[1] = console.SetupForm.PAGain80;
-			gain_by_band[2] = console.SetupForm.PAGain60;
-			gain_by_band[3] = console.SetupForm.PAGain40;
-			gain_by_band[4] = console.SetupForm.PAGain30;
-			gain_by_band[5] = console.SetupForm.PAGain20;
-			gain_by_band[6] = console.SetupForm.PAGain17;
-			gain_by_band[7] = console.SetupForm.PAGain15;
-			gain_by_band[8] = console.SetupForm.PAGain12;
-			gain_by_band[9] = console.SetupForm.PAGain10;
+			gain_by_band[0] = console.setupForm.PAGain160;
+			gain_by_band[1] = console.setupForm.PAGain80;
+			gain_by_band[2] = console.setupForm.PAGain60;
+			gain_by_band[3] = console.setupForm.PAGain40;
+			gain_by_band[4] = console.setupForm.PAGain30;
+			gain_by_band[5] = console.setupForm.PAGain20;
+			gain_by_band[6] = console.setupForm.PAGain17;
+			gain_by_band[7] = console.setupForm.PAGain15;
+			gain_by_band[8] = console.setupForm.PAGain12;
+			gain_by_band[9] = console.setupForm.PAGain10;
 
 			model = console.CurrentModel;
 			switch(model)
@@ -164,6 +165,9 @@ namespace PowerSDR
 					//radGenModelFLEX5000.Checked = true;
 					break;
 			}
+
+            if (console.hid_init && !console.fwc_init)
+                radGenModelFLEX1500.Checked = true;
 
 			CurPage = Page.WELCOME;
 			btnNext_Click(this, EventArgs.Empty);
@@ -194,704 +198,721 @@ namespace PowerSDR
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(SetupWizard));
-			this.btnPrevious = new System.Windows.Forms.ButtonTS();
-			this.btnNext = new System.Windows.Forms.ButtonTS();
-			this.btnFinished = new System.Windows.Forms.ButtonTS();
-			this.pictureBox1 = new System.Windows.Forms.PictureBox();
-			this.lblMessage1 = new System.Windows.Forms.LabelTS();
-			this.radYes = new System.Windows.Forms.RadioButtonTS();
-			this.radNo = new System.Windows.Forms.RadioButtonTS();
-			this.lblMessage2 = new System.Windows.Forms.LabelTS();
-			this.comboBox1 = new System.Windows.Forms.ComboBoxTS();
-			this.lblCombo = new System.Windows.Forms.LabelTS();
-			this.comboBox2 = new System.Windows.Forms.ComboBoxTS();
-			this.button1 = new System.Windows.Forms.ButtonTS();
-			this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-			this.comboBox3 = new System.Windows.Forms.ComboBoxTS();
-			this.groupBox2 = new System.Windows.Forms.GroupBoxTS();
-			this.lblPAGainByBand10 = new System.Windows.Forms.LabelTS();
-			this.udPAGainByBand10 = new System.Windows.Forms.NumericUpDownTS();
-			this.lblPAGainByBand12 = new System.Windows.Forms.LabelTS();
-			this.udPAGainByBand12 = new System.Windows.Forms.NumericUpDownTS();
-			this.lblPAGainByBand15 = new System.Windows.Forms.LabelTS();
-			this.udPAGainByBand15 = new System.Windows.Forms.NumericUpDownTS();
-			this.lblPAGainByBand17 = new System.Windows.Forms.LabelTS();
-			this.udPAGainByBand17 = new System.Windows.Forms.NumericUpDownTS();
-			this.lblPAGainByBand20 = new System.Windows.Forms.LabelTS();
-			this.udPAGainByBand20 = new System.Windows.Forms.NumericUpDownTS();
-			this.lblPAGainByBand30 = new System.Windows.Forms.LabelTS();
-			this.udPAGainByBand30 = new System.Windows.Forms.NumericUpDownTS();
-			this.lblPAGainByBand40 = new System.Windows.Forms.LabelTS();
-			this.udPAGainByBand40 = new System.Windows.Forms.NumericUpDownTS();
-			this.lblPAGainByBand60 = new System.Windows.Forms.LabelTS();
-			this.udPAGainByBand60 = new System.Windows.Forms.NumericUpDownTS();
-			this.lblPAGainByBand80 = new System.Windows.Forms.LabelTS();
-			this.udPAGainByBand80 = new System.Windows.Forms.NumericUpDownTS();
-			this.lblPAGainByBand160 = new System.Windows.Forms.LabelTS();
-			this.udPAGainByBand160 = new System.Windows.Forms.NumericUpDownTS();
-			this.grpModel = new System.Windows.Forms.GroupBox();
-			this.radGenModelFLEX5000 = new System.Windows.Forms.RadioButtonTS();
-			this.radGenModelDemoNone = new System.Windows.Forms.RadioButtonTS();
-			this.radGenModelSoftRock40 = new System.Windows.Forms.RadioButtonTS();
-			this.radGenModelSDR1000 = new System.Windows.Forms.RadioButtonTS();
-			this.groupBox2.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.udPAGainByBand10)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.udPAGainByBand12)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.udPAGainByBand15)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.udPAGainByBand17)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.udPAGainByBand20)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.udPAGainByBand30)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.udPAGainByBand40)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.udPAGainByBand60)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.udPAGainByBand80)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.udPAGainByBand160)).BeginInit();
-			this.grpModel.SuspendLayout();
-			this.SuspendLayout();
-			// 
-			// btnPrevious
-			// 
-			this.btnPrevious.Image = null;
-			this.btnPrevious.Location = new System.Drawing.Point(224, 248);
-			this.btnPrevious.Name = "btnPrevious";
-			this.btnPrevious.TabIndex = 0;
-			this.btnPrevious.Text = "Previous";
-			this.btnPrevious.Click += new System.EventHandler(this.btnPrevious_Click);
-			// 
-			// btnNext
-			// 
-			this.btnNext.Image = null;
-			this.btnNext.Location = new System.Drawing.Point(312, 248);
-			this.btnNext.Name = "btnNext";
-			this.btnNext.TabIndex = 1;
-			this.btnNext.Text = "Next";
-			this.btnNext.Click += new System.EventHandler(this.btnNext_Click);
-			// 
-			// btnFinished
-			// 
-			this.btnFinished.Enabled = false;
-			this.btnFinished.Image = null;
-			this.btnFinished.Location = new System.Drawing.Point(400, 248);
-			this.btnFinished.Name = "btnFinished";
-			this.btnFinished.TabIndex = 2;
-			this.btnFinished.Text = "Finish";
-			this.btnFinished.Click += new System.EventHandler(this.btnFinished_Click);
-			// 
-			// pictureBox1
-			// 
-			this.pictureBox1.Location = new System.Drawing.Point(42, 56);
-			this.pictureBox1.Name = "pictureBox1";
-			this.pictureBox1.Size = new System.Drawing.Size(171, 128);
-			this.pictureBox1.TabIndex = 3;
-			this.pictureBox1.TabStop = false;
-			this.pictureBox1.Visible = false;
-			// 
-			// lblMessage1
-			// 
-			this.lblMessage1.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
-			this.lblMessage1.Image = null;
-			this.lblMessage1.Location = new System.Drawing.Point(16, 8);
-			this.lblMessage1.Name = "lblMessage1";
-			this.lblMessage1.Size = new System.Drawing.Size(456, 136);
-			this.lblMessage1.TabIndex = 4;
-			this.lblMessage1.Text = "lblMessage1";
-			// 
-			// radYes
-			// 
-			this.radYes.Image = null;
-			this.radYes.Location = new System.Drawing.Point(272, 32);
-			this.radYes.Name = "radYes";
-			this.radYes.Size = new System.Drawing.Size(48, 16);
-			this.radYes.TabIndex = 5;
-			this.radYes.Text = "Yes";
-			this.radYes.Visible = false;
-			this.radYes.CheckedChanged += new System.EventHandler(this.radYes_CheckedChanged);
-			// 
-			// radNo
-			// 
-			this.radNo.Image = null;
-			this.radNo.Location = new System.Drawing.Point(328, 32);
-			this.radNo.Name = "radNo";
-			this.radNo.Size = new System.Drawing.Size(48, 16);
-			this.radNo.TabIndex = 6;
-			this.radNo.Text = "No";
-			this.radNo.Visible = false;
-			this.radNo.CheckedChanged += new System.EventHandler(this.radNo_CheckedChanged);
-			// 
-			// lblMessage2
-			// 
-			this.lblMessage2.Image = null;
-			this.lblMessage2.Location = new System.Drawing.Point(8, 192);
-			this.lblMessage2.Name = "lblMessage2";
-			this.lblMessage2.Size = new System.Drawing.Size(464, 48);
-			this.lblMessage2.TabIndex = 7;
-			this.lblMessage2.Text = "lblMessage2";
-			// 
-			// comboBox1
-			// 
-			this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboBox1.DropDownWidth = 136;
-			this.comboBox1.Items.AddRange(new object[] {
-														   "DEMI144-28FRS",
-														   "DEMI144-28 (25w)"});
-			this.comboBox1.Location = new System.Drawing.Point(336, 112);
-			this.comboBox1.Name = "comboBox1";
-			this.comboBox1.Size = new System.Drawing.Size(136, 21);
-			this.comboBox1.TabIndex = 8;
-			this.comboBox1.Visible = false;
-			// 
-			// lblCombo
-			// 
-			this.lblCombo.Image = null;
-			this.lblCombo.Location = new System.Drawing.Point(272, 112);
-			this.lblCombo.Name = "lblCombo";
-			this.lblCombo.Size = new System.Drawing.Size(192, 72);
-			this.lblCombo.TabIndex = 9;
-			this.lblCombo.Text = "lblCombo";
-			// 
-			// comboBox2
-			// 
-			this.comboBox2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboBox2.DropDownWidth = 56;
-			this.comboBox2.Items.AddRange(new object[] {
-														   "10",
-														   "20"});
-			this.comboBox2.Location = new System.Drawing.Point(384, 112);
-			this.comboBox2.Name = "comboBox2";
-			this.comboBox2.Size = new System.Drawing.Size(56, 21);
-			this.comboBox2.TabIndex = 10;
-			// 
-			// button1
-			// 
-			this.button1.Image = null;
-			this.button1.Location = new System.Drawing.Point(312, 128);
-			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(88, 23);
-			this.button1.TabIndex = 11;
-			this.button1.Text = "Select File ...";
-			this.button1.Click += new System.EventHandler(this.button1_Click);
-			// 
-			// openFileDialog1
-			// 
-			this.openFileDialog1.FileOk += new System.ComponentModel.CancelEventHandler(this.openFileDialog1_FileOk);
-			// 
-			// comboBox3
-			// 
-			this.comboBox3.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboBox3.DropDownWidth = 184;
-			this.comboBox3.Items.AddRange(new object[] {
-														   "M-Audio Delta 44 (PCI)",
-														   "PreSonus FireBox (FireWire)",
-														   "Edirol FA-66 (FireWire)",
-														   "SB Audigy (PCI)",
-														   "SB Audigy 2 (PCI)",
-														   "SB Audigy 2 ZS (PCI)",
-														   "Sound Blaster Extigy (USB)",
-														   "Sound Blaster MP3+ (USB)",
-														   "Turtle Beach Santa Cruz (PCI)",
-														   "Unsupported Card"});
-			this.comboBox3.Location = new System.Drawing.Point(264, 104);
-			this.comboBox3.MaxDropDownItems = 10;
-			this.comboBox3.Name = "comboBox3";
-			this.comboBox3.Size = new System.Drawing.Size(184, 21);
-			this.comboBox3.TabIndex = 12;
-			this.comboBox3.SelectedIndexChanged += new System.EventHandler(this.comboBox3_SelectedIndexChanged);
-			// 
-			// groupBox2
-			// 
-			this.groupBox2.Controls.Add(this.lblPAGainByBand10);
-			this.groupBox2.Controls.Add(this.udPAGainByBand10);
-			this.groupBox2.Controls.Add(this.lblPAGainByBand12);
-			this.groupBox2.Controls.Add(this.udPAGainByBand12);
-			this.groupBox2.Controls.Add(this.lblPAGainByBand15);
-			this.groupBox2.Controls.Add(this.udPAGainByBand15);
-			this.groupBox2.Controls.Add(this.lblPAGainByBand17);
-			this.groupBox2.Controls.Add(this.udPAGainByBand17);
-			this.groupBox2.Controls.Add(this.lblPAGainByBand20);
-			this.groupBox2.Controls.Add(this.udPAGainByBand20);
-			this.groupBox2.Controls.Add(this.lblPAGainByBand30);
-			this.groupBox2.Controls.Add(this.udPAGainByBand30);
-			this.groupBox2.Controls.Add(this.lblPAGainByBand40);
-			this.groupBox2.Controls.Add(this.udPAGainByBand40);
-			this.groupBox2.Controls.Add(this.lblPAGainByBand60);
-			this.groupBox2.Controls.Add(this.udPAGainByBand60);
-			this.groupBox2.Controls.Add(this.lblPAGainByBand80);
-			this.groupBox2.Controls.Add(this.udPAGainByBand80);
-			this.groupBox2.Controls.Add(this.lblPAGainByBand160);
-			this.groupBox2.Controls.Add(this.udPAGainByBand160);
-			this.groupBox2.Location = new System.Drawing.Point(240, 48);
-			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(216, 136);
-			this.groupBox2.TabIndex = 13;
-			this.groupBox2.TabStop = false;
-			this.groupBox2.Text = "Gain By Band (dB)";
-			this.groupBox2.Visible = false;
-			// 
-			// lblPAGainByBand10
-			// 
-			this.lblPAGainByBand10.Image = null;
-			this.lblPAGainByBand10.Location = new System.Drawing.Point(112, 112);
-			this.lblPAGainByBand10.Name = "lblPAGainByBand10";
-			this.lblPAGainByBand10.Size = new System.Drawing.Size(40, 16);
-			this.lblPAGainByBand10.TabIndex = 19;
-			this.lblPAGainByBand10.Text = "10m:";
-			// 
-			// udPAGainByBand10
-			// 
-			this.udPAGainByBand10.DecimalPlaces = 1;
-			this.udPAGainByBand10.Increment = new System.Decimal(new int[] {
-																			   1,
-																			   0,
-																			   0,
-																			   65536});
-			this.udPAGainByBand10.Location = new System.Drawing.Point(152, 112);
-			this.udPAGainByBand10.Maximum = new System.Decimal(new int[] {
-																			 100,
-																			 0,
-																			 0,
-																			 0});
-			this.udPAGainByBand10.Minimum = new System.Decimal(new int[] {
-																			 390,
-																			 0,
-																			 0,
-																			 65536});
-			this.udPAGainByBand10.Name = "udPAGainByBand10";
-			this.udPAGainByBand10.Size = new System.Drawing.Size(48, 20);
-			this.udPAGainByBand10.TabIndex = 18;
-			this.udPAGainByBand10.Value = new System.Decimal(new int[] {
-																		   430,
-																		   0,
-																		   0,
-																		   65536});
-			// 
-			// lblPAGainByBand12
-			// 
-			this.lblPAGainByBand12.Image = null;
-			this.lblPAGainByBand12.Location = new System.Drawing.Point(112, 88);
-			this.lblPAGainByBand12.Name = "lblPAGainByBand12";
-			this.lblPAGainByBand12.Size = new System.Drawing.Size(40, 16);
-			this.lblPAGainByBand12.TabIndex = 17;
-			this.lblPAGainByBand12.Text = "12m:";
-			// 
-			// udPAGainByBand12
-			// 
-			this.udPAGainByBand12.DecimalPlaces = 1;
-			this.udPAGainByBand12.Increment = new System.Decimal(new int[] {
-																			   1,
-																			   0,
-																			   0,
-																			   65536});
-			this.udPAGainByBand12.Location = new System.Drawing.Point(152, 88);
-			this.udPAGainByBand12.Maximum = new System.Decimal(new int[] {
-																			 100,
-																			 0,
-																			 0,
-																			 0});
-			this.udPAGainByBand12.Minimum = new System.Decimal(new int[] {
-																			 390,
-																			 0,
-																			 0,
-																			 65536});
-			this.udPAGainByBand12.Name = "udPAGainByBand12";
-			this.udPAGainByBand12.Size = new System.Drawing.Size(48, 20);
-			this.udPAGainByBand12.TabIndex = 16;
-			this.udPAGainByBand12.Value = new System.Decimal(new int[] {
-																		   474,
-																		   0,
-																		   0,
-																		   65536});
-			// 
-			// lblPAGainByBand15
-			// 
-			this.lblPAGainByBand15.Image = null;
-			this.lblPAGainByBand15.Location = new System.Drawing.Point(112, 64);
-			this.lblPAGainByBand15.Name = "lblPAGainByBand15";
-			this.lblPAGainByBand15.Size = new System.Drawing.Size(40, 16);
-			this.lblPAGainByBand15.TabIndex = 15;
-			this.lblPAGainByBand15.Text = "15m:";
-			// 
-			// udPAGainByBand15
-			// 
-			this.udPAGainByBand15.DecimalPlaces = 1;
-			this.udPAGainByBand15.Increment = new System.Decimal(new int[] {
-																			   1,
-																			   0,
-																			   0,
-																			   65536});
-			this.udPAGainByBand15.Location = new System.Drawing.Point(152, 64);
-			this.udPAGainByBand15.Maximum = new System.Decimal(new int[] {
-																			 100,
-																			 0,
-																			 0,
-																			 0});
-			this.udPAGainByBand15.Minimum = new System.Decimal(new int[] {
-																			 390,
-																			 0,
-																			 0,
-																			 65536});
-			this.udPAGainByBand15.Name = "udPAGainByBand15";
-			this.udPAGainByBand15.Size = new System.Drawing.Size(48, 20);
-			this.udPAGainByBand15.TabIndex = 14;
-			this.udPAGainByBand15.Value = new System.Decimal(new int[] {
-																		   481,
-																		   0,
-																		   0,
-																		   65536});
-			// 
-			// lblPAGainByBand17
-			// 
-			this.lblPAGainByBand17.Image = null;
-			this.lblPAGainByBand17.Location = new System.Drawing.Point(112, 40);
-			this.lblPAGainByBand17.Name = "lblPAGainByBand17";
-			this.lblPAGainByBand17.Size = new System.Drawing.Size(40, 16);
-			this.lblPAGainByBand17.TabIndex = 13;
-			this.lblPAGainByBand17.Text = "17m:";
-			// 
-			// udPAGainByBand17
-			// 
-			this.udPAGainByBand17.DecimalPlaces = 1;
-			this.udPAGainByBand17.Increment = new System.Decimal(new int[] {
-																			   1,
-																			   0,
-																			   0,
-																			   65536});
-			this.udPAGainByBand17.Location = new System.Drawing.Point(152, 40);
-			this.udPAGainByBand17.Maximum = new System.Decimal(new int[] {
-																			 100,
-																			 0,
-																			 0,
-																			 0});
-			this.udPAGainByBand17.Minimum = new System.Decimal(new int[] {
-																			 390,
-																			 0,
-																			 0,
-																			 65536});
-			this.udPAGainByBand17.Name = "udPAGainByBand17";
-			this.udPAGainByBand17.Size = new System.Drawing.Size(48, 20);
-			this.udPAGainByBand17.TabIndex = 12;
-			this.udPAGainByBand17.Value = new System.Decimal(new int[] {
-																		   493,
-																		   0,
-																		   0,
-																		   65536});
-			// 
-			// lblPAGainByBand20
-			// 
-			this.lblPAGainByBand20.Image = null;
-			this.lblPAGainByBand20.Location = new System.Drawing.Point(112, 16);
-			this.lblPAGainByBand20.Name = "lblPAGainByBand20";
-			this.lblPAGainByBand20.Size = new System.Drawing.Size(40, 16);
-			this.lblPAGainByBand20.TabIndex = 11;
-			this.lblPAGainByBand20.Text = "20m:";
-			// 
-			// udPAGainByBand20
-			// 
-			this.udPAGainByBand20.DecimalPlaces = 1;
-			this.udPAGainByBand20.Increment = new System.Decimal(new int[] {
-																			   1,
-																			   0,
-																			   0,
-																			   65536});
-			this.udPAGainByBand20.Location = new System.Drawing.Point(152, 16);
-			this.udPAGainByBand20.Maximum = new System.Decimal(new int[] {
-																			 100,
-																			 0,
-																			 0,
-																			 0});
-			this.udPAGainByBand20.Minimum = new System.Decimal(new int[] {
-																			 390,
-																			 0,
-																			 0,
-																			 65536});
-			this.udPAGainByBand20.Name = "udPAGainByBand20";
-			this.udPAGainByBand20.Size = new System.Drawing.Size(48, 20);
-			this.udPAGainByBand20.TabIndex = 10;
-			this.udPAGainByBand20.Value = new System.Decimal(new int[] {
-																		   483,
-																		   0,
-																		   0,
-																		   65536});
-			// 
-			// lblPAGainByBand30
-			// 
-			this.lblPAGainByBand30.Image = null;
-			this.lblPAGainByBand30.Location = new System.Drawing.Point(16, 112);
-			this.lblPAGainByBand30.Name = "lblPAGainByBand30";
-			this.lblPAGainByBand30.Size = new System.Drawing.Size(40, 16);
-			this.lblPAGainByBand30.TabIndex = 9;
-			this.lblPAGainByBand30.Text = "30m:";
-			// 
-			// udPAGainByBand30
-			// 
-			this.udPAGainByBand30.DecimalPlaces = 1;
-			this.udPAGainByBand30.Increment = new System.Decimal(new int[] {
-																			   1,
-																			   0,
-																			   0,
-																			   65536});
-			this.udPAGainByBand30.Location = new System.Drawing.Point(56, 112);
-			this.udPAGainByBand30.Maximum = new System.Decimal(new int[] {
-																			 100,
-																			 0,
-																			 0,
-																			 0});
-			this.udPAGainByBand30.Minimum = new System.Decimal(new int[] {
-																			 390,
-																			 0,
-																			 0,
-																			 65536});
-			this.udPAGainByBand30.Name = "udPAGainByBand30";
-			this.udPAGainByBand30.Size = new System.Drawing.Size(48, 20);
-			this.udPAGainByBand30.TabIndex = 8;
-			this.udPAGainByBand30.Value = new System.Decimal(new int[] {
-																		   489,
-																		   0,
-																		   0,
-																		   65536});
-			// 
-			// lblPAGainByBand40
-			// 
-			this.lblPAGainByBand40.Image = null;
-			this.lblPAGainByBand40.Location = new System.Drawing.Point(16, 88);
-			this.lblPAGainByBand40.Name = "lblPAGainByBand40";
-			this.lblPAGainByBand40.Size = new System.Drawing.Size(40, 16);
-			this.lblPAGainByBand40.TabIndex = 7;
-			this.lblPAGainByBand40.Text = "40m:";
-			// 
-			// udPAGainByBand40
-			// 
-			this.udPAGainByBand40.DecimalPlaces = 1;
-			this.udPAGainByBand40.Increment = new System.Decimal(new int[] {
-																			   1,
-																			   0,
-																			   0,
-																			   65536});
-			this.udPAGainByBand40.Location = new System.Drawing.Point(56, 88);
-			this.udPAGainByBand40.Maximum = new System.Decimal(new int[] {
-																			 100,
-																			 0,
-																			 0,
-																			 0});
-			this.udPAGainByBand40.Minimum = new System.Decimal(new int[] {
-																			 390,
-																			 0,
-																			 0,
-																			 65536});
-			this.udPAGainByBand40.Name = "udPAGainByBand40";
-			this.udPAGainByBand40.Size = new System.Drawing.Size(48, 20);
-			this.udPAGainByBand40.TabIndex = 6;
-			this.udPAGainByBand40.Value = new System.Decimal(new int[] {
-																		   469,
-																		   0,
-																		   0,
-																		   65536});
-			// 
-			// lblPAGainByBand60
-			// 
-			this.lblPAGainByBand60.Image = null;
-			this.lblPAGainByBand60.Location = new System.Drawing.Point(16, 64);
-			this.lblPAGainByBand60.Name = "lblPAGainByBand60";
-			this.lblPAGainByBand60.Size = new System.Drawing.Size(40, 16);
-			this.lblPAGainByBand60.TabIndex = 5;
-			this.lblPAGainByBand60.Text = "60m:";
-			// 
-			// udPAGainByBand60
-			// 
-			this.udPAGainByBand60.DecimalPlaces = 1;
-			this.udPAGainByBand60.Increment = new System.Decimal(new int[] {
-																			   1,
-																			   0,
-																			   0,
-																			   65536});
-			this.udPAGainByBand60.Location = new System.Drawing.Point(56, 64);
-			this.udPAGainByBand60.Maximum = new System.Decimal(new int[] {
-																			 100,
-																			 0,
-																			 0,
-																			 0});
-			this.udPAGainByBand60.Minimum = new System.Decimal(new int[] {
-																			 390,
-																			 0,
-																			 0,
-																			 65536});
-			this.udPAGainByBand60.Name = "udPAGainByBand60";
-			this.udPAGainByBand60.Size = new System.Drawing.Size(48, 20);
-			this.udPAGainByBand60.TabIndex = 4;
-			this.udPAGainByBand60.Value = new System.Decimal(new int[] {
-																		   474,
-																		   0,
-																		   0,
-																		   65536});
-			// 
-			// lblPAGainByBand80
-			// 
-			this.lblPAGainByBand80.Image = null;
-			this.lblPAGainByBand80.Location = new System.Drawing.Point(16, 40);
-			this.lblPAGainByBand80.Name = "lblPAGainByBand80";
-			this.lblPAGainByBand80.Size = new System.Drawing.Size(40, 16);
-			this.lblPAGainByBand80.TabIndex = 3;
-			this.lblPAGainByBand80.Text = "80m:";
-			// 
-			// udPAGainByBand80
-			// 
-			this.udPAGainByBand80.DecimalPlaces = 1;
-			this.udPAGainByBand80.Increment = new System.Decimal(new int[] {
-																			   1,
-																			   0,
-																			   0,
-																			   65536});
-			this.udPAGainByBand80.Location = new System.Drawing.Point(56, 40);
-			this.udPAGainByBand80.Maximum = new System.Decimal(new int[] {
-																			 100,
-																			 0,
-																			 0,
-																			 0});
-			this.udPAGainByBand80.Minimum = new System.Decimal(new int[] {
-																			 390,
-																			 0,
-																			 0,
-																			 65536});
-			this.udPAGainByBand80.Name = "udPAGainByBand80";
-			this.udPAGainByBand80.Size = new System.Drawing.Size(48, 20);
-			this.udPAGainByBand80.TabIndex = 2;
-			this.udPAGainByBand80.Value = new System.Decimal(new int[] {
-																		   480,
-																		   0,
-																		   0,
-																		   65536});
-			// 
-			// lblPAGainByBand160
-			// 
-			this.lblPAGainByBand160.Image = null;
-			this.lblPAGainByBand160.Location = new System.Drawing.Point(16, 16);
-			this.lblPAGainByBand160.Name = "lblPAGainByBand160";
-			this.lblPAGainByBand160.Size = new System.Drawing.Size(40, 16);
-			this.lblPAGainByBand160.TabIndex = 1;
-			this.lblPAGainByBand160.Text = "160m:";
-			// 
-			// udPAGainByBand160
-			// 
-			this.udPAGainByBand160.DecimalPlaces = 1;
-			this.udPAGainByBand160.Increment = new System.Decimal(new int[] {
-																				1,
-																				0,
-																				0,
-																				65536});
-			this.udPAGainByBand160.Location = new System.Drawing.Point(56, 16);
-			this.udPAGainByBand160.Maximum = new System.Decimal(new int[] {
-																			  100,
-																			  0,
-																			  0,
-																			  0});
-			this.udPAGainByBand160.Minimum = new System.Decimal(new int[] {
-																			  390,
-																			  0,
-																			  0,
-																			  65536});
-			this.udPAGainByBand160.Name = "udPAGainByBand160";
-			this.udPAGainByBand160.Size = new System.Drawing.Size(48, 20);
-			this.udPAGainByBand160.TabIndex = 0;
-			this.udPAGainByBand160.Value = new System.Decimal(new int[] {
-																			490,
-																			0,
-																			0,
-																			65536});
-			// 
-			// grpModel
-			// 
-			this.grpModel.Controls.Add(this.radGenModelFLEX5000);
-			this.grpModel.Controls.Add(this.radGenModelDemoNone);
-			this.grpModel.Controls.Add(this.radGenModelSoftRock40);
-			this.grpModel.Controls.Add(this.radGenModelSDR1000);
-			this.grpModel.Location = new System.Drawing.Point(272, 56);
-			this.grpModel.Name = "grpModel";
-			this.grpModel.Size = new System.Drawing.Size(120, 128);
-			this.grpModel.TabIndex = 20;
-			this.grpModel.TabStop = false;
-			this.grpModel.Text = "Model";
-			this.grpModel.Visible = false;
-			// 
-			// radGenModelFLEX5000
-			// 
-			this.radGenModelFLEX5000.Checked = true;
-			this.radGenModelFLEX5000.Image = null;
-			this.radGenModelFLEX5000.Location = new System.Drawing.Point(16, 24);
-			this.radGenModelFLEX5000.Name = "radGenModelFLEX5000";
-			this.radGenModelFLEX5000.Size = new System.Drawing.Size(88, 24);
-			this.radGenModelFLEX5000.TabIndex = 6;
-			this.radGenModelFLEX5000.TabStop = true;
-			this.radGenModelFLEX5000.Text = "FLEX-5000";
-			this.radGenModelFLEX5000.CheckedChanged += new System.EventHandler(this.radGenModelFLEX5000_CheckedChanged);
-			// 
-			// radGenModelDemoNone
-			// 
-			this.radGenModelDemoNone.Image = null;
-			this.radGenModelDemoNone.Location = new System.Drawing.Point(16, 96);
-			this.radGenModelDemoNone.Name = "radGenModelDemoNone";
-			this.radGenModelDemoNone.Size = new System.Drawing.Size(88, 24);
-			this.radGenModelDemoNone.TabIndex = 5;
-			this.radGenModelDemoNone.Text = "Demo/None";
-			this.radGenModelDemoNone.CheckedChanged += new System.EventHandler(this.radGenModelDemoNone_CheckedChanged);
-			// 
-			// radGenModelSoftRock40
-			// 
-			this.radGenModelSoftRock40.Image = null;
-			this.radGenModelSoftRock40.Location = new System.Drawing.Point(16, 72);
-			this.radGenModelSoftRock40.Name = "radGenModelSoftRock40";
-			this.radGenModelSoftRock40.Size = new System.Drawing.Size(88, 24);
-			this.radGenModelSoftRock40.TabIndex = 4;
-			this.radGenModelSoftRock40.Text = "Soft Rock 40";
-			this.radGenModelSoftRock40.CheckedChanged += new System.EventHandler(this.radGenModelSoftRock40_CheckedChanged);
-			// 
-			// radGenModelSDR1000
-			// 
-			this.radGenModelSDR1000.Image = null;
-			this.radGenModelSDR1000.Location = new System.Drawing.Point(16, 48);
-			this.radGenModelSDR1000.Name = "radGenModelSDR1000";
-			this.radGenModelSDR1000.Size = new System.Drawing.Size(88, 24);
-			this.radGenModelSDR1000.TabIndex = 3;
-			this.radGenModelSDR1000.Text = "SDR-1000";
-			this.radGenModelSDR1000.CheckedChanged += new System.EventHandler(this.radGenModelSDR1000_CheckedChanged);
-			// 
-			// SetupWizard
-			// 
-			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-			this.ClientSize = new System.Drawing.Size(488, 286);
-			this.Controls.Add(this.grpModel);
-			this.Controls.Add(this.groupBox2);
-			this.Controls.Add(this.comboBox3);
-			this.Controls.Add(this.button1);
-			this.Controls.Add(this.comboBox2);
-			this.Controls.Add(this.comboBox1);
-			this.Controls.Add(this.lblMessage2);
-			this.Controls.Add(this.radNo);
-			this.Controls.Add(this.radYes);
-			this.Controls.Add(this.pictureBox1);
-			this.Controls.Add(this.btnFinished);
-			this.Controls.Add(this.btnNext);
-			this.Controls.Add(this.btnPrevious);
-			this.Controls.Add(this.lblCombo);
-			this.Controls.Add(this.lblMessage1);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-			this.MaximizeBox = false;
-			this.MinimizeBox = false;
-			this.Name = "SetupWizard";
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-			this.Text = "PowerSDR Setup Wizard - Welcome";
-			this.Closing += new System.ComponentModel.CancelEventHandler(this.SetupWizard_Closing);
-			this.groupBox2.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.udPAGainByBand10)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.udPAGainByBand12)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.udPAGainByBand15)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.udPAGainByBand17)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.udPAGainByBand20)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.udPAGainByBand30)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.udPAGainByBand40)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.udPAGainByBand60)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.udPAGainByBand80)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.udPAGainByBand160)).EndInit();
-			this.grpModel.ResumeLayout(false);
-			this.ResumeLayout(false);
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SetupWizard));
+            this.btnPrevious = new System.Windows.Forms.ButtonTS();
+            this.btnNext = new System.Windows.Forms.ButtonTS();
+            this.btnFinished = new System.Windows.Forms.ButtonTS();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.lblMessage1 = new System.Windows.Forms.LabelTS();
+            this.radYes = new System.Windows.Forms.RadioButtonTS();
+            this.radNo = new System.Windows.Forms.RadioButtonTS();
+            this.lblMessage2 = new System.Windows.Forms.LabelTS();
+            this.comboBox1 = new System.Windows.Forms.ComboBoxTS();
+            this.lblCombo = new System.Windows.Forms.LabelTS();
+            this.comboBox2 = new System.Windows.Forms.ComboBoxTS();
+            this.button1 = new System.Windows.Forms.ButtonTS();
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.comboBox3 = new System.Windows.Forms.ComboBoxTS();
+            this.groupBox2 = new System.Windows.Forms.GroupBoxTS();
+            this.lblPAGainByBand10 = new System.Windows.Forms.LabelTS();
+            this.udPAGainByBand10 = new System.Windows.Forms.NumericUpDownTS();
+            this.lblPAGainByBand12 = new System.Windows.Forms.LabelTS();
+            this.udPAGainByBand12 = new System.Windows.Forms.NumericUpDownTS();
+            this.lblPAGainByBand15 = new System.Windows.Forms.LabelTS();
+            this.udPAGainByBand15 = new System.Windows.Forms.NumericUpDownTS();
+            this.lblPAGainByBand17 = new System.Windows.Forms.LabelTS();
+            this.udPAGainByBand17 = new System.Windows.Forms.NumericUpDownTS();
+            this.lblPAGainByBand20 = new System.Windows.Forms.LabelTS();
+            this.udPAGainByBand20 = new System.Windows.Forms.NumericUpDownTS();
+            this.lblPAGainByBand30 = new System.Windows.Forms.LabelTS();
+            this.udPAGainByBand30 = new System.Windows.Forms.NumericUpDownTS();
+            this.lblPAGainByBand40 = new System.Windows.Forms.LabelTS();
+            this.udPAGainByBand40 = new System.Windows.Forms.NumericUpDownTS();
+            this.lblPAGainByBand60 = new System.Windows.Forms.LabelTS();
+            this.udPAGainByBand60 = new System.Windows.Forms.NumericUpDownTS();
+            this.lblPAGainByBand80 = new System.Windows.Forms.LabelTS();
+            this.udPAGainByBand80 = new System.Windows.Forms.NumericUpDownTS();
+            this.lblPAGainByBand160 = new System.Windows.Forms.LabelTS();
+            this.udPAGainByBand160 = new System.Windows.Forms.NumericUpDownTS();
+            this.grpModel = new System.Windows.Forms.GroupBox();
+            this.radGenModelFLEX1500 = new System.Windows.Forms.RadioButtonTS();
+            this.radGenModelFLEX5000 = new System.Windows.Forms.RadioButtonTS();
+            this.radGenModelDemoNone = new System.Windows.Forms.RadioButtonTS();
+            this.radGenModelSoftRock40 = new System.Windows.Forms.RadioButtonTS();
+            this.radGenModelSDR1000 = new System.Windows.Forms.RadioButtonTS();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.udPAGainByBand10)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udPAGainByBand12)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udPAGainByBand15)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udPAGainByBand17)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udPAGainByBand20)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udPAGainByBand30)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udPAGainByBand40)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udPAGainByBand60)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udPAGainByBand80)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udPAGainByBand160)).BeginInit();
+            this.grpModel.SuspendLayout();
+            this.SuspendLayout();
+            // 
+            // btnPrevious
+            // 
+            this.btnPrevious.Image = null;
+            this.btnPrevious.Location = new System.Drawing.Point(224, 248);
+            this.btnPrevious.Name = "btnPrevious";
+            this.btnPrevious.Size = new System.Drawing.Size(75, 23);
+            this.btnPrevious.TabIndex = 0;
+            this.btnPrevious.Text = "Previous";
+            this.btnPrevious.Click += new System.EventHandler(this.btnPrevious_Click);
+            // 
+            // btnNext
+            // 
+            this.btnNext.Image = null;
+            this.btnNext.Location = new System.Drawing.Point(312, 248);
+            this.btnNext.Name = "btnNext";
+            this.btnNext.Size = new System.Drawing.Size(75, 23);
+            this.btnNext.TabIndex = 1;
+            this.btnNext.Text = "Next";
+            this.btnNext.Click += new System.EventHandler(this.btnNext_Click);
+            // 
+            // btnFinished
+            // 
+            this.btnFinished.Enabled = false;
+            this.btnFinished.Image = null;
+            this.btnFinished.Location = new System.Drawing.Point(400, 248);
+            this.btnFinished.Name = "btnFinished";
+            this.btnFinished.Size = new System.Drawing.Size(75, 23);
+            this.btnFinished.TabIndex = 2;
+            this.btnFinished.Text = "Finish";
+            this.btnFinished.Click += new System.EventHandler(this.btnFinished_Click);
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Location = new System.Drawing.Point(42, 56);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(171, 128);
+            this.pictureBox1.TabIndex = 3;
+            this.pictureBox1.TabStop = false;
+            this.pictureBox1.Visible = false;
+            // 
+            // lblMessage1
+            // 
+            this.lblMessage1.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblMessage1.Image = null;
+            this.lblMessage1.Location = new System.Drawing.Point(16, 8);
+            this.lblMessage1.Name = "lblMessage1";
+            this.lblMessage1.Size = new System.Drawing.Size(456, 136);
+            this.lblMessage1.TabIndex = 4;
+            this.lblMessage1.Text = "lblMessage1";
+            // 
+            // radYes
+            // 
+            this.radYes.Image = null;
+            this.radYes.Location = new System.Drawing.Point(272, 32);
+            this.radYes.Name = "radYes";
+            this.radYes.Size = new System.Drawing.Size(48, 16);
+            this.radYes.TabIndex = 5;
+            this.radYes.Text = "Yes";
+            this.radYes.Visible = false;
+            this.radYes.CheckedChanged += new System.EventHandler(this.radYes_CheckedChanged);
+            // 
+            // radNo
+            // 
+            this.radNo.Image = null;
+            this.radNo.Location = new System.Drawing.Point(328, 32);
+            this.radNo.Name = "radNo";
+            this.radNo.Size = new System.Drawing.Size(48, 16);
+            this.radNo.TabIndex = 6;
+            this.radNo.Text = "No";
+            this.radNo.Visible = false;
+            this.radNo.CheckedChanged += new System.EventHandler(this.radNo_CheckedChanged);
+            // 
+            // lblMessage2
+            // 
+            this.lblMessage2.Image = null;
+            this.lblMessage2.Location = new System.Drawing.Point(8, 192);
+            this.lblMessage2.Name = "lblMessage2";
+            this.lblMessage2.Size = new System.Drawing.Size(464, 48);
+            this.lblMessage2.TabIndex = 7;
+            this.lblMessage2.Text = "lblMessage2";
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox1.DropDownWidth = 136;
+            this.comboBox1.Items.AddRange(new object[] {
+            "DEMI144-28FRS",
+            "DEMI144-28 (25w)"});
+            this.comboBox1.Location = new System.Drawing.Point(336, 112);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(136, 21);
+            this.comboBox1.TabIndex = 8;
+            this.comboBox1.Visible = false;
+            // 
+            // lblCombo
+            // 
+            this.lblCombo.Image = null;
+            this.lblCombo.Location = new System.Drawing.Point(272, 112);
+            this.lblCombo.Name = "lblCombo";
+            this.lblCombo.Size = new System.Drawing.Size(192, 72);
+            this.lblCombo.TabIndex = 9;
+            this.lblCombo.Text = "lblCombo";
+            // 
+            // comboBox2
+            // 
+            this.comboBox2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox2.DropDownWidth = 56;
+            this.comboBox2.Items.AddRange(new object[] {
+            "10",
+            "20"});
+            this.comboBox2.Location = new System.Drawing.Point(384, 112);
+            this.comboBox2.Name = "comboBox2";
+            this.comboBox2.Size = new System.Drawing.Size(56, 21);
+            this.comboBox2.TabIndex = 10;
+            // 
+            // button1
+            // 
+            this.button1.Image = null;
+            this.button1.Location = new System.Drawing.Point(312, 128);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(88, 23);
+            this.button1.TabIndex = 11;
+            this.button1.Text = "Select File ...";
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.FileOk += new System.ComponentModel.CancelEventHandler(this.openFileDialog1_FileOk);
+            // 
+            // comboBox3
+            // 
+            this.comboBox3.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox3.DropDownWidth = 184;
+            this.comboBox3.Items.AddRange(new object[] {
+            "M-Audio Delta 44 (PCI)",
+            "PreSonus FireBox (FireWire)",
+            "Edirol FA-66 (FireWire)",
+            "SB Audigy (PCI)",
+            "SB Audigy 2 (PCI)",
+            "SB Audigy 2 ZS (PCI)",
+            "Sound Blaster Extigy (USB)",
+            "Sound Blaster MP3+ (USB)",
+            "Turtle Beach Santa Cruz (PCI)",
+            "Unsupported Card"});
+            this.comboBox3.Location = new System.Drawing.Point(264, 104);
+            this.comboBox3.MaxDropDownItems = 10;
+            this.comboBox3.Name = "comboBox3";
+            this.comboBox3.Size = new System.Drawing.Size(184, 21);
+            this.comboBox3.TabIndex = 12;
+            this.comboBox3.SelectedIndexChanged += new System.EventHandler(this.comboBox3_SelectedIndexChanged);
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.lblPAGainByBand10);
+            this.groupBox2.Controls.Add(this.udPAGainByBand10);
+            this.groupBox2.Controls.Add(this.lblPAGainByBand12);
+            this.groupBox2.Controls.Add(this.udPAGainByBand12);
+            this.groupBox2.Controls.Add(this.lblPAGainByBand15);
+            this.groupBox2.Controls.Add(this.udPAGainByBand15);
+            this.groupBox2.Controls.Add(this.lblPAGainByBand17);
+            this.groupBox2.Controls.Add(this.udPAGainByBand17);
+            this.groupBox2.Controls.Add(this.lblPAGainByBand20);
+            this.groupBox2.Controls.Add(this.udPAGainByBand20);
+            this.groupBox2.Controls.Add(this.lblPAGainByBand30);
+            this.groupBox2.Controls.Add(this.udPAGainByBand30);
+            this.groupBox2.Controls.Add(this.lblPAGainByBand40);
+            this.groupBox2.Controls.Add(this.udPAGainByBand40);
+            this.groupBox2.Controls.Add(this.lblPAGainByBand60);
+            this.groupBox2.Controls.Add(this.udPAGainByBand60);
+            this.groupBox2.Controls.Add(this.lblPAGainByBand80);
+            this.groupBox2.Controls.Add(this.udPAGainByBand80);
+            this.groupBox2.Controls.Add(this.lblPAGainByBand160);
+            this.groupBox2.Controls.Add(this.udPAGainByBand160);
+            this.groupBox2.Location = new System.Drawing.Point(240, 48);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(216, 136);
+            this.groupBox2.TabIndex = 13;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Gain By Band (dB)";
+            this.groupBox2.Visible = false;
+            // 
+            // lblPAGainByBand10
+            // 
+            this.lblPAGainByBand10.Image = null;
+            this.lblPAGainByBand10.Location = new System.Drawing.Point(112, 112);
+            this.lblPAGainByBand10.Name = "lblPAGainByBand10";
+            this.lblPAGainByBand10.Size = new System.Drawing.Size(40, 16);
+            this.lblPAGainByBand10.TabIndex = 19;
+            this.lblPAGainByBand10.Text = "10m:";
+            // 
+            // udPAGainByBand10
+            // 
+            this.udPAGainByBand10.DecimalPlaces = 1;
+            this.udPAGainByBand10.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.udPAGainByBand10.Location = new System.Drawing.Point(152, 112);
+            this.udPAGainByBand10.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.udPAGainByBand10.Minimum = new decimal(new int[] {
+            390,
+            0,
+            0,
+            65536});
+            this.udPAGainByBand10.Name = "udPAGainByBand10";
+            this.udPAGainByBand10.Size = new System.Drawing.Size(48, 20);
+            this.udPAGainByBand10.TabIndex = 18;
+            this.udPAGainByBand10.Value = new decimal(new int[] {
+            430,
+            0,
+            0,
+            65536});
+            // 
+            // lblPAGainByBand12
+            // 
+            this.lblPAGainByBand12.Image = null;
+            this.lblPAGainByBand12.Location = new System.Drawing.Point(112, 88);
+            this.lblPAGainByBand12.Name = "lblPAGainByBand12";
+            this.lblPAGainByBand12.Size = new System.Drawing.Size(40, 16);
+            this.lblPAGainByBand12.TabIndex = 17;
+            this.lblPAGainByBand12.Text = "12m:";
+            // 
+            // udPAGainByBand12
+            // 
+            this.udPAGainByBand12.DecimalPlaces = 1;
+            this.udPAGainByBand12.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.udPAGainByBand12.Location = new System.Drawing.Point(152, 88);
+            this.udPAGainByBand12.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.udPAGainByBand12.Minimum = new decimal(new int[] {
+            390,
+            0,
+            0,
+            65536});
+            this.udPAGainByBand12.Name = "udPAGainByBand12";
+            this.udPAGainByBand12.Size = new System.Drawing.Size(48, 20);
+            this.udPAGainByBand12.TabIndex = 16;
+            this.udPAGainByBand12.Value = new decimal(new int[] {
+            474,
+            0,
+            0,
+            65536});
+            // 
+            // lblPAGainByBand15
+            // 
+            this.lblPAGainByBand15.Image = null;
+            this.lblPAGainByBand15.Location = new System.Drawing.Point(112, 64);
+            this.lblPAGainByBand15.Name = "lblPAGainByBand15";
+            this.lblPAGainByBand15.Size = new System.Drawing.Size(40, 16);
+            this.lblPAGainByBand15.TabIndex = 15;
+            this.lblPAGainByBand15.Text = "15m:";
+            // 
+            // udPAGainByBand15
+            // 
+            this.udPAGainByBand15.DecimalPlaces = 1;
+            this.udPAGainByBand15.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.udPAGainByBand15.Location = new System.Drawing.Point(152, 64);
+            this.udPAGainByBand15.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.udPAGainByBand15.Minimum = new decimal(new int[] {
+            390,
+            0,
+            0,
+            65536});
+            this.udPAGainByBand15.Name = "udPAGainByBand15";
+            this.udPAGainByBand15.Size = new System.Drawing.Size(48, 20);
+            this.udPAGainByBand15.TabIndex = 14;
+            this.udPAGainByBand15.Value = new decimal(new int[] {
+            481,
+            0,
+            0,
+            65536});
+            // 
+            // lblPAGainByBand17
+            // 
+            this.lblPAGainByBand17.Image = null;
+            this.lblPAGainByBand17.Location = new System.Drawing.Point(112, 40);
+            this.lblPAGainByBand17.Name = "lblPAGainByBand17";
+            this.lblPAGainByBand17.Size = new System.Drawing.Size(40, 16);
+            this.lblPAGainByBand17.TabIndex = 13;
+            this.lblPAGainByBand17.Text = "17m:";
+            // 
+            // udPAGainByBand17
+            // 
+            this.udPAGainByBand17.DecimalPlaces = 1;
+            this.udPAGainByBand17.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.udPAGainByBand17.Location = new System.Drawing.Point(152, 40);
+            this.udPAGainByBand17.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.udPAGainByBand17.Minimum = new decimal(new int[] {
+            390,
+            0,
+            0,
+            65536});
+            this.udPAGainByBand17.Name = "udPAGainByBand17";
+            this.udPAGainByBand17.Size = new System.Drawing.Size(48, 20);
+            this.udPAGainByBand17.TabIndex = 12;
+            this.udPAGainByBand17.Value = new decimal(new int[] {
+            493,
+            0,
+            0,
+            65536});
+            // 
+            // lblPAGainByBand20
+            // 
+            this.lblPAGainByBand20.Image = null;
+            this.lblPAGainByBand20.Location = new System.Drawing.Point(112, 16);
+            this.lblPAGainByBand20.Name = "lblPAGainByBand20";
+            this.lblPAGainByBand20.Size = new System.Drawing.Size(40, 16);
+            this.lblPAGainByBand20.TabIndex = 11;
+            this.lblPAGainByBand20.Text = "20m:";
+            // 
+            // udPAGainByBand20
+            // 
+            this.udPAGainByBand20.DecimalPlaces = 1;
+            this.udPAGainByBand20.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.udPAGainByBand20.Location = new System.Drawing.Point(152, 16);
+            this.udPAGainByBand20.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.udPAGainByBand20.Minimum = new decimal(new int[] {
+            390,
+            0,
+            0,
+            65536});
+            this.udPAGainByBand20.Name = "udPAGainByBand20";
+            this.udPAGainByBand20.Size = new System.Drawing.Size(48, 20);
+            this.udPAGainByBand20.TabIndex = 10;
+            this.udPAGainByBand20.Value = new decimal(new int[] {
+            483,
+            0,
+            0,
+            65536});
+            // 
+            // lblPAGainByBand30
+            // 
+            this.lblPAGainByBand30.Image = null;
+            this.lblPAGainByBand30.Location = new System.Drawing.Point(16, 112);
+            this.lblPAGainByBand30.Name = "lblPAGainByBand30";
+            this.lblPAGainByBand30.Size = new System.Drawing.Size(40, 16);
+            this.lblPAGainByBand30.TabIndex = 9;
+            this.lblPAGainByBand30.Text = "30m:";
+            // 
+            // udPAGainByBand30
+            // 
+            this.udPAGainByBand30.DecimalPlaces = 1;
+            this.udPAGainByBand30.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.udPAGainByBand30.Location = new System.Drawing.Point(56, 112);
+            this.udPAGainByBand30.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.udPAGainByBand30.Minimum = new decimal(new int[] {
+            390,
+            0,
+            0,
+            65536});
+            this.udPAGainByBand30.Name = "udPAGainByBand30";
+            this.udPAGainByBand30.Size = new System.Drawing.Size(48, 20);
+            this.udPAGainByBand30.TabIndex = 8;
+            this.udPAGainByBand30.Value = new decimal(new int[] {
+            489,
+            0,
+            0,
+            65536});
+            // 
+            // lblPAGainByBand40
+            // 
+            this.lblPAGainByBand40.Image = null;
+            this.lblPAGainByBand40.Location = new System.Drawing.Point(16, 88);
+            this.lblPAGainByBand40.Name = "lblPAGainByBand40";
+            this.lblPAGainByBand40.Size = new System.Drawing.Size(40, 16);
+            this.lblPAGainByBand40.TabIndex = 7;
+            this.lblPAGainByBand40.Text = "40m:";
+            // 
+            // udPAGainByBand40
+            // 
+            this.udPAGainByBand40.DecimalPlaces = 1;
+            this.udPAGainByBand40.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.udPAGainByBand40.Location = new System.Drawing.Point(56, 88);
+            this.udPAGainByBand40.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.udPAGainByBand40.Minimum = new decimal(new int[] {
+            390,
+            0,
+            0,
+            65536});
+            this.udPAGainByBand40.Name = "udPAGainByBand40";
+            this.udPAGainByBand40.Size = new System.Drawing.Size(48, 20);
+            this.udPAGainByBand40.TabIndex = 6;
+            this.udPAGainByBand40.Value = new decimal(new int[] {
+            469,
+            0,
+            0,
+            65536});
+            // 
+            // lblPAGainByBand60
+            // 
+            this.lblPAGainByBand60.Image = null;
+            this.lblPAGainByBand60.Location = new System.Drawing.Point(16, 64);
+            this.lblPAGainByBand60.Name = "lblPAGainByBand60";
+            this.lblPAGainByBand60.Size = new System.Drawing.Size(40, 16);
+            this.lblPAGainByBand60.TabIndex = 5;
+            this.lblPAGainByBand60.Text = "60m:";
+            // 
+            // udPAGainByBand60
+            // 
+            this.udPAGainByBand60.DecimalPlaces = 1;
+            this.udPAGainByBand60.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.udPAGainByBand60.Location = new System.Drawing.Point(56, 64);
+            this.udPAGainByBand60.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.udPAGainByBand60.Minimum = new decimal(new int[] {
+            390,
+            0,
+            0,
+            65536});
+            this.udPAGainByBand60.Name = "udPAGainByBand60";
+            this.udPAGainByBand60.Size = new System.Drawing.Size(48, 20);
+            this.udPAGainByBand60.TabIndex = 4;
+            this.udPAGainByBand60.Value = new decimal(new int[] {
+            474,
+            0,
+            0,
+            65536});
+            // 
+            // lblPAGainByBand80
+            // 
+            this.lblPAGainByBand80.Image = null;
+            this.lblPAGainByBand80.Location = new System.Drawing.Point(16, 40);
+            this.lblPAGainByBand80.Name = "lblPAGainByBand80";
+            this.lblPAGainByBand80.Size = new System.Drawing.Size(40, 16);
+            this.lblPAGainByBand80.TabIndex = 3;
+            this.lblPAGainByBand80.Text = "80m:";
+            // 
+            // udPAGainByBand80
+            // 
+            this.udPAGainByBand80.DecimalPlaces = 1;
+            this.udPAGainByBand80.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.udPAGainByBand80.Location = new System.Drawing.Point(56, 40);
+            this.udPAGainByBand80.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.udPAGainByBand80.Minimum = new decimal(new int[] {
+            390,
+            0,
+            0,
+            65536});
+            this.udPAGainByBand80.Name = "udPAGainByBand80";
+            this.udPAGainByBand80.Size = new System.Drawing.Size(48, 20);
+            this.udPAGainByBand80.TabIndex = 2;
+            this.udPAGainByBand80.Value = new decimal(new int[] {
+            480,
+            0,
+            0,
+            65536});
+            // 
+            // lblPAGainByBand160
+            // 
+            this.lblPAGainByBand160.Image = null;
+            this.lblPAGainByBand160.Location = new System.Drawing.Point(16, 16);
+            this.lblPAGainByBand160.Name = "lblPAGainByBand160";
+            this.lblPAGainByBand160.Size = new System.Drawing.Size(40, 16);
+            this.lblPAGainByBand160.TabIndex = 1;
+            this.lblPAGainByBand160.Text = "160m:";
+            // 
+            // udPAGainByBand160
+            // 
+            this.udPAGainByBand160.DecimalPlaces = 1;
+            this.udPAGainByBand160.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.udPAGainByBand160.Location = new System.Drawing.Point(56, 16);
+            this.udPAGainByBand160.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.udPAGainByBand160.Minimum = new decimal(new int[] {
+            390,
+            0,
+            0,
+            65536});
+            this.udPAGainByBand160.Name = "udPAGainByBand160";
+            this.udPAGainByBand160.Size = new System.Drawing.Size(48, 20);
+            this.udPAGainByBand160.TabIndex = 0;
+            this.udPAGainByBand160.Value = new decimal(new int[] {
+            490,
+            0,
+            0,
+            65536});
+            // 
+            // grpModel
+            // 
+            this.grpModel.Controls.Add(this.radGenModelFLEX1500);
+            this.grpModel.Controls.Add(this.radGenModelFLEX5000);
+            this.grpModel.Controls.Add(this.radGenModelDemoNone);
+            this.grpModel.Controls.Add(this.radGenModelSoftRock40);
+            this.grpModel.Controls.Add(this.radGenModelSDR1000);
+            this.grpModel.Location = new System.Drawing.Point(272, 56);
+            this.grpModel.Name = "grpModel";
+            this.grpModel.Size = new System.Drawing.Size(120, 128);
+            this.grpModel.TabIndex = 20;
+            this.grpModel.TabStop = false;
+            this.grpModel.Text = "Model";
+            this.grpModel.Visible = false;
+            // 
+            // radGenModelFLEX1500
+            // 
+            this.radGenModelFLEX1500.Image = null;
+            this.radGenModelFLEX1500.Location = new System.Drawing.Point(16, 36);
+            this.radGenModelFLEX1500.Name = "radGenModelFLEX1500";
+            this.radGenModelFLEX1500.Size = new System.Drawing.Size(88, 24);
+            this.radGenModelFLEX1500.TabIndex = 7;
+            this.radGenModelFLEX1500.Text = "FLEX-1500";
+            this.radGenModelFLEX1500.CheckedChanged += new System.EventHandler(this.radGenModelFLEX1500_CheckedChanged);
+            // 
+            // radGenModelFLEX5000
+            // 
+            this.radGenModelFLEX5000.Checked = true;
+            this.radGenModelFLEX5000.Image = null;
+            this.radGenModelFLEX5000.Location = new System.Drawing.Point(16, 16);
+            this.radGenModelFLEX5000.Name = "radGenModelFLEX5000";
+            this.radGenModelFLEX5000.Size = new System.Drawing.Size(88, 24);
+            this.radGenModelFLEX5000.TabIndex = 6;
+            this.radGenModelFLEX5000.TabStop = true;
+            this.radGenModelFLEX5000.Text = "FLEX-5000";
+            this.radGenModelFLEX5000.CheckedChanged += new System.EventHandler(this.radGenModelFLEX5000_CheckedChanged);
+            // 
+            // radGenModelDemoNone
+            // 
+            this.radGenModelDemoNone.Image = null;
+            this.radGenModelDemoNone.Location = new System.Drawing.Point(16, 96);
+            this.radGenModelDemoNone.Name = "radGenModelDemoNone";
+            this.radGenModelDemoNone.Size = new System.Drawing.Size(88, 24);
+            this.radGenModelDemoNone.TabIndex = 5;
+            this.radGenModelDemoNone.Text = "Demo/None";
+            this.radGenModelDemoNone.CheckedChanged += new System.EventHandler(this.radGenModelDemoNone_CheckedChanged);
+            // 
+            // radGenModelSoftRock40
+            // 
+            this.radGenModelSoftRock40.Image = null;
+            this.radGenModelSoftRock40.Location = new System.Drawing.Point(16, 76);
+            this.radGenModelSoftRock40.Name = "radGenModelSoftRock40";
+            this.radGenModelSoftRock40.Size = new System.Drawing.Size(88, 24);
+            this.radGenModelSoftRock40.TabIndex = 4;
+            this.radGenModelSoftRock40.Text = "Soft Rock 40";
+            this.radGenModelSoftRock40.CheckedChanged += new System.EventHandler(this.radGenModelSoftRock40_CheckedChanged);
+            // 
+            // radGenModelSDR1000
+            // 
+            this.radGenModelSDR1000.Image = null;
+            this.radGenModelSDR1000.Location = new System.Drawing.Point(16, 56);
+            this.radGenModelSDR1000.Name = "radGenModelSDR1000";
+            this.radGenModelSDR1000.Size = new System.Drawing.Size(88, 24);
+            this.radGenModelSDR1000.TabIndex = 3;
+            this.radGenModelSDR1000.Text = "SDR-1000";
+            this.radGenModelSDR1000.CheckedChanged += new System.EventHandler(this.radGenModelSDR1000_CheckedChanged);
+            // 
+            // SetupWizard
+            // 
+            this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
+            this.ClientSize = new System.Drawing.Size(488, 286);
+            this.Controls.Add(this.grpModel);
+            this.Controls.Add(this.groupBox2);
+            this.Controls.Add(this.comboBox3);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.comboBox2);
+            this.Controls.Add(this.comboBox1);
+            this.Controls.Add(this.lblMessage2);
+            this.Controls.Add(this.radNo);
+            this.Controls.Add(this.radYes);
+            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.btnFinished);
+            this.Controls.Add(this.btnNext);
+            this.Controls.Add(this.btnPrevious);
+            this.Controls.Add(this.lblCombo);
+            this.Controls.Add(this.lblMessage1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
+            this.Name = "SetupWizard";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "PowerSDR Setup Wizard - Welcome";
+            this.Closing += new System.ComponentModel.CancelEventHandler(this.SetupWizard_Closing);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.groupBox2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.udPAGainByBand10)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udPAGainByBand12)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udPAGainByBand15)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udPAGainByBand17)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udPAGainByBand20)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udPAGainByBand30)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udPAGainByBand40)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udPAGainByBand60)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udPAGainByBand80)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udPAGainByBand160)).EndInit();
+            this.grpModel.ResumeLayout(false);
+            this.ResumeLayout(false);
 
 		}
 		#endregion
@@ -911,9 +932,9 @@ namespace PowerSDR
 					this.Text = "PowerSDR Setup Wizard - Welcome";
 					btnFinished.Enabled = false;
 					btnNext.Enabled = true;
-					btnPrevious.Enabled = false;		// first screen			
+					btnPrevious.Enabled = false;		// first screen
 					button1.Visible = false;
-					comboBox1.Visible = false;					
+					comboBox1.Visible = false;
 					comboBox2.Visible = false;
 					comboBox3.Visible = false;	
 					groupBox2.Visible = false;
@@ -922,13 +943,13 @@ namespace PowerSDR
 					lblMessage1.Text = "Welcome to the PowerSDR Setup Wizard.  This Setup Wizard is " +
 						"intended to simplify the setup process by providing you with an easy-to-use " +
 						"question/answer format.  Suggestions to improve this wizard are encouraged " +
-						"and can be emailed to support@flex-radio.com or posted on our Feature Request " +
-						"tool at http://support.flex-radio.com/.";
+						"and can be emailed to support@flexradio.com or posted on our Feature Request " +
+						"tool at http://support.flexradio.com/.";
 					lblMessage2.Text = "";
 					pictureBox1.Image = null;
 					pictureBox1.Visible = false;
 					radYes.Visible = false;
-					radNo.Visible = false;									
+					radNo.Visible = false;
 					break;
 				case Page.DATABASE:
 					this.Text = "PowerSDR Setup Wizard - Database Import";
@@ -956,7 +977,7 @@ namespace PowerSDR
 					this.Text = "PowerSDR Setup Wizard - Radio Model";
 					btnFinished.Enabled = false;
 					btnNext.Enabled = true;
-					btnPrevious.Enabled = false;
+					btnPrevious.Enabled = true;
 					button1.Visible = false;
 					comboBox1.Visible = false;
 					comboBox2.Visible = false;
@@ -968,6 +989,7 @@ namespace PowerSDR
 					lblMessage2.Text = "If you are just trying out the software or will be running " +
 						"the software without any hardware connected, select the Demo/None option.";
 					radGenModelFLEX5000_CheckedChanged(this, EventArgs.Empty);
+                    radGenModelFLEX1500_CheckedChanged(this, EventArgs.Empty);
 					radGenModelSDR1000_CheckedChanged(this, EventArgs.Empty);
 					radGenModelSoftRock40_CheckedChanged(this, EventArgs.Empty);
 					radGenModelDemoNone_CheckedChanged(this, EventArgs.Empty);
@@ -989,7 +1011,9 @@ namespace PowerSDR
 					lblCombo.Text = "Model: ";
 					lblCombo.Visible = xvtr_present;
 					lblMessage1.Text = "Does your board stack include the Down East Microwave (DEMI) 2M Transverter?";
-					lblMessage2.Text = "This Down East Microwave 2M Transverter mounts on top of the " +						"board stack and uses a 28MHz IF to get into the 144-146MHz range.  For more " +						"information, see http://www.flex-radio.com.";
+					lblMessage2.Text = "This Down East Microwave 2M Transverter mounts on top of the " +
+						"board stack and uses a 28MHz IF to get into the 144-146MHz range.  For more " +
+						"information, see http://www.flexradio.com.";
 					pictureBox1.Image = new Bitmap(GetResource("PowerSDR.images.demi144-28frs.jpg"));
 					pictureBox1.Visible = true;
 					if(xvtr_present)
@@ -1012,7 +1036,8 @@ namespace PowerSDR
 					grpModel.Visible = false;
 					lblCombo.Visible = false;
 					lblMessage1.Text = "Is the 100W Power Amplifier (PA) included in your hardware configuration?";
-					lblMessage2.Text = "The Power Amplifier bumps the output power of the SDR-1000 from " +						"1W up to 100W.  For more information, see http://www.flex-radio.com.";
+					lblMessage2.Text = "The Power Amplifier bumps the output power of the SDR-1000 from " +
+						"1W up to 100W.  For more information, see http://www.flexradio.com.";
 					pictureBox1.Image = new Bitmap(GetResource("PowerSDR.images.sdr-pa100.jpg"));
 					pictureBox1.Visible = true;
 					if(pa_present)
@@ -1035,7 +1060,8 @@ namespace PowerSDR
 					grpModel.Visible = false;
 					lblCombo.Visible = false;
 					lblMessage1.Text = "Is the LDG Z-100 Antenna Tuning Unit (ATU) included in your hardware configuration?";
-					lblMessage2.Text = "The integrated ATU allows the user to tune coax antennas with an SWR of up to " +						"10:1.  For more information, see http://www.flex-radio.com.";
+					lblMessage2.Text = "The integrated ATU allows the user to tune coax antennas with an SWR of up to " +
+						"10:1.  For more information, see http://www.flexradio.com.";
 					pictureBox1.Image = new Bitmap(GetResource("PowerSDR.images.sdr-atu.jpg"));
 					pictureBox1.Visible = true;
 					if(atu_present)
@@ -1064,7 +1090,7 @@ namespace PowerSDR
 					lblCombo.Text = "Clock Freq (MHz):";
 					lblMessage1.Text = "Does your hardware configuration include the External Clock Reference Option?";
 					lblMessage2.Text = "The External Clock Reference Option allows the DDS to be synchronized " +
-						"with a more stable clock source.  For more information, see http://www.flex-radio.com.";
+						"with a more stable clock source.  For more information, see http://www.flexradio.com.";
 					pictureBox1.Image = new Bitmap(GetResource("PowerSDR.images.clock.jpg"));
 					pictureBox1.Visible = true;
 					if(ext_clock)
@@ -1087,9 +1113,10 @@ namespace PowerSDR
 					grpModel.Visible = false;
 					lblCombo.Visible = false;
 					lblMessage1.Text = "Is the USB to Parallel adapter included in your hardware configuration?";
-					lblMessage2.Text = "The USB to Parallel adapter eliminates the need for a parallel port interface " +						"on your computer.  Unlike other off-the-shelf adapters, the FlexRadio Systems adapter implements " +
+					lblMessage2.Text = "The USB to Parallel adapter eliminates the need for a parallel port interface " +
+						"on your computer.  Unlike other off-the-shelf adapters, the FlexRadio Systems adapter implements " +
 						"all the data, status, and control lines for complete integration with existing parallel port " +
-						"hardware.  For more information, see http://www.flex-radio.com.";
+						"hardware.  For more information, see http://www.flexradio.com.";
 					pictureBox1.Image = new Bitmap(GetResource("PowerSDR.images.sdr-usb.jpg"));
 					pictureBox1.Visible = true;
 					if(usb_present)
@@ -1168,7 +1195,8 @@ namespace PowerSDR
 			switch(current_page)
 			{
 				case Page.WELCOME:
-					CurPage = Page.MODEL;
+
+					CurPage = Page.XVTR;
 					btnNext.Focus();
 					break;
 				case Page.DATABASE:
@@ -1184,6 +1212,7 @@ namespace PowerSDR
 							break;
 						case Model.FLEX5000:
 						case Model.FLEX3000:
+                        case Model.FLEX1500:
 							CurPage = Page.FINISHED;
 							btnFinished.Focus();
 							break;
@@ -1262,7 +1291,7 @@ namespace PowerSDR
 					break;
 				case Page.XVTR:
 					xvtr_index = comboBox1.SelectedIndex;
-					CurPage = Page.MODEL;
+					CurPage = Page.WELCOME;
 					btnPrevious.Focus();
 					break;
 				case Page.PA:
@@ -1311,7 +1340,7 @@ namespace PowerSDR
 					btnPrevious.Focus();
 					break;
 				case Page.FINISHED:
-					if(model == Model.FLEX5000 || model == Model.FLEX3000)
+					if(model == Model.FLEX5000 || model == Model.FLEX3000 || model == Model.FLEX1500)
 						CurPage = Page.MODEL;
 					else
 						CurPage = Page.SOUND_CARD;
@@ -1382,16 +1411,16 @@ namespace PowerSDR
 
 		private void btnFinished_Click(object sender, System.EventArgs e)
 		{
+            btnFinished.Enabled = false;
 			switch(model)
 			{
-				case Model.FLEX5000:
-				case Model.FLEX3000:
-					break;
-				default:
-					console.SetupForm.XVTRPresent = xvtr_present;
-					console.SetupForm.PAPresent = pa_present;
-					console.SetupForm.USBPresent = usb_present;
-					console.SetupForm.ATUPresent = atu_present;
+				case Model.SDR1000:
+                case Model.SOFTROCK40:
+                case Model.DEMO:
+					console.setupForm.XVTRPresent = xvtr_present;
+					console.setupForm.PAPresent = pa_present;
+					console.setupForm.USBPresent = usb_present;
+					console.setupForm.ATUPresent = atu_present;
 
 					if(sound_card_index >= 0)
 					{
@@ -1434,33 +1463,33 @@ namespace PowerSDR
 					}
 				
 					if(xvtr_present)
-						console.SetupForm.XVTRSelection = xvtr_index;
+						console.setupForm.XVTRSelection = xvtr_index;
 					if(ext_clock)
-						console.SetupForm.PllMult = pll_mult;
+						console.setupForm.PllMult = pll_mult;
 
 					if(pa_present)
 					{
-						console.SetupForm.PAGain160 = gain_by_band[0];
-						console.SetupForm.PAGain80 = gain_by_band[1];
-						console.SetupForm.PAGain60 = gain_by_band[2];
-						console.SetupForm.PAGain40 = gain_by_band[3];
-						console.SetupForm.PAGain30 = gain_by_band[4];
-						console.SetupForm.PAGain20 = gain_by_band[5];
-						console.SetupForm.PAGain17 = gain_by_band[6];
-						console.SetupForm.PAGain15 = gain_by_band[7];
-						console.SetupForm.PAGain12 = gain_by_band[8];
-						console.SetupForm.PAGain10 = gain_by_band[9];
+						console.setupForm.PAGain160 = gain_by_band[0];
+						console.setupForm.PAGain80 = gain_by_band[1];
+						console.setupForm.PAGain60 = gain_by_band[2];
+						console.setupForm.PAGain40 = gain_by_band[3];
+						console.setupForm.PAGain30 = gain_by_band[4];
+						console.setupForm.PAGain20 = gain_by_band[5];
+						console.setupForm.PAGain17 = gain_by_band[6];
+						console.setupForm.PAGain15 = gain_by_band[7];
+						console.setupForm.PAGain12 = gain_by_band[8];
+						console.setupForm.PAGain10 = gain_by_band[9];
 					}
 					break;
 			}
 
-			console.SetupForm.CurrentModel = model;
+			console.setupForm.CurrentModel = model;
 
 			ArrayList a = new ArrayList();
 			a.Add("SetupWizard/1");
 			DB.SaveVars("State", ref a);
 
-			console.SetupForm.SaveOptions();
+			console.setupForm.SaveOptions();
 			console.SaveState();
 
 			done = true;
@@ -1526,11 +1555,11 @@ namespace PowerSDR
 			if(comboBox3.Text == "Unsupported Card" && comboBox3.Focused)
 				MessageBox.Show("Proper operation of the SDR-1000 depends on the use of a sound card that is\n"+
 					"officially recommended by FlexRadio Systems.  Refer to the Specifications page on\n"+
-					"www.flex-radio.com to determine which sound cards are currently recommended.  Use only\n"+
+					"www.flexradio.com to determine which sound cards are currently recommended.  Use only\n"+
 					"the specific model numbers stated on the website because other models within the same\n"+
 					"family may not work properly with the radio.  Officially supported sound cards may be\n"+
 					"updated on the website without notice.  If you have any question about the sound card\n"+
-					"you would like to use with the radio, please email support@flex-radio.com or call us at\n"+
+					"you would like to use with the radio, please email support@flexradio.com or call us at\n"+
 					"512-250-8595.\n\n"+
 
 					"NO WARRANTY IS IMPLIED WHEN THE SDR-1000 IS USED WITH ANY SOUND CARD OTHER\n"+
@@ -1560,6 +1589,15 @@ namespace PowerSDR
 				}
 			}
 		}
+
+        private void radGenModelFLEX1500_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radGenModelFLEX1500.Checked)
+            {
+                model = Model.FLEX1500;
+                pictureBox1.Image = new Bitmap(GetResource("PowerSDR.images.flex-1500.jpg"));
+            }
+        }
 
 		private void radGenModelSDR1000_CheckedChanged(object sender, System.EventArgs e)
 		{
@@ -1592,6 +1630,6 @@ namespace PowerSDR
 			}
 		}
 
-		#endregion		
+		#endregion
 	}
 }

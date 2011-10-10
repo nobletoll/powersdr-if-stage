@@ -38,7 +38,7 @@ Bridgewater, NJ 08807
 #define METERMULT (20)
 #define SPECMULT (4)
 #define DEFRATE (48000.0)
-#define DEFSIZE (2048)
+#define DEFSIZE (4096)
 #define DEFMODE (USB)
 #define DEFSPEC (4096)
 #define DEFCOMP (512)
@@ -56,7 +56,7 @@ typedef enum _sdrmode
   DSB,				//  2
   CWL,				//  3
   CWU,				//  4
-  FMN,				//  5
+  FM,				//  5
   AM,				//  6
   DIGU,				//  7
   SPEC,				//  8
@@ -68,7 +68,7 @@ typedef enum _sdrmode
 typedef enum _swchstate {
   SWCH_FALL,
   SWCH_STDY,
-  SWCH_RISE
+  SWCH_RISE,
 } SWCHSTATE;
 
 typedef enum _trxmode

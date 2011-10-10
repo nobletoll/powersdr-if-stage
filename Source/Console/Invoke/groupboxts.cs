@@ -19,9 +19,9 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
-// You may contact us via email at: eric@flex-radio.com.
+// You may contact us via email at: eric@flexradio.com.
 // Paper mail may be sent to: 
-//    Eric Wachsmann C/O FlexRadio Systems, 8900 Marybank Dr., Austin, TX  78750, USA.
+//    Eric Wachsmann C/O FlexRadio Systems, 13091 Pond Springs Rd. #250, Austin, TX  78750, USA.
 //=================================================================
 
 using System.ComponentModel;

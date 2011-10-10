@@ -2,7 +2,7 @@
 // FLEX5000DebugForm.cs
 //=================================================================
 // PowerSDR is a C# implementation of a Software Defined Radio.
-// Copyright (C) 2004-2009  FlexRadio Systems
+// Copyright (C) 2004-2011  FlexRadio Systems
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -18,11 +18,11 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
-// You may contact us via email at: sales@flex-radio.com.
+// You may contact us via email at: gpl@flexradio.com.
 // Paper mail may be sent to: 
 //    FlexRadio Systems
-//    8900 Marybank Dr.
-//    Austin, TX 78750
+//    4616 W. Howard Lane  Suite 1-150
+//    Austin, TX 78728
 //    USA
 //=================================================================
 
@@ -115,7 +115,7 @@ namespace PowerSDR
 		private System.Windows.Forms.CheckBoxTS chkReset;
 		private System.Windows.Forms.CheckBoxTS chkPCPwr;
 		private System.Windows.Forms.Button button1;
-		private System.Windows.Forms.CheckBoxTS chkXVCOM;
+		public System.Windows.Forms.CheckBoxTS chkXVCOM;
 		private System.Windows.Forms.CheckBoxTS chkEN2M;
 		private System.Windows.Forms.CheckBoxTS chkKEY2M;
 		private System.Windows.Forms.CheckBoxTS chkXVTR;
@@ -196,6 +196,8 @@ namespace PowerSDR
 
 		#endregion
         private MenuItem menuItem3;
+        private GroupBox grpATUUpgrade;
+        private Button btnATUUpdate;
         private IContainer components;
 
 		#region Constructor and Destructor
@@ -235,9 +237,9 @@ namespace PowerSDR
 
 			Common.RestoreForm(this, "FLEX5000DebugForm", false);
 
-			cmboPLLRefClock.Text = "10";
-			cmboPLLCPMode.Text = "Normal";
-			comboPLLStatusMux.SelectedIndex = 0;
+			//cmboPLLRefClock.Text = "10";
+			//cmboPLLCPMode.Text = "Normal";
+			//comboPLLStatusMux.SelectedIndex = 0;
 			comboADCChan.SelectedIndex = 0;
 
 			if(console.CurrentModel == Model.FLEX3000)
@@ -267,8 +269,8 @@ namespace PowerSDR
 				lblQ4Fine.Text = "Q5 Fine:";
 			}
 
-            if(console.CurrentModel == Model.FLEX5000 &&
-                FWCEEPROM.VUOK)
+            if(console.CurrentModel == Model.FLEX5000 /*&&
+                FWCEEPROM.VUOK*/)
                 menuItem3.Visible = true; // change to only if 5K and VU present
 		}
 
@@ -304,23 +306,23 @@ namespace PowerSDR
             this.radTapFinal = new System.Windows.Forms.RadioButton();
             this.radTapPreDriver = new System.Windows.Forms.RadioButton();
             this.grpTXTrace = new System.Windows.Forms.GroupBox();
+            this.ckTXTrace = new System.Windows.Forms.CheckBoxTS();
+            this.udTXTrace = new System.Windows.Forms.NumericUpDownTS();
             this.grpChanSel = new System.Windows.Forms.GroupBox();
+            this.lblTXR = new System.Windows.Forms.LabelTS();
             this.comboTXR = new System.Windows.Forms.ComboBox();
+            this.lblTXL = new System.Windows.Forms.LabelTS();
             this.comboTXL = new System.Windows.Forms.ComboBox();
+            this.lblRXR = new System.Windows.Forms.LabelTS();
             this.comboRXR = new System.Windows.Forms.ComboBox();
+            this.lblRXL = new System.Windows.Forms.LabelTS();
             this.comboRXL = new System.Windows.Forms.ComboBox();
             this.ckPreamp = new System.Windows.Forms.CheckBoxTS();
             this.ckTXOut = new System.Windows.Forms.CheckBoxTS();
             this.chkRXAttn = new System.Windows.Forms.CheckBoxTS();
             this.chkPDrvMon = new System.Windows.Forms.CheckBoxTS();
-            this.lblTXR = new System.Windows.Forms.LabelTS();
-            this.lblTXL = new System.Windows.Forms.LabelTS();
-            this.lblRXR = new System.Windows.Forms.LabelTS();
-            this.lblRXL = new System.Windows.Forms.LabelTS();
             this.ckRX2FilterBypass = new System.Windows.Forms.CheckBoxTS();
             this.chkRX2On = new System.Windows.Forms.CheckBoxTS();
-            this.ckTXTrace = new System.Windows.Forms.CheckBoxTS();
-            this.udTXTrace = new System.Windows.Forms.NumericUpDownTS();
             this.grpADC = new System.Windows.Forms.GroupBoxTS();
             this.ckADCPoll = new System.Windows.Forms.CheckBoxTS();
             this.txtADCRead = new System.Windows.Forms.TextBox();
@@ -442,10 +444,12 @@ namespace PowerSDR
             this.udFreq2 = new System.Windows.Forms.NumericUpDownTS();
             this.lblRX1 = new System.Windows.Forms.LabelTS();
             this.udFreq1 = new System.Windows.Forms.NumericUpDownTS();
+            this.grpATUUpgrade = new System.Windows.Forms.GroupBox();
+            this.btnATUUpdate = new System.Windows.Forms.Button();
             this.grpTap.SuspendLayout();
             this.grpTXTrace.SuspendLayout();
-            this.grpChanSel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.udTXTrace)).BeginInit();
+            this.grpChanSel.SuspendLayout();
             this.grpADC.SuspendLayout();
             this.grpFinalBias.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbPAPot4)).BeginInit();
@@ -489,6 +493,7 @@ namespace PowerSDR
             this.grpFreqControl.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.udFreq2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.udFreq1)).BeginInit();
+            this.grpATUUpgrade.SuspendLayout();
             this.SuspendLayout();
             // 
             // mainMenu1
@@ -570,6 +575,47 @@ namespace PowerSDR
             this.grpTXTrace.TabStop = false;
             this.grpTXTrace.Text = "Transmit Trace";
             // 
+            // ckTXTrace
+            // 
+            this.ckTXTrace.Appearance = System.Windows.Forms.Appearance.Button;
+            this.ckTXTrace.Image = null;
+            this.ckTXTrace.Location = new System.Drawing.Point(16, 24);
+            this.ckTXTrace.Name = "ckTXTrace";
+            this.ckTXTrace.Size = new System.Drawing.Size(64, 24);
+            this.ckTXTrace.TabIndex = 68;
+            this.ckTXTrace.Text = "Transmit";
+            this.ckTXTrace.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.ckTXTrace.CheckedChanged += new System.EventHandler(this.chkTXTrace_CheckedChanged);
+            // 
+            // udTXTrace
+            // 
+            this.udTXTrace.DecimalPlaces = 3;
+            this.udTXTrace.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            196608});
+            this.udTXTrace.Location = new System.Drawing.Point(16, 64);
+            this.udTXTrace.Maximum = new decimal(new int[] {
+            5,
+            0,
+            0,
+            65536});
+            this.udTXTrace.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.udTXTrace.Name = "udTXTrace";
+            this.udTXTrace.Size = new System.Drawing.Size(56, 20);
+            this.udTXTrace.TabIndex = 69;
+            this.udTXTrace.Value = new decimal(new int[] {
+            5,
+            0,
+            0,
+            131072});
+            this.udTXTrace.ValueChanged += new System.EventHandler(this.udTXTrace_ValueChanged);
+            // 
             // grpChanSel
             // 
             this.grpChanSel.Controls.Add(this.lblTXR);
@@ -588,6 +634,15 @@ namespace PowerSDR
             this.grpChanSel.Text = "Input Channel Selection";
             this.grpChanSel.Visible = false;
             // 
+            // lblTXR
+            // 
+            this.lblTXR.Image = null;
+            this.lblTXR.Location = new System.Drawing.Point(112, 64);
+            this.lblTXR.Name = "lblTXR";
+            this.lblTXR.Size = new System.Drawing.Size(40, 16);
+            this.lblTXR.TabIndex = 82;
+            this.lblTXR.Text = "TX R:";
+            // 
             // comboTXR
             // 
             this.comboTXR.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -601,6 +656,15 @@ namespace PowerSDR
             this.comboTXR.Size = new System.Drawing.Size(40, 21);
             this.comboTXR.TabIndex = 81;
             this.comboTXR.SelectedIndexChanged += new System.EventHandler(this.comboTXR_SelectedIndexChanged);
+            // 
+            // lblTXL
+            // 
+            this.lblTXL.Image = null;
+            this.lblTXL.Location = new System.Drawing.Point(8, 64);
+            this.lblTXL.Name = "lblTXL";
+            this.lblTXL.Size = new System.Drawing.Size(32, 16);
+            this.lblTXL.TabIndex = 80;
+            this.lblTXL.Text = "TX L:";
             // 
             // comboTXL
             // 
@@ -616,6 +680,15 @@ namespace PowerSDR
             this.comboTXL.TabIndex = 79;
             this.comboTXL.SelectedIndexChanged += new System.EventHandler(this.comboTXL_SelectedIndexChanged);
             // 
+            // lblRXR
+            // 
+            this.lblRXR.Image = null;
+            this.lblRXR.Location = new System.Drawing.Point(112, 24);
+            this.lblRXR.Name = "lblRXR";
+            this.lblRXR.Size = new System.Drawing.Size(40, 16);
+            this.lblRXR.TabIndex = 78;
+            this.lblRXR.Text = "RX R:";
+            // 
             // comboRXR
             // 
             this.comboRXR.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -629,6 +702,15 @@ namespace PowerSDR
             this.comboRXR.Size = new System.Drawing.Size(40, 21);
             this.comboRXR.TabIndex = 77;
             this.comboRXR.SelectedIndexChanged += new System.EventHandler(this.comboRXR_SelectedIndexChanged);
+            // 
+            // lblRXL
+            // 
+            this.lblRXL.Image = null;
+            this.lblRXL.Location = new System.Drawing.Point(8, 24);
+            this.lblRXL.Name = "lblRXL";
+            this.lblRXL.Size = new System.Drawing.Size(32, 16);
+            this.lblRXL.TabIndex = 76;
+            this.lblRXL.Text = "RX L:";
             // 
             // comboRXL
             // 
@@ -686,42 +768,6 @@ namespace PowerSDR
             this.chkPDrvMon.Text = "PDrvMon";
             this.chkPDrvMon.CheckedChanged += new System.EventHandler(this.chkPDrvMon_CheckedChanged);
             // 
-            // lblTXR
-            // 
-            this.lblTXR.Image = null;
-            this.lblTXR.Location = new System.Drawing.Point(112, 64);
-            this.lblTXR.Name = "lblTXR";
-            this.lblTXR.Size = new System.Drawing.Size(40, 16);
-            this.lblTXR.TabIndex = 82;
-            this.lblTXR.Text = "TX R:";
-            // 
-            // lblTXL
-            // 
-            this.lblTXL.Image = null;
-            this.lblTXL.Location = new System.Drawing.Point(8, 64);
-            this.lblTXL.Name = "lblTXL";
-            this.lblTXL.Size = new System.Drawing.Size(32, 16);
-            this.lblTXL.TabIndex = 80;
-            this.lblTXL.Text = "TX L:";
-            // 
-            // lblRXR
-            // 
-            this.lblRXR.Image = null;
-            this.lblRXR.Location = new System.Drawing.Point(112, 24);
-            this.lblRXR.Name = "lblRXR";
-            this.lblRXR.Size = new System.Drawing.Size(40, 16);
-            this.lblRXR.TabIndex = 78;
-            this.lblRXR.Text = "RX R:";
-            // 
-            // lblRXL
-            // 
-            this.lblRXL.Image = null;
-            this.lblRXL.Location = new System.Drawing.Point(8, 24);
-            this.lblRXL.Name = "lblRXL";
-            this.lblRXL.Size = new System.Drawing.Size(32, 16);
-            this.lblRXL.TabIndex = 76;
-            this.lblRXL.Text = "RX L:";
-            // 
             // ckRX2FilterBypass
             // 
             this.ckRX2FilterBypass.Image = null;
@@ -741,47 +787,6 @@ namespace PowerSDR
             this.chkRX2On.TabIndex = 71;
             this.chkRX2On.Text = "RX2 On";
             this.chkRX2On.CheckedChanged += new System.EventHandler(this.chkRX2On_CheckedChanged);
-            // 
-            // ckTXTrace
-            // 
-            this.ckTXTrace.Appearance = System.Windows.Forms.Appearance.Button;
-            this.ckTXTrace.Image = null;
-            this.ckTXTrace.Location = new System.Drawing.Point(16, 24);
-            this.ckTXTrace.Name = "ckTXTrace";
-            this.ckTXTrace.Size = new System.Drawing.Size(64, 24);
-            this.ckTXTrace.TabIndex = 68;
-            this.ckTXTrace.Text = "Transmit";
-            this.ckTXTrace.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.ckTXTrace.CheckedChanged += new System.EventHandler(this.chkTXTrace_CheckedChanged);
-            // 
-            // udTXTrace
-            // 
-            this.udTXTrace.DecimalPlaces = 3;
-            this.udTXTrace.Increment = new decimal(new int[] {
-            1,
-            0,
-            0,
-            196608});
-            this.udTXTrace.Location = new System.Drawing.Point(16, 64);
-            this.udTXTrace.Maximum = new decimal(new int[] {
-            5,
-            0,
-            0,
-            65536});
-            this.udTXTrace.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.udTXTrace.Name = "udTXTrace";
-            this.udTXTrace.Size = new System.Drawing.Size(56, 20);
-            this.udTXTrace.TabIndex = 69;
-            this.udTXTrace.Value = new decimal(new int[] {
-            5,
-            0,
-            0,
-            131072});
-            this.udTXTrace.ValueChanged += new System.EventHandler(this.udTXTrace_ValueChanged);
             // 
             // grpADC
             // 
@@ -1420,7 +1425,7 @@ namespace PowerSDR
             0});
             this.udScanStopB.Location = new System.Drawing.Point(152, 80);
             this.udScanStopB.Maximum = new decimal(new int[] {
-            55,
+            450,
             0,
             0,
             0});
@@ -1457,7 +1462,7 @@ namespace PowerSDR
             0});
             this.udScanStartB.Location = new System.Drawing.Point(40, 80);
             this.udScanStartB.Maximum = new decimal(new int[] {
-            55,
+            450,
             0,
             0,
             0});
@@ -1579,7 +1584,7 @@ namespace PowerSDR
             0});
             this.udScanStopA.Location = new System.Drawing.Point(152, 24);
             this.udScanStopA.Maximum = new decimal(new int[] {
-            55,
+            450,
             0,
             0,
             0});
@@ -1616,7 +1621,7 @@ namespace PowerSDR
             0});
             this.udScanStartA.Location = new System.Drawing.Point(40, 24);
             this.udScanStartA.Maximum = new decimal(new int[] {
-            55,
+            450,
             0,
             0,
             0});
@@ -2548,10 +2553,31 @@ namespace PowerSDR
             65536});
             this.udFreq1.ValueChanged += new System.EventHandler(this.udFreq1_ValueChanged);
             // 
+            // grpATUUpgrade
+            // 
+            this.grpATUUpgrade.Controls.Add(this.btnATUUpdate);
+            this.grpATUUpgrade.Location = new System.Drawing.Point(142, 58);
+            this.grpATUUpgrade.Name = "grpATUUpgrade";
+            this.grpATUUpgrade.Size = new System.Drawing.Size(200, 100);
+            this.grpATUUpgrade.TabIndex = 83;
+            this.grpATUUpgrade.TabStop = false;
+            this.grpATUUpgrade.Text = "ATU Upgrade";
+            this.grpATUUpgrade.Visible = false;
+            // 
+            // btnATUUpdate
+            // 
+            this.btnATUUpdate.Location = new System.Drawing.Point(39, 36);
+            this.btnATUUpdate.Name = "btnATUUpdate";
+            this.btnATUUpdate.Size = new System.Drawing.Size(121, 23);
+            this.btnATUUpdate.TabIndex = 0;
+            this.btnATUUpdate.Text = "Update EEPROM";
+            this.btnATUUpdate.UseVisualStyleBackColor = true;
+            this.btnATUUpdate.Click += new System.EventHandler(this.btnATUUpdate_Click);
+            // 
             // FLEX5000DebugForm
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-            this.ClientSize = new System.Drawing.Size(816, 438);
+            this.ClientSize = new System.Drawing.Size(816, 442);
             this.Controls.Add(this.ckPreamp);
             this.Controls.Add(this.ckTXOut);
             this.Controls.Add(this.chkRXAttn);
@@ -2570,15 +2596,18 @@ namespace PowerSDR
             this.Controls.Add(this.grpSwitches);
             this.Controls.Add(this.grpTRXPots);
             this.Controls.Add(this.grpFreqControl);
+            this.Controls.Add(this.grpATUUpgrade);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.KeyPreview = true;
             this.Menu = this.mainMenu1;
             this.Name = "FLEX5000DebugForm";
             this.Text = "FLEX-5000 Debug";
             this.Closing += new System.ComponentModel.CancelEventHandler(this.FLEX5000DebugForm_Closing);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FLEX5000DebugForm_KeyDown);
             this.grpTap.ResumeLayout(false);
             this.grpTXTrace.ResumeLayout(false);
-            this.grpChanSel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.udTXTrace)).EndInit();
+            this.grpChanSel.ResumeLayout(false);
             this.grpADC.ResumeLayout(false);
             this.grpADC.PerformLayout();
             this.grpFinalBias.ResumeLayout(false);
@@ -2623,6 +2652,7 @@ namespace PowerSDR
             this.grpFreqControl.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.udFreq2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.udFreq1)).EndInit();
+            this.grpATUUpgrade.ResumeLayout(false);
             this.ResumeLayout(false);
 
 		}
@@ -2684,8 +2714,8 @@ namespace PowerSDR
 
 		private void udFreq1_ValueChanged(object sender, System.EventArgs e)
 		{
-			/*if(FWC.SetRX1Freq((float)udFreq1.Value) == 0)
-				MessageBox.Show("Error in SetRX1Freq");*/
+            //if(FWC.SetRX1Filter((float)udFreq1.Value) == 0)
+            //    MessageBox.Show("Error in SetRX1Freq");
 		}
 
 		private void udFreq2_ValueChanged(object sender, System.EventArgs e)
@@ -3086,7 +3116,7 @@ namespace PowerSDR
 
 		private void chkEN2M_CheckedChanged(object sender, System.EventArgs e)
 		{
-			if(FWC.SetEN2M(chkEN2M.Checked) == 0)
+			if(FWC.SetXVINT(chkEN2M.Checked) == 0)
 				MessageBox.Show("Error in SetEN2M");
 		}
 
@@ -3481,8 +3511,9 @@ namespace PowerSDR
 
 		private void udTXTrace_ValueChanged(object sender, System.EventArgs e)
 		{
-			if(ckTXTrace.Checked)
-				Audio.SourceScale = (double)udTXTrace.Value;
+			//if(ckTXTrace.Checked)
+			//Audio.SourceScale = (double)udTXTrace.Value;
+            Audio.RadioVolume = (double)udTXTrace.Value; // uncomment this line and comment the 2 above for VU Trace
 		}
 
 		private void chkTXTrace_CheckedChanged(object sender, System.EventArgs e)
@@ -3624,13 +3655,45 @@ namespace PowerSDR
 			FWC.SetTRXPreamp(ckPreamp.Checked);
 		}
 
-        private VUForm vuForm;
+        //private VUForm vuForm;
         private void menuItem3_Click(object sender, EventArgs e)
         {
-            if (vuForm == null || vuForm.IsDisposed)
-                vuForm = new VUForm();
-            vuForm.Show();
-            vuForm.Focus();
+            if (console.vuForm == null || console.vuForm.IsDisposed)
+                console.vuForm = new VUForm(console);
+            console.vuForm.Show();
+            console.vuForm.Focus();
+        }
+
+        private void FLEX5000DebugForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(console.CurrentModel != Model.FLEX5000 || !FWCEEPROM.ATUOK) return;
+            if (e.Control && e.Alt && e.KeyCode == Keys.A)
+            {
+                grpATUUpgrade.Visible = true;
+                grpATUUpgrade.BringToFront();
+            }
+        }
+
+        private void btnATUUpdate_Click(object sender, EventArgs e)
+        {
+            if(console.CurrentModel != Model.FLEX5000 || !FWCEEPROM.ATUOK) return;
+
+            if (Keyboard.IsKeyDown(Keys.LShiftKey) || Keyboard.IsKeyDown(Keys.RShiftKey))
+            {
+                // undo upgrade
+                FWC.WriteTRXEEPROMUint(0x10, 0xFFFFFFFF);
+                MessageBox.Show("Undo ATU Upgrade complete.\n" +
+                    "Please shutdown PowerSDR and cycle power to the radio\n" +
+                    "for the changes to take effect.");
+            }
+            else
+            {
+                FWC.WriteTRXEEPROMByte(0x10, 0x34);
+                FWC.WriteTRXEEPROMByte(0x11, 0x1);
+                MessageBox.Show("EEPROM Update for ATU Upgrade complete.\n"+
+                    "Please shutdown PowerSDR and cycle power to the radio\n"+
+                    "for the changes to take effect.");
+            }
         }
 	}
 }

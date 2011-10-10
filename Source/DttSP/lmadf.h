@@ -103,7 +103,7 @@ typedef struct _LMSR
   int filter_type;		/* Filter type */
   int delay;			/* Total delay between current sample and filter */
   int delay_line_ptr;		/* Pointer for next sample into the delay line */
-  int size;			/* Delay line size */
+  int delay_size;			/* Delay line size */
   int mask;			/* Mask for circular buffer */
 } *LMSR, _lmsstate;
 

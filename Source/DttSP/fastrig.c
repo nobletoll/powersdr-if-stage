@@ -126,7 +126,7 @@ static REAL fast_atan_table[257] = {
 	(REAL)7.633576e-01,(REAL) 7.654008e-01,(REAL) 7.674360e-01,(REAL) 7.694633e-01,
 	(REAL)7.714826e-01,(REAL) 7.734940e-01,(REAL) 7.754975e-01,(REAL) 7.774932e-01,
 	(REAL)7.794811e-01,(REAL) 7.814612e-01,(REAL) 7.834335e-01,(REAL) 7.853983e-01,
-	(REAL) 7.853983e-01
+	(REAL)7.853983e-01
 };
 
 void
@@ -190,7 +190,7 @@ fast_cos (REAL x)
  Description:   This function calculates the angle of the vector (x,y) based
                 on a table lookup and linear interpolation. The table uses
                 a 256 point table covering -45 to +45 degrees and uses
-                symetry to determine the final angle value in the range of
+                symmetry to determine the final angle value in the range of
                 -180 to 180 degrees. Note that this function uses the small
                 angle approximation for values close to zero. This routine
                 calculates the arc tangent with an average  error of

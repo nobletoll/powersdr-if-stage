@@ -13,12 +13,14 @@ Note that MDAC 2.8 is required in order to compile.  This
 library can be found on the Microsoft website at
 www.microsoft.com/downloads.
 
+WARNING!  Before opening the forms in design view in MS Visual
+Studio .NET 2003, the PowerSDR project should be compiled.  This
+is a workaround to prevent a bug that is documented at the below
+link with regards to losing custom control information in the
+project source code.  Note that it is also necessary to close
+all design views of forms before switching between Debug and
+Release versions.  A good first step would be to compile in
+Debug and Release mode to prevent headaches that result from
+this issue.
 
-This branch is an attempt to get the code to work and run in
-VS 2008 professional.  This code is for W32.
-
-
-For VS2008 to compile portaudio, the latest directX SDK is required:
-
-http://www.microsoft.com/downloads/details.aspx?FamilyID=5493f76a-6d37-478d-ba17-28b1cca4865a&DisplayLang=en
-
+See more at: http://www.kbalertz.com/feedback.aspx?kbnumber=842706

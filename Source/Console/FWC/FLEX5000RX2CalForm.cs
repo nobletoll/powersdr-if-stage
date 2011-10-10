@@ -2,7 +2,7 @@
 // FLEX5000RX2CalForm.cs
 //=================================================================
 // PowerSDR is a C# implementation of a Software Defined Radio.
-// Copyright (C) 2004-2009  FlexRadio Systems
+// Copyright (C) 2004-2011  FlexRadio Systems
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -18,11 +18,11 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
-// You may contact us via email at: sales@flex-radio.com.
+// You may contact us via email at: gpl@flexradio.com.
 // Paper mail may be sent to: 
 //    FlexRadio Systems
-//    8900 Marybank Dr.
-//    Austin, TX 78750
+//    4616 W. Howard Lane  Suite 1-150
+//    Austin, TX 78728
 //    USA
 //=================================================================
 
@@ -121,12 +121,12 @@ namespace PowerSDR
 					MessageBoxButtons.OK,
 					MessageBoxIcon.Warning);
 
-			if(console.SetupForm.DSPPhoneRXBuffer != 4096)
+			if(console.setupForm.DSPPhoneRXBuffer != 4096)
 				/*MessageBox.Show("Warning: DSP RX Buffer size should be at least 4096 before calibrating.",
 					"Warning: DSP RX Buffer Size Low",
 					MessageBoxButtons.OK,
 					MessageBoxIcon.Warning);*/
-				console.SetupForm.DSPPhoneRXBuffer = 4096;
+				console.setupForm.DSPPhoneRXBuffer = 4096;
 		}
 
 		/// <summary>
@@ -1009,6 +1009,9 @@ namespace PowerSDR
 					if(btnCalImage.Enabled) break;
 				}
 				if(p.Text == "") goto end;
+
+                // reset bands back to start
+                SetBandFromString(start_bands);
 			}
 
 			if(ckCalLevel.Checked)
@@ -1035,10 +1038,10 @@ namespace PowerSDR
 					if(btnCalLevel.Enabled) break;
 				}
 				if(p.Text == "") goto end;
-			}			
 
-			// reset bands back to start
-			SetBandFromString(start_bands);
+                // reset bands back to start
+			    SetBandFromString(start_bands);
+			}			
 
 			/*if((ckTestRXFilter.Checked && btnRXFilter.BackColor != Color.Green) ||
 				(ckTestRXLevel.Checked && btnRXLevel.BackColor != Color.Green) ||
@@ -1049,8 +1052,11 @@ namespace PowerSDR
 			#endregion
 
 
-			end:
-				btnRunSel.BackColor = SystemColors.Control;
+		end:
+            // reset bands back to start
+            SetBandFromString(start_bands);
+
+			btnRunSel.BackColor = SystemColors.Control;
 			btnRunSel.Enabled = true;
 
 			t1.Stop();
@@ -1212,16 +1218,16 @@ namespace PowerSDR
 				test_genbal += "Chan Bal >1dB ("+Math.Abs(adc_r-adc_l).ToString("f1")+")\n";
 				b = false;
 			}
-			if(Math.Abs(-26.5 - adc_l) > 1.0f && Math.Abs(-32.0 - adc_l) > 1.0f)
+			if(Math.Abs(-26.5 - adc_l) > 1.3f && Math.Abs(-32.0 - adc_l) > 1.3f)
 			{
-				lstDebug.Items.Insert(0, " Gen/Bal Test: Failed ADC_L -26.5+/-1.0 ("+adc_l.ToString("f1")+")");
-				test_genbal += "ADC_L -26.5+/-1.0 ("+adc_l.ToString("f1")+")\n";
+				lstDebug.Items.Insert(0, " Gen/Bal Test: Failed ADC_L -26.5+/-1.3 ("+adc_l.ToString("f1")+")");
+				test_genbal += "ADC_L -26.5+/-1.3 ("+adc_l.ToString("f1")+")\n";
 				b = false;
 			}
-			if(Math.Abs(-27.0 - adc_r) > 1.0f && Math.Abs(-32.1 - adc_r) > 1.0f)
+			if(Math.Abs(-27.0 - adc_r) > 1.3f && Math.Abs(-32.1 - adc_r) > 1.3f)
 			{
-				lstDebug.Items.Insert(0, " Gen/Bal Test: Failed ADC_R -27.0+/-1.0 ("+adc_r.ToString("f1")+")");
-				test_genbal += "ADC_R -27.0+/-1.0 ("+adc_r.ToString("f1")+")\n";
+				lstDebug.Items.Insert(0, " Gen/Bal Test: Failed ADC_R -27.0+/-1.3 ("+adc_r.ToString("f1")+")");
+				test_genbal += "ADC_R -27.0+/-1.3 ("+adc_r.ToString("f1")+")\n";
 				b = false;
 			}
 
@@ -1549,11 +1555,11 @@ namespace PowerSDR
 			on /= 5;
 
 			Debug.WriteLine("Preamp Test: "+(on-off).ToString("f1")+" dB");
-			bool b = (Math.Abs(14.0 - (on-off)) <= 1.0f); // pass from 13 - 15dB
+			bool b = (Math.Abs(14.5 - (on-off)) <= 1.5f); // pass from 13 - 16dB
 			if(!b)
 			{
 				btnTestPreamp.BackColor = Color.Red;
-				test_preamp = " Preamp Test: Failed delta > 14 +/-1dB ("+(on-off).ToString("f1")+")";
+				test_preamp = " Preamp Test: Failed outside 13-16dB ("+(on-off).ToString("f1")+")";
 			}
 			else
 			{
@@ -1634,8 +1640,8 @@ namespace PowerSDR
 		private string test_rx2_filters = "RX2 Filters Test: Not Run";
 		unsafe private void TestRX2Filters()
 		{
-			float[] avg = {1.4f, 1.3f, 0.9f, 1.2f, 0.6f, 0.7f, 0.7f, 0.6f, 0.5f, 0.7f, 0.5f};	// avg filter loss in dB
-			float[] avg2 = {0.7f, 0.7f, 0.9f, -0.3f, 0.0f, 0.9f, 2.2f, 1.6f, 1.4f, 1.7f, 0.0f}; // new data due to no 50 Ohm source imp.
+			float[] avg = {1.4f, 1.3f, 0.9f, 1.2f, 0.6f, 0.7f, 0.7f, 0.6f, 0.5f, 0.7f, 2.4f};	// avg filter loss in dB
+			float[] avg2 = {0.7f, 0.7f, 0.9f, -0.3f, 0.0f, 0.9f, 2.2f, 1.6f, 1.4f, 1.7f, 2.4f}; // new data due to no 50 Ohm source imp.
 			//float tol = 0.5f; // tolerance
 			/*if(!console.PowerOn)
 			{
@@ -1802,21 +1808,32 @@ namespace PowerSDR
 				if(do_band)
 				{
 					console.VFOAFreq = band_freqs[i];
-					//Thread.Sleep(100);
+					Thread.Sleep(50);
 					console.VFOBFreq = band_freqs[i];
-					//Thread.Sleep(100);
+					Thread.Sleep(50);
 
 					dsp = console.RX1DSPMode;
 					dsp2 = console.RX2DSPMode;
-
+                    
 					console.RX1DSPMode = DSPMode.DSB;
 					//Thread.Sleep(50);
 					console.RX2DSPMode = DSPMode.DSB;
 
 					console.VFOAFreq = band_freqs[i];
-					//Thread.Sleep(100);
+					Thread.Sleep(50);
 					console.VFOBFreq = band_freqs[i];
-					//Thread.Sleep(100);
+					Thread.Sleep(50);
+
+                    if (bands[i] == Band.B60M)
+                    {
+                        console.RX1DSPMode = DSPMode.USB;
+                        Thread.Sleep(300);
+                        Application.DoEvents();
+
+                        console.RX1DSPMode = DSPMode.DSB;
+                        Thread.Sleep(300);
+                        Application.DoEvents();
+                    }
 
 					filter = console.RX2Filter;
 					var_low = console.RX2FilterLow;
@@ -1845,7 +1862,7 @@ namespace PowerSDR
 					on /= 5;
 
 					FWC.SetRX2Filter(-1.0f);
-					//Thread.Sleep(500);
+					Thread.Sleep(500);
 
 					float off = 0.0f;
 					DttSP.CalculateRXMeter(2, 0, DttSP.MeterType.SIGNAL_STRENGTH);
@@ -2248,14 +2265,20 @@ namespace PowerSDR
 			grpTests.Enabled = false;
 			grpCal.Enabled = false;
 			btnCalImage.BackColor = Color.Green;
-			
-			p = new Progress("Calibrate RX2 Image");
-			Thread t = new Thread(new ThreadStart(CalRX2Image));
-			t.Name = "Calibrate RX2 Image Thread";
-			t.IsBackground = true;
-			t.Priority = ThreadPriority.Normal;
-			t.Start();
+
+            CallCalRX2Image();
 		}
+
+        public Thread CallCalRX2Image()
+        {
+            p = new Progress("Calibrate RX2 Image");
+            Thread t = new Thread(new ThreadStart(CalRX2Image));
+            t.Name = "Calibrate RX2 Image Thread";
+            t.IsBackground = true;
+            t.Priority = ThreadPriority.Normal;
+            t.Start();
+            return t;
+        }
 
 		private string test_rx2_image = "RX2 Image Cal: Not Run";
 		public void CalRX2Image()

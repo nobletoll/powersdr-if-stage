@@ -2,7 +2,7 @@
 // splash.cs
 //=================================================================
 // PowerSDR is a C# implementation of a Software Defined Radio.
-// Copyright (C) 2004-2009  FlexRadio Systems
+// Copyright (C) 2004-2011  FlexRadio Systems
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -18,11 +18,11 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
-// You may contact us via email at: sales@flex-radio.com.
+// You may contact us via email at: gpl@flexradio.com.
 // Paper mail may be sent to: 
 //    FlexRadio Systems
-//    8900 Marybank Dr.
-//    Austin, TX 78750
+//    4616 W. Howard Lane  Suite 1-150
+//    Austin, TX 78728
 //    USA
 //=================================================================
 
@@ -72,10 +72,10 @@ namespace PowerSDR
 		private const string REGVALUE_PB_MILISECOND_INCREMENT = "Increment";
 		private const string REGVALUE_PB_PERCENTS = "Percents";
 		private System.Windows.Forms.LabelTS lblTimeRemaining;
-		private System.Windows.Forms.Timer timer1;
 		private System.Windows.Forms.LabelTS lblStatus;
 		private System.Windows.Forms.Panel pnlStatus;
-		private System.ComponentModel.IContainer components;
+        private System.Windows.Forms.Timer timer1;
+        private System.ComponentModel.IContainer components = null;
 
 		#endregion
 
@@ -93,14 +93,11 @@ namespace PowerSDR
 
 		protected override void Dispose( bool disposing )
 		{
-			if( disposing )
-			{
-				if(components != null)
-				{
-					components.Dispose();
-				}
-			}
-			base.Dispose( disposing );
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
 		}
 
 		#endregion
@@ -109,64 +106,65 @@ namespace PowerSDR
 
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
-			System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(Splash));
-			this.lblStatus = new System.Windows.Forms.LabelTS();
-			this.lblTimeRemaining = new System.Windows.Forms.LabelTS();
-			this.pnlStatus = new System.Windows.Forms.Panel();
-			this.timer1 = new System.Windows.Forms.Timer(this.components);
-			this.SuspendLayout();
-			// 
-			// lblStatus
-			// 
-			this.lblStatus.BackColor = System.Drawing.Color.Transparent;
-			this.lblStatus.ForeColor = System.Drawing.Color.White;
-			this.lblStatus.Location = new System.Drawing.Point(0, 230);
-			this.lblStatus.Name = "lblStatus";
-			this.lblStatus.Size = new System.Drawing.Size(400, 16);
-			this.lblStatus.TabIndex = 0;
-			this.lblStatus.Text = "Status";
-			this.lblStatus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			// 
-			// lblTimeRemaining
-			// 
-			this.lblTimeRemaining.BackColor = System.Drawing.Color.Transparent;
-			this.lblTimeRemaining.ForeColor = System.Drawing.Color.White;
-			this.lblTimeRemaining.Location = new System.Drawing.Point(296, 232);
-			this.lblTimeRemaining.Name = "lblTimeRemaining";
-			this.lblTimeRemaining.Size = new System.Drawing.Size(100, 16);
-			this.lblTimeRemaining.TabIndex = 1;
-			this.lblTimeRemaining.Text = "Time";
-			// 
-			// pnlStatus
-			// 
-			this.pnlStatus.BackColor = System.Drawing.Color.Transparent;
-			this.pnlStatus.Location = new System.Drawing.Point(50, 190);
-			this.pnlStatus.Name = "pnlStatus";
-			this.pnlStatus.Size = new System.Drawing.Size(300, 24);
-			this.pnlStatus.TabIndex = 2;
-			this.pnlStatus.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlStatus_Paint);
-			// 
-			// timer1
-			// 
-			this.timer1.Enabled = true;
-			this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-			// 
-			// Splash
-			// 
-			this.AutoScaleMode = AutoScaleMode.None;
-			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-			this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
-			this.ClientSize = new System.Drawing.Size(400, 250);
-			this.Controls.Add(this.pnlStatus);
-			this.Controls.Add(this.lblTimeRemaining);
-			this.Controls.Add(this.lblStatus);
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-			this.Name = "Splash";
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-			this.Text = "Splash";
-			this.ResumeLayout(false);
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Splash));
+            this.pnlStatus = new System.Windows.Forms.Panel();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.lblTimeRemaining = new System.Windows.Forms.LabelTS();
+            this.lblStatus = new System.Windows.Forms.LabelTS();
+            this.SuspendLayout();
+            // 
+            // pnlStatus
+            // 
+            this.pnlStatus.BackColor = System.Drawing.Color.Transparent;
+            this.pnlStatus.Location = new System.Drawing.Point(50, 247);
+            this.pnlStatus.Name = "pnlStatus";
+            this.pnlStatus.Size = new System.Drawing.Size(475, 24);
+            this.pnlStatus.TabIndex = 2;
+            this.pnlStatus.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlStatus_Paint);
+            // 
+            // timer1
+            // 
+            this.timer1.Interval = 50;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
+            // lblTimeRemaining
+            // 
+            this.lblTimeRemaining.BackColor = System.Drawing.Color.Transparent;
+            this.lblTimeRemaining.ForeColor = System.Drawing.Color.White;
+            this.lblTimeRemaining.Image = null;
+            this.lblTimeRemaining.Location = new System.Drawing.Point(296, 289);
+            this.lblTimeRemaining.Name = "lblTimeRemaining";
+            this.lblTimeRemaining.Size = new System.Drawing.Size(100, 16);
+            this.lblTimeRemaining.TabIndex = 1;
+            this.lblTimeRemaining.Text = "Time";
+            // 
+            // lblStatus
+            // 
+            this.lblStatus.BackColor = System.Drawing.Color.Transparent;
+            this.lblStatus.ForeColor = System.Drawing.Color.White;
+            this.lblStatus.Image = null;
+            this.lblStatus.Location = new System.Drawing.Point(0, 287);
+            this.lblStatus.Name = "lblStatus";
+            this.lblStatus.Size = new System.Drawing.Size(400, 16);
+            this.lblStatus.TabIndex = 0;
+            this.lblStatus.Text = "Status";
+            this.lblStatus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // Splash
+            // 
+            this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
+            this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
+            this.ClientSize = new System.Drawing.Size(600, 384);
+            this.Controls.Add(this.pnlStatus);
+            this.Controls.Add(this.lblTimeRemaining);
+            this.Controls.Add(this.lblStatus);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Name = "Splash";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Splash";
+            this.ResumeLayout(false);
 
 		}
 		#endregion
@@ -411,18 +409,21 @@ namespace PowerSDR
 		}
 
 		// Paint the portion of the panel invalidated during the tick event.
+        SolidBrush status_brush = null;
 		private void pnlStatus_Paint(object sender, 
 			System.Windows.Forms.PaintEventArgs e)
 		{
 			if( m_bFirstLaunch == false && e.ClipRectangle.Width > 0 
 				&& m_iActualTicks > 1 )
 			{
-				LinearGradientBrush brBackground = 
-					new LinearGradientBrush(m_rProgress, 
-					Color.FromArgb(100, 100, 100),
-					Color.FromArgb(130, 255, 130), 
-					LinearGradientMode.Horizontal);
-				e.Graphics.FillRectangle(brBackground, m_rProgress);
+				/*LinearGradientBrush brBackground = 
+					new LinearGradientBrush(pnlStatus.ClientRectangle, 
+					Color.Black,//Color.FromArgb(100, 100, 100),
+					Color.White,//Color.FromArgb(130, 255, 130), 
+					LinearGradientMode.Horizontal);*/
+                if(status_brush == null)
+                    status_brush = new SolidBrush(Color.White);
+                e.Graphics.FillRectangle(status_brush, m_rProgress);
 			}
 		}
 

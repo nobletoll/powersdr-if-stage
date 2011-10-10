@@ -2,7 +2,7 @@
 // fwc_eeprom.cs
 //=================================================================
 // PowerSDR is a C# implementation of a Software Defined Radio.
-// Copyright (C) 2004-2009  FlexRadio Systems
+// Copyright (C) 2004-2011  FlexRadio Systems
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -18,15 +18,17 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
-// You may contact us via email at: sales@flex-radio.com.
+// You may contact us via email at: gpl@flexradio.com.
 // Paper mail may be sent to: 
 //    FlexRadio Systems
-//    8900 Marybank Dr.
-//    Austin, TX 78750
+//    4616 W. Howard Lane  Suite 1-150
+//    Austin, TX 78728
 //    USA
 //=================================================================
 
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading;
@@ -40,32 +42,38 @@ namespace PowerSDR
 
 		public static void Init()
 		{
+            int val = 0;
 			if(model == 99) // keep from reading the model more than once
-				FWC.GetModel(out model);
-			FWC.GetSerialNum(out serial_number); // get serial number
-			FWC.GetTRXOK(out trx_ok);
-			if(trx_ok) FWC.GetTRXSN(out trx_serial);
-			if(trx_ok) FWC.GetTRXRev(out trx_rev);
+                val = FWC.GetModel(out model);
+            if (val == -1) return;
 
-			FWC.GetPAOK(out pa_ok);
-			if(pa_ok) FWC.GetPASN(out pa_serial);
-			if(pa_ok) FWC.GetPARev(out pa_rev);
+            FWC.GetSerialNum(out serial_number); Thread.Sleep(10);// get serial number
+            FWC.GetTRXOK(out trx_ok); Thread.Sleep(10);
+            if (trx_ok) FWC.GetTRXSN(out trx_serial); Thread.Sleep(10);
+            if (trx_ok) FWC.GetTRXRev(out trx_rev); Thread.Sleep(10);
 
+            FWC.GetPAOK(out pa_ok); Thread.Sleep(10);
+            if (pa_ok) FWC.GetPASN(out pa_serial); Thread.Sleep(10);
+            if (pa_ok) FWC.GetPARev(out pa_rev); Thread.Sleep(10);
+            
 			switch(model)
 			{
 				case 0:
 				case 1:
 				case 2:
-					FWC.GetRFIOOK(out rfio_ok);
-					if(rfio_ok) FWC.GetRFIOSN(out rfio_serial);
-					if(rfio_ok) FWC.GetRFIORev(out rfio_rev);
-					FWC.GetRX2OK(out rx2_ok);
-					if(rx2_ok) FWC.GetRX2SN(out rx2_serial);
-                    if(rx2_ok) FWC.GetRX2Rev(out rx2_rev);
-					FWC.GetATUOK(out atu_ok);
-                    FWC.GetVUOK(out vu_ok);
-                    if (vu_ok) FWC.GetVUSN(out vu_serial);
-                    if (vu_ok) FWC.GetVURev(out vu_rev);
+                    FWC.GetRFIOOK(out rfio_ok); Thread.Sleep(10);
+                    if (rfio_ok) FWC.GetRFIOSN(out rfio_serial); Thread.Sleep(10);
+                    if (rfio_ok) FWC.GetRFIORev(out rfio_rev); Thread.Sleep(10);
+                    FWC.GetRX2OK(out rx2_ok); Thread.Sleep(10);
+                    if (rx2_ok) FWC.GetRX2SN(out rx2_serial); Thread.Sleep(10);
+                    if (rx2_ok) FWC.GetRX2Rev(out rx2_rev); Thread.Sleep(10);
+                    FWC.GetATUOK(out atu_ok); Thread.Sleep(10);
+                    if (atu_ok) FWC.GetATURev(out atu_rev); Thread.Sleep(10);
+                    if (atu_ok) FWC.GetATUSN(out atu_serial); Thread.Sleep(10);
+                    if (atu_ok) FWCATU.FlushBuffer(false);
+                    FWC.GetVUOK(out vu_ok); Thread.Sleep(10);
+                    if (vu_ok) FWC.GetVUSN(out vu_serial); Thread.Sleep(10);
+                    if (vu_ok) FWC.GetVURev(out vu_rev); Thread.Sleep(10);
 					break;
 				case 3:
 					atu_ok = true;
@@ -98,8 +106,23 @@ namespace PowerSDR
 				FWC.ReadRX2EEPROMByte(0x1BE, out temp);
 				rx2_image_ver = temp;
 			}
-		
+
+            //FWC.ReadTRXEEPROMUint(0x10, out data);
+            FWC.GetATURev(out atu_rev);
+            byte rev = ((byte)(ATURev >> 8));
+            if (!(rev >= 1 && rev <= 0xFE))  //if old model
+            {
+                FWC.old_atu = true;     //old_firmware implies old revision
+            }
+
+            if (rev >= 1 && rev <= 0xFE)  //if new model
+            {
+                FWC.old_atu = false;
+            }
+
 			FWC.GetRegion(out region);
+            if (region >= FRSRegion.LAST)
+                region = FRSRegion.US;
 		}
 
 		public static bool NeedDump()
@@ -132,6 +155,7 @@ namespace PowerSDR
 		public static void StartDump()
 		{
 			progress = new Progress("Backing Up EEPROM");
+            progress.PercentDigits = 0;
 			Thread t = new Thread(new ThreadStart(Dump));
 			t.Name = "EEPROM Dump Thread";
 			t.IsBackground = true;
@@ -179,7 +203,7 @@ namespace PowerSDR
 			for(int i=0; i<16; i++)
 				s.Append(i.ToString("X")+",");
 			writer.WriteLine(s);
-			for(int i=0; i<0x66; i++)
+			for(int i=0; i<0xC1; i++)
 			{
 				s = new StringBuilder(i.ToString("X")+",");
 				for(int j=0; j<4; j++)
@@ -188,7 +212,7 @@ namespace PowerSDR
 					//Thread.Sleep(40);
 					for(int k=0; k<4; k++)
 						s.Append(((byte)(data>>(k*8))).ToString("X")+",");
-					progress.SetPercent(count++/408.0f);
+					progress.SetPercent(count++/772.0f);
 				}
 				writer.WriteLine(s);
 			}
@@ -242,9 +266,97 @@ namespace PowerSDR
 			return b;
 		}
 
+        public static void TestVitaFreq()
+        {
+            Random r = new Random();
+
+            for (int i = 0; i < 1e6; i++)
+            {
+                double whole = r.Next(8789999);
+                double frac = 0.0;// r.NextDouble();
+
+                double d = whole + frac;
+
+                ulong v = ToVitaFreq(d);
+
+                double test = FromVitaFreq(v);
+
+                Debug.Assert((ulong)Math.Floor(d*1e6) == (ulong)Math.Floor(test*1e6));
+            }
+        }
+
+        public static ulong ToVitaFreq(double freq_mhz)
+        {
+            return (ulong)(freq_mhz * 1e6 * Math.Pow(2, 20));
+        }
+
+        public static double FromVitaFreq(ulong vita)
+        {
+            return vita * Math.Pow(2, -20) * 1e-6;
+        }
+
+        private static bool CheckedWriteUint(uint addr, uint data)
+        {
+            uint temp = 0;
+            int error_count = 0;
+            do
+            {
+                FWC.WriteTRXEEPROMUint(addr, data);
+                FWC.ReadTRXEEPROMUint(addr, out temp);
+
+                if (temp != data)
+                {
+                    if (error_count++ > NUM_WRITES_TO_TRY)
+                        return false;
+                }
+            } while (temp != data);
+
+            return true;
+        }
+
+        private static bool CheckedWriteUshort(uint addr, ushort data)
+        {
+            ushort temp = 0;
+            int error_count = 0;
+            do
+            {
+                FWC.WriteTRXEEPROMUshort(addr, data);
+                FWC.ReadTRXEEPROMUshort(addr, out temp);
+
+                if (temp != data)
+                {
+                    if (error_count++ > NUM_WRITES_TO_TRY)
+                        return false;
+                }
+            } while (temp != data);
+
+            return true;
+        }
+
+        private static bool CheckedWriteByte(uint addr, byte data)
+        {
+            byte temp = 0;
+            int error_count = 0;
+            do
+            {
+                FWC.WriteTRXEEPROMByte(addr, data);
+                FWC.ReadTRXEEPROMByte(addr, out temp);
+
+                if (temp != data)
+                {
+                    if (error_count++ > NUM_WRITES_TO_TRY)
+                        return false;
+                }
+            } while (temp != data);
+
+            return true;
+        }
+
 		#endregion
 
 		#region Properties
+
+        private const uint END_OF_TABLE_FLAG = 0xDEADBEEF;
 
         private static string app_data_path = "";
         public static string AppDataPath
@@ -295,7 +407,7 @@ namespace PowerSDR
 		public static uint TRXSerial
 		{
 			get { return trx_serial; }
-			//set { trx_serial = value; }
+			
 		}
 
 		private static uint trx_rev;
@@ -303,6 +415,18 @@ namespace PowerSDR
 		{
 			get { return trx_rev; }
 		}
+
+        private static uint atu_serial;
+        public static uint ATUSerial
+        {
+            get { return atu_serial; }
+        }
+
+        private static uint atu_rev;
+        public static uint ATURev
+        {
+            get { return atu_rev; }
+        }
 
 		private static bool pa_ok;
 		public static bool PAOK
@@ -597,8 +721,8 @@ namespace PowerSDR
 				phase_table[(int)bands[i]] = (float)rand.NextDouble();
 			}
 
-			byte gain_sum = Checksum.Calc(gain_table);
-			byte phase_sum = Checksum.Calc(phase_table);
+			byte gain_sum = Checksum.CalcHF(gain_table);
+			byte phase_sum = Checksum.CalcHF(phase_table);
 
 			byte temp;
 			WriteRXImage(gain_table, phase_table, out temp, out temp);
@@ -608,8 +732,8 @@ namespace PowerSDR
 
 			ReadRXImage(gain_check, phase_check);
 
-			byte gain_sum_check = Checksum.Calc(gain_check);
-			byte phase_sum_check = Checksum.Calc(phase_check);
+			byte gain_sum_check = Checksum.CalcHF(gain_check);
+			byte phase_sum_check = Checksum.CalcHF(phase_check);
 
 			if((gain_sum_check != gain_sum) ||
 				(phase_sum_check != phase_sum))
@@ -653,8 +777,8 @@ namespace PowerSDR
 				}
 			} while(temp != gain_offset);
 			
-			FWC.WriteTRXEEPROMByte(0x1BE, 4);
-			rx1_image_ver = 4;
+			FWC.WriteTRXEEPROMByte(0x1BE, 5);
+			rx1_image_ver = 5;
 
 			addr = 0x4C;
 			ushort phase_offset = 0x01C0;
@@ -750,11 +874,11 @@ namespace PowerSDR
 			}
 
 			// calculate and write checksums
-			byte sum = Checksum.Calc(gain_table);
+			byte sum = Checksum.CalcHF(gain_table);
 			WriteRXImageGainChecksum(sum);
 			gain_sum = sum;
 
-			sum = Checksum.Calc(phase_table);
+			sum = Checksum.CalcHF(phase_table);
 			WriteRXImagePhaseChecksum(sum);
 			phase_sum = sum;
 		}
@@ -1017,11 +1141,11 @@ namespace PowerSDR
 			}
 
 			// calculate and write checksums
-			byte sum = Checksum.Calc(gain_table);
+			byte sum = Checksum.CalcHF(gain_table);
 			WriteTXImageGainChecksum(sum);
 			gain_sum = sum;
 
-			sum = Checksum.Calc(phase_table);
+			sum = Checksum.CalcHF(phase_table);
 			WriteTXImagePhaseChecksum(sum);
 			phase_sum = sum;
 		}
@@ -1142,171 +1266,149 @@ namespace PowerSDR
 		public static bool CheckTXCarrier()
 		{
 			Random rand = new Random();
-			Band[] bands = { Band.B160M, Band.B80M, Band.B60M, Band.B40M, Band.B30M, Band.B20M,
-							   Band.B17M, Band.B15M, Band.B12M, Band.B10M, Band.B6M };
+            double[] band_freqs = { 1.85f, 3.75f, 5.3665f, 7.15f, 10.125f, 14.175f, 18.1f, 21.300f, 24.9f, 28.4f, 50.11f };
 
-			int[][] tx_carrier_table = new int[(int)Band.LAST][];
-			for(int i=0; i<(int)Band.LAST; i++)
-				tx_carrier_table[i] = new int[4];
+			SortedDictionary<double, uint> tx_carrier_cal = new SortedDictionary<double, uint>();
 
-			for(int i=0; i<bands.Length; i++)
-				for(int j=0; j<4; j++)
-					tx_carrier_table[(int)bands[i]][j] = rand.Next(255);
+            for (int i = 0; i < band_freqs.Length; i++)
+                tx_carrier_cal[Math.Round(band_freqs[i], 3)] = (uint)rand.Next();
 
 			byte temp;
-			WriteTXCarrier(tx_carrier_table, out temp);
+            WriteTXCarrier(tx_carrier_cal, out temp);
 
-			int[][] tx_carrier_check = new int[(int)Band.LAST][];
-			for(int i=0; i<(int)Band.LAST; i++)
-				tx_carrier_check[i] = new int[4];
+			SortedDictionary<double, uint> tx_carrier_check = new SortedDictionary<double, uint>();
 
 			ReadTXCarrier(tx_carrier_check);
 
-			for(int i=0; i<bands.Length; i++)
+			for(int i=0; i<band_freqs.Length; i++)
 			{
-				for(int j=0; j<4; j++)
-				{
-					if(tx_carrier_table[(int)bands[i]][j] != tx_carrier_check[(int)bands[i]][j])
-						return false;
-				}
+			    if(tx_carrier_cal[Math.Round(band_freqs[i], 3)] != tx_carrier_check[Math.Round(band_freqs[i], 3)])
+					return false;
 			}
 			return true;
 		}
 
-		public static void WriteTXCarrier(int[][] table, out byte checksum)
+		public static void WriteTXCarrier(SortedDictionary<double, uint> table, out byte checksum)
 		{
 			WriteCalDateTime();
-			Band[] bands = { Band.B160M, Band.B80M, Band.B60M, Band.B40M, Band.B30M, Band.B20M,
-							   Band.B17M, Band.B15M, Band.B12M, Band.B10M, Band.B6M };
 			
-			uint addr = 0x52;
-			ushort offset = 0x0250;
-			ushort temp2;
-			int error_count = 0;
-			do
-			{
-				FWC.WriteTRXEEPROMUshort(addr, offset);
-				//Thread.Sleep(10);
-				FWC.ReadTRXEEPROMUshort(addr, out temp2);
-				//Thread.Sleep(40);
+			ushort ptr_addr = 0x62;
+			ushort table_addr = 0x0760;
 
-				if(temp2 != offset)
-				{
-					if(error_count++ > NUM_WRITES_TO_TRY)
-					{
-						MessageBox.Show("Error writing TX Carrier pointer to EEPROM.\n"+
-							"Tried to write "+offset.ToString()+", but read back "+temp2.ToString());
-						checksum = 0xFF;
-						return;
-					}
-				}
-			} while(temp2 != offset);
+            if (!CheckedWriteUshort(ptr_addr, table_addr))
+                goto error;
 
-			for(int i=0; i<bands.Length; i++)
-			{
-				uint data = 0;
-				for(int j=0; j<4; j++)
-				{
-					if(table[(int)bands[i]][j] < 0 || table[(int)bands[i]][j] > 255)
-					{
-						/*MessageBox.Show("Error writing TX Carrier value to EEPROM.\n"+
-							bands[i].ToString()+" - Value out of range [0, 255] ("+table[(int)bands[i]][j].ToString()+").\n"+
-							"Recalibrate TX Carrier on this band.");*/
-						TextWriter writer = new StreamWriter(app_data_path+"\\eeprom_error.log", true);
-						writer.WriteLine(DateTime.Now.ToShortDateString()+" "+DateTime.Now.ToShortTimeString()+" "+
-							"Error writing TX Carrier value to EEPROM -- "+
-							bands[i].ToString()+" - Value out of range [0, 255] ("+table[(int)bands[i]][j].ToString()+").");
-						writer.Close();
-						table[(int)bands[i]][j] = 128;
-					}
+            ushort offset = 0;
+            foreach (KeyValuePair<double, uint> pair in table)
+            {
+                ulong freq = ToVitaFreq(Math.Round(pair.Key, 3));
+                if (!CheckedWriteUint((uint)(table_addr + offset), (uint)(freq >> 32)))
+                    goto error;
+                offset += 4;
 
-					data += (uint)table[(int)bands[i]][j]<<(j*8);
-				}
+                if (!CheckedWriteUint((uint)(table_addr + offset), (uint)freq))
+                    goto error;
+                offset += 4;
 
-				uint temp = 0;
-				error_count = 0;
-				do
-				{
-					FWC.WriteTRXEEPROMUint((uint)(offset+i*4), data);
-					//Thread.Sleep(10);
+                if (!CheckedWriteUint((uint)(table_addr + offset), pair.Value))
+                    goto error;
+                offset += 4;
+            }
 
-					FWC.ReadTRXEEPROMUint((uint)(offset+i*4), out temp);
-					//Thread.Sleep(40);
-
-					if(temp != data)
-					{
-						if(error_count++ > NUM_WRITES_TO_TRY)
-						{
-							MessageBox.Show("Error writing TX Carrier value to EEPROM.\n"+
-								"Tried to write "+data+", but read back "+temp);
-							checksum = 0xFF;
-							return;							
-						}
-					}
-				} while(temp != data);
-			}
+            // write end of table flag here
+            if (!CheckedWriteUint((uint)(table_addr + offset), END_OF_TABLE_FLAG))
+                goto error;
 
 			// calculate and write checksum
-			byte sum = Checksum.Calc(table, true);
+			byte sum = Checksum.Calc(table);
 			WriteTXCarrierChecksum(sum);
 			checksum = sum;
+            return;
+
+        error:
+            TextWriter writer = new StreamWriter(app_data_path + "\\eeprom_error.log", true);
+            writer.WriteLine(DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + " " +
+                "Error writing TX Carrier data to EEPROM");
+            writer.Close();
+            MessageBox.Show("Error writing TX Carrier data to EEPROM");
+            checksum = 0xFF;
 		}
 
 		public static void WriteTXCarrierChecksum(byte sum)
 		{
-			byte read, errors = 0;
-			do
-			{
-				FWC.WriteTRXEEPROMByte(0x27F, sum);
-				//Thread.Sleep(10);
-
-				FWC.ReadTRXEEPROMByte(0x27F, out read);
-				if(read != sum)
-				{
-					if(errors++ > NUM_WRITES_TO_TRY)
-					{
-						MessageBox.Show("Error writing TX Carrier checksum to EEPROM.\n"+
-							"Tried to write "+sum+", but read back "+read);
-						return;
-					}
-				}
-			} while(read != sum);
+			if(!CheckedWriteByte(0x27F, sum))
+				MessageBox.Show("Error writing TX Carrier checksum to EEPROM");
 		}
 
-		public static void ReadTXCarrier(int[][] table)
+        private static uint SwapBytes(uint x)
+        {
+            return (x & 0xff) << 24
+                | (x & 0xff00) << 8
+                | (x & 0xff0000) >> 8
+                | (x & 0xff000000) >> 24;
+        }
+
+		public static void ReadTXCarrier(SortedDictionary<double, uint> table)
 		{
-			Band[] bands = { Band.B160M, Band.B80M, Band.B60M, Band.B40M, Band.B30M, Band.B20M,
-							   Band.B17M, Band.B15M, Band.B12M, Band.B10M, Band.B6M };
+			ushort table_addr;
+            FWC.ReadTRXEEPROMUshort(0x62, out table_addr);
+            
+            ushort offset = 0;
+            uint data;
 
-			ushort offset;
-			FWC.ReadTRXEEPROMUshort(0x52, out offset);
-			//Thread.Sleep(40);
-			if(offset == 0 || offset == 0xFFFF) return;
+            if(table_addr == 0xFFFF)
+            {
+                table_addr = 0x250;
 
-			uint data;
-			FWC.ReadTRXEEPROMUint(offset, out data);
-			//Thread.Sleep(40);
-			if(data == 0xFFFFFFFF) return;
+			    
+                FWC.ReadTRXEEPROMUint(table_addr, out data);
+			    if(data == 0xFFFFFFFF) return;
 
-			for(int i=0; i<bands.Length; i++)
+                // convert old style data
+                float[] band_freqs = { 1.85f, 3.75f, 5.3665f, 7.15f, 10.125f, 14.175f, 18.1f, 21.300f, 24.9f, 28.4f, 50.11f };
+
+                for (int i = 0; i < band_freqs.Length; i++)
+                {
+                    FWC.ReadTRXEEPROMUint((uint)(table_addr + offset), out data);
+                    offset += 4;
+
+                    data = SwapBytes(data);
+
+                    table[Math.Round(band_freqs[i], 3)] = data;
+                }
+
+                byte checksum = 0;
+                WriteTXCarrier(table, out checksum);
+                return;
+            }
+
+            int count = 0;
+			while(true) // do this until we find end of table flag (or an error)
 			{
-				FWC.ReadTRXEEPROMUint((uint)(offset+i*4), out data);
-				//Thread.Sleep(40);
-				for(int j=0; j<4; j++)
-				{
-					if((byte)(data>>(j*8)) < 0 || (byte)(data>>(j*8)) > 255)
-					{
-						/*MessageBox.Show("Bad data detected in EEPROM.\n"+
-							"TX Carrier ("+bands[i].ToString()+" = "+data.ToString("f2")+")");*/
-						TextWriter writer = new StreamWriter(app_data_path+"\\eeprom_error.log", true);
-						writer.WriteLine(DateTime.Now.ToShortDateString()+" "+DateTime.Now.ToShortTimeString()+" "+
-							"Bad data detected in EEPROM -- "+
-							"TX Carrier ("+bands[i].ToString()+" = "+data.ToString("f2")+")");
-						writer.Close();
-						data = 0;
-					}
-					table[(int)bands[i]][j] = (byte)(data>>(j*8));
-				}
+				FWC.ReadTRXEEPROMUint((uint)(table_addr + offset), out data);
+                offset += 4;
+                if (data == END_OF_TABLE_FLAG)
+                    break;
+
+                // if it's not the end of the table, data is the MSB of the Vita Freq
+                uint vita_freq_msb = data;
+
+                // read in LSBs to data2
+                uint vita_freq_lsb;
+                FWC.ReadTRXEEPROMUint((uint)(table_addr + offset), out vita_freq_lsb);
+                offset += 4;
+
+                // read in value to val
+                uint val;
+                FWC.ReadTRXEEPROMUint((uint)(table_addr + offset), out val);
+                offset += 4;
+
+                double key = Math.Round(FromVitaFreq(((ulong)vita_freq_msb << 32) + vita_freq_lsb), 3);
+                if (key > 0.0 && key < 451.0)
+                {
+                    table[key] = val;
+                }
+                if (++count >= 100) break; // stop if no deadbeef is found
 			}
 		}
 
@@ -1572,14 +1674,14 @@ namespace PowerSDR
 				{
 					error_count = 0;
 					float temp = 0.0f;
-					if(table[(int)bands[i]][j] > 2.0f || table[(int)bands[i]][j] < 0.01f)
+					if(table[(int)bands[i]][j] > 2.3f || table[(int)bands[i]][j] < 0.01f)
 					{
 						/*MessageBox.Show("Error writing PA Bridge value to EEPROM.\n"+
-							"Value out of range 0.01 to 2.0 ("+table[(int)bands[i]][j].ToString("f4")+").");*/
+							"Value out of range 0.01 to 2.3 ("+table[(int)bands[i]][j].ToString("f4")+").");*/
 						TextWriter writer = new StreamWriter(app_data_path+"\\eeprom_error.log", true);
 						writer.WriteLine(DateTime.Now.ToShortDateString()+" "+DateTime.Now.ToShortTimeString()+" "+
 							"Error writing PA Bridge value to EEPROM -- "+
-							"Value out of range 0.01 to 2.0 ("+table[(int)bands[i]][j].ToString("f4")+").");
+							"Value out of range 0.01 to 2.3 ("+table[(int)bands[i]][j].ToString("f4")+").");
 						writer.Close();
 						table[(int)bands[i]][j] = 0.01f;
 					}
@@ -1654,7 +1756,7 @@ namespace PowerSDR
 				{
 					FWC.ReadTRXEEPROMFloat((uint)(offset+i*24+j*4), out f);
 					//Thread.Sleep(40);
-					if(f > 2.0f || f < 0.01)
+					if(f > 2.3f || f < 0.01)
 					{
 						/*MessageBox.Show("Bad data detected in EEPROM.\n"+
 							"PA Bridge("+bands[i].ToString()+", "+j+") = "+f.ToString("f4"));*/
@@ -1946,7 +2048,7 @@ namespace PowerSDR
 			}
 
 			// calculate and write checksum
-			byte sum = Checksum.Calc(table);
+			byte sum = Checksum.CalcHF(table);
 			WritePASWRChecksum(sum);
 			checksum = sum;
 		}
@@ -2245,8 +2347,8 @@ namespace PowerSDR
 				}
 			} while(temp != gain_offset);
 
-			FWC.WriteRX2EEPROMByte(0x1BE, 4);
-			rx2_image_ver = 4;
+			FWC.WriteRX2EEPROMByte(0x1BE, 5);
+			rx2_image_ver = 5;
 
 			addr = 0x4C;
 			ushort phase_offset = 0x01C0;
@@ -2340,11 +2442,11 @@ namespace PowerSDR
 			}
 
 			// calculate and write checksums
-			byte sum = Checksum.Calc(gain_table);
+			byte sum = Checksum.CalcHF(gain_table);
 			WriteRX2ImageGainChecksum(sum);
 			gain_sum = sum;
 
-			sum = Checksum.Calc(phase_table);
+			sum = Checksum.CalcHF(phase_table);
 			WriteRX2ImagePhaseChecksum(sum);
 			phase_sum = sum;
 		}
@@ -2552,7 +2654,7 @@ namespace PowerSDR
 			}
 
 			// calculate and write checksum
-			byte sum = Checksum.Calc(table);
+			byte sum = Checksum.CalcHF(table);
 			WriteATUSWRChecksum(sum);
 			checksum = sum;
 		}
@@ -2620,6 +2722,419 @@ namespace PowerSDR
 			return read;
 		}
 
+
 		#endregion
-	}
+
+        #region VU
+
+        #region VU Level
+
+        public static bool CheckVULevel()
+        {
+            Random rand = new Random();
+
+            float[] v_level_table = new float[2];
+            float[] u_level_table = new float[2];
+            for (int i = 0; i < 2; i++)
+            {
+                v_level_table[i] = (float)Math.Round(rand.NextDouble(), 1);
+                u_level_table[i] = (float)Math.Round(rand.NextDouble(), 1);
+            }
+
+            byte temp;
+            WriteVULevel(v_level_table, u_level_table, out temp);
+
+            float[] v_level_check = new float[2];
+            float[] u_level_check = new float[2];
+
+            ReadVULevel(v_level_check, u_level_check);
+
+            for (int i = 0; i < 2; i++)
+            {
+                if (v_level_table[i] != v_level_check[i] ||
+                    u_level_table[i] != u_level_check[i])
+                    return false;
+            }
+            return true;
+        }
+
+        public static void WriteVULevel(float[] vtable, float[] utable, out byte checksum)
+        {
+            WriteCalDateTime();
+
+            uint addr = 0x5E;
+            ushort offset = 0x690, temp;
+            int error_count = 0;
+            do
+            {
+                FWC.WriteTRXEEPROMUshort(addr, offset);
+                //Thread.Sleep(10);
+                FWC.ReadTRXEEPROMUshort(addr, out temp);
+                //Thread.Sleep(40);
+
+                if (temp != offset)
+                {
+                    if (error_count++ > NUM_WRITES_TO_TRY)
+                    {
+                        MessageBox.Show("Error writing VU Level pointer to EEPROM.\n" +
+                            "Tried to write " + offset.ToString() + ", but read back " + temp.ToString());
+                        checksum = 0xFF;
+                        return;
+                    }
+                }
+            } while (temp != offset);
+
+            for (int i = 0; i < 2; i++)
+            {
+                error_count = 0;
+                float test = -99.99f;
+                float val = (float)Math.Round(vtable[i], 1);
+
+                do
+                {                    
+                    FWC.WriteTRXEEPROMFloat((uint)(offset + i * 4), val);
+                    //Thread.Sleep(10);
+
+                    FWC.ReadTRXEEPROMFloat((uint)(offset + i * 4), out test);
+                    //Thread.Sleep(40);
+
+                    if (test != val)
+                    {
+                        if (error_count++ > NUM_WRITES_TO_TRY)
+                        {
+                            MessageBox.Show("Error writing VU Level value to EEPROM.\n" +
+                                "Tried to write " + val.ToString("f4") + ", but read back " + test.ToString("f4"));
+                            checksum = 0xFF;
+                            return;
+                        }
+                    }
+                } while (test != val);
+            }
+
+            for (int i = 0; i < 2; i++)
+            {
+                error_count = 0;
+                float test = -99.99f;
+                float val = (float)Math.Round(utable[i], 1);
+
+                do
+                {                    
+                    FWC.WriteTRXEEPROMFloat((uint)(offset + 8 + i * 4), val);
+                    //Thread.Sleep(10);
+
+                    FWC.ReadTRXEEPROMFloat((uint)(offset + 8 + i * 4), out test);
+                    //Thread.Sleep(40);
+
+                    if (test != val)
+                    {
+                        if (error_count++ > NUM_WRITES_TO_TRY)
+                        {
+                            MessageBox.Show("Error writing VU Level value to EEPROM.\n" +
+                                "Tried to write " + val.ToString("f4") + ", but read back " + test.ToString("f4"));
+                            checksum = 0xFF;
+                            return;
+                        }
+                    }
+                } while (test != val);
+            }
+
+            // calculate and write checksum
+            byte sum = Checksum.Calc(vtable, utable);
+            WriteVULevelChecksum(sum);
+            checksum = sum;
+        }
+
+        public static void WriteVULevelChecksum(byte sum)
+        {
+            byte read, errors = 0;
+            do
+            {
+                FWC.WriteTRXEEPROMByte(0x68E, sum);
+                //Thread.Sleep(10);
+
+                FWC.ReadTRXEEPROMByte(0x68E, out read);
+                if (read != sum)
+                {
+                    if (errors++ > NUM_WRITES_TO_TRY)
+                    {
+                        MessageBox.Show("Error writing VU Level checksum to EEPROM.\n" +
+                            "Tried to write " + sum + ", but read back " + read);
+                        return;
+                    }
+                }
+            } while (read != sum);
+        }
+
+        public static void ReadVULevel(float[] vtable, float[] utable)
+        {
+            ushort offset;
+            FWC.ReadTRXEEPROMUshort(0x5E, out offset);
+            //Thread.Sleep(40);
+            if (offset == 0 || offset == 0xFFFF) return;
+
+            uint data;
+            FWC.ReadTRXEEPROMUint(offset, out data);
+            //Thread.Sleep(40);
+            if (data == 0xFFFFFFFF) return;
+
+            for (int i = 0; i < 2; i++)
+            {
+                float f;
+                FWC.ReadTRXEEPROMFloat((uint)(offset + i * 4), out f);
+                //Thread.Sleep(40);
+                vtable[i] = (float)Math.Round(f, 1);
+            }
+
+            for (int i = 0; i < 2; i++)
+            {
+                float f;
+                FWC.ReadTRXEEPROMFloat((uint)(offset + 8 + i * 4), out f);
+                //Thread.Sleep(40);
+                utable[i] = (float)Math.Round(f, 1);
+            }
+        }
+
+        public static byte ReadVULevelChecksum()
+        {
+            byte read;
+            FWC.ReadTRXEEPROMByte(0x68E, out read);
+            return read;
+        }
+
+        #endregion
+
+        #region VU Power
+
+        public static bool CheckVUPower() // assumes length of tables is V:14  U:22
+        {
+            const int V_LENGTH = 14;
+            const int U_LENGTH = 22;
+
+            Random rand = new Random();
+
+            float[] vtable = new float[V_LENGTH];
+            float[] utable = new float[U_LENGTH];
+
+            for (int i = 0; i < V_LENGTH; i++)
+                vtable[i] = (float)Math.Round(rand.NextDouble(), 4);
+
+            for(int i=0; i< U_LENGTH; i++)
+                utable[i] = (float)Math.Round(rand.NextDouble(), 4);
+
+
+            byte temp;
+            WriteVUPower(vtable, utable, out temp);
+
+            float[] vtable_check = new float[V_LENGTH];
+            float[] utable_check = new float[U_LENGTH];
+            
+            ReadVUPower(vtable_check, utable_check);
+
+            for (int i = 0; i < V_LENGTH; i++)
+            {
+                if (vtable[i] != vtable_check[i])
+                    return false;
+            }
+
+            for (int i = 0; i < U_LENGTH; i++)
+            {
+                if (utable[i] != utable_check[i])
+                    return false;
+            }
+
+            return true;
+        }
+
+        public static void WriteVUPower(float[] vtable, float[] utable, out byte checksum)
+        {
+            WriteCalDateTime();
+            Band[] bands = { Band.VHF0, Band.VHF1 };
+
+            uint addr = 0x60;        //used to be 0x58
+            ushort offset = 0x6A0;  //used to be 0x03F0
+            ushort temp2;
+            int error_count = 0;
+            //int table_length = 0;
+            do
+            {
+                FWC.WriteTRXEEPROMUshort(addr, offset);
+                //Thread.Sleep(10);
+                FWC.ReadTRXEEPROMUshort(addr, out temp2);
+                //Thread.Sleep(40);
+
+                if (temp2 != offset)
+                {
+                    if (error_count++ > NUM_WRITES_TO_TRY)
+                    {
+                        MessageBox.Show("Error writing PA Power pointer to EEPROM.\n" +
+                            "Tried to write " + offset.ToString() + ", but read back " + temp2.ToString());
+                        checksum = 0xFF;
+                        return;
+                    }
+                }
+            } while (temp2 != offset);
+
+            for (int i = 0; i < vtable.Length; i++)
+            {
+                float val = (float)Math.Round(vtable[i], 4);
+
+                if (val > 1.0f || val < 0.0f)
+                {
+                    /*MessageBox.Show("Error writing PA Power value to EEPROM.\n"+
+                        "Value out of range 0.0 to 1.0 ("+table[(int)bands[i]][j].ToString("f4")+").");*/
+                    TextWriter writer = new StreamWriter(app_data_path + "\\eeprom_error.log", true);
+                    writer.WriteLine(DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + " " +
+                        "Error writing PA Power value to EEPROM -- " +
+                        "Value out of range 0.0 to 1.0 (" + val.ToString("f4") + ").");
+                    writer.Close();
+                    val = 0.0f;
+                }
+                error_count = 0;
+                float temp = 0.0f;
+                do
+                {
+                    FWC.WriteTRXEEPROMFloat((uint)(offset + i * 4), val);
+                    //Thread.Sleep(10);
+
+                    FWC.ReadTRXEEPROMFloat((uint)(offset + i * 4), out temp);
+                    //Thread.Sleep(40);
+
+                    if (temp != val)
+                    {
+                        if (error_count++ > NUM_WRITES_TO_TRY)
+                        {
+                            MessageBox.Show("Error writing PA Power value to EEPROM.\n" +
+                                "Tried to write " + val.ToString("f4") + ", but read back " + temp.ToString("f4"));
+                            checksum = 0xFF;
+                            return;
+                        }
+                    }
+                } while (temp != val);
+            }
+
+            for (int i = 0; i < utable.Length; i++)
+            {
+                float val = (float)Math.Round(utable[i], 4);
+
+                if (val > 1.0f || val < 0.0f)
+                {
+                    /*MessageBox.Show("Error writing PA Power value to EEPROM.\n"+
+                        "Value out of range 0.0 to 1.0 ("+table[(int)bands[i]][j].ToString("f4")+").");*/
+                    TextWriter writer = new StreamWriter(app_data_path + "\\eeprom_error.log", true);
+                    writer.WriteLine(DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + " " +
+                        "Error writing PA Power value to EEPROM -- " +
+                        "Value out of range 0.0 to 1.0 (" + val.ToString("f4") + ").");
+                    writer.Close();
+                    val = 0.0f;
+                }
+                error_count = 0;
+                float temp = 0.0f;
+                do
+                {
+                    FWC.WriteTRXEEPROMFloat((uint)(offset + 80 + i * 4), val);
+                    //Thread.Sleep(10);
+
+                    FWC.ReadTRXEEPROMFloat((uint)(offset + 80 + i * 4), out temp);
+                    //Thread.Sleep(40);
+
+                    if (temp != val)
+                    {
+                        if (error_count++ > NUM_WRITES_TO_TRY)
+                        {
+                            MessageBox.Show("Error writing PA Power value to EEPROM.\n" +
+                                "Tried to write " + val.ToString("f4") + ", but read back " + temp.ToString("f4"));
+                            checksum = 0xFF;
+                            return;
+                        }
+                    }
+                } while (temp != val);
+            }
+
+            // calculate and write checksum
+            byte sum = Checksum.Calc(vtable);
+            sum += Checksum.Calc(utable);
+            WritePAPowerChecksum(sum);
+            checksum = sum;
+        }
+
+        public static void WriteVUPowerChecksum(byte sum)
+        {
+            byte read, errors = 0;
+            do
+            {
+                FWC.WriteTRXEEPROMByte(0x68D, sum);  //used to be 0x62F
+                //Thread.Sleep(10);
+
+                FWC.ReadTRXEEPROMByte(0x68D, out read);
+                if (read != sum)
+                {
+                    if (errors++ > NUM_WRITES_TO_TRY)
+                    {
+                        MessageBox.Show("Error writing PA Power checksum to EEPROM.\n" +
+                            "Tried to write " + sum + ", but read back " + read);
+                        return;
+                    }
+                }
+            } while (read != sum);
+        }
+
+        public static void ReadVUPower(float[] vtable, float[] utable)
+        {
+            ushort offset;
+
+            FWC.ReadTRXEEPROMUshort(0x60, out offset);
+            //Thread.Sleep(40);
+            if (offset == 0 || offset == 0xFFFF) return;
+            Debug.Assert(offset == 0x6A0);
+
+            uint data;
+            FWC.ReadTRXEEPROMUint(offset, out data);
+            //Thread.Sleep(40);
+            if (data == 0xFFFFFFFF) return;
+                
+            for (int i = 0; i < vtable.Length; i++)
+            {
+                float f;
+                FWC.ReadTRXEEPROMFloat((uint)(offset + i * 4), out f);
+                //Thread.Sleep(40);
+                if (f > 1.0f || f < 0.0f)
+                {
+                    TextWriter writer = new StreamWriter(app_data_path + "\\eeprom_error.log", true);
+                    writer.WriteLine(DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + " " +
+                        "Bad data detected in EEPROM -- " +
+                        "VU PA Power V[" + i + "] = " + f.ToString("f4"));
+                    writer.Close();
+                    vtable[i] = 0.0f;
+                }
+                else vtable[i] = (float)Math.Round(f, 4);
+            }
+
+            for (int i = 0; i < utable.Length; i++)
+            {
+                float f;
+                FWC.ReadTRXEEPROMFloat((uint)(offset + 80 + i * 4), out f);
+                //Thread.Sleep(40);
+                if (f > 1.0f || f < 0.0f)
+                {
+                    TextWriter writer = new StreamWriter(app_data_path + "\\eeprom_error.log", true);
+                    writer.WriteLine(DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + " " +
+                        "Bad data detected in EEPROM -- " +
+                        "VU PA Power U[" + i + "] = " + f.ToString("f4"));
+                    writer.Close();
+                    utable[i] = 0.0f;
+                }
+                else utable[i] = (float)Math.Round(f, 4);
+            }
+        }
+
+        public static byte ReadVUPowerChecksum()
+        {
+            byte read;
+            FWC.ReadTRXEEPROMByte(0x68D, out read);
+            return read;
+        }
+        #endregion
+
+        #endregion
+    }
 }

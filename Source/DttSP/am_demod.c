@@ -101,7 +101,7 @@ dem (AMD am)
     } */
 	am->lock.prev = am->lock.curr;
 	am->dc = 0.99999f * am->dc + 0.00001f * am->pll.delay.re;
-	return am->pll.delay.re - am->dc;
+	return am->pll.delay.re;// - am->dc;
 }
 
 /*------------------------------------------------------------------------------*/
@@ -128,7 +128,7 @@ AMDemod (AMD am)
 			{
 				am->lock.curr = Cmag (CXBdata (am->ibuf, i));
 				am->dc = 0.9999f * am->dc + 0.0001f * am->lock.curr;
-				am->smooth = 0.5f * am->smooth + 0.5f * (am->lock.curr - am->dc);
+				am->smooth = 0.5f * am->smooth + 0.5f * (am->lock.curr /*- am->dc*/);
 				/* demout = am->smooth; */
 				CXBdata (am->obuf, i) = Cmplx (am->smooth, am->smooth);
 			}

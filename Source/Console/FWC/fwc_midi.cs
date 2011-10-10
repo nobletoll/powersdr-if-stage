@@ -2,7 +2,7 @@
 // fwc_midi.cs
 //=================================================================
 // PowerSDR is a C# implementation of a Software Defined Radio.
-// Copyright (C) 2004-2009  FlexRadio Systems
+// Copyright (C) 2004-2011  FlexRadio Systems
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -18,13 +18,15 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
-// You may contact us via email at: sales@flex-radio.com.
+// You may contact us via email at: gpl@flexradio.com.
 // Paper mail may be sent to: 
 //    FlexRadio Systems
-//    8900 Marybank Dr.
-//    Austin, TX 78750
+//    4616 W. Howard Lane  Suite 1-150
+//    Austin, TX 78728
 //    USA
 //=================================================================
+
+//#define TIMING
 
 using System;
 using System.Collections;
@@ -32,12 +34,15 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
-//using System.Windows.Forms;
+
+using FlexCW;
 
 namespace PowerSDR
 {
 	public class FWCMidi
 	{
+        //private static Log log = new Log("midi.log");
+
 		#region Enums
 
 		private enum Command
@@ -76,6 +81,11 @@ namespace PowerSDR
 		private static int midi_out_handle;
 		private static object in_lock_obj = new Object();
 		private static object out_lock_obj = new Object();
+        private static bool init = false;
+        public static bool Init
+        {
+            get { return init; }
+        }
 
 		#endregion
 
@@ -95,6 +105,7 @@ namespace PowerSDR
 				}
 			}
 
+            //log.AddLine("Midi.Present(): False (no input dev)");
 			return false;
 
 			test_out:
@@ -108,6 +119,8 @@ namespace PowerSDR
 					return true;
 				}
 			}
+
+            //log.AddLine("Midi.Present(): False (no output dev)");
 			return false;
 		}
 
@@ -116,6 +129,7 @@ namespace PowerSDR
 			FillTables();
 			if(!OpenMidiIn()) return false;
 			if(!OpenMidiOut()) return false;
+            init = true;
 			return true;
 		}
 
@@ -139,6 +153,7 @@ namespace PowerSDR
 			if(in_index < 0) 
 			{
 				//MessageBox.Show("Error opening Midi In device");
+                //log.AddLine("Midi.OpenMidiIn(): False (no input dev)");
 				return false;
 			}
 
@@ -150,6 +165,7 @@ namespace PowerSDR
 				Midi.MidiInGetErrorText(result, error_text, 64);
 				Debug.WriteLine("MidiInOpen Error: "+error_text);
 				//MessageBox.Show("Error opening Midi In device");
+                //log.AddLine("Midi.OpenMidiIn(): False (MidiInOpen Error: "+error_text+")");
 				return false;
 			}
 
@@ -162,6 +178,7 @@ namespace PowerSDR
 					Midi.MidiInGetErrorText(result, error_text, 64);
 					Debug.WriteLine("AddSysExBuffer Error: "+error_text);
 					//MessageBox.Show("Error adding Midi In device SysEx Buffer");
+                    //log.AddLine("Midi.OpenMidiIn(): False (AddSysExBuffer Error: "+error_text+")");
 					return false;
 				}
 			}
@@ -172,7 +189,8 @@ namespace PowerSDR
 				StringBuilder error_text = new StringBuilder(64);
 				Midi.MidiInGetErrorText(result, error_text, 64);
 				Debug.WriteLine("MidiInStart Error: "+error_text);
-				//MessageBox.Show("Error starting Midi In device");
+				//MessageBox.Show("Error starting Midi In device")
+                //log.AddLine("Midi.OpenMidiIn(): False (MidiInStart Error: "+error_text+")");
 				return false;
 			}
 
@@ -198,6 +216,7 @@ namespace PowerSDR
 			if(out_index < 0) 
 			{
 				//MessageBox.Show("Error finding Midi Out device");
+                //log.AddLine("Midi.OpenMidiOut(): False (no output dev)");
 				return false;
 			}
 
@@ -208,6 +227,7 @@ namespace PowerSDR
 				Midi.MidiInGetErrorText(result, error_text, 64);
 				Debug.WriteLine("MidiOutOpen Error: "+error_text);
 				//MessageBox.Show("Error Opening Midi Out device");
+                //log.AddLine("Midi.OpenMidiOut(): False (MidiOutOpen Error: "+error_text+")");
 				return false;
 			}
 			return true;
@@ -638,16 +658,36 @@ namespace PowerSDR
 		#endregion
 
 		#region Midi In Callback
-		
+
+        private static bool reverse_paddles = false;
+        public static bool ReversePaddles
+        {
+            get { return reverse_paddles; }
+            set { reverse_paddles = value; }
+        }
+
 		public static Console console = null;
 		private static Hashtable midi_in_table = new Hashtable(10);
 		private static int InCallback(int hMidiIn, int wMsg, int dwInstance, int dwParam1, int dwParam2)
-		{
+        {
+            //log.AddLine("Midi.InCallback("+hMidiIn.ToString("X")+", "+wMsg.ToString("X")+", "+dwInstance.ToString("X")+", "+dwParam1.ToString("X")+", "+dwParam2.ToString("X")+")");
+#if(TIMING)
+            lock (in_lock_obj)
+            {
+                if (wMsg == Midi.MIM_DATA && 
+                    (Command)((byte)dwParam1) == Command.NoteOn && 
+                    (Note)(byte)(dwParam1>>8) == Note.Dot)
+                {
+                    FWCMidi.SendSetMessage(FWC.Opcode.RDAL_OP_WRITE_GPIO, 0x01, 0);
+                    FWCMidi.SendSetMessage(FWC.Opcode.RDAL_OP_WRITE_GPIO, 0x00, 0);
+                }
+            }
+#else
 			lock(in_lock_obj)
 			{
 				switch(wMsg)
 				{
-					case Midi.MIM_DATA:
+					case Midi.MIM_DATA:                        
 						Command cmd = (Command)((byte)dwParam1);
 						byte byte1 = (byte)(dwParam1>>8);
 						byte byte2 = (byte)(dwParam1>>16);
@@ -658,20 +698,31 @@ namespace PowerSDR
 								switch((Note)byte1)
 								{
 									case Note.Dot:
-										console.Keyer.FWCDot = true;
-										//FWC.SetMOX(true);
+										//console.Keyer.FWCDot = true;
+                                        CWSensorItem.InputType type = CWSensorItem.InputType.Dot;
+                                        if (reverse_paddles) type = CWSensorItem.InputType.Dash;
+
+                                        CWSensorItem item = new CWSensorItem(type, true);
+                                        CWKeyer.SensorEnqueue(item);
 										break;
 									case Note.Dash:
-										console.Keyer.FWCDash = true;
-										//FWC.SetMOX(true);
+										//console.Keyer.FWCDash = true;
+                                        type = CWSensorItem.InputType.Dash;
+                                        if (reverse_paddles) type = CWSensorItem.InputType.Dot;
+
+                                        item = new CWSensorItem(type, true);
+                                        CWKeyer.SensorEnqueue(item);
 										break;
 									case Note.MicDown:
+                                        if (console == null) return 1;
 										console.MicDown = true;
 										break;
 									case Note.MicUp:
+                                        if (console == null) return 1;
 										console.MicUp = true;
 										break;
 									case Note.MicFast:
+                                        if (console == null) return 1;
 										console.MicFast = !console.MicFast;
 										break;
 								}
@@ -680,17 +731,27 @@ namespace PowerSDR
 								switch((Note)byte1)
 								{
 									case Note.Dot:
-										console.Keyer.FWCDot = false;							
-										//FWC.SetMOX(false);
+										//console.Keyer.FWCDot = false;							
+                                        CWSensorItem.InputType type = CWSensorItem.InputType.Dot;
+                                        if (reverse_paddles) type = CWSensorItem.InputType.Dash;
+
+                                        CWSensorItem item = new CWSensorItem(type, false);
+                                        CWKeyer.SensorEnqueue(item);
 										break;
 									case Note.Dash:
-										console.Keyer.FWCDash = false;
-										//FWC.SetMOX(false);
+										//console.Keyer.FWCDash = false;
+                                        type = CWSensorItem.InputType.Dash;
+                                        if (reverse_paddles) type = CWSensorItem.InputType.Dot;
+
+                                        item = new CWSensorItem(type, false);
+                                        CWKeyer.SensorEnqueue(item);
 										break;
 									case Note.MicDown:
+                                        if (console == null) return 1;
 										console.MicDown = false;
 										break;
 									case Note.MicUp:
+                                        if (console == null) return 1;
 										console.MicUp = false;
 										break;
 									case Note.MicFast:
@@ -701,9 +762,11 @@ namespace PowerSDR
 								switch((Controller)byte1)
 								{
 									case Controller.HoldPedal:
+                                        if (console == null) return 1;
 										console.FWCMicPTT = (byte2 > 63);
 										break;
 									case Controller.Hold2Pedal:
+                                        if (console == null) return 1;
 										console.FWCRCAPTT = (byte2 > 63);
 										break;
 								}
@@ -758,7 +821,7 @@ namespace PowerSDR
 						break;
 				}
 			}
-			
+#endif			
 			return 0;
 		}
 

@@ -35,7 +35,7 @@ Bridgewater, NJ 08807
 
 //========================================================================
 /* initialization and termination */
-
+int const MAX_NOTCHES_IN_PASSBAND = 18;
 void
 reset_meters (unsigned int thread)
 {
@@ -128,8 +128,17 @@ setup_all (REAL rate, int buflen, SDRMODE mode, char *wisdom,
 PRIVATE void
 setup_rx (int k, unsigned int thread)
 {
+	int i;
+
 	/* conditioning */
+	if (thread == 0) {
+		diversity.gain = 1.0;
+		diversity.scalar = Cmplx(1.0,0);
+	}
 	rx[thread][k].iqfix = newCorrectIQ (0.0, 1.0, 0.000f);
+	// Remove the next line
+	rx[thread][k].iqfix->wbir_state = JustSayNo;
+	// Remove the previous line
 	rx[thread][k].filt.coef = newFIR_Bandpass_COMPLEX (150.0,
 		2850.0,	uni[thread].samplerate, uni[thread].buflen + 1);
 	rx[thread][k].filt.ovsv =
@@ -157,6 +166,9 @@ setup_rx (int k, unsigned int thread)
 		FiltOvSv_storepoint (rx[thread][k].filt.ovsv),
 		"init rx[thread][k].buf.o");
 
+	rx[thread][k].dcb = newDCBlocker(DCB_SINGLE_POLE, rx[thread][k].buf.i);
+	rx[thread][k].dcb->flag = FALSE;
+
 	/* conversion */
 	rx[thread][k].osc.freq = -9000.0;
 	rx[thread][k].osc.phase = 0.0;
@@ -168,13 +180,13 @@ setup_rx (int k, unsigned int thread)
 
 	rx[thread][k].dttspagc.gen = newDttSPAgc (
 		agcMED,							// mode kept around for control reasons alone
-		CXBbase (rx[thread][k].buf.o),	// input buffer
-		CXBsize (rx[thread][k].buf.o),	// output buffer
+		CXBbase (rx[thread][k].buf.o),	// buffer pointer
+		CXBsize (rx[thread][k].buf.o),	// buffer size
 		1.0f,							// Target output
 		2.0f,							// Attack time constant in ms
 		250,							// Decay time constant in ms
 		1.0,							// Slope
-		250,							//Hangtime in ms
+		250,							// Hangtime in ms
 		uni[thread].samplerate,			// Sample rate
 		31622.8f,						// Maximum gain as a multipler, linear not dB
 		0.00001f,						// Minimum gain as a multipler, linear not dB
@@ -203,24 +215,25 @@ setup_rx (int k, unsigned int thread)
 	rx[thread][k].fm.gen = newFMD (
 		uni[thread].samplerate,			// REAL samprate
 		0.0,							// REAL f_initial
-		-6000.0,						// REAL f_lobound
-		6000.0,							// REAL f_hibound
-		5000.0,							// REAL f_bandwid
+		-8000.0,						// REAL f_lobound
+		8000.0,							// REAL f_hibound
+		16000.0,						// REAL f_bandwid
 		CXBsize (rx[thread][k].buf.o),	// int size
 		CXBbase (rx[thread][k].buf.o),	// COMPLEX *ivec
 		CXBbase (rx[thread][k].buf.o),	// COMPLEX *ovec
 		"New FM Demod structure");		// char *error message;
 
-	/* noise reduction */
+	/* auto-notch filter */
 	rx[thread][k].anf.gen = new_lmsr (
 		rx[thread][k].buf.o,	// CXB signal,
 		64,						// int delay,
-		0.01f,					// REAL adaptation_rate,
-		0.000001f,				// REAL leakage,
-		45,						// int adaptive_filter_size,
+		10e-4f,					// REAL adaptation_rate,
+		1e-7f,					// REAL leakage,
+		64,						// int adaptive_filter_size,
 		LMADF_INTERFERENCE);
 	rx[thread][k].anf.flag = FALSE;
 
+	/* block auto-notch filter */
 	rx[thread][k].banf.gen = new_blms(
 		rx[thread][k].buf.o,    // CXB signal,
 		0.01f,				// REAL adaptation_rate,
@@ -229,15 +242,17 @@ setup_rx (int k, unsigned int thread)
 		uni->wisdom.bits);      // fftw wisdom
 	rx[thread][k].banf.flag = FALSE;
 
+	/* auto-noise filter */
 	rx[thread][k].anr.gen = new_lmsr (
 		rx[thread][k].buf.o,	// CXB signal,
-		40,						// int delay,
-		0.00015f,				// REAL adaptation_rate,
-		0.000001f,				// REAL leakage,
-		30,						// int adaptive_filter_size,
+		64,						// int delay,
+		16e-4f,					// REAL adaptation_rate, -- also called gain in some circumstances
+		10e-7f,					// REAL leakage,
+		64,						// int adaptive_filter_size,
 		LMADF_NOISE);
 	rx[thread][k].anr.flag = FALSE;
 
+	/* block auto-noise filter */
 	rx[thread][k].banr.gen = new_blms(
 		rx[thread][k].buf.o,    // CXB signal,
 		0.001f,					// REAL adaptation_rate,
@@ -254,6 +269,19 @@ setup_rx (int k, unsigned int thread)
 	rx[thread][k].nb_sdrom.thresh = 2.5f;
 	rx[thread][k].nb_sdrom.gen = new_noiseblanker (rx[thread][k].buf.i, rx[thread][k].nb_sdrom.thresh);
 	rx[thread][k].nb_sdrom.flag = FALSE;
+
+	for(i=0; i<MAX_NOTCHES_IN_PASSBAND; i++)
+	{
+		rx[thread][k].notch[i].gen = new_IIR_2P2Z(
+			rx[thread][k].buf.o,	// Buffer
+			1.0,					// Gain
+			1.0,					// Parameter value - Q in this case
+			Q,						// type of parameter
+			NOTCH,					// type of filter
+			uni[thread].samplerate, // sample rate
+			400.0);					// frequency for the notch
+		rx[thread][k].notch[i].gen->doComplex = TRUE;
+	}
 
 	rx[thread][k].spot.gen = newSpotToneGen (
 		-12.0,						// gain
@@ -276,9 +304,9 @@ setup_rx (int k, unsigned int thread)
 	rx[thread][k].bin.flag = FALSE;
 
 	{
-		REAL pos = 0.5,             // 0 <= pos <= 1, left->right
-		theta = (REAL) ((1.0 - pos) * M_PI / 2.0);
-		rx[thread][k].azim = Cmplx ((REAL) cos (theta), (IMAG) sin (theta));
+		//REAL pos = 0.5,             // 0 <= pos <= 1, left->right
+		//theta = (REAL) ((1.0 - pos) * M_PI / 2.0);
+		rx[thread][k].azim = Cmplx (1.0f, 1.0f);
 	}
 
 	rx[thread][k].tick = 0;
@@ -295,6 +323,8 @@ setup_tx (unsigned int thread)
 		uni[thread].samplerate, uni[thread].buflen + 1);
 	tx[thread].filt.ovsv = newFiltOvSv (FIRcoef (tx[thread].filt.coef),
 		FIRsize (tx[thread].filt.coef), uni[thread].wisdom.bits);
+	tx[thread].filt.ovsv_pre = newFiltOvSv (FIRcoef (tx[thread].filt.coef),
+		FIRsize (tx[thread].filt.coef), uni[thread].wisdom.bits);
 	normalize_vec_COMPLEX (tx[thread].filt.ovsv->zfvec, tx[thread].filt.ovsv->fftlen,tx[thread].filt.ovsv->scale);
 
 	// hack for EQ
@@ -308,6 +338,10 @@ setup_tx (unsigned int thread)
 		FiltOvSv_fetchpoint (tx[thread].filt.ovsv), "init tx[thread].buf.i");
 	tx[thread].buf.o = newCXB (FiltOvSv_storesize (tx[thread].filt.ovsv),
 		FiltOvSv_storepoint (tx[thread].filt.ovsv), "init tx[thread].buf.o");
+	tx[thread].buf.ic = newCXB (FiltOvSv_fetchsize (tx[thread].filt.ovsv_pre),
+		FiltOvSv_fetchpoint (tx[thread].filt.ovsv_pre), "init tx[thread].buf.ic");
+	tx[thread].buf.oc = newCXB (FiltOvSv_storesize (tx[thread].filt.ovsv_pre),
+		FiltOvSv_storepoint (tx[thread].filt.ovsv_pre), "init tx[thread].buf.oc");
 
 	tx[thread].dcb.flag = FALSE;
 	tx[thread].dcb.gen = newDCBlocker (DCB_MED, tx[thread].buf.i);
@@ -321,19 +355,39 @@ setup_tx (unsigned int thread)
 		tx[thread].osc.phase, uni[thread].samplerate, "SDR TX Oscillator");
 
 	tx[thread].am.carrier_level = 0.5f;
-	tx[thread].fm.cvtmod2freq = (REAL) (2500.0 * TWOPI / uni[thread].samplerate); //5 kHz deviation
+	tx[thread].fm.cvtmod2freq = (REAL) (5000.0f * TWOPI / uni[thread].samplerate); //5 kHz deviation..used to be 3
+	tx[thread].fm.phase = 0.0;
+	tx[thread].fm.k_preemphasis = (REAL)(1.0f + uni[thread].samplerate/(TWOPI*3000.0f));  //3.546
+	tx[thread].fm.k_deemphasis = (REAL)(1.0f + uni[thread].samplerate/(TWOPI*250.0f));  //3.546
+	tx[thread].fm.preemphasis_filter = 0.0f;
+	tx[thread].fm.deemphasis_out = 0.0f;
+	tx[thread].fm.clip_threshold = 0.75f;
+	tx[thread].fm.output_LPF1 = new_IIR_LPF_2P(tx[thread].buf.i,uni[thread].samplerate, 3500.0f, 0.25f);	//4 pole butterworth Q = 0.76537, 1.84776	
+	tx[thread].fm.output_LPF2 = new_IIR_LPF_2P(tx[thread].buf.i,uni[thread].samplerate, 3500.0f, 1.75f);	//4 pole butterworth Q = 0.76537, 1.84776	
+
+	tx[thread].fm.input_LPF1 = new_IIR_LPF_2P(tx[thread].buf.i,uni[thread].samplerate, 3500.0f, 0.25f);	//4 pole butterworth Q = 0.76537, 1.84776	
+	tx[thread].fm.input_LPF2 = new_IIR_LPF_2P(tx[thread].buf.i,uni[thread].samplerate, 3500.0f, 1.75f);	//4 pole butterworth Q = 0.76537, 1.84776
+	tx[thread].fm.input_HPF1 = new_IIR_HPF_2P(tx[thread].buf.i,uni[thread].samplerate, 150.0f, 0.34f);	//4 pole butterworth Q = 0.76537, 1.84776	
+	tx[thread].fm.input_HPF2 = new_IIR_HPF_2P(tx[thread].buf.i,uni[thread].samplerate, 150.0f, 0.94f);	//4 pole butterworth Q = 0.76537, 1.84776	
+
+	tx[thread].fm.ctcss.flag = FALSE;
+	tx[thread].fm.ctcss.amp = .13f;
+	tx[thread].fm.ctcss.freq_hz = 100.0;
+	tx[thread].fm.ctcss.osc = newOSC (uni[thread].buflen, ComplexTone, 100.0, 0.0, uni[thread].samplerate, "SDR TX CTTS Oscillator");
+
+
 
 	tx[thread].leveler.gen = newDttSPAgc (
 		1,							// mode kept around for control reasons
 		CXBbase (tx[thread].buf.i),	// input buffer
 		CXBsize (tx[thread].buf.i),	// output buffer
-		1.1f,						// Target output
+		1.0f,						// Target output
 		2,							// Attack time constant in ms
 		500,						// Decay time constant in ms
 		1,							// Slope
-		500,						//Hangtime in ms
+		500,						// Hangtime in ms
 		uni[thread].samplerate,		// Sample rate
-		5.62f,						// Maximum gain as a multipler, linear not dB
+		1.778f,						// Maximum gain as a multipler, linear not dB
 		1.0,						// Minimum gain as a multipler, linear not dB
 		1.0,						// Set the current gain
 		"LVL");						// Set a tag for an error message if the memory allocation fails
@@ -352,13 +406,13 @@ setup_tx (unsigned int thread)
 
 	tx[thread].alc.gen = newDttSPAgc (
 		1,								// mode kept around for control reasons alone
-		CXBbase (tx[thread].buf.i),		// input buffer
-		CXBsize (tx[thread].buf.i),		// output buffer
-		1.2f,							// Target output
+		CXBbase (tx[thread].buf.o),		// input buffer
+		CXBsize (tx[thread].buf.o),		// output buffer
+		1.08f,							// Target output
 		2,								// Attack time constant in ms
 		10,								// Decay time constant in ms
 		1,								// Slope
-		500,							//Hangtime in ms
+		500,							// Hangtime in ms
 		uni[thread].samplerate, 1.0,	// Maximum gain as a multipler, linear not dB
 		.000001f,						// Minimum gain as a multipler, linear not dB
 		1.0,							// Set the current gain
@@ -380,7 +434,10 @@ setup_tx (unsigned int thread)
 	tx[thread].mode = uni[thread].mode.sdr;
 
 	tx[thread].tick = 0;
+
+
 	/* not much else to do for TX */
+
 }
 
 /* how the outside world sees it */
@@ -407,7 +464,7 @@ setup_workspace (REAL rate, int buflen, SDRMODE mode,
 void
 destroy_workspace (unsigned int thread)
 {
-	int k;
+	int i, k;
 
 
 	/* TX */
@@ -424,6 +481,13 @@ destroy_workspace (unsigned int thread)
 	delCorrectIQ (tx[thread].iqfix);
 	delCXB (tx[thread].buf.o);
 	delCXB (tx[thread].buf.i);
+	// Delete preemphasis and pinching filters
+	del_IIR_LPF_2P(tx[thread].fm.output_LPF1);
+	del_IIR_LPF_2P(tx[thread].fm.output_LPF2);
+	del_IIR_LPF_2P(tx[thread].fm.input_LPF1); 	
+	del_IIR_LPF_2P(tx[thread].fm.input_LPF2);
+	del_IIR_HPF_2P(tx[thread].fm.input_HPF1);	
+	del_IIR_HPF_2P(tx[thread].fm.input_HPF2);
 
 	/* RX */
 	for (k = 0; k < uni[thread].multirx.nrx; k++)
@@ -441,6 +505,8 @@ destroy_workspace (unsigned int thread)
 		delvec_COMPLEX (rx[thread][k].filt.save);
 		delFiltOvSv (rx[thread][k].filt.ovsv);
 		delFIR_Bandpass_COMPLEX (rx[thread][k].filt.coef);
+		for(i=0; i<MAX_NOTCHES_IN_PASSBAND; i++)
+			del_IIR_2P2Z(rx[thread][k].notch[i].gen);
 		delCorrectIQ (rx[thread][k].iqfix);
 		delCXB (rx[thread][k].buf.o);
 		delCXB (rx[thread][k].buf.i);
@@ -567,6 +633,8 @@ do_rx_meter (int k, unsigned int thread, CXB buf, int tap)
 		case RXMETER_POST_AGC:
 			uni[thread].meter.rx.val[k][AGC_GAIN] =
 				(REAL) (20.0 * log10 (rx[thread][k].dttspagc.gen->gain.now + 1e-10));
+			//fprintf(stdout, "rx gain: %15.12f\n", uni[thread].meter.rx.val[k][AGC_GAIN]);
+			//fflush(stdout);
 			break;
 		default:
 			break;
@@ -755,6 +823,7 @@ no_tx_squelch (unsigned int thread)
 }
 /* Routine to do the actual adding of buffers through the complex linear combination required */
 
+#if 0
 void
 do_rx_diversity_combine()
 {
@@ -764,48 +833,32 @@ do_rx_diversity_combine()
 		CXBdata(rx[0][0].buf.i,i) = Cscl(Cadd(CXBdata(rx[0][0].buf.i,i),Cmul(CXBdata(rx[2][0].buf.i,i),diversity.scalar)),diversity.gain);
 	}
 }
-
+#endif
 /* pre-condition for (nearly) all RX modes */
 PRIVATE void
 do_rx_pre (int k, unsigned int thread)
 {
 	int i, n = min (CXBhave (rx[thread][k].buf.i), uni[thread].buflen);
 
+	// metering for uncorrected values here
+	do_rx_meter (k, thread, rx[thread][k].buf.i, RXMETER_PRE_CONV);	
+
+	if (rx[thread][k].dcb->flag) DCBlock(rx[thread][k].dcb);
+
 	if (rx[thread][k].nb.flag)
 		noiseblanker (rx[thread][k].nb.gen);
 	if (rx[thread][k].nb_sdrom.flag)
 		SDROMnoiseblanker (rx[thread][k].nb_sdrom.gen);
-
-	// metering for uncorrected values here
-	do_rx_meter (k, thread, rx[thread][k].buf.i, RXMETER_PRE_CONV);
 
 	correctIQ (rx[thread][k].buf.i, rx[thread][k].iqfix, FALSE, k);
 
 	/* 2nd IF conversion happens here */
 	if (rx[thread][k].osc.gen->Frequency != 0.0)
 	{
-		if (!diversity.flag) {
-			ComplexOSC (rx[thread][k].osc.gen);
-			for (i = 0; i < n; i++)
-				CXBdata (rx[thread][k].buf.i, i) = Cmul (CXBdata (rx[thread][k].buf.i, i),
-				OSCCdata (rx[thread][k].osc.gen, i));
-		} else  {
-			if (thread != 2) {
-				ComplexOSC (rx[thread][k].osc.gen);
-				for (i = 0; i < n; i++)
-					CXBdata (rx[thread][k].buf.i, i) = Cmul (CXBdata (rx[thread][k].buf.i, i),
-					OSCCdata (rx[thread][k].osc.gen, i));
-			}
-			barrier_osc();
-			if (thread == 2) 
-				for (i = 0; i < n; i++)
-				CXBdata (rx[thread][k].buf.i, i) = Cmul (CXBdata (rx[thread][k].buf.i, i),
-				OSCCdata (rx[0][k].osc.gen, i));
-			//fprintf(stderr,"Using thread 0 oscillator\n"),fflush(stderr);
-			barrier_sum();
-			if (thread == 2) do_rx_diversity_combine();
-			barrier_out();
-		}
+		ComplexOSC (rx[thread][k].osc.gen);
+		for (i = 0; i < n; i++)
+			CXBdata (rx[thread][k].buf.i, i) = Cmul (CXBdata (rx[thread][k].buf.i, i),
+			OSCCdata (rx[thread][k].osc.gen, i));
 	}
 
 	/* filtering, metering, spectrum, squelch, & AGC */
@@ -842,16 +895,21 @@ do_rx_pre (int k, unsigned int thread)
 
 }
 
+static int count = 0;
+
 PRIVATE void
 do_rx_post (int k, unsigned int thread)
 {
 	int i, n = CXBhave (rx[thread][k].buf.o);
 
-	if(rx[thread][k].squelch.set)
+	if(rx[thread][k].mode != FM)
 	{
-		do_squelch (k, thread);
+		if(rx[thread][k].squelch.set)
+		{
+			do_squelch (k, thread);
+		}
+		else no_squelch (k, thread);
 	}
-	else no_squelch (k, thread);
 
 	if (rx[thread][k].grapheq.flag)
 	{
@@ -893,38 +951,74 @@ do_rx_post (int k, unsigned int thread)
 		lmsr_adapt (rx[thread][k].anr.gen);
 		//blms_adapt(rx[thread][k].banr.gen);
 
+	/*if(thread == 0 && k == 0)
+		fprintf(stdout, "before: %15f12  ", CXBpeak(rx[thread][k].buf.i));*/
+#if 0
 	if (diversity.flag && (k==0) && (thread==2))
 		for (i = 0; i < n; i++) CXBdata(rx[thread][k].buf.o,i) = cxzero;
 	else 
+#endif
+	for(i=0; i<MAX_NOTCHES_IN_PASSBAND; i++)
+	{
 
+		if (rx[thread][k].notch[i].flag)
+			do_IIR_2P2Z(rx[thread][k].notch[i].gen);
+	}
+			
+
+	if(rx[thread][k].mode != FM)
 		DttSPAgc (rx[thread][k].dttspagc.gen, rx[thread][k].tick);
+	
+	/*if(thread == 0 && k == 0 && count++%50 == 0)
+	{
+		fprintf(stdout, "after: %15f12\n", CXBpeak(rx[thread][k].buf.o));
+		fflush(stdout);
+	}*/
 
+	/*if(thread == 0 && k == 0)
+	{
+		fprintf(stdout, "pll freq: %.3f\n", rx[thread][k].fm.gen->pll.freq.f);
+		fflush(stdout);
+	}*/
 
-
-
-	do_rx_meter(k, thread, rx[thread][k].buf.o,RXMETER_POST_AGC);
+	do_rx_meter(k, thread, rx[thread][k].buf.o, RXMETER_POST_AGC);
 	do_rx_spectrum (k, thread, rx[thread][k].buf.o, SPEC_POST_AGC);
 
 	if (!rx[thread][k].bin.flag)
+	{
 		for (i = 0; i < CXBhave (rx[thread][k].buf.o); i++)
 			CXBimag (rx[thread][k].buf.o, i) = CXBreal (rx[thread][k].buf.o, i);
+	}
 
 	if(uni[thread].multirx.nac == 1)
 	{
 		for (i = 0; i < n; i++)
-				CXBdata(rx[thread][k].buf.o, i) = Cscl(Cmplx(rx[thread][k].azim.re*CXBreal(rx[thread][k].buf.o, i),
-														rx[thread][k].azim.im*CXBimag(rx[thread][k].buf.o, i)),1.414f);
+			CXBdata(rx[thread][k].buf.o, i) = Cscl(Cmplx(rx[thread][k].azim.re*CXBreal(rx[thread][k].buf.o, i),
+														 rx[thread][k].azim.im*CXBimag(rx[thread][k].buf.o, i)), 1.414f);
 	}
 	else
 	{
 		for (i = 0; i < n; i++)
-			CXBdata(rx[thread][k].buf.o, i) = Cmplx(rx[thread][k].azim.re*CXBreal(rx[thread][k].buf.o, i),
-													rx[thread][k].azim.im*CXBimag(rx[thread][k].buf.o, i));
-	} 
+			CXBdata(rx[thread][k].buf.o, i) = Cmplx(rx[thread][k].azim.re * CXBreal(rx[thread][k].buf.o, i),
+													rx[thread][k].azim.im * CXBimag(rx[thread][k].buf.o, i));
+	}
 
-	if (rx[thread][k].output_gain != 1.0)
-		for (i = 0; i < n; i++) CXBdata(rx[thread][k].buf.o,i) = Cscl(CXBdata(rx[thread][k].buf.o,i),rx[thread][k].output_gain);
-	if (rx[thread][k].resample.flag) {
+	if ((thread == 2) && (diversity.flag))
+	{
+		for (i=0;i< n; i++) 
+			CXBdata(rx[thread][k].buf.o,i) = cxzero;
+	}
+	else
+	{
+		if (rx[thread][k].output_gain != 1.0)
+		{
+			for (i = 0; i < n; i++) 
+				CXBdata(rx[thread][k].buf.o,i) = Cscl(CXBdata(rx[thread][k].buf.o,i),rx[thread][k].output_gain);
+		}
+	}
+
+	if (rx[thread][k].resample.flag) 
+	{
 		PolyPhaseFIRF(rx[thread][k].resample.gen2r);
 		PolyPhaseFIRF(rx[thread][k].resample.gen2i);
 	}
@@ -943,8 +1037,6 @@ PRIVATE void
 do_rx_AM (int k, unsigned int thread)
 {
 	AMDemod (rx[thread][k].am.gen);
-	if (rx[thread][k].anf.flag)
-		lmsr_adapt (rx[thread][k].anf.gen);
 }
 
 PRIVATE void
@@ -975,6 +1067,76 @@ do_rx_NIL (int k, unsigned int thread)
 
 /* overall dispatch for RX processing */
 
+void
+dump_buf (const char* filename, CXB buf)
+{
+	int n = CXBsize(buf);
+	int i = 0;
+
+	unsigned int temp = 0;
+	unsigned short temp2 = 0;
+
+	FILE* file = fopen(filename, "w");
+	fprintf(file, "RIFF");
+	
+	temp = 36 + 4*2*n;
+	fwrite((void*)&temp, sizeof(unsigned int), 1, file);
+
+	fprintf(file, "WAVE");
+	fprintf(file, "fmt ");
+	
+	temp = 16; // size of fmt chunk
+	fwrite((void*)&temp, sizeof(unsigned int), 1, file);
+	
+	temp2 = 3; // FormatTab -- 3 for float
+	fwrite((void*)&temp2, sizeof(unsigned short), 1, file);
+
+	temp2 = 2; // wChannels
+	fwrite((void*)&temp2, sizeof(unsigned short), 1, file);
+
+	temp = (unsigned int)uni[0].samplerate; // dwSamplesPerSec
+	fwrite((void*)&temp, sizeof(unsigned int), 1, file);
+
+	temp = 2 * (unsigned int)uni[0].samplerate * 4; // dwAvgBytesPerSec
+	fwrite((void*)&temp, sizeof(unsigned int), 1, file);
+
+	temp2 = 2 * 4; // wblockAlign
+	fwrite((void*)&temp2, sizeof(unsigned short), 1, file);
+
+	temp2 = 32; // wBitsPerSample
+	fwrite((void*)&temp2, sizeof(unsigned short), 1, file);
+
+	fprintf(file, "data");
+
+	temp = 8*n;
+	fwrite((void*)&temp, sizeof(unsigned int), 1, file);
+
+	fwrite((void*)buf->data, sizeof(REAL), n*2, file);
+	/*for(i=0; i<n; i++)
+	{
+		fwrite((void*)&CXBreal(buf, i), sizeof(REAL), 1, file); fflush(file);
+		fwrite((void*)&CXBimag(buf, i), sizeof(REAL), 1, file); fflush(file);
+	}*/
+
+	fflush(file);
+	fclose(file);
+
+	/*writer.Write(0x46464952);								// "RIFF"		-- descriptor chunk ID
+			writer.Write(data_length + 36);							// size of whole file -- 1 for now
+			writer.Write(0x45564157);								// "WAVE"		-- descriptor type
+			writer.Write(0x20746d66);								// "fmt "		-- format chunk ID
+			writer.Write((int)16);									// size of fmt chunk
+			writer.Write((short)3);									// FormatTag	-- 3 for floats
+			writer.Write(channels);									// wChannels
+			writer.Write(sample_rate);								// dwSamplesPerSec
+			writer.Write((int)(channels*sample_rate*bit_depth/8));	// dwAvgBytesPerSec
+			writer.Write((short)(channels*bit_depth/8));			// wBlockAlign
+			writer.Write(bit_depth);								// wBitsPerSample
+			writer.Write(0x61746164);								// "data" -- data chunk ID
+			writer.Write(data_length);								// chunkSize = length of data
+			writer.Flush();											// write the file*/
+}
+
 PRIVATE void
 do_rx (int k, unsigned int thread)
 {
@@ -994,7 +1156,7 @@ do_rx (int k, unsigned int thread)
 		case SAM:
 			do_rx_AM (k, thread);
 			break;
-		case FMN:
+		case FM:
 			do_rx_FM (k, thread);
 			break;
 		case DRM:
@@ -1048,12 +1210,14 @@ do_tx_meter (unsigned int thread, CXB buf, TXMETERTYPE mt)
 		case TX_ALC:
 			for (i = 0; i < CXBhave (tx[thread].buf.i); i++)
 				alc_avg = (REAL) (0.9995 * alc_avg +
-				0.0005 * Csqrmag (CXBdata (tx[thread].buf.i, i)));
+				0.0005 * Csqrmag (CXBdata (tx[thread].buf.o, i)));
 			uni[thread].meter.tx.val[TX_ALC] = (REAL) (-10.0 * log10 (alc_avg + 1e-16));
 
-			alc_pk = CXBpeak(tx[thread].buf.i);
+			alc_pk = CXBpeak(tx[thread].buf.o);
 			uni[thread].meter.tx.val[TX_ALC_PK] = (REAL) (-20.0 * log10 (alc_pk+ 1e-16));
 			uni[thread].meter.tx.val[TX_ALC_G] = (REAL)(20.0*log10(tx[thread].alc.gen->gain.now+1e-16));
+			//fprintf(stdout, "pk: %15.12f  comp: %15.12f\n", uni[thread].meter.tx.val[TX_ALC_PK], uni[thread].meter.tx.val[TX_ALC_G]);
+			//fflush(stdout);
 			break;
 
 		case TX_EQ:
@@ -1130,7 +1294,11 @@ do_tx_pre (unsigned int thread)
 			do_tx_meter (thread, tx[thread].buf.i, TX_EQ);
 			do_tx_meter (thread, tx[thread].buf.i, TX_LVL);
 			do_tx_meter (thread, tx[thread].buf.i, TX_COMP);
-			do_tx_meter (thread, tx[thread].buf.i, TX_ALC);
+
+			//if (tx[thread].alc.flag)
+			//	DttSPAgc (tx[thread].alc.gen, tx[thread].tick);
+			//do_tx_meter (thread, tx[thread].buf.i, TX_ALC);
+
 			do_tx_meter (thread, tx[thread].buf.i, TX_CPDR);
 			break;
 		default:
@@ -1144,9 +1312,9 @@ do_tx_pre (unsigned int thread)
 			do_tx_meter (thread, tx[thread].buf.i, TX_LVL);
 			//fprintf(stderr,"[%.2f,%.2f]  ", peakl(tx[thread].buf.i), peakr(tx[thread].buf.i));
 
-			if (tx[thread].alc.flag)
-				DttSPAgc (tx[thread].alc.gen, tx[thread].tick);
-			do_tx_meter (thread, tx[thread].buf.i, TX_ALC);
+			//if (tx[thread].alc.flag)
+			//	DttSPAgc (tx[thread].alc.gen, tx[thread].tick);
+			//do_tx_meter (thread, tx[thread].buf.i, TX_ALC);
 			//fprintf(stderr,"[%.2f,%.2f]  ", peakl(tx[thread].buf.i), peakr(tx[thread].buf.i));
 
 			if (tx[thread].spr.flag)
@@ -1154,9 +1322,13 @@ do_tx_pre (unsigned int thread)
 			do_tx_meter (thread, tx[thread].buf.i, TX_COMP);
 			//fprintf(stderr,"[%.2f,%.2f]  ", peakl(tx[thread].buf.i), peakr(tx[thread].buf.i));
 
-			if (tx[thread].cpd.flag)
-				WSCompand (tx[thread].cpd.gen);						
-			do_tx_meter (thread, tx[thread].buf.i, TX_CPDR);
+			if(tx[thread].mode != FM)
+			{
+				if (tx[thread].cpd.flag)
+					WSCompand (tx[thread].cpd.gen);		
+				do_tx_meter (thread, tx[thread].buf.i, TX_CPDR);
+			}
+			
 			//fprintf(stderr,"[%.2f,%.2f]  ", peakl(tx[thread].buf.i), peakr(tx[thread].buf.i));
 
 			break;						
@@ -1173,12 +1345,16 @@ do_tx_post (unsigned int thread)
 
 	//fprintf(stderr,"[%.2f,%.2f]  ", peakl(tx[thread].buf.i), peakr(tx[thread].buf.i));
 	filter_OvSv (tx[thread].filt.ovsv);
-	if (uni[thread].spec.flag)
-		do_tx_spectrum (thread, tx[thread].buf.o);
+	
 	//fprintf(stderr,"[%.2f,%.2f]  ", peakl(tx[thread].buf.o), peakr(tx[thread].buf.o));
 
-	// meter modulated signal
+	if (tx[thread].alc.flag)
+		DttSPAgc (tx[thread].alc.gen, tx[thread].tick);
+	do_tx_meter (thread, tx[thread].buf.o, TX_ALC);
 
+	if (uni[thread].spec.flag)
+		do_tx_spectrum (thread, tx[thread].buf.o);
+	
 	if (tx[thread].osc.gen->Frequency != 0.0)
 	{
 		int i;
@@ -1189,8 +1365,12 @@ do_tx_post (unsigned int thread)
 				Cmul (CXBdata (tx[thread].buf.o, i), OSCCdata (tx[thread].osc.gen, i));
 		}
 	}
+
 	correctIQ (tx[thread].buf.o, tx[thread].iqfix, TRUE,0);
+
+	// meter modulated signal
 	do_tx_meter (thread, tx[thread].buf.o, TX_PWR);
+
 	//fprintf(stderr,"[%.2f,%.2f]  ", peakl(tx[thread].buf.o), peakr(tx[thread].buf.o));
 	//fprintf(stderr,"\n");
 	//fflush(stderr);
@@ -1226,14 +1406,69 @@ PRIVATE void
 do_tx_FM (unsigned int thread)
 {
 	int i, n = min (CXBhave (tx[thread].buf.i), uni[thread].buflen);
+	REAL clip = 1.0;
+	REAL threshold = tx[thread].fm.clip_threshold;
+	REAL mag = 0;
+	REAL deemphasis_in = 0;
+	REAL preemphasis_in = 0;
+	REAL k_preemphasis = tx[thread].fm.k_preemphasis;
+	REAL k_deemphasis = tx[thread].fm.k_deemphasis;
+
 	//fprintf(stderr,"[%.2f,%.2f]  ", peakl(tx[thread].buf.i), peakr(tx[thread].buf.i));
+
+	//Input BPF 300-3000 Hz
+	do_IIR_LPF_2P(tx[thread].fm.input_LPF1);
+	do_IIR_LPF_2P(tx[thread].fm.input_LPF2);
+	do_IIR_HPF_2P(tx[thread].fm.input_HPF1);
+	do_IIR_HPF_2P(tx[thread].fm.input_HPF2);
 
 	for (i = 0; i < n; i++)
 	{
-		tx[thread].osc.phase += CXBreal (tx[thread].buf.i, i) * tx[thread].fm.cvtmod2freq;
-		CXBdata (tx[thread].buf.i, i) =
-			Cmplx ((REAL) cos (tx[thread].osc.phase), (IMAG) sin (tx[thread].osc.phase));
+		//Preemphasis (high-pass filter)
+		//		temp = (1/k)in + (k-1)/k * temp
+		//		out = in - temp
+		//		k = 1 + Fs/(2*pi*fo)
+
+		preemphasis_in = CXBreal (tx[thread].buf.i, i);
+		tx[thread].fm.preemphasis_filter = (preemphasis_in/k_preemphasis) + (k_preemphasis-1.0f)/k_preemphasis*tx[thread].fm.preemphasis_filter;
+		CXBreal(tx[thread].buf.i, i) = 3.0f*(preemphasis_in - tx[thread].fm.preemphasis_filter);
+	
+
+		////Soft Clipper
+		mag = abs(CXBreal(tx[thread].buf.i, i));
+		if (CXBreal(tx[thread].buf.i, i) > threshold)
+			CXBreal(tx[thread].buf.i, i) = (1.0f-threshold)*(1.0f - expf((mag-threshold)/(threshold-1.0f)))+threshold;
+		else if (CXBreal(tx[thread].buf.i, i) < -threshold)
+			CXBreal(tx[thread].buf.i, i) = -((1.0f-threshold)*(1.0f - expf((mag-threshold)/(threshold-1.0f)))+threshold);
 	}
+		
+	//3000 Hz LPF Output
+	do_IIR_LPF_2P(tx[thread].fm.output_LPF1);
+	do_IIR_LPF_2P(tx[thread].fm.output_LPF2);
+
+	if(tx[thread].fm.ctcss.flag)
+		ComplexOSC(tx[thread].fm.ctcss.osc);
+	
+	for(i = 0; i < n; i++)
+	{
+		////Demphasis (low-pass filter) -- Not needed in TX
+		//deemphasis_in = 4.0 * CXBreal(tx[thread].buf.i, i);
+		//tx[thread].fm.deemphasis_out = (deemphasis_in/k_deemphasis) + (k_deemphasis-1.0)/k_deemphasis*tx[thread].fm.deemphasis_out;
+		if(tx[thread].fm.ctcss.flag)
+			CXBreal(tx[thread].buf.i, i) = CXBreal(tx[thread].buf.i, i) + tx[thread].fm.ctcss.amp*OSCCdata(tx[thread].fm.ctcss.osc, i).re;
+
+		//FM modulator
+		tx[thread].fm.phase += CXBreal(tx[thread].buf.i, i) * tx[thread].fm.cvtmod2freq;
+		//tx[thread].fm.phase += tx[thread].fm.deemphasis_out * tx[thread].fm.cvtmod2freq;
+		CXBdata (tx[thread].buf.i, i) =	Cmplx ((REAL) cos (tx[thread].fm.phase), (IMAG) sin (tx[thread].fm.phase));
+
+
+		//tx[thread].fm.phase += CXBreal (tx[thread].buf.i, i) * tx[thread].fm.cvtmod2freq;
+		//CXBdata (tx[thread].buf.i, i) =
+		//	Cmplx ((REAL) cos (tx[thread].fm.phase), (IMAG) sin (tx[thread].fm.phase));
+	}
+
+	do_tx_meter (thread, tx[thread].buf.i, TX_CPDR);
 }
 
 PRIVATE void
@@ -1266,7 +1501,7 @@ do_tx (unsigned int thread)
 		case SAM:
 			do_tx_AM (thread);
 			break;
-		case FMN:
+		case FM:
 			do_tx_FM (thread);
 			break;
 		case SPEC:
@@ -1291,6 +1526,7 @@ process_samples (float *bufl, float *bufr, float *auxl, float *auxr, int n, unsi
 	{
 		case RX:
 
+
 			// make copies of the input for all receivers
 			for (k = 0; k < uni[thread].multirx.nrx; k++)
 			{
@@ -1298,7 +1534,8 @@ process_samples (float *bufl, float *bufr, float *auxl, float *auxr, int n, unsi
 				int kone = -1;
 				if (uni[thread].multirx.act[k])
 				{
-					if (!kdone) {
+					if (!kdone) 
+					{
 						kdone = TRUE;
 						kone = k;
 						for (i = 0; i < n; i++)
@@ -1307,7 +1544,8 @@ process_samples (float *bufl, float *bufr, float *auxl, float *auxr, int n, unsi
 								bufl[i], CXBreal (rx[thread][k].buf.i, i) = bufr[i];
 						}
 						CXBhave (rx[thread][k].buf.i) = n;
-					} else memcpy(rx[thread][k].buf.i,rx[thread][kone].buf.i,CXBhave(rx[thread][kdone].buf.i)*sizeof(COMPLEX));
+					} 
+					else memcpy(rx[thread][k].buf.i,rx[thread][kone].buf.i,CXBhave(rx[thread][kdone].buf.i)*sizeof(COMPLEX));
 				}
 			}
 			

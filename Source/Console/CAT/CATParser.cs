@@ -41,23 +41,48 @@ namespace PowerSDR
 
 		#region Variable declarations
 
-		private string current_cat;
-		private string prefix;
-		private string suffix;
-		private string extension;
+		// W1CEG: Make visible for derived RigCATParser.
+		protected string current_cat;
+		protected string prefix;
+		protected string suffix;
+		protected string extension;
 		private char[] term = new char[1]{';'};
 		public int nSet;
 		public int nGet;
 		public int nAns;
 		public bool IsActive;
 		private XmlDocument doc;
-		private CATCommands cmdlist;
-		private Console console;
+
+		// W1CEG: Make visible for derived RigCATParser.
+		protected CATCommands cmdlist;
+
+		protected Console console;
 		public string Error1 = "?;";
 		public string Error2 = "E;";
 		public string Error3 = "O;";
 		private bool IsExtended;
-		private ASCIIEncoding AE = new ASCIIEncoding();
+
+		// W1CEG: Make visible for derived RigCATParser.
+		protected ASCIIEncoding AE = new ASCIIEncoding();
+
+		// W1CEG: Move sfxpattern as a member to be overriden by RigCATParser.
+		protected Regex sfxpattern = new Regex("^[+-]?[Vv0-9]*$");
+
+        private bool verbose = false;
+        public bool Verbose
+        {
+            get { return verbose; }
+            set { verbose = value;
+                  cmdlist.Verbose = value;
+                }
+        }
+
+       private Int32 verbose_error_code = 0;
+       public Int32 Verbose_Error_Code
+        {
+           get { return verbose_error_code;}
+           set {verbose_error_code = value;}
+        }
 
 		#endregion Variable declarations
 
@@ -93,10 +118,19 @@ namespace PowerSDR
 		{
 			current_cat = pCmdString;
 			string rtncmd = "";
+            prefix = "";
+            suffix = "";
+            extension = "";
+            verbose_error_code = 0;
 
 			// Abort if the overall string length is less than 3 (aa;)
-			if(current_cat.Length < 3)
-				return Error1;
+            if (current_cat.Length < 3)
+            {
+                if (Verbose)
+                    verbose_error_code = 1;     //command length error
+                else
+                return Error1;
+            }
 
 			bool goodcmd = CheckFormat();
 			if(goodcmd)
@@ -134,7 +168,7 @@ namespace PowerSDR
 					case "BY":
 						break;
 					case "CA":
-						break;
+                        break;
 					case "CG":
 						break;
 					case "CH":
@@ -144,9 +178,11 @@ namespace PowerSDR
 					case "CM":
 						break;
 					case "CN":
+                        rtncmd = cmdlist.CN(suffix);
 						break;
 					case "CT":
-						break;
+                        rtncmd = cmdlist.CT(suffix);
+                        break;
 					case "DC":
 						break;
 					case "DN":
@@ -232,10 +268,12 @@ namespace PowerSDR
 						rtncmd = cmdlist.NT(suffix);
 						break;
 					case "OF":
+                        rtncmd = cmdlist.OF(suffix);
 						break;
 					case "OI":
 						break;
 					case "OS":
+                        rtncmd = cmdlist.OS(suffix);
 						break;
 					case "PA":
 						break;
@@ -360,10 +398,10 @@ namespace PowerSDR
 				if(prefix != "ZZ")	// if this is a standard command
 				{
 					// and it's not an error
-					if(rtncmd != Error1 && rtncmd != Error2 && rtncmd != Error3)
+					if(!rtncmd.Contains(Error1))
 					{													
 						// if it has the correct length
-						if(rtncmd.Length == nAns && nAns > 0)
+						if(rtncmd.Length >= nAns && nAns > 0)
 								rtncmd = prefix+rtncmd+";";	// return the formatted CAT answer
 							else if(nAns == -1 || rtncmd == "")	// no answer is required
 								rtncmd = "";
@@ -373,12 +411,13 @@ namespace PowerSDR
 				}
 			}
 			else
-				rtncmd = Error1;	// this was a bad command
+				rtncmd = ProcessError(Error1);	// this was a bad command
 
 			return rtncmd;	// Read successfully executed
 		}
 
-		private bool CheckFormat()
+		// W1CEG: Make visible for derived RigCATParser.
+		protected bool CheckFormat()
 		{
 			bool goodprefix,goodsuffix;
 			// If there is no terminator, or the prefix or suffix
@@ -391,24 +430,35 @@ namespace PowerSDR
 
 			// If there is no terminator, or the prefix
 			// is invalid, abort.
-			if(current_cat.IndexOfAny(term) < 2)
-				return false;
+            if (current_cat.IndexOfAny(term) < 2)
+            {
+                verbose_error_code = 1;
+                return false;
+            }
 
 			// Now check to see if it's an extended command
-			if(current_cat.Substring(0,2).ToUpper() == "ZZ")
+			if(current_cat.Substring(0,2).ToUpper() == "ZZ" && current_cat.Length > 3)
 				IsExtended = true;
 			else
 				IsExtended = false;
 
 			// Check the prefix
 			goodprefix = FindPrefix();
-			if(!goodprefix)
-				return false;
+            if (!goodprefix)
+            {
+                if (verbose_error_code == 0)    // if no other errors are trapped, use this for default
+                    verbose_error_code = 4;
+                return false;
+            }
 
 			// Check the suffix
 			goodsuffix = FindSuffix();
-			if(!goodsuffix)
-				return false;
+            if (!goodsuffix)
+            {
+                if (verbose_error_code == 0)    //bad suffix and but no errors trapped
+                     verbose_error_code = 3;
+                return false;
+            }
 
 			return true;
 		}
@@ -432,44 +482,50 @@ namespace PowerSDR
 			XmlElement root = doc.DocumentElement;
 			string search = "descendant::catstruct[@code='"+pfx+"']";
 			struc = root.SelectSingleNode(search);
-				if(struc != null)
-				{
-					foreach(XmlNode x in struc)
-					{
-						switch(x.Name)
-						{
-							case "active":
-								IsActive = Convert.ToBoolean(x.InnerXml);
-								break;
-							case "nsetparms":
-								nSet = Convert.ToInt16(x.InnerXml);
-								break;
-							case "ngetparms":
-								nGet = Convert.ToInt16(x.InnerXml);
-								break;
-							case "nansparms":
-								nAns = Convert.ToInt16(x.InnerXml);
-								break;
-						}
-					}
-//					prefix = pfx;
-					// If this is not an active command there is no use continuing.
-					if(IsActive)
-					{
-						if(IsExtended)
-						{
-							prefix = pfx.Substring(0,2);
-							extension = pfx.Substring(2,2);
-						}
-						else
-							prefix = pfx;
-						return true;
-					}
-					else
-					{
-						return false;
-					}
-				}
+            if (struc != null)
+            {
+                foreach (XmlNode x in struc)
+                {
+                    switch (x.Name)
+                    {
+                        case "active":
+                            IsActive = Convert.ToBoolean(x.InnerXml);
+                            break;
+                        case "nsetparms":
+                            nSet = Convert.ToInt16(x.InnerXml);
+                            break;
+                        case "ngetparms":
+                            nGet = Convert.ToInt16(x.InnerXml);
+                            break;
+                        case "nansparms":
+                            nAns = Convert.ToInt16(x.InnerXml);
+                            break;
+                    }
+                }
+                //					prefix = pfx;
+                // If this is not an active command there is no use continuing.
+                if (IsActive)
+                {
+                    if (IsExtended)
+                    {
+                        prefix = pfx.Substring(0, 2);
+                        extension = pfx.Substring(2, 2);
+                    }
+                    else
+                    {
+                        prefix = pfx;
+                        extension = "";
+                    }
+                    return true;
+                }
+                else
+                {
+                    verbose_error_code = 2;     //inactive command
+                    return false;
+                }
+            }
+            else
+                verbose_error_code = 3;     //unknown command
 			}
 			catch(Exception e)
 			{
@@ -497,14 +553,17 @@ namespace PowerSDR
 			if(current_cat.Length > len)
 			{
 				sfx = current_cat.Substring(start,current_cat.IndexOf(";")-end);
-				if(prefix != "KY" && prefix+extension != "ZZKY" &&
+				if(prefix != "KY" && prefix+extension != "ZZKY" && prefix+extension != "ZZMY" &&
 					(prefix+extension != "ZZEA" && prefix+extension != "ZZEB") &&
 					(prefix+extension != "ZZFX" && prefix+extension != "ZZFY") &&
 					(prefix+extension != "ZZFV" && prefix+extension != "ZZFW"))
 				{
-					Regex sfxpattern = new Regex("^[+-]?[Vv0-9]*$");
-					if(!sfxpattern.IsMatch(sfx))
-						return false;
+		   // W1CEG: Use new sfxpattern member.
+		   if(!this.sfxpattern.IsMatch(sfx))
+                    {
+                        verbose_error_code = 5;     //illegal suffix format
+                        return false;
+                    }
 				}
 //modified 3/17/07 BT to correct bug in reading parameters with plus or minus sign
 				// Check the suffix for illegal characters
@@ -517,14 +576,19 @@ namespace PowerSDR
 			{
 				sfx = "";
 			}
-
+            suffix = sfx;
 			// Check the length against the struct requirements
-			if(sfx.Length == nSet || sfx.Length == nGet)
-			{
-				suffix = sfx;
-				return true;
-			}
-			return false;
+			// W1CEG: Check nAns Length, too.
+			if(sfx.Length == nSet || sfx.Length == nGet || sfx.Length >= nAns)
+            {
+                //suffix = sfx;
+                return true;
+            }
+            else
+            {
+                verbose_error_code = 6;     //suffix length error
+                return false;
+            }
 		}
 
 		private string ParseExtended()
@@ -534,6 +598,12 @@ namespace PowerSDR
 
 			switch(extended)
 			{
+                case "ZZAC":
+                    rtncmd = cmdlist.ZZAC(suffix);
+                    break;
+                case "ZZAD":
+                    rtncmd = cmdlist.ZZAD(suffix);
+                    break;
 				case "ZZAG":
 					rtncmd = cmdlist.ZZAG(suffix);
 					break;
@@ -543,6 +613,18 @@ namespace PowerSDR
 				case "ZZAR":
 					rtncmd = cmdlist.ZZAR(suffix);
 					break;
+                case "ZZAS":
+                    rtncmd = cmdlist.ZZAS(suffix);
+                    break;
+                case "ZZAU":
+                    rtncmd = cmdlist.ZZAU(suffix);
+                    break;
+                case "ZZBA":
+                    rtncmd = cmdlist.ZZBA();
+                    break;
+                case "ZZBB":
+                    rtncmd = cmdlist.ZZBB();
+                    break;
 				case "ZZBD":
 					rtncmd = cmdlist.ZZBD();
 					break;
@@ -552,15 +634,27 @@ namespace PowerSDR
 				case "ZZBG":
 					rtncmd = cmdlist.ZZBG(suffix);
 					break;
+                case "ZZBM":
+                    rtncmd = cmdlist.ZZBM(suffix);
+                    break;
+                case "ZZBP":
+                    rtncmd = cmdlist.ZZBP(suffix);
+                    break;
 				case "ZZBR":
 					rtncmd = cmdlist.ZZBR(suffix);
 					break;
 				case "ZZBS":
 					rtncmd = cmdlist.ZZBS(suffix);
-					break;
+                    break;
+                case "ZZBT":
+                    rtncmd = cmdlist.ZZBT(suffix);
+                    break;
 				case "ZZBU":
 					rtncmd = cmdlist.ZZBU();
 					break;
+                case "ZZBY":
+                    rtncmd = cmdlist.ZZBY();
+                    break;
 				case "ZZCB":
 					rtncmd = cmdlist.ZZCB(suffix);
 					break;
@@ -594,12 +688,39 @@ namespace PowerSDR
 				case "ZZDA":
 					rtncmd = cmdlist.ZZDA(suffix);
 					break;
+                case "ZZDE":
+                    rtncmd = cmdlist.ZZDE(suffix);
+                    break;
+                case "ZZDF":
+                    rtncmd = cmdlist.ZZDF(suffix);
+                    break;
 				case "ZZDM":
 					rtncmd = cmdlist.ZZDM(suffix);
-					break;
+                    break;
+                case "ZZDN":
+                    rtncmd = cmdlist.ZZDN(suffix);
+                    break;
+                case "ZZDO":
+                    rtncmd = cmdlist.ZZDO(suffix);
+                    break;
+                case "ZZDP":
+                    rtncmd = cmdlist.ZZDP(suffix);
+                    break;
+                case "ZZDQ":
+                    rtncmd = cmdlist.ZZDQ(suffix);
+                    break;
+                case "ZZDR":
+                    rtncmd = cmdlist.ZZDR(suffix);
+                    break;
+                case "ZZDU":
+                    rtncmd = cmdlist.ZZDU();
+                    break;
 				case "ZZDX":
 					rtncmd = cmdlist.ZZDX(suffix);
 					break;
+                case "ZZDY":
+                    rtncmd = cmdlist.ZZDY(suffix);
+                    break;
 				case "ZZER":
 					rtncmd = cmdlist.ZZER(suffix);
 					break;
@@ -609,6 +730,9 @@ namespace PowerSDR
 				case "ZZEB":
 					rtncmd = cmdlist.ZZEB(suffix);
 					break;
+                case "ZZEM":
+                    rtncmd = cmdlist.ZZEM(suffix);
+                    break;
 				case "ZZET":
 					rtncmd = cmdlist.ZZET(suffix);
 					break;
@@ -618,9 +742,15 @@ namespace PowerSDR
 				case "ZZFB":
 					rtncmd = cmdlist.ZZFB(suffix);
 					break;
+                case "ZZFD":
+                    rtncmd = cmdlist.ZZFD(suffix);
+                    break;
 				case "ZZFI":
 					rtncmd = cmdlist.ZZFI(suffix);
 					break;
+                case "ZZFJ":
+                    rtncmd = cmdlist.ZZFJ(suffix);
+                    break;
 				case "ZZFL":
 					rtncmd = cmdlist.ZZFL(suffix);
 					break;
@@ -678,6 +808,9 @@ namespace PowerSDR
 				case "ZZIF":
 					rtncmd = cmdlist.ZZIF(suffix);
 					break;
+                case "ZZIO":
+                    rtncmd = cmdlist.ZZIO();
+                    break;
 				case "ZZIS":
 					rtncmd = cmdlist.ZZIS(suffix);
 					break;
@@ -687,21 +820,54 @@ namespace PowerSDR
 				case "ZZIU":
 					rtncmd = cmdlist.ZZIU();
 					break;
+                case "ZZKO":
+                    rtncmd = cmdlist.ZZKO(suffix);
+                    break;
+                case "ZZKM":
+                    rtncmd = cmdlist.ZZKM(suffix);
+                    break;
 				case "ZZKS":
 					rtncmd = cmdlist.ZZKS(suffix);
 					break;
 				case "ZZKY":
 					rtncmd = cmdlist.ZZKY(suffix);
 					break;
+                case "ZZLA":
+                    rtncmd = cmdlist.ZZLA(suffix);
+                    break;
+                case "ZZLB":
+                    rtncmd = cmdlist.ZZLB(suffix);
+                    break;
+                case "ZZLC":
+                    rtncmd = cmdlist.ZZLC(suffix);
+                    break;
+                case "ZZLD":
+                    rtncmd = cmdlist.ZZLD(suffix);
+                    break;
+                case "ZZLE":
+                    rtncmd = cmdlist.ZZLE(suffix);
+                    break;
+                case "ZZLF":
+                    rtncmd = cmdlist.ZZLF(suffix);
+                    break;
 				case "ZZMA":
 					rtncmd = cmdlist.ZZMA(suffix);
 					break;
+                case "ZZMB":
+                    rtncmd = cmdlist.ZZMB(suffix);
+                    break;
 				case "ZZMD":
 					rtncmd = cmdlist.ZZMD(suffix);
 					break;
+                case "ZZME":
+                    rtncmd = cmdlist.ZZME(suffix);
+                    break;
 				case "ZZMG":
 					rtncmd = cmdlist.ZZMG(suffix);
 					break;
+                case "ZZML":
+                    rtncmd = cmdlist.ZZML();
+                    break;
 				case "ZZMN":
 					rtncmd = cmdlist.ZZMN(suffix);
 					break;
@@ -720,12 +886,33 @@ namespace PowerSDR
 				case "ZZMU":
 					rtncmd = cmdlist.ZZMU(suffix);
 					break;
+                case "ZZMV":
+                    rtncmd = cmdlist.ZZMV();
+                    break;
+                case "ZZMW":
+                    rtncmd = cmdlist.ZZMW(suffix);
+                    break;
+                case"ZZMX":
+                    rtncmd = cmdlist.ZZMX(suffix);
+                    break;
+                case "ZZMY":
+                    rtncmd = cmdlist.ZZMY();
+                    break;
+                case "ZZMZ":
+                    rtncmd = cmdlist.ZZMZ(suffix);
+                    break;
 				case "ZZNA":
 					rtncmd = cmdlist.ZZNA(suffix);
 					break;
 				case "ZZNB":
 					rtncmd = cmdlist.ZZNB(suffix);
 					break;
+                case "ZZNC":
+                    rtncmd = cmdlist.ZZNC(suffix);
+                    break;
+                case "ZZND":
+                    rtncmd = cmdlist.ZZND(suffix);
+                    break;
 				case "ZZNL":
 					rtncmd = cmdlist.ZZNL(suffix);
 					break;
@@ -765,15 +952,33 @@ namespace PowerSDR
 				case "ZZOJ":
 					rtncmd = cmdlist.ZZOJ(suffix);
 					break;
+                case "ZZOL":
+                    rtncmd = cmdlist.ZZOL(suffix);
+                    break;
+                case "ZZOS":
+                    rtncmd = cmdlist.ZZOS(suffix);
+                    break;
+                case "ZZOT":
+                    rtncmd = cmdlist.ZZOT(suffix);
+                    break;
+                case "ZZOU":
+                    rtncmd = cmdlist.ZZOU(suffix);
+                    break;
 				case "ZZPA":
 					rtncmd = cmdlist.ZZPA(suffix);
 					break;
+                case "ZZPB":
+                    rtncmd = cmdlist.ZZPB(suffix);
+                    break;
 				case "ZZPC":
 					rtncmd = cmdlist.ZZPC(suffix);
 					break;
 				case "ZZPD":
 					rtncmd = cmdlist.ZZPD();
 					break;
+                case "ZZPE":
+                    rtncmd = cmdlist.ZZPE(suffix);
+                    break;
 //				case "ZZPK":
 //					rtncmd = cmdlist.ZZPK(suffix);
 //					break;
@@ -786,6 +991,9 @@ namespace PowerSDR
 				case "ZZPS":
 					rtncmd = cmdlist.ZZPS(suffix);
 					break;
+                case "ZZPY":
+                    rtncmd = cmdlist.ZZPY(suffix);
+                    break;
 				case "ZZPZ":
 					rtncmd = cmdlist.ZZPZ(suffix);
 					break;
@@ -831,6 +1039,9 @@ namespace PowerSDR
 				case "ZZRU":
 					rtncmd = cmdlist.ZZRU(suffix);
 					break;
+                case "ZZRV":
+                    rtncmd = cmdlist.ZZRV();
+                    break;
 				case "ZZSA":
 					rtncmd = cmdlist.ZZSA();
 					break;
@@ -852,6 +1063,9 @@ namespace PowerSDR
 				case "ZZSM":
 					rtncmd = cmdlist.ZZSM(suffix);
 					break;
+                case "ZZSN":
+                    rtncmd = cmdlist.ZZSN();
+                    break;
 				case "ZZSO":
 					rtncmd = cmdlist.ZZSO(suffix);
 					break;
@@ -873,8 +1087,23 @@ namespace PowerSDR
 				case "ZZSU":
 					rtncmd = cmdlist.ZZSU();
 					break;
+                case "ZZSV":
+                    rtncmd = cmdlist.ZZSV(suffix);
+                    break;
                 case "ZZSW":
                     rtncmd = cmdlist.ZZSW(suffix);
+                    break;
+                case "ZZSX":
+                    rtncmd = cmdlist.ZZSX(suffix);
+                    break;
+                case "ZZSY":
+                    rtncmd = cmdlist.ZZSY(suffix);
+                    break;
+                case "ZZTA":
+                    rtncmd = cmdlist.ZZTA(suffix);
+                    break;
+                case "ZZTB":
+                    rtncmd = cmdlist.ZZTB(suffix);
                     break;
 				case "ZZTF":
 					rtncmd = cmdlist.ZZTF(suffix);
@@ -891,6 +1120,9 @@ namespace PowerSDR
 				case "ZZTL":
 					rtncmd = cmdlist.ZZTL(suffix);
 					break;
+                case "ZZTM":
+                    rtncmd = cmdlist.ZZTM(suffix);
+                    break;
 				case "ZZTO":
 					rtncmd = cmdlist.ZZTO(suffix);
 					break;
@@ -900,6 +1132,9 @@ namespace PowerSDR
 				case "ZZTU":
 					rtncmd = cmdlist.ZZTU(suffix);
 					break;
+                case "ZZTV":
+                    rtncmd = cmdlist.ZZTV(suffix);
+                    break;
 				case "ZZTX":
 					rtncmd = cmdlist.ZZTX(suffix);
 					break;
@@ -930,12 +1165,24 @@ namespace PowerSDR
 				case "ZZVH":
 					rtncmd = cmdlist.ZZVH(suffix);
 					break;
+                case "ZZVI":
+                    rtncmd = cmdlist.ZZVI(suffix);
+                    break;
+                case "ZZVJ":
+                    rtncmd = cmdlist.ZZVJ(suffix);
+                    break;
 				case "ZZVL":
 					rtncmd = cmdlist.ZZVL(suffix);
 					break;
+                case "ZZVM":
+                    rtncmd = cmdlist.ZZVM(suffix);
+                    break;
 				case "ZZVN":
 					rtncmd = cmdlist.ZZVN();
 					break;
+                case "ZZVO":
+                    rtncmd = cmdlist.ZZVO(suffix);
+                    break;
 				case "ZZVS":
 					rtncmd = cmdlist.ZZVS(suffix);
 					break;
@@ -993,6 +1240,18 @@ namespace PowerSDR
 				case "ZZWS":
 					rtncmd = cmdlist.ZZWS(suffix);
 					break;
+                case "ZZWT":
+                    rtncmd = cmdlist.ZZWT(suffix);
+                    break;
+                case "ZZWU":
+                    rtncmd = cmdlist.ZZWU(suffix);
+                    break;
+                case "ZZWV":
+                    rtncmd = cmdlist.ZZWV(suffix);
+                    break;
+                case "ZZWW":
+                    rtncmd = cmdlist.ZZWW(suffix);
+                    break;
 				case "ZZXC":
 					rtncmd = cmdlist.ZZXC();
 					break;
@@ -1012,22 +1271,73 @@ namespace PowerSDR
 					rtncmd = cmdlist.ZZZZ();
 					break;
 			}
-			if(rtncmd != Error1 && rtncmd != Error2 && rtncmd != Error3)
-			{
-				if(rtncmd.Length == nAns && nAns > 0)
-				{
-					if(rtncmd.StartsWith(" ") && extension != "MN")  //Don't trim filter name string
-					{												// Fix in next generation.
-						rtncmd = rtncmd.Trim();
-					}
-					rtncmd = prefix+extension+suffix+rtncmd+";";
-				}
-			}
-			else
-				rtncmd = Error1;
+            if (!rtncmd.Contains(Error1))
+            //rtncmd != Error1 && rtncmd != Error2 && rtncmd != Error3)
+            {
+                if (rtncmd.Length == nAns && nAns > 0)
+                {
+                    if (rtncmd.StartsWith(" ") && (extension != "ML" && extension != "MN"))  //Don't trim filter name string
+                    {												                        // Fix in next generation.
+                        rtncmd = rtncmd.Trim();
+                    }
+                    rtncmd = prefix + extension + suffix + rtncmd + ";";
+                }
+            }
+            else rtncmd = ProcessError(rtncmd);
 
 			return rtncmd;
 		}
+
+        private string ProcessError(string error)
+        {
+            string ecmd = "";
+            if (Verbose)
+            {
+                string sep = ":";
+                string cmdname = "";
+                if (prefix.Length == 0 && suffix.Length == 0)
+                    cmdname = current_cat;
+                else
+                    cmdname = prefix + extension;
+                ecmd = "ZZEM" + sep + cmdname + suffix+sep;
+                switch (verbose_error_code)
+                {
+                    case 1:
+                        ecmd += "Bad Command Name;";
+                        break;
+                    case 2:
+                        ecmd += "Inactive Command;";
+                        break;
+                    case 3:
+                        ecmd += "Unknown Command;";
+                        break;
+                    case 4:
+                        ecmd += "Undefined Command Error;";
+                        break;
+                    case 5:
+                        ecmd += "Suffix Format Error;";
+                        break;
+                    case 6:
+                        ecmd += "Suffix Length Error;";
+                        break;
+                    case 7:
+                        ecmd += "Feature Not Available;";
+                        break;
+                    case 8:
+                        ecmd += "Form Must Be Open;";
+                        break;
+                    case 9:
+                        ecmd += "Value out of bounds;";
+                        break;
+                    default:
+                        ecmd += "Undefined Error;"; ;
+                        break;
+                }
+                return ecmd;
+            }
+            else
+                return error;
+        }
 	}
 
 	#endregion CATParser Class

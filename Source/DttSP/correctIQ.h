@@ -3,6 +3,14 @@
 
 #include <bufvec.h>
 
+typedef enum _wbir_state
+{
+	FastAdapt,
+    SlowAdapt,
+    NoAdapt,
+	JustSayNo
+} WBIR_STATE;
+
 typedef struct _iqstate
 {
   REAL phase, gain,mu, leakage;
@@ -12,6 +20,8 @@ typedef struct _iqstate
   COMPLEX dc;
   int MASK;
   int index;
+  WBIR_STATE wbir_state;
+  BOOLEAN wbir_tuned;
 } *IQ, iqstate;
 
 extern IQ newCorrectIQ (REAL phase, REAL gain, REAL mu);
